@@ -1,0 +1,17 @@
+{
+  "name": "Guess the Game 3.0",
+  "short_name": "Guess the Game",
+  "description": "Guess the game from the clues – CZ/EN gaming quiz",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#090e1e",
+  "theme_color": "#090e1e",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

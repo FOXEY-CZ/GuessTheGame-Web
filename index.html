@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#090e1e">
   <meta name="description" content="Guess the Game — offline mobile gaming quiz">
-  <title>Guess the Game 2.3 — Mystery Mode</title>
+  <title>Guess the Game 3.0 — Level Up</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20108%20108%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23253b71%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2315182d%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22108%22%20rx%3D%2225%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Cpath%20d%3D%22M34%2038c2-23%2039-23%2041%200%201%2017-20%2020-20%2031%22%20fill%3D%22none%22%20stroke%3D%22%2368eee5%22%20stroke-width%3D%2211%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2286%22%20r%3D%226.5%22%20fill%3D%22%23ffc86a%22%2F%3E%3Cpath%20d%3D%22M17%2023h13M23.5%2016v14%22%20stroke%3D%22%23ae95ff%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2280%22%20r%3D%225%22%20fill%3D%22%238c78ff%22%2F%3E%3C%2Fsvg%3E">
+  <link rel="manifest" href="site.webmanifest">
   <style>
 :root{color-scheme:dark;--bg:#090e1e;--fg:#f4f6ff;--muted:#99a6c4;--card:#151f36;--stroke:#303d5b;--cyan:#68eee5;--purple:#8c78ff;--green:#53e2b5;--pink:#ff829d;--gold:#ffc86a}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 90% 34% at 50% -10%,#28376a,transparent),#090e1e;color:var(--fg);font-family:system-ui,-apple-system,Roboto,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}button:disabled{cursor:default}.hidden,[hidden]{display:none!important}.ambient{position:fixed;pointer-events:none;border-radius:50%;filter:blur(65px);opacity:.15}.ambient-a{width:210px;height:210px;background:#5f4ef4;left:-120px;top:30%}.ambient-b{width:250px;height:250px;background:#0dcac6;right:-150px;bottom:12%}
@@ -30,13 +32,31 @@
 .question-card .clue{line-height:1.48}
 @media (prefers-reduced-motion:reduce){.mystery-clue{animation:none}}
 
+
+/* Guess the Game 3.0: profile controls, save codes and desktop ergonomics */
+.profile-tools{margin-top:22px;background:#121e35;border:1px solid #334866;border-radius:18px;padding:18px}
+.profile-tools h2{font-size:13px;letter-spacing:1.4px;margin:0 0 13px}
+.preference{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;color:#dce7ff;font-size:13px}
+.preference+.preference{border-top:1px solid #293955}
+.preference input{appearance:none;position:relative;flex:none;width:48px;height:27px;border-radius:25px;background:#3c4962;border:1px solid #69748e;cursor:pointer;transition:background .2s}
+.preference input:checked{background:#298a81;border-color:#70ecdf}
+.preference input::after{content:"";position:absolute;left:3px;top:3px;background:#fff;width:19px;height:19px;border-radius:50%;transition:transform .2s}
+.preference input:checked::after{transform:translateX(20px)}
+.save-help{font-size:11px;color:#b1bfdc;line-height:1.55;margin:0 0 11px}
+.save-code{display:block;width:100%;min-height:87px;resize:vertical;background:#0b1428;border:1px solid #4a5f80;border-radius:11px;color:#e8f6ff;padding:10px;font-size:12px;line-height:1.45;font-family:ui-monospace,monospace;margin:8px 0}
+.tool-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.tool-action{border:1px solid #5b6a95;border-radius:11px;background:#243251;color:#eaf6ff;min-height:42px;font-size:11px;font-weight:800;padding:10px 6px}
+.tool-action.primary{background:linear-gradient(105deg,#8275ff,#5d63dc);border-color:#9d9bff}
+.share-button{margin-top:10px;width:100%;padding:12px;background:#233658;border:1px solid #4e6e8b;border-radius:12px;font-weight:800;font-size:12px}
+@media (min-width:760px){.app{max-width:690px;padding:30px 26px}.modes{grid-template-columns:repeat(2,minmax(0,1fr))}.mode{min-height:79px}.hero-illustration{height:175px}}
+
 </style>
 </head>
 <body>
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
   <div class="app">
     <header class="topbar">
-      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>LEVEL UP EDITION</small></span></button>
+      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.0 · LEVEL UP</small></span></button>
       <div class="top-actions"><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
     </header>
 
@@ -86,7 +106,7 @@
     </main>
 
     <main id="result" class="screen hidden">
-      <section class="result glow-card"><div id="resultIcon" class="result-art">🏆</div><span class="tag neon" data-i18n="finished">VÝSLEDEK</span><h1 id="resultHeading"></h1><p id="resultSubtitle" class="subtext"></p><div class="finalscore"><strong id="resultScore">0</strong><span>XP</span></div><div class="result-stats"><div><b id="resultCorrect">0/10</b><span data-i18n="correct">SPRÁVNĚ</span></div><div><b id="resultStreak">0</b><span data-i18n="bestStreak">NEJDELŠÍ SÉRIE</span></div><div><b id="resultLives">0</b><span data-i18n="lives">ŽIVOTY</span></div></div><div id="resultEarned" class="earned"></div><div id="levelUp" class="level-up hidden">✦ LEVEL UP! ✦</div><button id="playAgain" type="button" class="next-button" data-i18n="playAgain">HRÁT ZNOVU →</button><button id="resultHome" type="button" class="back result-home" data-i18n="menu">← ZPĚT DO MENU</button></section>
+      <section class="result glow-card"><div id="resultIcon" class="result-art">🏆</div><span class="tag neon" data-i18n="finished">VÝSLEDEK</span><h1 id="resultHeading"></h1><p id="resultSubtitle" class="subtext"></p><div class="finalscore"><strong id="resultScore">0</strong><span>XP</span></div><div class="result-stats"><div><b id="resultCorrect">0/10</b><span data-i18n="correct">SPRÁVNĚ</span></div><div><b id="resultStreak">0</b><span data-i18n="bestStreak">NEJDELŠÍ SÉRIE</span></div><div><b id="resultLives">0</b><span data-i18n="lives">ŽIVOTY</span></div></div><div id="resultEarned" class="earned"></div><div id="levelUp" class="level-up hidden">✦ LEVEL UP! ✦</div><button id="playAgain" type="button" class="next-button" data-i18n="playAgain">HRÁT ZNOVU →</button><button id="shareResult" type="button" class="share-button" data-i18n="shareResult">📤 SDÍLET VÝSLEDEK</button><button id="resultHome" type="button" class="back result-home" data-i18n="menu">← ZPĚT DO MENU</button></section>
     </main>
 
     <main id="profile" class="screen hidden">
@@ -95,9 +115,21 @@
       <div class="profile-stats"><div><b id="profileXp">0</b><span data-i18n="totalXp">CELKEM XP</span></div><div><b id="profilePlayed">0</b><span data-i18n="played">KVÍZŮ</span></div><div><b id="profileBest">0</b><span data-i18n="best">REKORD</span></div><div><b id="profileCorrect">0</b><span data-i18n="correct">SPRÁVNĚ</span></div></div>
       <div class="section-heading"><h2 data-i18n="achievements">ODZNAKY</h2><span>🏅</span></div>
       <div class="badge-grid" id="badges"></div>
+      <section class="profile-tools">
+        <h2 data-i18n="settingsTitle">⚙️ NASTAVENÍ</h2>
+        <label class="preference"><span data-i18n="soundsLabel">🔊 Zvukové efekty</span><input type="checkbox" id="soundsToggle" aria-label="Zvukové efekty"></label>
+        <label class="preference"><span data-i18n="hapticsLabel">📳 Vibrace při odpovědi</span><input type="checkbox" id="hapticsToggle" aria-label="Vibrace při odpovědi"></label>
+      </section>
+      <section class="profile-tools">
+        <h2 data-i18n="backupTitle">💾 ZÁLOHA POSTUPU</h2>
+        <p class="save-help" data-i18n="backupHelp">Vygeneruj kód, zkopíruj si ho a použij na jiném zařízení. Zahrnuje XP, statistiky, odznaky a nastavení. Nezahrnuje rozehranou otázku.</p>
+        <div class="tool-buttons"><button type="button" class="tool-action primary" id="generateSave" data-i18n="generateSave">VYTVOŘIT KÓD</button><button type="button" class="tool-action" id="copySave" data-i18n="copySave">📋 KOPÍROVAT</button></div>
+        <textarea id="saveCode" class="save-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Záložní kód" placeholder="GTG3:..."></textarea>
+        <button type="button" class="tool-action primary" id="restoreSave" style="width:100%" data-i18n="restoreSave">OBNOVIT Z KÓDU</button>
+      </section>
     </main>
 
-    <footer><span>GUESS THE GAME <b>2.3</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
+    <footer><span>GUESS THE GAME <b>3.0 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
   </div>
   <div id="toast" class="toast hidden" role="status"></div><div id="sparkles" class="sparkles" aria-hidden="true"></div>
   <script>
@@ -129,8 +161,15 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       playerProfile:'HERNÍ PROFIL',achievements:'ODZNAKY',footer:'Offline · bez reklam · bez účtu',locked:'Zamčeno',
       badgeFirst:'První kvíz',badgeFirstDesc:'Dokonči jeden kvíz',badgeXp:'Lovec XP',badgeXpDesc:'Nasbírej 100 XP',
       badgeFive:'Vytrvalec',badgeFiveDesc:'Odehraj 5 kvízů',badgeCorrect:'Znalec her',badgeCorrectDesc:'Odpověz 30× správně',
+      badgeXp1000:'Tisícovka',badgeXp1000Desc:'Nasbírej 1 000 XP',badgeTen:'Maratonec',badgeTenDesc:'Odehraj 10 kvízů',badge100:'Stovka',badge100Desc:'Odpověz 100× správně',badgeStreak:'Nezastavitelný',badgeStreakDesc:'Dej 10 správně za sebou',
       rewardToast:'🎁 Denní odměna: +20 XP!',alreadyClaimed:'Dnešní odměnu už máš.',lockToast:'🔒 Odemkne se na levelu {level}',session:'Otázka {round} / {total}',
-      dailyBest:'Dnešní rekord: {score} XP', noStorage:'Ukládání není dostupné.'
+      dailyBest:'Dnešní rekord: {score} XP', noStorage:'Ukládání není dostupné.',
+      settingsTitle:'⚙️ NASTAVENÍ', soundsLabel:'🔊 Zvukové efekty', hapticsLabel:'📳 Vibrace při odpovědi',
+      backupTitle:'💾 ZÁLOHA POSTUPU',backupHelp:'Vytvoř kód a ulož si ho. Přenese XP, statistiky, odznaky a nastavení mezi zařízeními. Rozehranou otázku nepřenáší.',
+      generateSave:'VYTVOŘIT KÓD',copySave:'📋 KOPÍROVAT',restoreSave:'OBNOVIT Z KÓDU',
+      backupReady:'✅ Záložní kód je připraven.',backupCopied:'📋 Kód zkopírován.',copyManual:'Vyber kód a zkopíruj ho ručně.',
+      backupInvalid:'❌ Kód není platný.',restoreConfirm:'⚠️ Klepni znovu pro přepsání místního postupu.',restoreDone:'✅ Postup obnoven!',
+      shareResult:'📤 SDÍLET VÝSLEDEK',shareCopied:'📋 Výsledek zkopírován.',shareTitle:'🎮 Guess the Game',shareScore:'Získal jsem {score} XP · správně {correct}/{total}!' 
     },
     en: {
       offline:'OFFLINE GAMING QUIZ',hero:'Can you guess the game from the clues?',subtitle:'Play, earn XP, and unlock new difficulties.',yourProfile:'YOUR GAMER PROFILE',
@@ -149,8 +188,15 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       playerProfile:'GAMER PROFILE',achievements:'BADGES',footer:'Offline · no ads · no account',locked:'Locked',
       badgeFirst:'First quiz',badgeFirstDesc:'Complete one quiz',badgeXp:'XP hunter',badgeXpDesc:'Earn 100 XP',
       badgeFive:'Dedicated',badgeFiveDesc:'Play 5 quizzes',badgeCorrect:'Game expert',badgeCorrectDesc:'Get 30 answers correct',
+      badgeXp1000:'XP Master',badgeXp1000Desc:'Earn 1,000 XP',badgeTen:'Marathoner',badgeTenDesc:'Play 10 quizzes',badge100:'Centurion',badge100Desc:'Get 100 correct answers',badgeStreak:'Unstoppable',badgeStreakDesc:'Reach a 10-answer streak',
       rewardToast:'🎁 Daily reward: +20 XP!',alreadyClaimed:'Reward already claimed today.',lockToast:'🔒 Unlocks at level {level}',session:'Question {round} / {total}',
-      dailyBest:'Today’s best: {score} XP',noStorage:'Saving is unavailable.'
+      dailyBest:'Today’s best: {score} XP',noStorage:'Saving is unavailable.',
+      settingsTitle:'⚙️ SETTINGS',soundsLabel:'🔊 Sound effects',hapticsLabel:'📳 Answer vibration',
+      backupTitle:'💾 SAVE BACKUP',backupHelp:'Generate a code and keep it safe. Transfer XP, stats, badges and preferences between devices. Unfinished rounds are not included.',
+      generateSave:'GENERATE CODE',copySave:'📋 COPY',restoreSave:'RESTORE FROM CODE',
+      backupReady:'✅ Backup code is ready.',backupCopied:'📋 Code copied.',copyManual:'Select and copy the code manually.',
+      backupInvalid:'❌ Invalid save code.',restoreConfirm:'⚠️ Tap again to overwrite local progress.',restoreDone:'✅ Progress restored!',
+      shareResult:'📤 SHARE RESULTS',shareCopied:'📋 Result copied.',shareTitle:'🎮 Guess the Game',shareScore:'I earned {score} XP · {correct}/{total} correct!' 
     }
   };
   const element = id => document.getElementById(id);
@@ -164,6 +210,9 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   let lang = get('lang',previous('lang')||((navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en'));
   if(!translations[lang])lang='en';
   let session = get('session', null);
+  let prefs = {sound:false,haptics:false,...get('prefs',{})};
+  let restoreArmed = '';
+  let audioContext;
   let result = null;
   let screen = 'home';
   let lastMode = 'classic';
@@ -178,6 +227,68 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   const saveSession = () => set('session',session);
   const updateText = (id, text) => {element(id).textContent=text;};
   const burst = () => {const root=element('sparkles');root.replaceChildren();for(let i=0;i<20;i++){const x=document.createElement('span');x.className='confetti';x.style.left=(5+90*Math.random())+'%';x.style.background=['#6beee8','#9287ff','#ffd17b','#f6a0c3'][i%4];x.style.animationDelay=(Math.random()*.4)+'s';root.append(x);}setTimeout(()=>root.replaceChildren(),1750);};
+  function playFeedback(good){
+    if(prefs.haptics && typeof navigator.vibrate==='function'){
+      try{navigator.vibrate(good?35:[65,45,65]);}catch(_){}
+    }
+    if(!prefs.sound)return;
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return;
+      audioContext=audioContext||new AC();
+      if(audioContext.state==='suspended')audioContext.resume();
+      const start=audioContext.currentTime;
+      const tones=good?[660,880]:[310,220];
+      tones.forEach((frequency,i)=>{
+        const osc=audioContext.createOscillator(),gain=audioContext.createGain(),at=start+i*.10;
+        osc.type='sine';osc.frequency.value=frequency;
+        gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(.065,at+.014);
+        gain.gain.exponentialRampToValueAtTime(.0001,at+.14);
+        osc.connect(gain);gain.connect(audioContext.destination);osc.start(at);osc.stop(at+.15);
+      });
+    }catch(_){}
+  }
+  async function copyText(s){
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(s);return true;}
+    }catch(_){}
+    const field=element('saveCode');field.value=s;field.focus();field.select();
+    try{return document.execCommand('copy');}catch(_){return false;}
+  }
+  function makeBackup(){
+    const data={version:3,profile,lang,prefs};
+    const code='GTG3:'+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    element('saveCode').value=code;restoreArmed='';toast(T('backupReady'));
+  }
+  function restoreBackup(){
+    try{
+      const code=element('saveCode').value.trim();
+      if(!code.startsWith('GTG3:')||code.length>30000)throw Error('format');
+      const obj=JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));
+      if(obj.version!==3||!obj.profile||typeof obj.profile!=='object'||Array.isArray(obj.profile))throw Error('payload');
+      const fresh=blankProfile();
+      for(const k of ['xp','played','bestScore','totalCorrect','bestStreak']){
+        const v=obj.profile[k];
+        if(!Number.isSafeInteger(v)||v<0||v>100000000)throw Error('stat '+k);
+        fresh[k]=v;
+      }
+      if(typeof obj.profile.dailyClaimed==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(obj.profile.dailyClaimed))fresh.dailyClaimed=obj.profile.dailyClaimed;
+      if(obj.profile.dailyBest&&typeof obj.profile.dailyBest==='object'&&typeof obj.profile.dailyBest.date==='string'&&Number.isSafeInteger(obj.profile.dailyBest.score)&&obj.profile.dailyBest.score>=0)fresh.dailyBest={date:obj.profile.dailyBest.date.slice(0,10),score:obj.profile.dailyBest.score};
+      if(Array.isArray(obj.profile.recentIds))fresh.recentIds=obj.profile.recentIds.filter(x=>typeof x==='string'&&byId[x]).slice(-105);
+      const nextPrefs={sound:obj.prefs?.sound===true,haptics:obj.prefs?.haptics===true};
+      const nextLang=obj.lang==='cs'?'cs':'en';
+      if(restoreArmed!==code){restoreArmed=code;toast(T('restoreConfirm'));return;}
+      profile=fresh;lang=nextLang;prefs=nextPrefs;session=null;result=null;
+      saveProfile();saveSession();set('lang',lang);set('prefs',prefs);
+      restoreArmed='';renderProfile();toast(T('restoreDone'));
+    }catch(_){restoreArmed='';toast(T('backupInvalid'));}
+  }
+  function shareResult(){
+    if(!result)return;
+    const message=T('shareTitle')+'\n'+fmt(T('shareScore'),{score:result.score,correct:result.correct,total:result.ids.length})+'\nhttps://foxey-cz.github.io/GuessTheGame-Web/';
+    if(navigator.share){navigator.share({title:'Guess the Game',text:message}).catch(()=>{});}
+    else copyText(message).then(ok=>toast(T(ok?'shareCopied':'copyManual')));
+  }
   let toastTimer;
   function toast(s){const n=element('toast');n.textContent=s;n.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.classList.add('hidden'),2350);}
   function show(id){screen=id;for(const v of ['home','game','result','profile'])element(v).classList.toggle('hidden',v!==id);window.scrollTo(0,0);}
@@ -192,7 +303,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(!valid){session=null;saveSession();}element('resume').classList.toggle('hidden',!valid);if(valid)updateText('resumeDesc',fmt(T('session'),{round:session.idx+1,total:session.ids.length}));
     show('home');
   }
-  function dailyReward(){if(profile.dailyClaimed===date()){toast(T('alreadyClaimed'));return;}profile.dailyClaimed=date();profile.xp+=20;saveProfile();burst();home();toast(T('rewardToast'));}
+  function dailyReward(){if(profile.dailyClaimed===date()){toast(T('alreadyClaimed'));return;}playFeedback(true);profile.dailyClaimed=date();profile.xp+=20;saveProfile();burst();home();toast(T('rewardToast'));}
   function makeIds(seed,mode){
     const config=(mode==='classic'||mode==='mystery')?{easy:4,medium:4,hard:2}:mode==='daily'?{easy:2,medium:2,hard:1}:{[mode]:10};
     const recent=Array.isArray(profile.recentIds)?profile.recentIds:[];
@@ -206,7 +317,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     return shuffle(ids,seed^0xAACCEE);
   }
   function start(mode){if((mode==='medium'&&level()<2)||(mode==='hard'&&level()<4)){toast(fmt(T('lockToast'),{level:mode==='medium'?2:4}));return;}
-    const seed=mode==='daily'?hash('gtg.v2.daily.'+date()):((Math.random()*4294967296)>>>0);
+    const seed=mode==='daily'?hash('gtg.v3.daily.'+new Date().toISOString().slice(0,10)):((Math.random()*4294967296)>>>0);
     session={mode,day:date(),seed,ids:makeIds(seed,mode),idx:0,score:0,correct:0,streak:0,maxStreak:0,lives:3,hint:false,selected:null,gained:0,reveal:0};
     if(mode!=='daily'){profile.recentIds=[...(profile.recentIds||[]),...session.ids].slice(-105);saveProfile();}
     lastMode=mode;saveSession();game();
@@ -247,7 +358,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const next=element('nextButton');next.classList.toggle('hidden',!answered);updateText('nextButton',(session.idx===session.ids.length-1||session.lives===0)?T('finish'):T('next'));show('game');
   }
   function choose(i){if(!session||session.selected!==null)return;const q=byId[session.ids[session.idx]],good=options(q)[i]===q.answer;session.selected=i;session.gained=0;
-    if(good){session.streak++;session.maxStreak=Math.max(session.maxStreak,session.streak);session.correct++;
+    playFeedback(good);if(good){session.streak++;session.maxStreak=Math.max(session.maxStreak,session.streak);session.correct++;
       const bonus=Math.min(6,Math.floor(session.streak/3)*2);session.gained=(session.mode==='mystery'?(20-5*(session.reveal||0)):Math.max(2,10-(session.hint?3:0)))+bonus;session.score+=session.gained;if(bonus>0)burst();
     }else{session.streak=0;session.lives=Math.max(0,session.lives-1);}
     saveSession();game();
@@ -267,7 +378,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   }
   function renderProfile(){translate();const p=progress();updateText('profileLevel','LEVEL '+p.level);element('profileXpFill').style.width=p.fraction+'%';updateText('profileXpDetail',p.fraction+' / 100 XP');
     updateText('profileXp',String(profile.xp));updateText('profilePlayed',String(profile.played));updateText('profileBest',String(profile.bestScore));updateText('profileCorrect',String(profile.totalCorrect));
-    const conditions=[['🎮','badgeFirst','badgeFirstDesc',profile.played>=1],['⚡','badgeXp','badgeXpDesc',profile.xp>=100],['🔥','badgeFive','badgeFiveDesc',profile.played>=5],['🧠','badgeCorrect','badgeCorrectDesc',profile.totalCorrect>=30]];
+    const conditions=[['🎮','badgeFirst','badgeFirstDesc',profile.played>=1],['⚡','badgeXp','badgeXpDesc',profile.xp>=100],['🔥','badgeFive','badgeFiveDesc',profile.played>=5],['🧠','badgeCorrect','badgeCorrectDesc',profile.totalCorrect>=30],['💎','badgeXp1000','badgeXp1000Desc',profile.xp>=1000],['🏅','badgeTen','badgeTenDesc',profile.played>=10],['🎯','badge100','badge100Desc',profile.totalCorrect>=100],['🚀','badgeStreak','badgeStreakDesc',profile.bestStreak>=10]];
+    element('soundsToggle').checked=prefs.sound;element('hapticsToggle').checked=prefs.haptics;
     const list=element('badges');list.replaceChildren();conditions.forEach(([icon,name,desc,unlocked])=>{const tile=document.createElement('div');tile.className='badge-tile'+(unlocked?'':' locked');const art=document.createElement('span');art.className='badge-icon';art.textContent=unlocked?icon:'🔒';const label=document.createElement('span');const bold=document.createElement('b');bold.textContent=T(name);const small=document.createElement('small');small.textContent=T(desc);label.append(bold,small);tile.append(art,label);list.append(tile);});show('profile');
   }
   window.gtgBack=()=>{if(screen==='game'||screen==='profile'||screen==='result'){home();return true;}return false;};
@@ -278,6 +390,20 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   element('resume').addEventListener('click',()=>{if(session){lastMode=session.mode;game();}});
   element('gameBack').addEventListener('click',home);element('hintButton').addEventListener('click',hint);element('revealButton').addEventListener('click',reveal);element('nextButton').addEventListener('click',next);
   element('playAgain').addEventListener('click',()=>start(lastMode));element('resultHome').addEventListener('click',home);
+  element('shareResult').addEventListener('click',shareResult);
+  element('soundsToggle').addEventListener('change',event=>{prefs.sound=event.target.checked;set('prefs',prefs);if(prefs.sound)playFeedback(true);});
+  element('hapticsToggle').addEventListener('change',event=>{prefs.haptics=event.target.checked;set('prefs',prefs);});
+  element('generateSave').addEventListener('click',makeBackup);
+  element('copySave').addEventListener('click',async()=>{if(!element('saveCode').value.trim())makeBackup();const ok=await copyText(element('saveCode').value);toast(T(ok?'backupCopied':'copyManual'));});
+  element('restoreSave').addEventListener('click',restoreBackup);
+  element('saveCode').addEventListener('input',()=>{restoreArmed='';});
+  document.addEventListener('keydown',event=>{
+    if(event.altKey||event.ctrlKey||event.metaKey||event.repeat||screen!=='game'||event.target.closest('input,textarea,select,[contenteditable]'))return;
+    const n={'1':0,'2':1,'3':2,'4':3,a:0,b:1,c:2,d:3}[event.key.toLowerCase()];
+    if(n!==undefined&&session&&session.selected===null){event.preventDefault();choose(n);}
+    else if(event.key==='Enter'&&session&&session.selected!==null){event.preventDefault();next();}
+    else if(event.key==='Escape'){event.preventDefault();home();}
+  });
   home();
 })();
 
