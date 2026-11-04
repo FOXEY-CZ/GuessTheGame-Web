@@ -210,7 +210,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   let lang = get('lang',previous('lang')||((navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en'));
   if(!translations[lang])lang='en';
   let session = get('session', null);
-  let prefs = {sound:false,haptics:false,...get('prefs',{})};
+  let prefs = {sound:true,haptics:true,...get('prefs',{})};
   let restoreArmed = '';
   let audioContext;
   let result = null;
