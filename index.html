@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#090e1e">
   <meta name="description" content="Guess the Game — offline mobile gaming quiz">
-  <title>Guess the Game 3.2 — The Reward Shop</title>
+  <title>Guess the Game 3.3 — Visual Rewards Update</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20108%20108%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23253b71%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2315182d%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22108%22%20rx%3D%2225%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Cpath%20d%3D%22M34%2038c2-23%2039-23%2041%200%201%2017-20%2020-20%2031%22%20fill%3D%22none%22%20stroke%3D%22%2368eee5%22%20stroke-width%3D%2211%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2286%22%20r%3D%226.5%22%20fill%3D%22%23ffc86a%22%2F%3E%3Cpath%20d%3D%22M17%2023h13M23.5%2016v14%22%20stroke%3D%22%23ae95ff%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2280%22%20r%3D%225%22%20fill%3D%22%238c78ff%22%2F%3E%3C%2Fsvg%3E">
   <link rel="manifest" href="site.webmanifest">
   <style>
@@ -79,7 +79,14 @@ body.theme-retro{--cyan:#f8bf6f;--purple:#f178b9;--gold:#9ee0b1;--green:#9eebb9}
 body.theme-royal{--cyan:#e1c188;--purple:#c9a0ff;--gold:#f7e3ad;--green:#afefc9}body.theme-royal .hero{background:linear-gradient(160deg,#3c3055,#121c38)}body.theme-royal .logo-symbol{background:linear-gradient(130deg,#f3d38e,#a57bde)}
 body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}body.theme-ocean .hero{background:linear-gradient(160deg,#12415a,#0d1c38)}body.theme-ocean .logo-symbol{background:linear-gradient(130deg,#82cfff,#538de4)}
 @keyframes chestFloat{50%{transform:translateY(-5px) rotate(2deg)}}@keyframes chestShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg) scale(1.1)}40%{transform:rotate(12deg) scale(1.1)}60%{transform:rotate(-8deg)}80%{transform:rotate(7deg)}}
-@media(max-width:360px){.shop-card{padding:11px 8px}.shop-card-art{font-size:31px}}
+
+.custom-icon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px}.custom-icon svg{width:100%;height:100%;display:block;filter:drop-shadow(0 4px 10px #0007)}
+.shop-title-icon,.wallet-icon,.section-icon,.chest-visual{display:inline-flex;align-items:center;justify-content:center}.shop-title-icon{width:40px;height:40px;border-radius:12px;background:#223150;border:1px solid #4d6092}.shop-title-icon svg{width:26px;height:26px}
+.shop-wallet strong{display:flex;align-items:center;gap:6px;justify-content:center}.wallet-icon{width:18px;height:18px}.wallet-icon svg{width:18px;height:18px;display:block}
+.section-heading span.section-icon{width:24px;height:24px}.section-heading span.section-icon svg{width:24px;height:24px;display:block}
+.chest-visual{width:78px;height:78px;border-radius:22px;background:linear-gradient(145deg,#273a5e,#11192f);border:1px solid #546998}.chest-visual svg{width:56px;height:56px;display:block}
+.shop-card{position:relative;overflow:hidden}.shop-card-art{font-size:0;text-align:center;padding:9px;background:#273657;border-radius:11px;display:flex;align-items:center;justify-content:center;min-height:72px}.shop-card-art .custom-icon{width:52px;height:52px}.rarity-chip{position:absolute;top:8px;right:8px;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:900;letter-spacing:.8px;border:1px solid #556584;background:#18243f;color:#dbe8ff}.rarity-common{border-color:#546581;color:#c7d1e5}.rarity-rare{border-color:#53a7ff;color:#8fd0ff;background:#11253a}.rarity-epic{border-color:#b280ff;color:#ddbeff;background:#261839}.rarity-legendary{border-color:#ffcd66;color:#ffe1a2;background:#37280f}.price-row{display:flex;align-items:center;justify-content:center;gap:6px}.shop-card.owned::after{content:"OWNED";position:absolute;left:-29px;top:14px;transform:rotate(-40deg);padding:3px 36px;font-size:8px;font-weight:900;letter-spacing:1px;background:#1c7364;color:white;box-shadow:0 4px 12px #0006}.shop-card.equipped{box-shadow:0 0 0 1px #6ee7da55,0 10px 25px #0d143155}
+@media(max-width:360px){.shop-card{padding:11px 8px}.shop-card-art{min-height:64px}}
 @media(prefers-reduced-motion:reduce){.chest-visual,.chest-panel.opening .chest-visual{animation:none!important}}
 
 </style>
@@ -88,7 +95,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
   <div class="app">
     <header class="topbar">
-      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.2 · SHOP</small></span></button>
+      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.3 · VISUALS</small></span></button>
       <div class="top-actions"><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
     </header>
 
@@ -107,7 +114,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
 
       <section class="daily-banner"><div class="daily-icon">🎁</div><div><b data-i18n="dailyGift">DENNÍ ODMĚNA</b><small id="dailyGiftInfo" data-i18n="dailyGiftDesc">Vyzvedni si 20 XP zdarma!</small></div><button id="claimDaily" class="claim" type="button" data-i18n="claim">VYZVEDNOUT</button></section>
 
-      <button type="button" id="openShopHome" class="shop-cta"><span class="shop-cta-icon">🛍️</span><span><b data-i18n="shopCta">OBCHOD S ODMĚNAMI</b><small data-i18n="shopCtaDesc">Utrať krystaly a koruny za vzhled a truhly</small></span><span class="shop-cta-chevron">→</span></button>
+      <button type="button" id="openShopHome" class="shop-cta"><span class="shop-cta-icon"></span><span><b data-i18n="shopCta">VIZUÁLNÍ ODMĚNY</b><small data-i18n="shopCtaDesc">Utrať krystaly a koruny za vzhled a truhly</small></span><span class="shop-cta-chevron">→</span></button>
       <div class="streak-cta"><span>🔥</span><span id="streakHomeText">Denní série: 0 / 7</span><span id="streakHomeGift">🎁</span></div>
       <div class="section-heading"><h2 data-i18n="chooseMode">VYBER REŽIM</h2><span>✦</span></div>
       <div class="modes">
@@ -147,7 +154,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
       <button id="profileBack" type="button" class="back" data-i18n="back">← MENU</button>
       <section class="profile-card glow-card"><div class="profile-face">👾</div><span class="tag neon" data-i18n="playerProfile">HERNÍ PROFIL</span><h1 id="profileLevel">LEVEL 1</h1><div class="meter"><div id="profileXpFill" class="meter-fill"></div></div><p id="profileXpDetail" class="subtext">0 / 100 XP</p></section>
       <div class="profile-stats"><div><b id="profileXp">0</b><span data-i18n="totalXp">CELKEM XP</span></div><div><b id="profilePlayed">0</b><span data-i18n="played">KVÍZŮ</span></div><div><b id="profileBest">0</b><span data-i18n="best">REKORD</span></div><div><b id="profileCorrect">0</b><span data-i18n="correct">SPRÁVNĚ</span></div></div><div class="reward-bank"><div><b id="profileShards">0</b><span data-i18n="shards">KRYSTALY</span></div><div><b id="profileCrowns">0</b><span data-i18n="crowns">KORUNY</span></div></div>
-      <button type="button" id="openShopProfile" class="shop-cta shop-cta-profile"><span class="shop-cta-icon">🛍️</span><span><b data-i18n="shopCta">OBCHOD S ODMĚNAMI</b><small data-i18n="shopCtaDesc">Utrať krystaly a koruny za vzhled a truhly</small></span><span class="shop-cta-chevron">→</span></button>
+      <button type="button" id="openShopProfile" class="shop-cta shop-cta-profile"><span class="shop-cta-icon"></span><span><b data-i18n="shopCta">OBCHOD S ODMĚNAMI</b><small data-i18n="shopCtaDesc">Utrať krystaly a koruny za vzhled a truhly</small></span><span class="shop-cta-chevron">→</span></button>
       <div class="section-heading"><h2 data-i18n="achievements">ODZNAKY</h2><span>🏅</span></div>
       <div class="badge-grid" id="badges"></div>
       <section class="profile-tools">
@@ -159,25 +166,25 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <h2 data-i18n="backupTitle">💾 ZÁLOHA POSTUPU</h2>
         <p class="save-help" data-i18n="backupHelp">Vygeneruj kód, zkopíruj si ho a použij na jiném zařízení. Zahrnuje XP, statistiky, odznaky a nastavení. Nezahrnuje rozehranou otázku.</p>
         <div class="tool-buttons"><button type="button" class="tool-action primary" id="generateSave" data-i18n="generateSave">VYTVOŘIT KÓD</button><button type="button" class="tool-action" id="copySave" data-i18n="copySave">📋 KOPÍROVAT</button></div>
-        <textarea id="saveCode" class="save-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Záložní kód" placeholder="GTG32:..."></textarea>
+        <textarea id="saveCode" class="save-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Záložní kód" placeholder="GTG33:..."></textarea>
         <button type="button" class="tool-action primary" id="restoreSave" style="width:100%" data-i18n="restoreSave">OBNOVIT Z KÓDU</button>
       </section>
     </main>
 
     <main id="shop" class="screen hidden">
       <button id="shopBack" type="button" class="back" data-i18n="back">← MENU</button>
-      <section class="shop-hero glow-card"><span class="shop-title-icon">🛍️</span><span class="tag neon" data-i18n="shopTitle">OBCHOD S ODMĚNAMI</span><h1 data-i18n="shopHero">Tvůj herní styl</h1><p class="subtext" data-i18n="shopSubtitle">Kosmetické odměny nemění obtížnost ani skóre.</p>
-        <div class="shop-wallet"><div><strong>💎 <span id="shopShards">0</span></strong><small data-i18n="shards">KRYSTALY</small></div><div><strong>👑 <span id="shopCrowns">0</span></strong><small data-i18n="crowns">KORUNY</small></div></div>
+      <section class="shop-hero glow-card"><span class="shop-title-icon" id="shopHeroIcon"></span><span class="tag neon" data-i18n="shopTitle">OBCHOD S ODMĚNAMI</span><h1 data-i18n="shopHero">Tvůj styl, ne emoji</h1><p class="subtext" data-i18n="shopSubtitle">Vlastní ikonky, rarity a hezčí obchod bez změny obtížnosti.</p>
+        <div class="shop-wallet"><div><strong><span class="wallet-icon" id="walletShardIcon"></span><span id="shopShards">0</span></strong><small data-i18n="shards">KRYSTALY</small></div><div><strong><span class="wallet-icon" id="walletCrownIcon"></span><span id="shopCrowns">0</span></strong><small data-i18n="crowns">KORUNY</small></div></div>
       </section>
-      <section class="chest-panel glow-card"><div class="chest-visual" aria-hidden="true" id="chestIcon">🎁</div><div class="chest-details"><h2 data-i18n="chestTitle">TRUHLA S PŘEKVAPENÍM</h2><p data-i18n="chestDescription">Získej koruny nebo exkluzivního avatara. Každá 7. dokončená denní výzva v řadě dá truhlu zdarma.</p><div id="freeChestInfo" class="free-chest-info"></div></div><button id="openChest" type="button" class="chest-button">Otevřít za 25 💎</button><p id="chestReward" class="chest-reward hidden" role="status" aria-live="polite"></p></section>
+      <section class="chest-panel glow-card"><div class="chest-visual" aria-hidden="true" id="chestIcon"></div><div class="chest-details"><h2 data-i18n="chestTitle">VIZUÁLNÍ TRUHLA</h2><p data-i18n="chestDescription">Získej koruny nebo exkluzivního avatara. Každá 7. dokončená denní výzva v řadě dá truhlu zdarma.</p><div id="freeChestInfo" class="free-chest-info"></div></div><button id="openChest" type="button" class="chest-button"><span data-i18n="openPaidChest">Otevřít za 25 krystalů</span></button><p id="chestReward" class="chest-reward hidden" role="status" aria-live="polite"></p></section>
       <div class="streak-shop"><div class="streak-shop-heading"><b>🔥 <span data-i18n="dailyStreakTitle">DENNÍ SÉRIE</span></b><b id="streakShopCount">0 / 7</b></div><p data-i18n="dailyStreakDesc">Dokonči denní výzvu 7 dní po sobě. Sedmý den získáš truhlu zdarma.</p><div class="streak-dots" id="streakDots"></div><small id="streakShopHint"></small></div>
-      <div class="section-heading"><h2 data-i18n="themeTitle">VZHLED HRY</h2><span>🎨</span></div>
+      <div class="section-heading"><h2 data-i18n="themeTitle">VZHLED HRY</h2><span class="section-icon" id="themeHeadingIcon"></span></div>
       <div id="themeItems" class="shop-grid"></div>
-      <div class="section-heading"><h2 data-i18n="avatarTitle">AVATAŘI</h2><span>👾</span></div>
+      <div class="section-heading"><h2 data-i18n="avatarTitle">AVATAŘI</h2><span class="section-icon" id="avatarHeadingIcon"></span></div>
       <div id="avatarItems" class="shop-grid"></div>
     </main>
 
-    <footer><span>GUESS THE GAME <b>3.2 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
+    <footer><span>GUESS THE GAME <b>3.3 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
   </div>
   <div id="toast" class="toast hidden" role="status"></div><div id="achievementLayer"></div><div id="sparkles" class="sparkles" aria-hidden="true"></div>
   <script>
@@ -212,12 +219,12 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       badgeXp1000:'Tisícovka',badgeXp1000Desc:'Nasbírej 1 000 XP',badgeTen:'Maratonec',badgeTenDesc:'Odehraj 10 kvízů',badge100:'Stovka',badge100Desc:'Odpověz 100× správně',badgeStreak:'Nezastavitelný',badgeStreakDesc:'Dej 10 správně za sebou',badgeRecord:'Lovec rekordů',badgeRecordDesc:'Získej v jednom kole 80 XP',badgeDaily:'Hvězda dne',badgeDailyDesc:'V denní výzvě získej aspoň 40 XP',badgeVeteran:'Veterán',badgeVeteranDesc:'Odehraj 25 kvízů',badgePerfect:'Bez chyby',badgePerfectDesc:'Dokonči kolo bez jediné chyby',
       rewardToast:'🎁 Denní odměna: +20 XP!',alreadyClaimed:'Dnešní odměnu už máš.',lockToast:'🔒 Odemkne se na levelu {level}',session:'Otázka {round} / {total}',
       dailyBest:'Dnešní rekord: {score} XP', noStorage:'Ukládání není dostupné.', shards:'KRYSTALY', crowns:'KORUNY', streakReward:'ODMĚNA ZA SÉRII', rewardsSummary:'Bonusy: {summary}', rewardPerfect:'Perfektní hra +5 korun', rewardStreak:'Série {streak} +{bonus} krystalů', rewardRecord:'Nový rekord +2 koruny', rewardLevel:'Level up +3 koruny', rewardBadge:'Nový odznak +2 koruny', ribbonTop:'Legendární výkon. Odměna je maximální!', ribbonMid:'Pěkná hra. Příště zkus delší sérii.', ribbonLow:'Sbíráš XP i odměny. Jen tak dál!', ribbonDead:'I tak sis něco odnesl. Další pokus bude lepší!', achievementsNew:'NOVÉ ODZNAKY',
-      shopCta:'OBCHOD S ODMĚNAMI',shopCtaDesc:'Vyměň krystaly a koruny za styl',shopTitle:'OBCHOD S ODMĚNAMI',shopHero:'Tvůj herní styl',shopSubtitle:'Jen vzhledové odměny. Žádné výhody ve hře.',
-      chestTitle:'TRUHLA S PŘEKVAPENÍM',chestDescription:'Vyhraj koruny nebo exkluzivního avatara. Za 7 denních výzev v řadě získáš truhlu zdarma.',freeChests:'Truhly zdarma: {count}',openFreeChest:'OTEVŘÍT TRUHLU ZDARMA',openPaidChest:'OTEVŘÍT ZA 25 💎',insufficientShards:'Nemáš dost krystalů.',insufficientCrowns:'Nemáš dost korun.',chestCrowns:'🎁 Našel jsi {count} korun!',chestExclusive:'🎁 Exkluzivní avatar Glitch odemčen!',chestDuplicate:'🎁 Za opakovanou odměnu získáváš {count} korun!',
+      shopCta:'OBCHOD S ODMĚNAMI',shopCtaDesc:'Vyměň krystaly a koruny za styl',shopTitle:'OBCHOD S ODMĚNAMI',shopHero:'Tvůj styl, ne emoji',shopSubtitle:'Jen vzhledové odměny. Žádné výhody ve hře.',
+      chestTitle:'VIZUÁLNÍ TRUHLA',chestDescription:'Vyhraj koruny nebo exkluzivního avatara. Za 7 denních výzev v řadě získáš truhlu zdarma.',freeChests:'Truhly zdarma: {count}',openFreeChest:'OTEVŘÍT TRUHLU ZDARMA',openPaidChest:'OTEVŘÍT ZA 25 💎',insufficientShards:'Nemáš dost krystalů.',insufficientCrowns:'Nemáš dost korun.',chestCrowns:'🎁 Našel jsi {count} korun!',chestExclusive:'🎁 Exkluzivní avatar Glitch odemčen!',chestDuplicate:'🎁 Za opakovanou odměnu získáváš {count} korun!',
       dailyStreakTitle:'DENNÍ SÉRIE',dailyStreakDesc:'Dokonči denní výzvu 7 dní po sobě. Sedmý den získáš truhlu zdarma.',dailyStreakHome:'Denní série: {days} / 7',dailyStreakDone:'Dnešní výzva je splněná!',dailyStreakPrompt:'Dokonči dnešní denní výzvu.',dailyStreakResult:'🔥 Denní série: {days} dní. {gift}',dailyStreakChest:'🎁 Truhla zdarma!',dailyStreakBonus:'Bonus: +{count} krystalů',
       themeTitle:'VZHLED HRY',avatarTitle:'AVATAŘI',shopBuy:'KOUPIT',shopEquip:'NASADIT',shopEquipped:'NASAZENO',shopLocked:'Z TRUHY',shopBought:'Zakoupeno: {item}',shopEquippedMsg:'Nasazeno: {item}',shopFree:'ZDARMA',shopNeeds:'Chybí měna',
       themeClassic:'Klasický neon',themeClassicDesc:'Původní kombinace tyrkysové a fialové',themeRetro:'Retro Wave',themeRetroDesc:'Zlaté a růžové retro barvy',themeRoyal:'Královský',themeRoyalDesc:'Fialová a zlatá pro vítěze',themeOcean:'Deep Blue',themeOceanDesc:'Oceánská modrá a chladné světlo',
-      avatarAlien:'Herní vetřelec',avatarAlienDesc:'Původní avatar 👾',avatarFox:'Lišák',avatarFoxDesc:'Liška do každého kvízu 🦊',avatarRobot:'Robot',avatarRobotDesc:'Ocelový společník 🤖',avatarCrown:'Král',avatarCrownDesc:'Královský avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exkluzivní avatar z truhly 👻',
+      avatarAlien:'Herní vetřelec',avatarAlienDesc:'Původní avatar 👾',avatarFox:'Lišák',avatarFoxDesc:'Liška do každého kvízu 🦊',avatarRobot:'Robot',avatarRobotDesc:'Ocelový společník 🤖',avatarCrown:'Král',avatarCrownDesc:'Královský avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exkluzivní avatar z truhly', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Vizuální odměny mají vlastní ikonky a rarity.',
       settingsTitle:'⚙️ NASTAVENÍ', soundsLabel:'🔊 Zvukové efekty', hapticsLabel:'📳 Vibrace při odpovědi',
       backupTitle:'💾 ZÁLOHA POSTUPU',backupHelp:'Vytvoř kód a ulož si ho. Přenese XP, statistiky, odznaky a nastavení mezi zařízeními. Rozehranou otázku nepřenáší.',
       generateSave:'VYTVOŘIT KÓD',copySave:'📋 KOPÍROVAT',restoreSave:'OBNOVIT Z KÓDU',
@@ -250,7 +257,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       dailyStreakTitle:'DAILY STREAK',dailyStreakDesc:'Complete the daily challenge for 7 days straight to get a free chest.',dailyStreakHome:'Daily streak: {days} / 7',dailyStreakDone:'Today’s challenge completed!',dailyStreakPrompt:'Complete today’s daily challenge.',dailyStreakResult:'🔥 Daily streak: {days} days. {gift}',dailyStreakChest:'🎁 Free chest!',dailyStreakBonus:'Bonus: +{count} shards',
       themeTitle:'GAME THEMES',avatarTitle:'AVATARS',shopBuy:'BUY',shopEquip:'EQUIP',shopEquipped:'EQUIPPED',shopLocked:'CHEST ONLY',shopBought:'Purchased: {item}',shopEquippedMsg:'Equipped: {item}',shopFree:'FREE',shopNeeds:'Not enough',
       themeClassic:'Classic neon',themeClassicDesc:'Original cyan and purple colors',themeRetro:'Retro Wave',themeRetroDesc:'Golden and pink retro palette',themeRoyal:'Royal',themeRoyalDesc:'Purple and gold for champions',themeOcean:'Deep Blue',themeOceanDesc:'Ocean blues with cool glow',
-      avatarAlien:'Arcade alien',avatarAlienDesc:'Original avatar 👾',avatarFox:'Fox',avatarFoxDesc:'A fox for your gaming quizzes 🦊',avatarRobot:'Robot',avatarRobotDesc:'Steel friend 🤖',avatarCrown:'King',avatarCrownDesc:'Royal avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exclusive chest avatar 👻',
+      avatarAlien:'Arcade alien',avatarAlienDesc:'Original avatar 👾',avatarFox:'Fox',avatarFoxDesc:'A fox for your gaming quizzes 🦊',avatarRobot:'Robot',avatarRobotDesc:'Steel friend 🤖',avatarCrown:'King',avatarCrownDesc:'Royal avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exclusive chest avatar', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Visual rewards now use custom icons and rarities.',
       settingsTitle:'⚙️ SETTINGS',soundsLabel:'🔊 Sound effects',hapticsLabel:'📳 Answer vibration',
       backupTitle:'💾 SAVE BACKUP',backupHelp:'Generate a code and keep it safe. Transfer XP, stats, badges and preferences between devices. Unfinished rounds are not included.',
       generateSave:'GENERATE CODE',copySave:'📋 COPY',restoreSave:'RESTORE FROM CODE',
@@ -278,15 +285,15 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   let lastMode = 'classic';
 
   const shopItems = [
-    {id:'classic',type:'theme',icon:'🟦',name:'themeClassic',desc:'themeClassicDesc',price:0,currency:'shards'},
-    {id:'retro',type:'theme',icon:'🌇',name:'themeRetro',desc:'themeRetroDesc',price:35,currency:'shards'},
-    {id:'royal',type:'theme',icon:'👑',name:'themeRoyal',desc:'themeRoyalDesc',price:20,currency:'crowns'},
-    {id:'ocean',type:'theme',icon:'🌊',name:'themeOcean',desc:'themeOceanDesc',price:50,currency:'shards'},
-    {id:'alien',type:'avatar',icon:'👾',name:'avatarAlien',desc:'avatarAlienDesc',price:0,currency:'shards'},
-    {id:'fox',type:'avatar',icon:'🦊',name:'avatarFox',desc:'avatarFoxDesc',price:25,currency:'shards'},
-    {id:'robot',type:'avatar',icon:'🤖',name:'avatarRobot',desc:'avatarRobotDesc',price:45,currency:'shards'},
-    {id:'crown',type:'avatar',icon:'👑',name:'avatarCrown',desc:'avatarCrownDesc',price:12,currency:'crowns'},
-    {id:'glitch',type:'avatar',icon:'👻',name:'avatarGlitch',desc:'avatarGlitchDesc',price:null,currency:null},
+    {id:'classic',type:'theme',icon:'themeClassic',name:'themeClassic',desc:'themeClassicDesc',price:0,currency:'shards',rarity:'common'},
+    {id:'retro',type:'theme',icon:'themeRetro',name:'themeRetro',desc:'themeRetroDesc',price:35,currency:'shards',rarity:'rare'},
+    {id:'royal',type:'theme',icon:'themeRoyal',name:'themeRoyal',desc:'themeRoyalDesc',price:20,currency:'crowns',rarity:'epic'},
+    {id:'ocean',type:'theme',icon:'themeOcean',name:'themeOcean',desc:'themeOceanDesc',price:50,currency:'shards',rarity:'rare'},
+    {id:'alien',type:'avatar',icon:'avatarAlien',name:'avatarAlien',desc:'avatarAlienDesc',price:0,currency:'shards',rarity:'common'},
+    {id:'fox',type:'avatar',icon:'avatarFox',name:'avatarFox',desc:'avatarFoxDesc',price:25,currency:'shards',rarity:'rare'},
+    {id:'robot',type:'avatar',icon:'avatarRobot',name:'avatarRobot',desc:'avatarRobotDesc',price:45,currency:'shards',rarity:'epic'},
+    {id:'crown',type:'avatar',icon:'avatarCrown',name:'avatarCrown',desc:'avatarCrownDesc',price:12,currency:'crowns',rarity:'epic'},
+    {id:'glitch',type:'avatar',icon:'avatarGlitch',name:'avatarGlitch',desc:'avatarGlitchDesc',price:null,currency:null,rarity:'legendary'},
   ];
   const utcDate = () => new Date().toISOString().slice(0,10);
   function dayDelta(a,b){if(!/^\d{4}-\d{2}-\d{2}$/.test(a||'')||!/^\d{4}-\d{2}-\d{2}$/.test(b||''))return null;return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000);}
@@ -306,11 +313,35 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   }
   fixCosmetics();
   function activeDailyStreak(){const d=profile.dailyStreak;if(!d.lastDay)return 0;const n=dayDelta(d.lastDay,utcDate());return n===0||n===1?d.count:0;}
+
+  function iconSvg(name){
+    const map={
+      shop:`<span class="custom-icon"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="20" width="36" height="30" rx="8" fill="#203456" stroke="#7bbcff" stroke-width="3"/><path d="M23 21c0-6 4-11 9-11s9 5 9 11" stroke="#ffd47a" stroke-width="4" stroke-linecap="round"/><circle cx="24" cy="33" r="3" fill="#68eee5"/><circle cx="40" cy="33" r="3" fill="#8c78ff"/></svg></span>`,
+      chest:`<span class="custom-icon"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="24" width="44" height="26" rx="7" fill="#4b3272" stroke="#d6b46d" stroke-width="3"/><path d="M10 31h44" stroke="#d6b46d" stroke-width="3"/><path d="M32 24v26" stroke="#ffd782" stroke-width="4"/><rect x="27" y="33" width="10" height="8" rx="2" fill="#68eee5"/><path d="M18 24c0-5 4-9 9-9 2 0 4 1 5 3 1-2 3-3 5-3 5 0 9 4 9 9" stroke="#ff9ad0" stroke-width="3" stroke-linecap="round"/></svg></span>`,
+      shard:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 8 51 27 32 56 13 27 32 8Z" fill="#68eee5" stroke="#c8fffb" stroke-width="3"/><path d="M32 8v48M13 27h38" stroke="#dff" stroke-width="2" opacity=".7"/></svg></span>`,
+      crown:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M12 45 17 18l15 12 15-12 5 27H12Z" fill="#ffc86a" stroke="#ffe1a4" stroke-width="3"/><path d="M12 45h40" stroke="#8c5e12" stroke-width="4"/><circle cx="17" cy="18" r="4" fill="#68eee5"/><circle cx="32" cy="30" r="4" fill="#8c78ff"/><circle cx="47" cy="18" r="4" fill="#ff8db0"/></svg></span>`,
+      palette:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 10c-12.7 0-23 9-23 20s10.3 20 23 20h4c4 0 6-2 6-5 0-2-1-4-1-5 0-3 2-4 4-4h3c7 0 12-5 12-12 0-11-12-20-28-20Z" fill="#24395d" stroke="#9ac8ff" stroke-width="3"/><circle cx="23" cy="26" r="4" fill="#68eee5"/><circle cx="33" cy="21" r="4" fill="#ffc86a"/><circle cx="40" cy="30" r="4" fill="#8c78ff"/><circle cx="24" cy="38" r="4" fill="#ff8db0"/></svg></span>`,
+      avatar:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="11" width="40" height="42" rx="12" fill="#24395d" stroke="#9ac8ff" stroke-width="3"/><circle cx="32" cy="27" r="10" fill="#68eee5"/><path d="M18 50c3-8 10-12 14-12s11 4 14 12" fill="#8c78ff"/></svg></span>`,
+      themeClassic:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="12" width="44" height="40" rx="10" fill="#253b71" stroke="#8ab3ff" stroke-width="3"/><path d="M17 42 28 28l8 7 12-13" stroke="#68eee5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="20" r="4" fill="#8c78ff"/></svg></span>`,
+      themeRetro:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="12" width="44" height="40" rx="10" fill="#4b2d46" stroke="#f4a6cd" stroke-width="3"/><path d="M18 41c8-7 14-10 28-9" stroke="#f8bf6f" stroke-width="4" stroke-linecap="round"/><path d="M18 34c7-5 14-8 28-7" stroke="#ff78bd" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="22" r="6" fill="#ffd16e"/></svg></span>`,
+      themeRoyal:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="12" width="44" height="40" rx="10" fill="#3c3055" stroke="#dab3ff" stroke-width="3"/><path d="M18 42 21 24l11 10 11-10 3 18H18Z" fill="#f0d28f" stroke="#fff0bf" stroke-width="2.5"/><circle cx="21" cy="24" r="3" fill="#68eee5"/><circle cx="32" cy="34" r="3" fill="#8c78ff"/><circle cx="43" cy="24" r="3" fill="#ff8db0"/></svg></span>`,
+      themeOcean:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="12" width="44" height="40" rx="10" fill="#123e58" stroke="#8bd7ff" stroke-width="3"/><path d="M17 36c4-6 8-6 12 0 4 6 8 6 12 0 4-6 8-6 12 0" stroke="#81d8ff" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="25" cy="24" r="4" fill="#83ecde"/></svg></span>`,
+      avatarAlien:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="40" height="44" rx="12" fill="#1d2646" stroke="#84c3ff" stroke-width="3"/><path d="M24 26c0-8 4-13 8-13s8 5 8 13-4 15-8 15-8-7-8-15Z" fill="#7df7d1"/><ellipse cx="27" cy="28" rx="3" ry="5" fill="#172033"/><ellipse cx="37" cy="28" rx="3" ry="5" fill="#172033"/></svg></span>`,
+      avatarFox:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="40" height="44" rx="12" fill="#212947" stroke="#9ac8ff" stroke-width="3"/><path d="M22 25 28 16l4 6 4-6 6 9v9c0 6-4 10-10 10s-10-4-10-10v-9Z" fill="#ff9b43"/><path d="M24 28h16v5c0 5-3 8-8 8s-8-3-8-8v-5Z" fill="#fff1da"/><circle cx="28" cy="31" r="2.2" fill="#1a223f"/><circle cx="36" cy="31" r="2.2" fill="#1a223f"/></svg></span>`,
+      avatarRobot:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="14" width="32" height="36" rx="8" fill="#90a3bd" stroke="#e2efff" stroke-width="3"/><path d="M32 8v6" stroke="#e2efff" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="8" r="3" fill="#ff8db0"/><rect x="22" y="23" width="20" height="11" rx="5" fill="#253b71"/><circle cx="27" cy="28.5" r="3" fill="#68eee5"/><circle cx="37" cy="28.5" r="3" fill="#ffc86a"/><path d="M25 40h14" stroke="#253b71" stroke-width="3" stroke-linecap="round"/></svg></span>`,
+      avatarCrown:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="40" height="44" rx="12" fill="#332953" stroke="#d6b4ff" stroke-width="3"/><circle cx="32" cy="35" r="10" fill="#f4d596"/><path d="M22 23 26 16l6 7 6-7 4 7v6H22v-6Z" fill="#ffc86a" stroke="#ffe7b8" stroke-width="2"/><circle cx="26" cy="19" r="2" fill="#68eee5"/><circle cx="32" cy="22" r="2" fill="#8c78ff"/><circle cx="38" cy="19" r="2" fill="#ff8db0"/></svg></span>`,
+      avatarGlitch:`<span class="custom-icon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="40" height="44" rx="12" fill="#131b33" stroke="#99a8ff" stroke-width="3"/><path d="M21 22h20v18H21z" fill="#1f2a4d"/><path d="M22 21h18M19 28h12M28 34h15M23 39h10" stroke="#68eee5" stroke-width="3" opacity=".95"/><path d="M24 19h17M21 31h16M30 37h10" stroke="#ff75c7" stroke-width="3" opacity=".85"/></svg></span>`
+    };
+    return map[name]||map.shop;
+  }
+  function rarityKey(r){return r==='legendary'?'rarityLegendary':r==='epic'?'rarityEpic':r==='rare'?'rarityRare':'rarityCommon';}
+  function currencyDisplay(cur){return cur==='crowns'?iconSvg('crown'):iconSvg('shard');}
+  function iconToNode(name){const t=document.createElement('template');t.innerHTML=iconSvg(name).trim();return t.content.firstChild;}
   function applyCosmetics(){
     document.body.classList.remove('theme-retro','theme-royal','theme-ocean');
     if(profile.cosmetics.theme!=='classic')document.body.classList.add('theme-'+profile.cosmetics.theme);
     const chosen=shopItems.find(x=>x.type==='avatar'&&x.id===profile.cosmetics.avatar)||shopItems.find(x=>x.id==='alien');
-    document.querySelectorAll('.player-avatar,.profile-face,.avatar').forEach(n=>n.textContent=chosen.icon);
+    document.querySelectorAll('.player-avatar,.profile-face,.avatar').forEach(n=>{n.replaceChildren(iconToNode(chosen.icon));});
   }
   function shopAction(item){
     fixCosmetics();const c=profile.cosmetics, plural=item.type==='theme'?'themes':'avatars',selected=item.type;
@@ -326,6 +357,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   function renderShop(){
     fixCosmetics();translate();applyCosmetics();
     updateText('shopShards',String(profile.shards||0));updateText('shopCrowns',String(profile.crowns||0));
+    element('shopHeroIcon').innerHTML=iconSvg('shop'); element('walletShardIcon').innerHTML=iconSvg('shard'); element('walletCrownIcon').innerHTML=iconSvg('crown'); element('chestIcon').innerHTML=iconSvg('chest'); element('themeHeadingIcon').innerHTML=iconSvg('palette'); element('avatarHeadingIcon').innerHTML=iconSvg('avatar');
     const free=profile.freeChests||0;updateText('freeChestInfo',fmt(T('freeChests'),{count:free}));
     const chest=element('openChest');chest.disabled=free===0&&(profile.shards||0)<25;
     updateText('openChest',T(free?'openFreeChest':'openPaidChest'));
@@ -337,15 +369,16 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       const owned=profile.cosmetics[type==='theme'?'themes':'avatars'];
       for(const item of shopItems.filter(x=>x.type===type)){
         const card=document.createElement('article');card.className='shop-card'+(owned.includes(item.id)?' owned':'')+(profile.cosmetics[type]===item.id?' equipped':'');
-        const art=document.createElement('div');art.className='shop-card-art';art.textContent=item.icon;
+        const chip=document.createElement('span');chip.className='rarity-chip rarity-'+item.rarity;chip.textContent=T(rarityKey(item.rarity));
+        const art=document.createElement('div');art.className='shop-card-art';art.innerHTML=iconSvg(item.icon);
         const title=document.createElement('b');title.textContent=T(item.name);
         const desc=document.createElement('small');desc.textContent=T(item.desc);
         const btn=document.createElement('button');btn.type='button';const isOwned=owned.includes(item.id),isEquipped=profile.cosmetics[type]===item.id;
         if(isEquipped){btn.textContent='✓ '+T('shopEquipped');btn.disabled=true;btn.className='equipped';}
         else if(isOwned){btn.textContent=T('shopEquip');btn.className='equip';btn.addEventListener('click',()=>shopAction(item));}
-        else if(item.price===null){btn.textContent='🎁 '+T('shopLocked');btn.disabled=true;}
-        else {btn.textContent=T('shopBuy')+' · '+item.price+' '+(item.currency==='crowns'?'👑':'💎');btn.disabled=profile[item.currency]<item.price;btn.addEventListener('click',()=>shopAction(item));}
-        card.append(art,title,desc,btn);root.append(card);
+        else if(item.price===null){btn.textContent=T('shopLocked');btn.disabled=true;}
+        else {btn.innerHTML='<span class="price-row"><span>'+T('shopBuy')+' · '+item.price+'</span>'+currencyDisplay(item.currency)+'</span>';btn.disabled=profile[item.currency]<item.price;btn.addEventListener('click',()=>shopAction(item));}
+        card.append(chip,art,title,desc,btn);root.append(card);
       }
     }
     show('shop');
@@ -432,16 +465,16 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     try{return document.execCommand('copy');}catch(_){return false;}
   }
   function makeBackup(){
-    const data={version:32,profile,lang,prefs};
-    const code='GTG32:'+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const data={version:33,profile,lang,prefs};
+    const code='GTG33:'+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
     element('saveCode').value=code;restoreArmed='';toast(T('backupReady'));
   }
   function restoreBackup(){
     try{
       const code=element('saveCode').value.trim();
-      if((!code.startsWith('GTG32:')&&!code.startsWith('GTG31:')&&!code.startsWith('GTG3:'))||code.length>50000)throw Error('format');
+      if((!code.startsWith('GTG33:')&&!code.startsWith('GTG32:')&&!code.startsWith('GTG31:')&&!code.startsWith('GTG3:'))||code.length>50000)throw Error('format');
       const obj=JSON.parse(decodeURIComponent(escape(atob(code.slice(code.indexOf(':')+1)))));
-      if(![3,31,32].includes(obj.version)||!obj.profile||typeof obj.profile!=='object'||Array.isArray(obj.profile))throw Error('payload');
+      if(![3,31,32,33].includes(obj.version)||!obj.profile||typeof obj.profile!=='object'||Array.isArray(obj.profile))throw Error('payload');
       const fresh=blankProfile();
       for(const k of ['xp','played','bestScore','totalCorrect','bestStreak','shards','crowns','perfectRuns','freeChests','chestsOpened']){
         const v=obj.profile[k]??(['shards','crowns','perfectRuns','freeChests','chestsOpened'].includes(k)?0:undefined);
