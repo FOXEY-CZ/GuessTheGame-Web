@@ -22,3 +22,14 @@ h1{font-size:clamp(30px,5vw,56px);line-height:1.12;letter-spacing:-.045em;margin
 #profileSave{margin-top:8px}#signOut{margin-top:11px}.page>.tile{margin:18px 0}footer{border-top:1px solid var(--stroke);margin-top:50px;padding-top:20px;font-size:12px;color:var(--muted);text-align:center}
 @media(max-width:750px){.layout{padding:0 14px 18px}.topbar{min-height:80px}.status{display:none}.brand strong{font-size:18px}.brand small{font-size:11px}.brand-icon{font-size:31px}.mainnav{width:100%;justify-content:space-between;gap:1px}.mainnav button{padding:11px 10px;font-size:12px}.mainnav button span{display:none}.mainnav button{font-size:20px}.threegrid,.twogrid,.gamegrid{grid-template-columns:1fr}.hero{min-height:auto;padding:26px}.hero::after{display:none}.hero p{font-size:14px}.sectionline{align-items:flex-start}.gameart{height:125px}.accountpanel{padding:19px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* FOXEY Arcade in-app Guess the Game */
+.gameplaybar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;margin-bottom:15px}
+.gameplaybar>div{display:flex;flex-direction:column;align-items:center;gap:3px}
+.gameplaybar strong{font-size:16px}
+#gameHelp{margin:0 0 15px}
+#gameFrame{display:block;width:100%;height:min(1200px,calc(100dvh - 175px));min-height:560px;border:1px solid #4d4a75;border-radius:18px;background:#0c1324}
+@media(max-width:750px){
+ .gameplaybar{gap:9px}.gameplaybar>div{align-items:flex-start;flex:1;min-width:130px}
+ .gameplaybar>a{width:100%;text-align:right}
+ #gameFrame{height:calc(100dvh - 180px);min-height:500px;border-radius:12px}
+}
