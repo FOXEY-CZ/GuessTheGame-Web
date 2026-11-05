@@ -273,7 +273,7 @@
     }catch(e){
       const code=String(e&&e.message||'auth_failed').slice(0,120);
       el('authFormStatus').textContent=msg('❌ Přihlášení/registrace: ','❌ Authentication: ')+code;
-    }finally{busy=false;render();}
+    }finally{busy=false;render();if(user&&state)schedule();}
   }
   async function logout(){
     if(!user||busy)return;
