@@ -10,6 +10,8 @@ on:
       - 'tests/account-flow.cjs'
       - 'tests/verify-arcade-integration.cjs'
       - 'arcade/avatars.js'
+      - 'arcade/index.html'
+      - 'arcade/app.js'
       - '.github/workflows/verify-auth-preview.yml'
   workflow_dispatch:
 
