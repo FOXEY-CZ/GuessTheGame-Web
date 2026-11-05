@@ -118,6 +118,26 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
   return api;
 }
 (async()=>{
+  // Pure merge invariants: no doubling of XP, currencies, or consumable rewards.
+  const sandbox={window:{}};
+  vm.runInNewContext(fs.readFileSync('account-merge.js','utf8'),sandbox);
+  const merge=sandbox.window.GTGAccountMerge.merge;
+  const cloudBase={...profile(100),shards:5,crowns:7,badgeState:{first:true},
+    cosmetics:{themes:['classic'],avatars:['alien'],theme:'classic',avatar:'alien'},
+    dailyClaimed:'2026-11-05'};
+  const guestBase={...profile(80),shards:15,crowns:9,badgeState:{veteran25:true},
+    cosmetics:{themes:['classic','retro'],avatars:['alien','fox'],theme:'retro',avatar:'fox'},
+    dailyClaimed:'2026-11-05'};
+  const mergedProfile=merge(cloudBase,guestBase);
+  assert.equal(mergedProfile.xp,100,'XP must never be summed');
+  assert.equal(mergedProfile.shards,15,'shards must never be summed');
+  assert.equal(mergedProfile.crowns,9,'crowns must never be summed');
+  assert.equal(mergedProfile.badgeState.first,true);
+  assert.equal(mergedProfile.badgeState.veteran25,true);
+  assert.ok(mergedProfile.cosmetics.avatars.includes('fox'));
+  assert.equal(mergedProfile.dailyClaimed,'2026-11-05');
+  assert.equal(JSON.stringify(merge(mergedProfile,guestBase)),JSON.stringify(mergedProfile),'merge must be idempotent');
+
   for(const id of ['authLegacyAvailable','authImportLegacy','authLegacyCode','authLegacyStatus'])
     assert.ok(html.includes('id="'+id+'"'),'Missing UI id '+id);
   const a=browser({name:'Chrome',initialXP:40});
