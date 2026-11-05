@@ -30,14 +30,21 @@ jobs:
           const js=fs.readFileSync('arcade/app.js','utf8');
           const config=fs.readFileSync('arcade/config.js','utf8');
           const gameConfig=fs.readFileSync('account-config.js','utf8');
-          for(const id of ['page-home','page-games','page-play','page-community','page-account','page-settings','authForm','nickname','avatar','signOut','gameFrame'])
+          const gameAuth=fs.readFileSync('account-test.js','utf8');
+          for(const id of ['page-home','page-games','page-play','page-community','page-account','page-settings','authForm','nickname','avatar','signOut','gameFrame','headerXp','headerShards','headerCrowns','homeXp','homeLevel','homeShards','homeCrowns','accountXp','accountLevel','accountShards','accountCrowns'])
             if(!html.includes('id="'+id+'"')) throw Error('Missing UI element '+id);
           if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./config.js'))
             throw Error('Missing relative asset links');
           if(!config.includes('sb_publishable_')||/sb_secret_|ghp_[A-Za-z0-9]{20,}|postgres:\/\//.test(config))
             throw Error('Unexpected key or secret in public config');
-          if(js.includes("from('gtg36_account_progress')"))
-            throw Error('Arcade shell must not mutate Guess the Game saves');
+          if(!js.includes("from('gtg36_account_progress')")||
+             !js.includes(".select('profile,revision')"))
+            throw Error('Arcade must read actual game cloud progress');
+          if(/from\('gtg36_account_progress'\)[\s\S]{0,120}\.(insert|update|upsert|delete)\(/.test(js))
+            throw Error('Arcade must never mutate game saves or currencies');
+          if(!js.includes('foxey-arcade:gtg-cloud-synced')||
+             !gameAuth.includes('foxey-arcade:gtg-cloud-synced'))
+            throw Error('Missing live sync notification integration');
           if(!html.includes('preview-3.6.html'))
             throw Error('No link to stable Guess the Game');
           if(!js.includes("const GAME_URL = '../preview-auth-test.html'"))
