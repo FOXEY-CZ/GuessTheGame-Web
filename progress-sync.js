@@ -43,6 +43,8 @@
   };
   function status(cz, en) { prompt = msg(cz, en); refresh(); }
   function refresh() {
+    // A linked device should always show its existing code, even after a restart.
+    if (link && !el('syncCode').value.trim()) el('syncCode').value = linkCode(link);
     el('syncStatus').textContent = prompt || (link
       ? msg('✅ Propojeno. Synchronizuje se při připojení.', '✅ Linked. Syncs when online.')
       : msg('Zatím není propojeno. Místní postup zůstává zachován.', 'Not linked. Local progress stays here.'));
@@ -118,7 +120,8 @@
       link = { ...parsed, revision:remote.revision, base:serial(remote.profile) };
       persist();
       game.setProfile(remote.profile);
-      el('syncCode').value = '';
+      // Keep the linking code visible rather than silently clearing it.
+      el('syncCode').value = linkCode(link);
       confirmCode = '';
       status('✅ Zařízení propojeno, postup načten.', '✅ Device linked and progress loaded.');
     } catch (_) { status('❌ Cloud se nepodařilo načíst. Místní data zůstala.', '❌ Cloud unavailable. Local data was not changed.'); }
@@ -207,6 +210,10 @@
   async function copyCode() {
     if (!link) return;
     const code = linkCode(link);
+    const field = el('syncCode');
+    // Show the same code we copy. Clipboard success must not leave the field blank.
+    field.value = code;
+    field.scrollIntoView({block:'center',behavior:'smooth'});
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(code);
@@ -214,7 +221,7 @@
         return;
       }
     } catch (_) {}
-    const field = el('syncCode');field.value = code;field.focus();field.select();
+    field.focus();field.select();
     let copied = false;
     try { copied = document.execCommand('copy'); } catch (_) {}
     status(copied ? '📋 Kód zkopírován.' : 'Označený kód zkopíruj ručně.',
