@@ -15,10 +15,11 @@
     <a href="#domu" class="brand" data-page="home" aria-label="FOXEY Arcade – domů"><span class="brand-icon">🦊</span>
       <span><strong>FOXEY <em>ARCADE</em></strong><small>Jeden účet. Spousta her.</small></span></a>
     <div class="topright"><span class="status" id="connectionStatus">Načítám účet…</span>
-      <div class="headerwallet" id="headerWallet" aria-label="Aktuální postup Guess the Game">
-        <span class="resource" title="XP v Guess the Game">✨ <b id="headerXp">—</b> XP</span>
-        <span class="resource" title="Krystaly z Guess the Game">💎 <b id="headerShards">—</b></span>
-        <span class="resource" title="Korunky z Guess the Game">👑 <b id="headerCrowns">—</b></span>
+      <div class="headerwallet" id="headerWallet" aria-label="Globální účet FOXEY Arcade">
+        <span class="resource" title="Globální XP FOXEY Arcade">🦊 <b id="headerArcadeXp">—</b> XP</span>
+        <span class="resource" title="Globální level FOXEY Arcade">🎖️ <b id="headerArcadeLevel">—</b></span>
+        <span class="resource" title="Společné krystaly – připravujeme">💎 <b>—</b></span>
+        <span class="resource" title="Společné korunky – připravujeme">👑 <b>—</b></span>
       </div>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName">Host</span></button></div>
   </header>
@@ -40,6 +41,17 @@
         <div class="actions"><button class="primary" type="button" data-page="games">🎮 Prozkoumat hry</button>
           <button class="secondary" type="button" data-page="account">👤 Můj účet</button></div>
       </div>
+      <section class="progresscard arcade-progress" aria-label="Globální profil FOXEY Arcade">
+        <div class="progresscard-title"><div><span class="eyebrow">GLOBÁLNÍ PROFIL</span><h2>🦊 FOXEY Arcade</h2></div>
+          <button class="secondary" type="button" data-page="account">Upravit profil</button></div>
+        <div class="statgrid">
+          <div class="stat"><span>✨ Globální XP</span><strong id="homeArcadeXp">—</strong></div>
+          <div class="stat"><span>🎖️ Globální level</span><strong id="homeArcadeLevel">—</strong></div>
+          <div class="stat"><span>💎 Společné krystaly</span><strong>—</strong></div>
+          <div class="stat"><span>👑 Společné korunky</span><strong>—</strong></div>
+        </div>
+        <p class="note">Globální XP jsou oddělená od XP miniher. Zatím začínají na 0; jejich získávání a serverovou společnou peněženku ještě připravujeme.</p>
+      </section>
       <section class="progresscard" id="homeProgress" aria-label="Aktuální postup v Guess the Game">
         <div class="progresscard-title"><div><span class="eyebrow">TVŮJ CLOUDOVÝ POSTUP</span><h2>🎮 Guess the Game</h2></div>
           <button class="secondary progressRefresh" type="button" data-action="refreshProgress" title="Znovu načíst z cloudu">↻ Aktualizovat</button></div>
@@ -51,12 +63,12 @@
           <div class="stat"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
           <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
         </div>
-        <p class="note">Aktuální čísla pocházejí z cloudového postupu Guess the Game. Zatím nejde o samostatnou společnou peněženku FOXEY Arcade.</p>
+        <p class="note">Tohle jsou statistiky a dosavadní herní měny pouze Guess the Game. Globální XP a společná peněženka mají vlastní oddělené místo.</p>
       </section>
       <div class="sectionline"><h2>Tvůj herní domov</h2><span class="small">Základ platformy • vývojová verze</span></div>
       <div class="threegrid">
         <article class="tile"><div class="tileicon">👤</div><h3>Jeden účet</h3><p>Přihlášení platí pro FOXEY Arcade. Používáme stejné Supabase účty jako v testovací Guess the Game.</p></article>
-        <article class="tile"><div class="tileicon">💎</div><h3>Společná peněženka</h3><p>Diamanty a korunky budou sdílené napříč hrami. Serverové převody teprve připravujeme.</p></article>
+        <article class="tile"><div class="tileicon">💎</div><h3>Společná peněženka</h3><p>Krystaly a korunky budou sdílené napříč hrami. Bezpečný serverový převod teprve připravujeme.</p></article>
         <article class="tile"><div class="tileicon">💬</div><h3>Komunita</h3><p>Přátelé, soukromé zprávy a společná lobby přijdou postupně. Zatím je chat vypnutý.</p></article>
       </div>
     </section>
@@ -106,21 +118,22 @@
         <p class="note">Účet funguje se stejnými přihlašovacími údaji jako naše testovací Guess the Game. Režim hosta nevyžaduje přihlášení.</p>
       </div>
       <div id="playerAccount" class="accountpanel hidden">
-        <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName">Hráč FOXEY Arcade</h2><p class="small" id="profileEmail"></p></div></div>
+        <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName">Hráč FOXEY Arcade</h2><p class="small" id="profileEmail"></p><p class="small">Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p></div></div>
         <form id="profileForm">
           <label for="nickname">Hráčská přezdívka</label>
           <input id="nickname" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="off" placeholder="Například FOXEY_CZ">
           <p class="note">3–20 znaků: písmena A–Z, čísla a podtržítko. Přezdívka zatím není veřejně vyhledatelná.</p>
-          <label for="avatar">Avatar platformy</label>
+          <label for="avatar">Společný avatar ve FOXEY Arcade a ve hrách</label>
           <select id="avatar"><option value="fox">🦊 Liška</option><option value="robot">🤖 Robot</option><option value="alien">👽 Mimozemšťan</option><option value="crown">👑 Koruna</option></select>
           <button class="primary" id="profileSave" type="submit">Uložit profil</button>
         </form>
         <section class="gameprofile-summary">
-          <div class="progresscard-title"><div><h3>🎮 Postup Guess the Game</h3><p class="small" id="accountProgressStatus" aria-live="polite">Načítám postup…</p></div>
+          <div class="progresscard-title"><div><h3>🎮 Vlastní postup Guess the Game</h3><p class="small" id="accountProgressStatus" aria-live="polite">Načítám postup…</p></div>
             <button class="secondary progressRefresh" type="button" data-action="refreshProgress">↻ Obnovit</button></div>
           <div class="wallet"><div><span>✨ XP</span><strong id="accountXp">—</strong></div><div><span>🎖️ Level</span><strong id="accountLevel">—</strong></div>
             <div><span>💎 Krystaly</span><strong id="accountShards">—</strong></div><div><span>👑 Korunky</span><strong id="accountCrowns">—</strong></div></div>
-          <p class="note">Hodnoty se načítají pouze pro tvůj účet z uloženého postupu Guess the Game. Herní odměny tím nekopírujeme ani nepřipisujeme dvakrát. Společnou peněženku pro všechny minihry dokončíme později.</p>
+          <p class="note">XP a level patří jen Guess the Game. Dosavadní krystaly a korunky jsou zatím herní – jejich bezpečný převod do společné peněženky teprve připravujeme.</p>
+          <h3>Další minihry</h3><p class="small">😂 Guess the Meme · 🎨 Draw &amp; Guess · ⛳ Mini Golf — každá bude mít své vlastní XP, level a rekordy.</p>
         </section>
         <button class="secondary" id="signOut" type="button">Odhlásit se</button>
       </div>
@@ -136,6 +149,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script src="./config.js"></script>
+<script src="./avatars.js"></script>
 <script src="./app.js"></script>
 </body>
 </html>
