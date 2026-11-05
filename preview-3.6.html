@@ -264,7 +264,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
 
       challengeTitle:'VÝZVA KAMARÁDOVI',challengeCtaDesc:'Stejné otázky · sdílený odkaz · porovnání skóre',challengeHero:'Kdo je větší gamer?',
       challengeIntro:'Vytvoř online výzvu, pošli jeden odkaz a výsledky se po dohrání automaticky porovnají.',
-      challengeNameLabel:'TVOJE PŘEZDÍVKA',challengeCodeLabel:'KÓD VÝZVY',challengeNew:'NOVÁ VÝZVA',challengeCopy:'📋 KOPÍROVAT ODKAZ',challengeShare:'SDÍLET VÝZVU',
+      challengeNameLabel:'TVOJE PŘEZDÍVKA',challengeCodeLabel:'ID SOUBOJE',challengeNew:'NOVÁ VÝZVA',challengeCopy:'📋 KOPÍROVAT ODKAZ',challengeShare:'SDÍLET VÝZVU',
       challengePlay:'⚔ HRÁT VÝZVU',challengeJoinTitle:'MÁŠ ODKAZ OD KAMARÁDA?',challengeJoinDesc:'Vlož odkaz nebo kód výzvy. Online odkaz funguje i v Android aplikaci.',
       challengeJoinAction:'PŘIPOJIT SE K VÝZVĚ',challengeFairness:'Bez serveru: výsledky se porovnávají pomocí sdílených odkazů a skóre ostatních nelze nezávisle ověřit.',
       challengeYou:'TY',challengeFriend:'KAMARÁD',challengePending:'Kamarád zatím neposlal výsledek. Pošli mu odkaz a výsledek může poslat zpátky.',
@@ -319,7 +319,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
 
       challengeTitle:'CHALLENGE A FRIEND',challengeCtaDesc:'Same questions · share link · compare scores',challengeHero:'Who is the bigger gamer?',
       challengeIntro:'Create a challenge, send the link and both play the same 10 questions. Your first completed attempt counts.',
-      challengeNameLabel:'YOUR NICKNAME',challengeCodeLabel:'CHALLENGE CODE',challengeNew:'NEW CHALLENGE',challengeCopy:'📋 COPY LINK',challengeShare:'SHARE CHALLENGE',
+      challengeNameLabel:'YOUR NICKNAME',challengeCodeLabel:'DUEL ID',challengeNew:'NEW CHALLENGE',challengeCopy:'📋 COPY LINK',challengeShare:'SHARE CHALLENGE',
       challengePlay:'⚔ PLAY CHALLENGE',challengeJoinTitle:"HAVE A FRIEND'S LINK?",challengeJoinDesc:'Paste their link or challenge code. This also works in the Android app.',
       challengeJoinAction:'JOIN CHALLENGE',challengeFairness:"No server: results are compared using shared links and other players' scores cannot be independently verified.",
       challengeYou:'YOU',challengeFriend:'FRIEND',challengePending:'Your friend has not sent their score yet. Send them a link so they can reply with their result.',
@@ -852,12 +852,12 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     updateChallengeName();
     const saved=score||myChallengeRecord(challengeDraft);
     const url=challengeUrl(challengeDraft,saved,!scorePreview);
-    const label=T(saved?'challengeScoreLink':'challengeInviteLink');
+    const label=T(challengeDraft.online?'challengeInviteLink':saved?'challengeScoreLink':'challengeInviteLink');
     if(typeof navigator.share==='function'){
       try{await navigator.share({title:'Guess the Game – Challenge',text:label,url});return;}
       catch(error){if(error?.name==='AbortError')return;}
     }
-    await copyChallengeText(url,saved?'score':'invite');
+    await copyChallengeText(url,challengeDraft.online?'invite':saved?'score':'invite');
   }
   function shareChallengeScore(){
     const ch=(screen==='result'&&result?.mode==='challenge')?result.challenge:challengeDraft;
@@ -865,6 +865,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const saved=myChallengeRecord(ch);
     if(!saved){toast(T('challengePending'));return;}
     challengeDraft={...ch};
+    if(ch.online){sendChallengeLink(null,false);return;}
     // A shared *result* opens the score preview; a regular scored challenge invite auto-starts.
     sendChallengeLink(saved,true);
   }
@@ -1078,7 +1079,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   element('refreshResultChallenge').addEventListener('click',()=>{if(result?.challenge?.online){retryPendingOnline();refreshOnline(result.challenge);}else toast(T('onlineFailed'));});
   element('challengeName').addEventListener('change',updateChallengeName);
   element('createChallenge').addEventListener('click',newChallenge);
-  element('copyChallenge').addEventListener('click',()=>{updateChallengeName();const saved=challengeDraft&&myChallengeRecord(challengeDraft);copyChallengeText(challengeUrl(challengeDraft,saved),saved?'score':'invite');});
+  element('copyChallenge').addEventListener('click',()=>{updateChallengeName();const saved=challengeDraft&&myChallengeRecord(challengeDraft);copyChallengeText(challengeUrl(challengeDraft,saved),challengeDraft?.online?'invite':saved?'score':'invite');});
   element('shareChallenge').addEventListener('click',()=>sendChallengeLink(challengeDraft&&myChallengeRecord(challengeDraft)));
   element('startChallenge').addEventListener('click',startChallenge);
   element('joinChallenge').addEventListener('click',joinChallenge);
