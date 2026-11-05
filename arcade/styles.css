@@ -59,3 +59,31 @@ h1{font-size:clamp(30px,5vw,56px);line-height:1.12;letter-spacing:-.045em;margin
 .arcade-progress{border-color:#6855a7;background:linear-gradient(135deg,#302555,#18233e)}
 .arcade-progress .statgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:750px){.arcade-progress .statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* One shared account wallet, central cosmetic shop & chests. */
+.shared-shop-wallet{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:22px 0 30px;align-items:stretch}
+.shared-shop-wallet>div,.shared-shop-wallet>button{background:linear-gradient(145deg,#202744,#141d33);border:1px solid var(--stroke);border-radius:14px;padding:19px;min-width:0}
+.shared-shop-wallet>div span{display:block;color:var(--muted);font-size:12px}
+.shared-shop-wallet>div strong{display:block;font-size:29px;margin-top:6px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.shared-shop-wallet>button{height:100%;font-size:13px}
+.shopitems{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.shopitems .tile{display:flex;flex-direction:column;min-height:225px}
+.shopitems .tile p{flex:1;margin-top:0}
+.shopitems .tile button{margin-top:14px}
+.chestshop{display:flex;align-items:center;gap:22px;min-height:170px}
+.chestshop h3{margin:0}
+.chestshop p{margin:9px 0}
+.chestshop-icon{font-size:68px;flex:none}
+.chestshop button{margin-top:8px}
+@media(max-width:950px){
+ .shopitems{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shared-shop-wallet{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:500px){
+ .shopitems{grid-template-columns:1fr}
+ .shared-shop-wallet{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shared-shop-wallet>div,.shared-shop-wallet>button{padding:13px}
+ .shared-shop-wallet>div strong{font-size:24px}
+ .chestshop{align-items:flex-start;gap:12px}
+ .chestshop-icon{font-size:45px}
+}
