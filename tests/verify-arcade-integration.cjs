@@ -58,6 +58,23 @@ assert.ok(gameStyle.includes(' .answer:not(.correct):not(.wrong)'),
 assert.ok(gameStyle.includes(' .mode-main,')&&gameStyle.includes('var(--theme-cta-from)'),
   'Main game actions must follow the equipped theme');
 
+assert.ok(gameStyle.includes('/* FOXEY Arcade v2 — full-viewport theme artwork'),
+  'Strong visual backgrounds must not silently regress');
+for(const [theme,color] of [
+  ['retro','#513061'],['royal','#513a7d'],['ocean','#0d5875']
+]){
+  const token='body.theme-'+theme+'{\n  --bg:';
+  assert.ok(gameStyle.includes(token),'Explicit full-screen background must exist for '+theme);
+  const rule=gameStyle.slice(gameStyle.lastIndexOf(token),gameStyle.lastIndexOf(token)+560);
+  assert.ok(rule.includes(color),'New background for '+theme+' must remain visually distinct');
+  assert.ok(rule.includes('background-attachment:fixed'),'Theme '+theme+' must fill the scrolled viewport');
+  assert.ok(gameStyle.includes('body.theme-'+theme+'::before{'),
+    'Atmospheric pattern must extend through whole viewport for '+theme);
+}
+assert.ok(gameStyle.includes('@media(min-width:650px)'),
+  'Embedded desktop theme should not look like a tiny mobile-only island');
+
+
 
 const ctx={window:{}};
 vm.runInNewContext(arts,ctx);
