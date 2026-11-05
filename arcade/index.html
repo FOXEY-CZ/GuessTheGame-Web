@@ -49,13 +49,24 @@
         <article class="gamecard available"><div class="gameart">🎮<span class="shine"></span></div>
           <div class="gamecontent"><span class="tag live">Hratelné</span><h2>Guess the Game</h2>
             <p>Hádej videohry, sbírej odměny a vyzvi kamaráda. Naše první minihra.</p>
-            <a class="primary full" href="https://foxey-cz.github.io/GuessTheGame-Web/preview-3.6.html" target="_blank" rel="noopener noreferrer">Spustit současnou webovou hru ↗</a>
-            <p class="note">Zatím se otevře samostatná stabilní verze. Propojení do jedné aplikace teprve připravujeme.</p>
+            <button class="primary full" data-page="play" type="button">▶ Hrát v FOXEY Arcade</button>
+            <p class="note">Hraješ uvnitř FOXEY Arcade. Pokud jsi přihlášený, načte se tvůj cloudový postup z testovací Guess the Game. Starší lokální uložené pozice se automaticky nepřenášejí.</p>
+            <a class="small" href="https://foxey-cz.github.io/GuessTheGame-Web/preview-3.6.html" target="_blank" rel="noopener noreferrer">Otevřít původní stabilní verzi ↗</a>
           </div></article>
         <article class="gamecard"><div class="gameart meme">😂</div><div class="gamecontent"><span class="tag">Připravujeme</span><h2>Guess the Meme</h2><p>Jak dobře znáš internetové memy?</p></div></article>
         <article class="gamecard"><div class="gameart draw">🎨</div><div class="gamecontent"><span class="tag">V plánu</span><h2>Draw &amp; Guess</h2><p>Jeden kreslí, ostatní hádají.</p></div></article>
         <article class="gamecard"><div class="gameart golf">⛳</div><div class="gamecontent"><span class="tag">V plánu</span><h2>Mini Golf</h2><p>Krátké zápasy a bláznivé tratě.</p></div></article>
       </div>
+    </section>
+
+    <section class="page hidden" id="page-play">
+      <div class="gameplaybar">
+        <button class="secondary" type="button" data-page="games">← Zpět na hry</button>
+        <div><strong>🎮 Guess the Game</strong><span class="small">Cloudové ukládání přes účet FOXEY Arcade</span></div>
+        <a class="small" href="https://foxey-cz.github.io/GuessTheGame-Web/preview-auth-test.html" target="_blank" rel="noopener noreferrer">Otevřít samostatně ↗</a>
+      </div>
+      <p class="small" id="gameHelp">Používáme testovací verzi Guess the Game se synchronizací účtu. Ve hře zatím zůstává i stará správa účtu; přesuneme ji až po dokončení centrální správy v Arcade.</p>
+      <iframe id="gameFrame" title="Guess the Game – vestavěná hra" loading="lazy" allow="fullscreen"></iframe>
     </section>
 
     <section class="page hidden" id="page-community">
