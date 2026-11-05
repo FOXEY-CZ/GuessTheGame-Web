@@ -33,3 +33,20 @@ h1{font-size:clamp(30px,5vw,56px);line-height:1.12;letter-spacing:-.045em;margin
  .gameplaybar>a{width:100%;text-align:right}
  #gameFrame{height:calc(100dvh - 180px);min-height:500px;border-radius:12px}
 }
+
+/* Read-only cloud progress from Guess the Game */
+.headerwallet{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.resource{font-size:12px;white-space:nowrap;background:#1f2945;border:1px solid #3b4664;border-radius:999px;padding:8px 10px;color:#dfe6ff}
+.resource b{font-size:13px;color:white;font-variant-numeric:tabular-nums}
+.progresscard{border:1px solid #41466f;background:linear-gradient(135deg,#242342,#152039);border-radius:20px;padding:23px;margin-top:22px}
+.progresscard-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.progresscard-title h2,.progresscard-title h3{margin:5px 0 0}
+.statgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0 13px}
+.stat{background:#111a32;border:1px solid #3b4662;padding:14px;border-radius:13px;min-width:0}
+.stat span{font-size:11px;color:#b4bfe0;display:block}
+.stat strong{font-size:clamp(19px,2.7vw,28px);font-variant-numeric:tabular-nums;display:block;margin-top:7px;overflow-wrap:anywhere}
+.gameprofile-summary{border-top:1px solid var(--stroke);margin-top:25px;padding-top:20px}
+.gameprofile-summary .wallet{margin:17px 0 10px}
+.progressRefresh{font-size:12px;padding:9px 11px}
+@media(max-width:950px){.headerwallet{gap:4px}.resource{padding:7px;font-size:11px}.statgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:750px){.topright{gap:8px}.userchip{padding:9px}.userchip #headerName{display:none}.headerwallet{max-width:190px;justify-content:flex-end}.resource{font-size:10px;padding:5px 7px}.resource b{font-size:11px}.progresscard{padding:17px}.statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:last-child{grid-column:span 2}}
