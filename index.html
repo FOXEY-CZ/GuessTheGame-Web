@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#090e1e">
   <meta name="description" content="Guess the Game — offline mobile gaming quiz">
-  <title>Guess the Game 3.5 — Challenge Update</title>
+  <title>Guess the Game 3.5.1 — Challenge Link Fix</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20108%20108%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23253b71%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2315182d%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22108%22%20rx%3D%2225%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Cpath%20d%3D%22M34%2038c2-23%2039-23%2041%200%201%2017-20%2020-20%2031%22%20fill%3D%22none%22%20stroke%3D%22%2368eee5%22%20stroke-width%3D%2211%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2286%22%20r%3D%226.5%22%20fill%3D%22%23ffc86a%22%2F%3E%3Cpath%20d%3D%22M17%2023h13M23.5%2016v14%22%20stroke%3D%22%23ae95ff%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2280%22%20r%3D%225%22%20fill%3D%22%238c78ff%22%2F%3E%3C%2Fsvg%3E">
   <link rel="manifest" href="site.webmanifest">
   <style>
@@ -102,7 +102,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
   <div class="app">
     <header class="topbar">
-      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.5 · CHALLENGE</small></span></button>
+      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.5.1 · CHALLENGE</small></span></button>
       <div class="top-actions"><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
     </header>
 
@@ -230,7 +230,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
       <div id="avatarItems" class="shop-grid"></div>
     </main>
 
-    <footer><span>GUESS THE GAME <b>3.5 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
+    <footer><span>GUESS THE GAME <b>3.5.1 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
   </div>
   <div id="toast" class="toast hidden" role="status"></div><div id="achievementLayer"></div><div id="sparkles" class="sparkles" aria-hidden="true"></div>
   <script>
@@ -694,11 +694,19 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     show('challenge');
   }
   function joinChallenge(){
-    try{const parsed=parseChallengeLink(element('challengeJoinInput').value);challengeDraft=parsed;renderChallengeLobby();toast(T('challengeJoined'));}
-    catch(_){toast(T('challengeInvalid'));}
+    try{
+      const parsed=parseChallengeLink(element('challengeJoinInput').value);
+      challengeDraft=parsed;
+      // A normal invitation launches the shared round; result links show a score preview.
+      if(parsed.opponent){renderChallengeLobby();toast(T('challengeJoined'));}
+      else startChallenge();
+    }catch(_){toast(T('challengeInvalid'));}
   }
   function startChallenge(){
     if(!challengeDraft||!validChallengeIds(challengeDraft.ids)){toast(T('challengeInvalid'));return;}
+    // Directly opened invite links have never rendered the nickname form.
+    // Preserve the returning player's saved nickname in this case.
+    if(!element('challengeName').value.trim())element('challengeName').value=challengeName||T('challengeNickname');
     updateChallengeName();
     const ch={seed:challengeDraft.seed,ids:challengeDraft.ids.slice(),opponent:challengeDraft.opponent?{...challengeDraft.opponent}:null};
     session={mode:'challenge',day:date(),seed:ch.seed,ids:ch.ids.slice(),challenge:ch,idx:0,score:0,correct:0,streak:0,maxStreak:0,lives:3,hint:false,selected:null,gained:0,reveal:0};
@@ -947,11 +955,15 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     else if(event.key==='Escape'){event.preventDefault();home();}
   });
   normalizeChallengeResults();
-  // Visiting a shared URL opens a preview instead of unexpectedly overwriting a saved quiz.
+  // An invitation link should start the exact same quiz immediately.
+  // A link containing somebody's result instead opens the score comparison preview.
   const urlInput=new URLSearchParams(window.location.search);
   if(urlInput.has('challenge')){
-    try{challengeDraft=parseChallengeLink(window.location.href);renderChallengeLobby();}
-    catch(_){home();toast(T('challengeInvalid'));}
+    try{
+      challengeDraft=parseChallengeLink(window.location.href);
+      if(challengeDraft.opponent)renderChallengeLobby();
+      else startChallenge();
+    }catch(_){home();toast(T('challengeInvalid'));}
   }else home();
 })();
 
