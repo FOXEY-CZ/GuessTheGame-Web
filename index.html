@@ -676,9 +676,9 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     }
     return {seed,ids,opponent,autoPlay:url.searchParams.get('play')==='1'};
   }
-  function challengeUrl(ch,score=null){
+  function challengeUrl(ch,score=null,autoStart=true){
     const url=new URL(CHALLENGE_URL);url.searchParams.set('challenge',challengeCode(ch.seed));url.searchParams.set('q',ch.ids.join('.'));
-    if(score){url.searchParams.set('player',nickname(challengeName));url.searchParams.set('score',String(score.score));url.searchParams.set('correct',String(score.correct));url.searchParams.set('streak',String(score.streak));url.searchParams.set('play','1');}
+    if(score){url.searchParams.set('player',nickname(challengeName));url.searchParams.set('score',String(score.score));url.searchParams.set('correct',String(score.correct));url.searchParams.set('streak',String(score.streak));if(autoStart)url.searchParams.set('play','1');}
     return url.toString();
   }
   function myChallengeRecord(ch){
@@ -756,11 +756,11 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(!ok){const field=element('challengeLink');field.value=textValue;field.focus();field.select();toast(T('copyManual'));}
     else toast(T(kind==='score'?'challengeScoreCopied':'challengeClipboard'));
   }
-  async function sendChallengeLink(score=null){
+  async function sendChallengeLink(score=null,scorePreview=false){
     if(!challengeDraft)return;
     updateChallengeName();
     const saved=score||myChallengeRecord(challengeDraft);
-    const url=challengeUrl(challengeDraft,saved);
+    const url=challengeUrl(challengeDraft,saved,!scorePreview);
     const label=T(saved?'challengeScoreLink':'challengeInviteLink');
     if(typeof navigator.share==='function'){
       try{await navigator.share({title:'Guess the Game – Challenge',text:label,url});return;}
@@ -774,7 +774,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const saved=myChallengeRecord(ch);
     if(!saved){toast(T('challengePending'));return;}
     challengeDraft={...ch};
-    sendChallengeLink(saved);
+    // A shared *result* opens the score preview; a regular scored challenge invite auto-starts.
+    sendChallengeLink(saved,true);
   }
 
   function addFriendScore(){
