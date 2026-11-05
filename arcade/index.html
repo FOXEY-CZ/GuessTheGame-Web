@@ -18,15 +18,15 @@
       <div class="headerwallet" id="headerWallet" aria-label="Globální účet FOXEY Arcade">
         <span class="resource" title="Globální XP FOXEY Arcade">🦊 <b id="headerArcadeXp">—</b> XP</span>
         <span class="resource" title="Globální level FOXEY Arcade">🎖️ <b id="headerArcadeLevel">—</b></span>
-        <span class="resource" title="Společné krystaly – připravujeme">💎 <b>—</b></span>
-        <span class="resource" title="Společné korunky – připravujeme">👑 <b>—</b></span>
+        <span class="resource" title="Společné krystaly">💎 <b id="headerShards">—</b></span>
+        <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
       </div>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName">Host</span></button></div>
   </header>
 
   <nav class="mainnav" aria-label="Hlavní navigace">
     <button data-page="home" class="active" type="button">🏠 <span>Domů</span></button>
-    <button data-page="games" type="button">🎮 <span>Hry</span></button>
+    <button data-page="games" type="button">🎮 <span>Hry</span></button><button data-page="shop" type="button">🛍️ <span>Obchod</span></button>
     <button data-page="community" type="button">👥 <span>Komunita</span></button>
     <button data-page="account" type="button">👤 <span>Profil</span></button>
     <button data-page="settings" type="button">⚙️ <span>Nastavení</span></button>
@@ -47,10 +47,10 @@
         <div class="statgrid">
           <div class="stat"><span>✨ Globální XP</span><strong id="homeArcadeXp">—</strong></div>
           <div class="stat"><span>🎖️ Globální level</span><strong id="homeArcadeLevel">—</strong></div>
-          <div class="stat"><span>💎 Společné krystaly</span><strong>—</strong></div>
-          <div class="stat"><span>👑 Společné korunky</span><strong>—</strong></div>
+          <div class="stat"><span>💎 Společné krystaly</span><strong id="homeSharedShards">—</strong></div>
+          <div class="stat"><span>👑 Společné korunky</span><strong id="homeSharedCrowns">—</strong></div>
         </div>
-        <p class="note">Globální XP jsou oddělená od XP miniher. Zatím začínají na 0; jejich získávání a serverovou společnou peněženku ještě připravujeme.</p>
+        <p class="note">Globální XP patří celé Arcade. Krystaly a korunky jsou jediné společné zůstatky pro všechny minihry. Připisování globálních XP za hraní připravujeme.</p>
       </section>
       <section class="progresscard" id="homeProgress" aria-label="Aktuální postup v Guess the Game">
         <div class="progresscard-title"><div><span class="eyebrow">TVŮJ CLOUDOVÝ POSTUP</span><h2>🎮 Guess the Game</h2></div>
@@ -59,16 +59,16 @@
         <div class="statgrid">
           <div class="stat"><span>✨ XP</span><strong id="homeXp">—</strong></div>
           <div class="stat"><span>🎖️ Level</span><strong id="homeLevel">—</strong></div>
-          <div class="stat"><span>💎 Krystaly</span><strong id="homeShards">—</strong></div>
-          <div class="stat"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
+          <div class="stat hidden"><span>💎 Krystaly</span><strong id="homeShards">—</strong></div>
+          <div class="stat hidden"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
           <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
         </div>
-        <p class="note">Tohle jsou statistiky a dosavadní herní měny pouze Guess the Game. Globální XP a společná peněženka mají vlastní oddělené místo.</p>
+        <p class="note">XP, level a rekordy jsou pouze pro Guess the Game. Krystaly a korunky najdeš v jedné společné peněžence nahoře.</p>
       </section>
       <div class="sectionline"><h2>Tvůj herní domov</h2><span class="small">Základ platformy • vývojová verze</span></div>
       <div class="threegrid">
         <article class="tile"><div class="tileicon">👤</div><h3>Jeden účet</h3><p>Přihlášení platí pro FOXEY Arcade. Používáme stejné Supabase účty jako v testovací Guess the Game.</p></article>
-        <article class="tile"><div class="tileicon">💎</div><h3>Společná peněženka</h3><p>Krystaly a korunky budou sdílené napříč hrami. Bezpečný serverový převod teprve připravujeme.</p></article>
+        <article class="tile"><div class="tileicon">💎</div><h3>Společná peněženka</h3><p>Krystaly a korunky jsou společné pro všechny minihry. V hlavním obchodě kupuješ motivy a otvíráš truhly.</p></article>
         <article class="tile"><div class="tileicon">💬</div><h3>Komunita</h3><p>Přátelé, soukromé zprávy a společná lobby přijdou postupně. Zatím je chat vypnutý.</p></article>
       </div>
     </section>
@@ -97,6 +97,33 @@
       </div>
       <p class="small" id="gameHelp">Používáme testovací verzi Guess the Game se synchronizací účtu. Ve hře zatím zůstává i stará správa účtu; přesuneme ji až po dokončení centrální správy v Arcade.</p>
       <iframe id="gameFrame" title="Guess the Game – vestavěná hra" loading="lazy" allow="fullscreen"></iframe>
+    </section>
+
+
+    <section class="page hidden" id="page-shop">
+      <span class="eyebrow">JEDEN OBCHOD PRO VŠECHNY HRY</span><h1>🛍️ Obchod FOXEY Arcade</h1>
+      <p>Spravuj motivy, utrácej společné krystaly a korunky a otevírej truhly. Všechny odměny patří tvému účtu.</p>
+      <p id="shopStatus" class="small" role="status" aria-live="polite">Přihlas se pro načtení peněženky.</p>
+      <div class="shared-shop-wallet">
+        <div><span>💎 Krystaly</span><strong id="shopShards">—</strong></div>
+        <div><span>👑 Korunky</span><strong id="shopCrowns">—</strong></div>
+        <div><span>🎁 Truhly zdarma</span><strong id="shopFreeChests">—</strong></div>
+        <button class="secondary" type="button" id="shopRefresh">↻ Aktualizovat</button>
+      </div>
+      <div class="sectionline"><h2>🎨 Motivy Guess the Game</h2><span class="small">Platí pro tvůj účet</span></div>
+      <div id="shopThemes" class="shopitems">
+        <article class="tile"><div class="tileicon">🌙</div><h3>Classic</h3><p>Výchozí motiv.</p><button data-theme="classic" class="secondary" type="button">Načítání…</button></article>
+        <article class="tile"><div class="tileicon">🕹️</div><h3>Retro</h3><p>35 krystalů 💎</p><button data-theme="retro" class="secondary" type="button">Načítání…</button></article>
+        <article class="tile"><div class="tileicon">👑</div><h3>Royal</h3><p>20 korunek 👑</p><button data-theme="royal" class="secondary" type="button">Načítání…</button></article>
+        <article class="tile"><div class="tileicon">🌊</div><h3>Ocean</h3><p>50 krystalů 💎</p><button data-theme="ocean" class="secondary" type="button">Načítání…</button></article>
+      </div>
+      <div class="sectionline"><h2>🎁 Truhly s odměnami</h2></div>
+      <div class="chestshop tile"><div class="chestshop-icon">🎁</div><div>
+        <h3>Tajemná truhla</h3><p>Otevři za 25 krystalů nebo využij truhlu zdarma získanou za herní odměny. Získáš korunky do společné peněženky.</p>
+        <button class="primary" type="button" id="shopOpenChest">Otevřít truhlu</button>
+        <p class="small" id="shopChestResult" role="status" aria-live="polite"></p>
+      </div></div>
+      <p class="note">Nákupy a truhly probíhají atomicky na serveru. Stávající odměny z Guess the Game se při prvním přihlášení přenesou jen jednou. Globální XP se tím nemění.</p>
     </section>
 
     <section class="page hidden" id="page-community">
@@ -131,8 +158,8 @@
           <div class="progresscard-title"><div><h3>🎮 Vlastní postup Guess the Game</h3><p class="small" id="accountProgressStatus" aria-live="polite">Načítám postup…</p></div>
             <button class="secondary progressRefresh" type="button" data-action="refreshProgress">↻ Obnovit</button></div>
           <div class="wallet"><div><span>✨ XP</span><strong id="accountXp">—</strong></div><div><span>🎖️ Level</span><strong id="accountLevel">—</strong></div>
-            <div><span>💎 Krystaly</span><strong id="accountShards">—</strong></div><div><span>👑 Korunky</span><strong id="accountCrowns">—</strong></div></div>
-          <p class="note">XP a level patří jen Guess the Game. Dosavadní krystaly a korunky jsou zatím herní – jejich bezpečný převod do společné peněženky teprve připravujeme.</p>
+            <div class="hidden"><span>💎 Krystaly</span><strong id="accountShards">—</strong></div><div class="hidden"><span>👑 Korunky</span><strong id="accountCrowns">—</strong></div></div>
+          <p class="note">XP a level patří jen Guess the Game. Společná peněženka: 💎 <b id="accountSharedShards">—</b> · 👑 <b id="accountSharedCrowns">—</b>.</p>
           <h3>Další minihry</h3><p class="small">😂 Guess the Meme · 🎨 Draw &amp; Guess · ⛳ Mini Golf — každá bude mít své vlastní XP, level a rekordy.</p>
         </section>
         <button class="secondary" id="signOut" type="button">Odhlásit se</button>
