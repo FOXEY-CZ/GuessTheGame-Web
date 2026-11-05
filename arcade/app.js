@@ -6,12 +6,23 @@
   const el = id => document.getElementById(id);
   const cfg = window.FOXEY_ARCADE_CONFIG;
   const AVATARS = Object.freeze({fox:'🦊',robot:'🤖',alien:'👽',crown:'👑'});
-  const PAGES = new Set(['home','games','community','account','settings']);
+  const PAGES = new Set(['home','games','play','community','account','settings']);
+  const GAME_URL = '../preview-auth-test.html';
   let supa=null, user=null, profile=null, mode='login', busy=false;
   const show=(id,visible)=>el(id).classList.toggle('hidden',!visible);
   const message=(text)=>{el('accountNotice').textContent=text;};
   function go(page){
     if(!PAGES.has(page))page='home';
+    if(page==='play'){
+      const frame=el('gameFrame');
+      const identity=user?.id||'guest';
+      // The frame is same-origin and reads the shared Supabase Auth storage key.
+      // Reload only when the signed-in player changes, not on every menu switch.
+      if(frame.dataset.player!==identity || frame.getAttribute('src')!==GAME_URL){
+        frame.dataset.player=identity;
+        frame.setAttribute('src',GAME_URL);
+      }
+    }
     for(const name of PAGES)show('page-'+name,name===page);
     document.querySelectorAll('.mainnav [data-page]').forEach(button=>{
       const active=button.dataset.page===page;
@@ -20,6 +31,13 @@
       else button.removeAttribute('aria-current');
     });
     history.replaceState(null,'','#'+(page==='home'?'domu':page));
+  }
+  function closeGameOnIdentityChange(){
+    // Unload an old iframe session on account switch/logout, so another player
+    // cannot briefly see the previous user's account/game data.
+    const frame=el('gameFrame');
+    frame.removeAttribute('src');
+    frame.dataset.player='';
   }
   function render(){
     const loggedIn=!!user;
@@ -99,6 +117,7 @@
       if(response.error)throw response.error;
       el('password').value='';
       if(response.data?.session && response.data?.user){
+        closeGameOnIdentityChange();
         await refresh();message('✅ Úspěšně přihlášeno.');
       }else{
         message('📧 Zkontroluj e-mail a potvrď účet. Odkaz potřebuje povolenou návratovou adresu v Supabase.');
@@ -135,7 +154,7 @@
     try{
       const res=await supa.auth.signOut({scope:'local'});
       if(res.error)throw res.error;
-      user=null;profile=null;go('home');
+      user=null;profile=null;closeGameOnIdentityChange();go('home');
       message('🎮 Odhlášeno. Můžeš hrát jako host.');
     }catch(_){message('⚠️ Odhlášení se nezdařilo.');}
     finally{busy=false;render();}
