@@ -15,6 +15,11 @@
     <a href="#domu" class="brand" data-page="home" aria-label="FOXEY Arcade – domů"><span class="brand-icon">🦊</span>
       <span><strong>FOXEY <em>ARCADE</em></strong><small>Jeden účet. Spousta her.</small></span></a>
     <div class="topright"><span class="status" id="connectionStatus">Načítám účet…</span>
+      <div class="headerwallet" id="headerWallet" aria-label="Aktuální postup Guess the Game">
+        <span class="resource" title="XP v Guess the Game">✨ <b id="headerXp">—</b> XP</span>
+        <span class="resource" title="Krystaly z Guess the Game">💎 <b id="headerShards">—</b></span>
+        <span class="resource" title="Korunky z Guess the Game">👑 <b id="headerCrowns">—</b></span>
+      </div>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName">Host</span></button></div>
   </header>
 
@@ -35,6 +40,19 @@
         <div class="actions"><button class="primary" type="button" data-page="games">🎮 Prozkoumat hry</button>
           <button class="secondary" type="button" data-page="account">👤 Můj účet</button></div>
       </div>
+      <section class="progresscard" id="homeProgress" aria-label="Aktuální postup v Guess the Game">
+        <div class="progresscard-title"><div><span class="eyebrow">TVŮJ CLOUDOVÝ POSTUP</span><h2>🎮 Guess the Game</h2></div>
+          <button class="secondary progressRefresh" type="button" data-action="refreshProgress" title="Znovu načíst z cloudu">↻ Aktualizovat</button></div>
+        <p class="small" id="homeProgressStatus" aria-live="polite">Přihlas se, aby se načetly statistiky.</p>
+        <div class="statgrid">
+          <div class="stat"><span>✨ XP</span><strong id="homeXp">—</strong></div>
+          <div class="stat"><span>🎖️ Level</span><strong id="homeLevel">—</strong></div>
+          <div class="stat"><span>💎 Krystaly</span><strong id="homeShards">—</strong></div>
+          <div class="stat"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
+          <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
+        </div>
+        <p class="note">Aktuální čísla pocházejí z cloudového postupu Guess the Game. Zatím nejde o samostatnou společnou peněženku FOXEY Arcade.</p>
+      </section>
       <div class="sectionline"><h2>Tvůj herní domov</h2><span class="small">Základ platformy • vývojová verze</span></div>
       <div class="threegrid">
         <article class="tile"><div class="tileicon">👤</div><h3>Jeden účet</h3><p>Přihlášení platí pro FOXEY Arcade. Používáme stejné Supabase účty jako v testovací Guess the Game.</p></article>
@@ -97,8 +115,13 @@
           <select id="avatar"><option value="fox">🦊 Liška</option><option value="robot">🤖 Robot</option><option value="alien">👽 Mimozemšťan</option><option value="crown">👑 Koruna</option></select>
           <button class="primary" id="profileSave" type="submit">Uložit profil</button>
         </form>
-        <div class="wallet"><div><span>💎 Diamanty</span><strong>—</strong></div><div><span>👑 Korunky</span><strong>—</strong></div></div>
-        <p class="note">Sdílené zůstatky zatím nezobrazujeme, dokud nebudou bezpečně uložené na serveru. Stávající odměny Guess the Game zůstávají nedotčené.</p>
+        <section class="gameprofile-summary">
+          <div class="progresscard-title"><div><h3>🎮 Postup Guess the Game</h3><p class="small" id="accountProgressStatus" aria-live="polite">Načítám postup…</p></div>
+            <button class="secondary progressRefresh" type="button" data-action="refreshProgress">↻ Obnovit</button></div>
+          <div class="wallet"><div><span>✨ XP</span><strong id="accountXp">—</strong></div><div><span>🎖️ Level</span><strong id="accountLevel">—</strong></div>
+            <div><span>💎 Krystaly</span><strong id="accountShards">—</strong></div><div><span>👑 Korunky</span><strong id="accountCrowns">—</strong></div></div>
+          <p class="note">Hodnoty se načítají pouze pro tvůj účet z uloženého postupu Guess the Game. Herní odměny tím nekopírujeme ani nepřipisujeme dvakrát. Společnou peněženku pro všechny minihry dokončíme později.</p>
+        </section>
         <button class="secondary" id="signOut" type="button">Odhlásit se</button>
       </div>
     </section>
