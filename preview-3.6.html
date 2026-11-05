@@ -103,6 +103,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
 @media(max-width:365px){.challenge-score-columns{grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr);gap:4px}.challenge-score-columns strong{font-size:22px}.challenge-actions .tool-action{font-size:10px}.challenge-hero{padding:16px 12px}}
 @media(prefers-reduced-motion:reduce){.challenge-cta{transition:none!important}}
 
+.sync-options{margin-top:12px;border:1px solid #354565;border-radius:12px;padding:11px;background:#101b31}.sync-options>summary{cursor:pointer;font-size:12px;font-weight:800;color:#a6f4f0;line-height:1.6}.sync-options[open]>summary{margin-bottom:12px}.sync-options .save-code{margin-top:8px}.sync-options button{margin-top:8px}#backupAdvanced>section{margin-top:10px}
 </style>
 </head>
 <body>
@@ -223,28 +224,42 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <label class="preference"><span data-i18n="soundsLabel">🔊 Zvukové efekty</span><input type="checkbox" id="soundsToggle" aria-label="Zvukové efekty"></label>
         <label class="preference"><span data-i18n="hapticsLabel">📳 Vibrace při odpovědi</span><input type="checkbox" id="hapticsToggle" aria-label="Vibrace při odpovědi"></label>
       </section>
-      <section class="profile-tools">
+      <section class="profile-tools" id="syncSection">
         <h2 data-i18n="syncTitle">☁️ SYNCHRONIZACE POSTUPU</h2>
-        <p class="save-help" data-i18n="syncHelp">Volitelné propojení webu a Androidu bez účtu. Kód chraň jako heslo. Hra funguje i offline.</p>
+        <p class="save-help" data-i18n="syncHelp">Jednou propoj web a Android. Potom se postup synchronizuje automaticky, i když hraješ offline.</p>
         <p class="save-help" id="syncStatus" role="status" aria-live="polite"></p>
-        <div class="tool-buttons">
-          <button class="tool-action primary" id="syncCreate" data-i18n="syncCreate">VYTVOŘIT PROPOJENÍ</button>
-          <button class="tool-action" id="syncNow" data-i18n="syncNow">SYNCHRONIZOVAT</button>
+        <div id="syncSetup">
+          <button type="button" class="tool-action primary" id="syncCreate" data-i18n="syncCreate" style="width:100%">ZAPNOUT CLOUDOVÉ UKLÁDÁNÍ</button>
+          <details class="sync-options" id="syncJoinDetails">
+            <summary data-i18n="syncHaveCode">Už mám kód z jiného zařízení</summary>
+            <p class="save-help" data-i18n="syncCodeHelp">Zadej soukromý propojovací kód ze svého druhého zařízení.</p>
+            <textarea class="save-code" id="syncCode" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód propojení" placeholder="GTGS1:..."></textarea>
+            <button type="button" class="tool-action primary" id="syncConnect" data-i18n="syncConnect" style="width:100%">PROPOJIT ZAŘÍZENÍ</button>
+          </details>
         </div>
-        <textarea class="save-code" id="syncCode" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód propojení" placeholder="GTGS1:..."></textarea>
-        <div class="tool-buttons">
-          <button class="tool-action primary" id="syncConnect" data-i18n="syncConnect">PROPOJIT ZAŘÍZENÍ</button>
-          <button class="tool-action" id="syncCopy" data-i18n="syncCopy">📋 KOPÍROVAT KÓD</button>
+        <div id="syncLinked" class="hidden">
+          <p class="save-help" data-i18n="syncAutoHint">Postup se průběžně synchronizuje s cloudem. Nic dalšího mačkat nemusíš.</p>
+          <details class="sync-options" id="syncManage">
+            <summary data-i18n="syncManageTitle">⚙️ Spravovat propojení</summary>
+            <p class="save-help" data-i18n="syncPrivateHint">Tento kód funguje jako heslo k hernímu postupu. Nesdílej ho veřejně.</p>
+            <textarea class="save-code" id="syncLinkedCode" readonly spellcheck="false" aria-label="Propojovací kód (jen pro čtení)" placeholder="GTGS1:..."></textarea>
+            <div class="tool-buttons">
+              <button type="button" class="tool-action" id="syncCopy" data-i18n="syncCopy">📋 KOPÍROVAT KÓD</button>
+              <button type="button" class="tool-action" id="syncNow" data-i18n="syncNow">SYNCHRONIZOVAT NYNÍ</button>
+            </div>
+            <button type="button" class="tool-action" id="syncDisconnect" data-i18n="syncDisconnect">ODPOJIT TOTO ZAŘÍZENÍ</button>
+          </details>
         </div>
         <div id="syncConflict" class="hidden">
           <p class="save-help" data-i18n="syncConflictHelp">Obě zařízení mají rozdílný postup. Vyber, který zachovat; druhým klepnutím potvrď.</p>
           <div class="tool-buttons">
-            <button class="tool-action" id="syncCloud" data-i18n="syncCloud">POUŽÍT CLOUD</button>
-            <button class="tool-action" id="syncDevice" data-i18n="syncDevice">POUŽÍT TOTO ZAŘÍZENÍ</button>
+            <button type="button" class="tool-action" id="syncCloud" data-i18n="syncCloud">POUŽÍT CLOUD</button>
+            <button type="button" class="tool-action" id="syncDevice" data-i18n="syncDevice">POUŽÍT TOTO ZAŘÍZENÍ</button>
           </div>
         </div>
-        <button class="tool-action" id="syncDisconnect" data-i18n="syncDisconnect">ODPOJIT TOTO ZAŘÍZENÍ</button>
       </section>
+      <details class="sync-options" id="backupAdvanced">
+        <summary data-i18n="backupOptions">💾 Ruční záloha postupu (pokročilé)</summary>
       <section class="profile-tools">
         <h2 data-i18n="backupTitle">💾 ZÁLOHA POSTUPU</h2>
         <p class="save-help" data-i18n="backupHelp">Vygeneruj kód, zkopíruj si ho a použij na jiném zařízení. Zahrnuje XP, statistiky, odznaky a nastavení. Nezahrnuje rozehranou otázku.</p>
@@ -252,6 +267,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <textarea id="saveCode" class="save-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Záložní kód" placeholder="GTG35:..."></textarea>
         <button type="button" class="tool-action primary" id="restoreSave" style="width:100%" data-i18n="restoreSave">OBNOVIT Z KÓDU</button>
       </section>
+      </details>
     </main>
 
     <main id="shop" class="screen hidden">
@@ -331,8 +347,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       themeClassic:'Klasický neon',themeClassicDesc:'Původní kombinace tyrkysové a fialové',themeRetro:'Retro Wave',themeRetroDesc:'Zlaté a růžové retro barvy',themeRoyal:'Královský',themeRoyalDesc:'Fialová a zlatá pro vítěze',themeOcean:'Deep Blue',themeOceanDesc:'Oceánská modrá a chladné světlo',
       avatarAlien:'Herní vetřelec',avatarAlienDesc:'Původní avatar 👾',avatarFox:'Lišák',avatarFoxDesc:'Liška do každého kvízu 🦊',avatarRobot:'Robot',avatarRobotDesc:'Ocelový společník 🤖',avatarCrown:'Král',avatarCrownDesc:'Královský avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exkluzivní avatar z truhly', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Vizuální odměny mají vlastní ikonky a rarity.',
       onlineCreated:'Online výzva vytvořena!',onlineFailed:'Online služba je nedostupná. Zkus to později.',onlineFinished:'Tento souboj už máš dohraný.',onlineReady:'Oba hráči dohráli. Výsledek je připraven!',onlineWaiting:'Čekáme na soupeře. Skóre se doplní automaticky.',onlineRetry:'Výsledek čeká na odeslání. Zkus zkontrolovat skóre při připojení.',settingsTitle:'⚙️ NASTAVENÍ', soundsLabel:'🔊 Zvukové efekty', hapticsLabel:'📳 Vibrace při odpovědi',
-      syncTitle:'☁️ SYNCHRONIZACE POSTUPU',syncHelp:'Volitelné propojení webu a Androidu bez účtu. Kód chraň jako heslo. Hra funguje i offline.',
-      syncCreate:'VYTVOŘIT PROPOJENÍ',syncConnect:'PROPOJIT ZAŘÍZENÍ',syncNow:'SYNCHRONIZOVAT',syncCopy:'📋 KOPÍROVAT KÓD',syncDisconnect:'ODPOJIT TOTO ZAŘÍZENÍ',syncConflictHelp:'Obě zařízení mají rozdílný postup. Vyber, který zachovat; druhým klepnutím potvrď.',syncCloud:'POUŽÍT CLOUD',syncDevice:'POUŽÍT TOTO ZAŘÍZENÍ',
+      syncTitle:'☁️ SYNCHRONIZACE POSTUPU',syncHelp:'Jednou propoj web a Android. Pak se postup synchronizuje automaticky, i když hraješ offline.',syncHaveCode:'Už mám kód z jiného zařízení',syncCodeHelp:'Zadej soukromý propojovací kód ze svého druhého zařízení.',syncAutoHint:'Postup se průběžně synchronizuje s cloudem. Nic dalšího mačkat nemusíš.',syncManageTitle:'⚙️ Spravovat propojení',syncPrivateHint:'Tento kód funguje jako heslo k hernímu postupu. Nesdílej ho veřejně.',backupOptions:'💾 Ruční záloha postupu (pokročilé)',
+      syncCreate:'ZAPNOUT CLOUDOVÉ UKLÁDÁNÍ',syncConnect:'PROPOJIT ZAŘÍZENÍ',syncNow:'SYNCHRONIZOVAT NYNÍ',syncCopy:'📋 KOPÍROVAT KÓD',syncDisconnect:'ODPOJIT TOTO ZAŘÍZENÍ',syncConflictHelp:'Obě zařízení mají rozdílný postup. Vyber, který zachovat; druhým klepnutím potvrď.',syncCloud:'POUŽÍT CLOUD',syncDevice:'POUŽÍT TOTO ZAŘÍZENÍ',
       backupTitle:'💾 ZÁLOHA POSTUPU',backupHelp:'Vytvoř kód a ulož si ho. Přenese XP, statistiky, odznaky a nastavení mezi zařízeními. Rozehranou otázku nepřenáší.',
       generateSave:'VYTVOŘIT KÓD',copySave:'📋 KOPÍROVAT',restoreSave:'OBNOVIT Z KÓDU',
       backupReady:'✅ Záložní kód je připraven.',backupCopied:'📋 Kód zkopírován.',copyManual:'Vyber kód a zkopíruj ho ručně.',
@@ -388,8 +404,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       themeClassic:'Classic neon',themeClassicDesc:'Original cyan and purple colors',themeRetro:'Retro Wave',themeRetroDesc:'Golden and pink retro palette',themeRoyal:'Royal',themeRoyalDesc:'Purple and gold for champions',themeOcean:'Deep Blue',themeOceanDesc:'Ocean blues with cool glow',
       avatarAlien:'Arcade alien',avatarAlienDesc:'Original avatar 👾',avatarFox:'Fox',avatarFoxDesc:'A fox for your gaming quizzes 🦊',avatarRobot:'Robot',avatarRobotDesc:'Steel friend 🤖',avatarCrown:'King',avatarCrownDesc:'Royal avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exclusive chest avatar', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Visual rewards now use custom icons and rarities.',
       onlineCreated:'Online challenge created!',onlineFailed:'Online service is unavailable. Try again later.',onlineFinished:'You already finished this duel.',onlineReady:'Both players finished. Final score is ready!',onlineWaiting:'Waiting for your opponent. Score will update automatically.',onlineRetry:'Your score is waiting to upload. Check again when online.',settingsTitle:'⚙️ SETTINGS',soundsLabel:'🔊 Sound effects',hapticsLabel:'📳 Answer vibration',
-      syncTitle:'☁️ CLOUD PROGRESS SYNC',syncHelp:'Optional web/Android linking without an account. Keep the code private like a password. Offline play still works.',
-      syncCreate:'CREATE LINK',syncConnect:'LINK DEVICE',syncNow:'SYNC NOW',syncCopy:'📋 COPY CODE',syncDisconnect:'DISCONNECT THIS DEVICE',syncConflictHelp:'Both devices have changed progress. Choose what to keep and tap the same choice again to confirm.',syncCloud:'USE CLOUD',syncDevice:'USE THIS DEVICE',
+      syncTitle:'☁️ CLOUD PROGRESS SYNC',syncHelp:'Link web and Android once. Progress syncs automatically, even when you play offline.',syncHaveCode:'I already have a code from another device',syncCodeHelp:'Enter the private code from your other device.',syncAutoHint:'Your progress syncs automatically. No need to press anything.',syncManageTitle:'⚙️ Manage linked devices',syncPrivateHint:'This code works like a password for your game progress. Do not share it publicly.',backupOptions:'💾 Manual backup (advanced)',
+      syncCreate:'TURN ON CLOUD SAVE',syncConnect:'LINK DEVICE',syncNow:'SYNC NOW',syncCopy:'📋 COPY CODE',syncDisconnect:'DISCONNECT THIS DEVICE',syncConflictHelp:'Both devices have changed progress. Choose what to keep and tap the same choice again to confirm.',syncCloud:'USE CLOUD',syncDevice:'USE THIS DEVICE',
       backupTitle:'💾 SAVE BACKUP',backupHelp:'Generate a code and keep it safe. Transfer XP, stats, badges and preferences between devices. Unfinished rounds are not included.',
       generateSave:'GENERATE CODE',copySave:'📋 COPY',restoreSave:'RESTORE FROM CODE',
       backupReady:'✅ Backup code is ready.',backupCopied:'📋 Code copied.',copyManual:'Select and copy the code manually.',
