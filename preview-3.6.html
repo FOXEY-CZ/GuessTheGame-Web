@@ -950,7 +950,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     updateText('mediumDesc',T(medium?'mediumDesc':'mediumLock'));updateText('hardDesc',T(hard?'hardDesc':'hardLock'));updateText('mediumLock',medium?'→':'🔒');updateText('hardLock',hard?'→':'🔒');
     const valid = session && Array.isArray(session.ids) && session.ids.length && session.ids.every(id=>byId[id]) && session.idx>=0 && session.idx<session.ids.length && session.lives>0;
     if(!valid){session=null;saveSession();}element('resume').classList.toggle('hidden',!valid);if(valid)updateText('resumeDesc',fmt(T('session'),{round:session.idx+1,total:session.ids.length}));
-    show('home');
+    show('home');window.dispatchEvent(new Event('gtg-home-screen'));
   }
   function dailyReward(){if(profile.dailyClaimed===date()){toast(T('alreadyClaimed'));return;}playFeedback(true);profile.dailyClaimed=date();profile.xp+=20;saveProfile();burst();home();toast(T('rewardToast'));}
   function makeIds(seed,mode){
@@ -1101,9 +1101,11 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid_profile');
       profile={...blankProfile(),...JSON.parse(JSON.stringify(value))};
       fixCosmetics();normalizeChallengeResults();
-      session=null;result=null;challengeDraft=null;saveProfile();saveSession();
-      renderProfile();
+      saveProfile();
+      if(screen==='profile')renderProfile();
+      else if(screen==='home')home();
     },
+    canApply:()=>screen==='home'||screen==='profile',
     language:()=>lang
   };
   window.gtgBack=()=>{if(screen==='game'||screen==='profile'||screen==='result'||screen==='shop'||screen==='challenge'){home();return true;}return false;};
