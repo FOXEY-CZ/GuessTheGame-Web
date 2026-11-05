@@ -4,7 +4,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const source = fs.readFileSync('account-test.js','utf8');
+const source = fs.readFileSync('account-merge.js','utf8') + '\n' + fs.readFileSync('account-test.js','utf8');
 const html = fs.readFileSync('preview-auth-test.html','utf8');
 const db = new Map();
 const oldId='aaaaaaaa-1111-4222-8333-bbbbbbbbbbbb', oldToken='f'.repeat(64);
@@ -156,6 +156,30 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
   assert.equal(offline.getXP(),0,'offline guest must be separate from cached account');
   assert.equal(db.get(b.user.id).profile.xp,84);
 
+  // Guest merge into an EXISTING account must preview, never add XP together,
+  // retain original guest save, and be idempotent on repeat.
+  const merged=browser({name:'Account merge',initialXP:126});
+  await merged.settle();
+  await merged.click('authShowLogin');
+  merged.input('authEmailInput','player@example.test');
+  merged.input('authPasswordInput','password12345');
+  await merged.click('authSubmit');
+  await merged.runTimers();
+  assert.equal(merged.getXP(),84,'existing account loaded before merge');
+  await merged.click('authMergeGuest');
+  assert.equal(db.get(merged.user.id).profile.xp,84,'preview must not change cloud XP');
+  assert.match(merged.el('authMergePreview').textContent,/84 XP.*126 XP.*126 XP/,'preview shows both saves and result');
+  await merged.click('authMergeGuest');
+  assert.equal(db.get(merged.user.id).profile.xp,126,'merge conservatively keeps maximum XP');
+  assert.equal(merged.getXP(),126,'merged result immediately visible');
+  assert.equal(JSON.parse(merged.storage.get('gtg.accountTest.v1.guestProfile')).xp,126,'original guest preserved');
+  assert.equal(JSON.parse(merged.storage.get('gtg.accountTest.v1.accountCache.'+merged.user.id+'.beforeMerge')).profile.xp,84,'old account backup preserved');
+  const mergeRevision=db.get(merged.user.id).revision;
+  await merged.click('authMergeGuest');
+  assert.equal(db.get(merged.user.id).revision,mergeRevision,'repeat merge must not save or duplicate rewards');
+  await merged.click('authLogout');
+  assert.equal(merged.getXP(),126,'guest remains intact after logging out from merged account');
+
   // Old GTGS1 cloud saves can be copied (never destroyed) into a NEW account.
   const cStorage=new Map();
   cStorage.set('gtg.syncTest.v1.cloudSync',JSON.stringify({id:oldId,token:oldToken,revision:3,base:'{}'}));
@@ -183,5 +207,5 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
   await c.click('deleteProgressFinal');
   assert.equal(db.has(c.user.id),false);
   assert.ok(c.user,'Auth identity remains after game data deletion');
-  console.log('PASS account-flow: guest, signup, cloud sync, cross-browser, logout, offline isolation, legacy copy, guarded deletion');
+  console.log('PASS account-flow: guest, signup, cloud sync, cross-browser, logout, offline isolation, existing account safe merge, legacy copy, guarded deletion');
 })().catch(error=>{console.error(error);process.exitCode=1;});
