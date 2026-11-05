@@ -1,0 +1,58 @@
+name: Verify FOXEY Arcade public preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'arcade/**'
+      - '.github/workflows/verify-arcade-public.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and publishable-assets checks
+        run: |
+          set -euo pipefail
+          node --check arcade/app.js
+          node --check arcade/config.js
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const html=fs.readFileSync('arcade/index.html','utf8');
+          const js=fs.readFileSync('arcade/app.js','utf8');
+          const config=fs.readFileSync('arcade/config.js','utf8');
+          for(const id of ['page-home','page-games','page-community','page-account','page-settings','authForm','nickname','avatar','signOut'])
+            if(!html.includes('id="'+id+'"')) throw Error('Missing UI element '+id);
+          if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./config.js'))
+            throw Error('Missing relative asset links');
+          if(!config.includes('sb_publishable_')||/sb_secret_|ghp_[A-Za-z0-9]{20,}|postgres:\/\//.test(config))
+            throw Error('Unexpected key or secret in public config');
+          if(js.includes("from('gtg36_account_progress')"))
+            throw Error('Arcade shell must not mutate Guess the Game saves');
+          if(!html.includes('preview-3.6.html'))
+            throw Error('No link to stable Guess the Game');
+          console.log('Arcade preview verified: UI, scripts, public key and game-save isolation.');
+          NODE
+      - name: Verify published preview
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6; do
+            if curl -fLsS --max-time 15 'https://foxey-cz.github.io/GuessTheGame-Web/arcade/index.html' -o /tmp/arcade.html && \
+               grep -q 'FOXEY ARCADE' /tmp/arcade.html && \
+               curl -fLsS --max-time 15 'https://foxey-cz.github.io/GuessTheGame-Web/arcade/app.js' -o /tmp/arcade.js; then
+              node --check /tmp/arcade.js
+              echo 'Public Arcade preview is online.'
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Public preview not available yet' >&2
+          exit 1
