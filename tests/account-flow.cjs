@@ -41,7 +41,12 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
     getUser:async()=>{if(authFails)throw Error('network_down');return {data:{user:authenticatedUser},error:null}},
     signUp:async({email})=>{authenticatedUser={id:email.startsWith('legacy')?'cccccccc-cccc-4ccc-8ccc-cccccccccccc':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',email};return {data:{session:{access_token:'fake'},user:authenticatedUser},error:null}},
     signInWithPassword:async({email})=>{authenticatedUser={id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',email};return {data:{session:{access_token:'fake'},user:authenticatedUser},error:null}},
-    signOut:async()=>{authenticatedUser=null;return {error:null}}
+    signOut:async()=>{authenticatedUser=null;return {error:null}},
+    resetPasswordForEmail:async(email,{redirectTo})=>{
+      auth.lastReset={email,redirectTo};return {error:null};
+    },
+    updateUser:async({password})=>{auth.updatedPassword=password;return {error:null}},
+    onAuthStateChange:cb=>{auth.emitAuth=cb;return {data:{subscription:{unsubscribe(){}}}}}
   };
   const from=()=>{
     let action='read',data=null,where={};
@@ -218,6 +223,33 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
   assert.equal(oldProfile.xp,135,'old cloud data preserved');
   assert.ok(oldLoads>=2,'old cloud revalidated before committing');
 
+  // Password recovery must request an email without demanding the old password.
+  const p=browser({name:'Recovery',initialXP:77});
+  await p.settle();
+  await p.click('authShowLogin');
+  await p.click('authForgotPassword');
+  assert.equal(p.el('authPasswordInput').classList.contains('hidden'),true,
+    'request form must not require an existing password');
+  p.input('authEmailInput','player@example.test');
+  await p.click('authSubmit');
+  assert.equal(p.auth.lastReset.email,'player@example.test');
+  assert.equal(p.auth.lastReset.redirectTo,'https://test.example/preview-auth-test.html',
+    'reset email must return to playable test page');
+  assert.equal(p.getXP(),77,'reset email must preserve guest progress');
+  p.auth.emitAuth('PASSWORD_RECOVERY',{user:{id:'fake-recovery-user'}});
+  assert.equal(p.el('authRecoveryOverlay').classList.contains('hidden'),false,
+    'verified recovery link must open password editor');
+  p.input('authNewPassword','differentA123');
+  p.input('authNewPasswordAgain','differentB123');
+  await p.click('authRecoverySave');
+  assert.equal(p.auth.updatedPassword,undefined,'mismatched new passwords must be rejected');
+  p.input('authNewPasswordAgain','differentA123');
+  await p.click('authRecoverySave');
+  assert.equal(p.auth.updatedPassword,'differentA123',
+    'new password should be sent only after verified reset link');
+  assert.equal(p.el('authRecoveryOverlay').classList.contains('hidden'),true);
+  assert.equal(p.getXP(),77,'password reset must not alter XP');
+
   // No deletion without exact confirmation phrase; deletion only of cloud save.
   await c.click('deleteProgressStart');
   c.input('deleteProgressPhrase','NOT YET');
@@ -227,5 +259,5 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
   await c.click('deleteProgressFinal');
   assert.equal(db.has(c.user.id),false);
   assert.ok(c.user,'Auth identity remains after game data deletion');
-  console.log('PASS account-flow: guest, signup, cloud sync, cross-browser, logout, offline isolation, existing account safe merge, legacy copy, guarded deletion');
+  console.log('PASS account-flow: guest, signup, cloud sync, cross-browser, logout, offline isolation, existing account safe merge, legacy copy, guarded deletion, verified password recovery');
 })().catch(error=>{console.error(error);process.exitCode=1;});
