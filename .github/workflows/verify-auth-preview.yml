@@ -8,6 +8,8 @@ on:
       - 'account-test.js'
       - 'account-merge.js'
       - 'tests/account-flow.cjs'
+      - 'tests/verify-arcade-integration.cjs'
+      - 'arcade/avatars.js'
       - '.github/workflows/verify-auth-preview.yml'
   workflow_dispatch:
 
@@ -29,6 +31,7 @@ jobs:
           node --check account-config.js
           node --check tests/account-flow.cjs
           node tests/account-flow.cjs
+          node tests/verify-arcade-integration.cjs
           python3 - <<'PY'
           from pathlib import Path
           import re
