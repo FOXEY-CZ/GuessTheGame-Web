@@ -189,6 +189,73 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .next-button{
   border-color:var(--theme-tile-border);
 }
 
+
+/* FOXEY Arcade v2 — full-viewport theme artwork in the embedded game.
+   The earlier soft gradients looked nearly black below the hero panel.
+   Keep these backgrounds fixed across the entire scrolling document. */
+html.theme-retro,html.theme-royal,html.theme-ocean{min-height:100%;background-attachment:fixed}
+html.theme-retro{background-color:#55265d}
+html.theme-royal{background-color:#392559}
+html.theme-ocean{background-color:#07516c}
+body.theme-retro{
+  --bg:#351e42;
+  background:
+    radial-gradient(ellipse 88% 67% at 50% 12%,#a352a1 0%,#693776 45%,transparent 100%),
+    radial-gradient(ellipse 72% 65% at 7% 91%,#6e376fcc 0%,transparent 82%),
+    linear-gradient(160deg,#513061 0%,#633a7a 48%,#2c244d 100%);
+  background-attachment:fixed;
+}
+body.theme-royal{
+  --bg:#2a2147;
+  background:
+    radial-gradient(ellipse 85% 63% at 53% 12%,#8160b5 0%,#523a85 48%,transparent 100%),
+    radial-gradient(ellipse 72% 65% at 89% 89%,#846344b3 0%,transparent 80%),
+    linear-gradient(158deg,#513a7d 0%,#624b90 47%,#29294f 100%);
+  background-attachment:fixed;
+}
+body.theme-ocean{
+  --bg:#08435a;
+  background:
+    radial-gradient(ellipse 90% 71% at 50% 20%,#2b9cb5 0%,#126b88 50%,transparent 96%),
+    radial-gradient(ellipse 75% 72% at 11% 93%,#1686a3ba 0%,transparent 85%),
+    linear-gradient(165deg,#0d5875 0%,#12849d 48%,#084461 100%);
+  background-attachment:fixed;
+}
+body:is(.theme-retro,.theme-royal,.theme-ocean)::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+}
+body.theme-retro::before{
+  background:
+    repeating-linear-gradient(0deg,transparent 0 29px,#ffb5e80c 30px 31px),
+    repeating-linear-gradient(90deg,transparent 0 45px,#ffb5e80b 46px 47px),
+    radial-gradient(ellipse at 50% 83%,#e8a3d51f,transparent 65%);
+}
+body.theme-royal::before{
+  background:
+    radial-gradient(circle at 13% 21%,#ffe2a654 0 2px,transparent 4px),
+    radial-gradient(circle at 84% 39%,#ffe2a644 0 2px,transparent 4px),
+    radial-gradient(circle at 68% 83%,#ffe2a644 0 1px,transparent 4px),
+    radial-gradient(ellipse at 50% 88%,#c9a0ff23,transparent 70%);
+  background-size:420px 450px,570px 520px,350px 420px,100% 100%;
+}
+body.theme-ocean::before{
+  background:
+    repeating-radial-gradient(ellipse 100% 42% at 50% 106%,transparent 0 34px,#9beeff13 36px 38px,transparent 41px 92px),
+    linear-gradient(111deg,transparent 5%,#c0f9ff0b 23%,transparent 36% 55%,#b6f6ff10 68%,transparent 82%);
+}
+body:is(.theme-retro,.theme-royal,.theme-ocean) .app{
+  isolation:isolate;
+}
+body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
+  box-shadow:0 18px 48px #07112185,inset 0 1px 0 #ffffff14;
+}
+@media(min-width:650px){
+  body:is(.theme-retro,.theme-royal,.theme-ocean) .app{
+    max-width:690px;
+    padding-left:24px;padding-right:24px;
+  }
+}
+
 </style>
 </head>
 <body>
