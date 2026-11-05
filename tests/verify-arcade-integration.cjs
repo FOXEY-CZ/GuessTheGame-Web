@@ -36,6 +36,29 @@ assert.ok(arcadeHtml.includes('id="homeXp"'),'Game XP must remain visible separa
 assert.ok(arcadeHtml.includes('id="page-shop"'),'Central shop must be present');
 assert.ok(arcadeHtml.includes('./avatars.js'),'Arcade must load the same SVG avatars');
 
+const gameStyle=html.match(/<style>([\s\S]*?)<\/style>/)?.[1];
+assert.ok(gameStyle,'Guess the Game stylesheet is required');
+for(const theme of ['retro','royal','ocean']){
+  assert.ok(gameStyle.includes('html.theme-'+theme+'{background:'),
+    'Full-page backdrop must change for '+theme);
+  assert.ok(gameStyle.includes('body.theme-'+theme+'{'),
+    'Theme-specific background palette must exist for '+theme);
+  const themedRule=gameStyle.slice(gameStyle.lastIndexOf('body.theme-'+theme+'{'));
+  assert.match(themedRule.slice(0,850),/--bg:#[0-9a-f]{6}/,
+    'Theme '+theme+' needs its own page background color');
+  assert.match(themedRule.slice(0,850),/background:radial-gradient/,
+    'Theme '+theme+' must color the entire game background');
+}
+assert.ok(html.includes("document.documentElement.classList.add('theme-'+theme)"),
+  'Changing the theme must update the root document as well as the body');
+assert.ok(gameStyle.includes(' .glow-card{')&&gameStyle.includes('var(--theme-panel-top)'),
+  'Quiz/question cards must use the currently equipped theme palette');
+assert.ok(gameStyle.includes(' .answer:not(.correct):not(.wrong)'),
+  'Quiz answer surfaces must use the same game theme, preserving correct/wrong states');
+assert.ok(gameStyle.includes(' .mode-main,')&&gameStyle.includes('var(--theme-cta-from)'),
+  'Main game actions must follow the equipped theme');
+
+
 const ctx={window:{}};
 vm.runInNewContext(arts,ctx);
 for(const id of ['fox','alien','robot','crown']){
@@ -49,4 +72,4 @@ assert.ok(inlineScripts.length>=2,'Expected original game inline scripts');
 for(const [,source] of inlineScripts) new vm.Script(source);
 new vm.Script(account);
 new vm.Script(arcade);
-console.log('PASS: one shared wallet, central theme/chest store, separate game/global XP, saved avatar artwork, JavaScript syntax.');
+console.log('PASS: one shared wallet, central shop, separate XP, shared avatars and fully themed game backgrounds, cards, answers and actions.');
