@@ -1,0 +1,61 @@
+name: Verify isolated Guest and Account web preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'preview-auth-test.html'
+      - 'account-config.js'
+      - 'account-test.js'
+      - '.github/workflows/verify-auth-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate account code and isolated storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check account-test.js
+          node --check account-config.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html=Path('preview-auth-test.html').read_text()
+          source=Path('account-test.js').read_text()
+          config=Path('account-config.js').read_text()
+          assert 'gtg.accountTest.v1.' in html and 'gtg.accountTest.v1.' in source
+          assert 'gtg.syncTest.v1.' not in html and 'progress-sync-test.js' not in html
+          assert html.count('id="authSyncNow"')==1
+          assert 'id="authImportGuest"' in html and 'id="authFirstChoice"' in html
+          assert 'id="deleteProgressFinal"' in html
+          assert 'sb_publishable_' in config
+          assert 'service_role' not in config.lower() or 'Never place service_role' in config
+          print('Isolated Guest/Account UI checks passed.')
+          PY
+      - name: Verify pinned official Supabase SDK is reachable
+        run: |
+          curl --fail --location --retry 3 --retry-delay 2 \
+            'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0' \
+            --output /tmp/supabase-sdk.js
+          test "$(wc -c </tmp/supabase-sdk.js)" -gt 20000
+      - name: Verify published GitHub Pages preview and code
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            if curl -fLsS --max-time 20 'https://foxey-cz.github.io/GuessTheGame-Web/preview-auth-test.html' -o /tmp/account-preview.html && \
+               grep -q 'id="authGuest"' /tmp/account-preview.html && \
+               curl -fLsS --max-time 20 'https://foxey-cz.github.io/GuessTheGame-Web/account-test.js' -o /tmp/account-deployed.js; then
+              node --check /tmp/account-deployed.js
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Preview not yet available on GitHub Pages' >&2
+          exit 1
