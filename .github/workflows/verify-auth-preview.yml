@@ -6,6 +6,7 @@ on:
       - 'preview-auth-test.html'
       - 'account-config.js'
       - 'account-test.js'
+      - 'tests/account-flow.cjs'
       - '.github/workflows/verify-auth-preview.yml'
   workflow_dispatch:
 
@@ -24,6 +25,8 @@ jobs:
           set -euo pipefail
           node --check account-test.js
           node --check account-config.js
+          node --check tests/account-flow.cjs
+          node tests/account-flow.cjs
           python3 - <<'PY'
           from pathlib import Path
           import re
