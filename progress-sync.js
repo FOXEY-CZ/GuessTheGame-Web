@@ -126,6 +126,10 @@
       const localSnapshot = serial(local), cloudSnapshot = serial(remote.profile);
       if (remote.revision !== identity.revision) {
         if (localSnapshot === identity.base) {
+          if (!game.canApply()) {
+            status('☁️ Nový postup čeká na návrat do menu.', '☁️ New cloud progress will load when you return to the menu.');
+            return;
+          }
           identity.revision = remote.revision; identity.base = cloudSnapshot; persist();
           conflict = null; game.setProfile(remote.profile);
           status('✅ Novější postup načtený z cloudu.', '✅ New progress loaded from cloud.');
@@ -226,7 +230,8 @@
   el('syncCloud').addEventListener('click', () => resolve('cloud'));
   el('syncDevice').addEventListener('click', () => resolve('device'));
   el('syncCode').addEventListener('input', () => {confirmCode = '';});
-  window.addEventListener('gtg-profile-screen', refresh);
+  window.addEventListener('gtg-profile-screen', () => {refresh();schedule();});
+  window.addEventListener('gtg-home-screen', schedule);
   window.addEventListener('gtg-profile-saved', schedule);
   window.addEventListener('online', schedule);
   document.addEventListener('visibilitychange', () => {if (!document.hidden) schedule();});
