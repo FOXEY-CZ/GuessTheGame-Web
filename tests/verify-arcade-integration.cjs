@@ -46,7 +46,7 @@ for(const theme of ['retro','royal','ocean']){
   const themedRule=gameStyle.slice(gameStyle.lastIndexOf('body.theme-'+theme+'{'));
   assert.match(themedRule.slice(0,850),/--bg:#[0-9a-f]{6}/,
     'Theme '+theme+' needs its own page background color');
-  assert.match(themedRule.slice(0,850),/background:radial-gradient/,
+  assert.match(themedRule.slice(0,850),/background:\s*radial-gradient/,
     'Theme '+theme+' must color the entire game background');
 }
 assert.ok(html.includes("document.documentElement.classList.add('theme-'+theme)"),
