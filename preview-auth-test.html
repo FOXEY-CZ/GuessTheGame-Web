@@ -467,6 +467,18 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   // Account avatar is owned by FOXEY Arcade; never written into game saves.
   // Guest/legacy game saves keep their original cosmetics intact.
   let arcadeAvatarId = null;
+  // Shared Arcade wallet/theme are *display-only* in the game. Game saves
+  // retain historical cumulative earnings for one-time and incremental sync.
+  let arcadeThemeId = null,arcadeWallet = null;
+  const shownCurrency=key=>arcadeWallet?arcadeWallet[key]:(profile[key]||0);
+  function renderSharedCurrency(){
+    for(const [id,key] of [
+      ['profileShards','shards'],['profileCrowns','crowns'],
+      ['rewardShards','shards'],['rewardCrowns','crowns']
+    ])element(id).textContent=String(shownCurrency(key));
+    if(element('streakHomeGift'))
+      element('streakHomeGift').textContent=(arcadeWallet?.free_chests??profile.freeChests)>0?'🎁':'▫️';
+  }
   let lang = get('lang',previous('lang')||((navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en'));
   if(!translations[lang])lang='en';
   let session = get('session', null);
@@ -535,7 +547,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   function iconToNode(name){const t=document.createElement('template');t.innerHTML=iconSvg(name).trim();return t.content.firstChild;}
   function applyCosmetics(){
     document.body.classList.remove('theme-retro','theme-royal','theme-ocean');
-    if(profile.cosmetics.theme!=='classic')document.body.classList.add('theme-'+profile.cosmetics.theme);
+    const theme=arcadeThemeId||profile.cosmetics.theme;
+    if(theme!=='classic')document.body.classList.add('theme-'+theme);
     const activeAvatar = arcadeAvatarId || profile.cosmetics.avatar;
     const chosen=shopItems.find(x=>x.type==='avatar'&&x.id===activeAvatar)||shopItems.find(x=>x.id==='alien');
     document.querySelectorAll('.player-avatar,.profile-face,.avatar').forEach(n=>{n.replaceChildren(iconToNode(chosen.icon));});
@@ -953,7 +966,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     setTimeout(()=>pop.remove(),3200);
     burst();
   }
-  function home(){translate();fixCosmetics();applyCosmetics();const n=activeDailyStreak();updateText('streakHomeText',fmt(T('dailyStreakHome'),{days:n}));element('streakHomeGift').textContent=profile.freeChests>0?'🎁':'▫️';const p=progress();updateText('levelHome','LEVEL '+p.level);updateText('xpHome',p.fraction+' / 100 XP');element('xpFill').style.width=p.fraction+'%';updateText('bestHome',profile.bestScore+' XP');updateText('playedHome',String(profile.played));updateText('totalHome',String(profile.xp));
+  function home(){translate();fixCosmetics();applyCosmetics();const n=activeDailyStreak();updateText('streakHomeText',fmt(T('dailyStreakHome'),{days:n}));element('streakHomeGift').textContent=(arcadeWallet?.free_chests??profile.freeChests)>0?'🎁':'▫️';const p=progress();updateText('levelHome','LEVEL '+p.level);updateText('xpHome',p.fraction+' / 100 XP');element('xpFill').style.width=p.fraction+'%';updateText('bestHome',profile.bestScore+' XP');updateText('playedHome',String(profile.played));updateText('totalHome',String(profile.xp));
     const claimed=profile.dailyClaimed===date();element('claimDaily').disabled=claimed;updateText('claimDaily',T(claimed?'claimed':'claim'));updateText('dailyGiftInfo',claimed?T('claimed'):T('dailyGiftDesc'));
     const medium=level()>=2,hard=level()>=4;
     element('startMedium').disabled=!medium;element('startHard').disabled=!hard;element('startMedium').classList.toggle('mode-locked',!medium);element('startHard').classList.toggle('mode-locked',!hard);
@@ -1079,7 +1092,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const label=r.lives===0?'Dead':ratio>=.8?'Top':ratio>=.5?'Mid':'Low';updateText('resultHeading',T('result'+label));updateText('resultSubtitle',T('desc'+label));
     updateText('resultIcon',r.lives===0?'💔':r.perfect?'🌟':ratio>=.8?'🏆':ratio>=.5?'🎯':'🎮');updateText('resultScore',String(r.score));updateText('resultCorrect',`${r.correct}/${r.ids.length}`);updateText('resultStreak',String(r.maxStreak));updateText('resultLives',String(r.lives));
     updateText('resultEarned',r.dailyReplay?T('dailyReplay'):fmt(T('earned'),{xp:r.rewardable?r.score:0})+(r.newRecord?' · '+T('record'):''));element('levelUp').classList.toggle('hidden',!r.levelUp);
-    updateText('rewardShards',String(profile.shards||0)); updateText('rewardCrowns',String(profile.crowns||0));
+    updateText('rewardShards',String(shownCurrency('shards'))); updateText('rewardCrowns',String(shownCurrency('crowns')));
     updateText('rewardShardsNote','+'+(r.rewards?.shards||0)); updateText('rewardCrownsNote','+'+(r.rewards?.crowns||0));
     const streakPct=Math.min(100,Math.max(10,r.maxStreak*10)); element('streakRewardFill').style.width=streakPct+'%'; updateText('streakRewardLabel',streakPct+'%');
     const ribbonKey=label==='Top'?'ribbonTop':label==='Mid'?'ribbonMid':label==='Dead'?'ribbonDead':'ribbonLow';
@@ -1100,12 +1113,26 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(challengeOn&&r.challenge.online)refreshOnline(r.challenge);
   }
   function renderProfile(){translate();applyCosmetics();window.dispatchEvent(new Event('gtg-profile-screen'));const p=progress();updateText('profileLevel','LEVEL '+p.level);element('profileXpFill').style.width=p.fraction+'%';updateText('profileXpDetail',p.fraction+' / 100 XP');
-    updateText('profileXp',String(profile.xp));updateText('profilePlayed',String(profile.played));updateText('profileBest',String(profile.bestScore));updateText('profileCorrect',String(profile.totalCorrect));updateText('profileShards',String(profile.shards||0));updateText('profileCrowns',String(profile.crowns||0));
+    updateText('profileXp',String(profile.xp));updateText('profilePlayed',String(profile.played));updateText('profileBest',String(profile.bestScore));updateText('profileCorrect',String(profile.totalCorrect));updateText('profileShards',String(shownCurrency('shards')));updateText('profileCrowns',String(shownCurrency('crowns')));
     const unlockedMap=profile.badgeState||{};
     element('soundsToggle').checked=prefs.sound;element('hapticsToggle').checked=prefs.haptics;
     const list=element('badges');list.replaceChildren();badgeDefs.forEach(def=>{const unlocked=!!unlockedMap[def.id];const tile=document.createElement('div');tile.className='badge-tile'+(unlocked?'':' locked');const art=document.createElement('span');art.className='badge-icon';art.textContent=unlocked?def.icon:'🔒';const label=document.createElement('span');const bold=document.createElement('b');bold.textContent=T(def.name);const small=document.createElement('small');small.textContent=T(def.desc);label.append(bold,small);if(unlocked){const note=document.createElement('span');note.className='badge-note';note.textContent='+'+'2 '+T('crowns');label.append(note);}tile.append(art,label);list.append(tile);});show('profile');
   }
   window.GTGSync={
+    // Shared wallet snapshot is read-only for the game UI. Cannot spend it here.
+    setArcadeWallet:(value)=>{
+      if(value===null){arcadeWallet=null;renderSharedCurrency();return;}
+      if(!value || !['shards','crowns','free_chests'].every(k=>
+        Number.isSafeInteger(value[k])&&value[k]>=0&&value[k]<=1000000000))
+        return;
+      arcadeWallet={shards:value.shards,crowns:value.crowns,free_chests:value.free_chests};
+      renderSharedCurrency();
+    },
+    setArcadeTheme:(id)=>{
+      const next=['classic','retro','royal','ocean'].includes(id)?id:null;
+      if(arcadeThemeId===next)return;
+      arcadeThemeId=next;applyCosmetics();
+    },
     // Called by the authenticated game bridge after reading arcade_profiles.
     // Does not change XP, currencies, purchases or any saved game field.
     setArcadeAvatar:(id)=>{
