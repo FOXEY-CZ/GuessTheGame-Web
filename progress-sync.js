@@ -43,11 +43,21 @@
     } catch (_) {}
   };
   function status(cz, en) { prompt = msg(cz, en); refresh(); }
+  function markSynced(target = link) {
+    if (!target || target !== link) return;
+    target.lastSyncedAt = new Date().toISOString();
+    persist();
+  }
   function refresh() {
     // Present either onboarding or a compact linked-state card.
     el('syncSetup').classList.toggle('hidden', !!link);
     el('syncLinked').classList.toggle('hidden', !link);
     if (link) el('syncLinkedCode').value = linkCode(link);
+    const last = link && link.lastSyncedAt ? new Date(link.lastSyncedAt) : null;
+    el('syncLastSuccess').textContent = !link ? '' : (last && !isNaN(last.getTime())
+      ? msg('Poslední úspěšná synchronizace: ', 'Last successful sync: ')
+          + last.toLocaleString(cs() ? 'cs-CZ' : 'en-US', {dateStyle:'short',timeStyle:'short'})
+      : msg('Zatím bez potvrzené synchronizace.', 'No successful sync confirmed yet.'));
     el('syncStatus').textContent = prompt || (link
       ? msg('✅ Propojeno. Synchronizuje se při připojení.', '✅ Linked. Syncs when online.')
       : msg('Zatím není propojeno. Místní postup zůstává zachován.', 'Not linked. Local progress stays here.'));
@@ -77,7 +87,7 @@
     } finally { clearTimeout(timeout); }
   }
   function schedule() {
-    if (!link) return;
+    if (!link || deleting) return;
     clearTimeout(timer);
     timer = setTimeout(syncNow, 1800);
   }
@@ -96,7 +106,7 @@
       if (!parseCode('GTGS1:' + created.id + ':' + created.token) ||
           !Number.isSafeInteger(created.revision)) throw Error('invalid_response');
       link = {id:created.id,token:created.token,revision:created.revision,base:serial(local)};
-      persist();
+      markSynced();
       status('✅ Propojení vytvořeno! Kód je v nastavení níže. Uchovej ho v soukromí.', '✅ Link created! The code is in the settings below. Keep it private.');
       el('syncManage').open = true;
       el('syncLinkedCode').value = linkCode(link);
@@ -124,7 +134,7 @@
         return;
       }
       link = { ...parsed, revision:remote.revision, base:serial(remote.profile) };
-      persist();
+      markSynced();
       game.setProfile(remote.profile);
       // Keep the linking code visible rather than silently clearing it.
       el('syncCode').value = linkCode(link);
@@ -134,9 +144,14 @@
     finally { busy = false; refresh(); }
   }
   async function syncNow() {
-    if (!link || busy || navigator.onLine === false) return;
+    if (!link || busy || deleting) return;
+    if (navigator.onLine === false) {
+      status('📴 Offline – změny jsou uložené v zařízení, přenesou se po připojení.', '📴 Offline – progress is saved locally and will sync when online.');
+      return;
+    }
     const identity = link;
-    busy = true; refresh();
+    busy = true;
+    status('🔄 Probíhá synchronizace…', '🔄 Sync in progress…');
     try {
       const remote = await request({action:'load',id:identity.id,token:identity.token});
       if (identity !== link) return;
@@ -149,7 +164,7 @@
             status('☁️ Nový postup čeká na návrat do menu.', '☁️ New cloud progress will load when you return to the menu.');
             return;
           }
-          identity.revision = remote.revision; identity.base = cloudSnapshot; persist();
+          identity.revision = remote.revision; identity.base = cloudSnapshot; markSynced(identity);
           conflict = null; game.setProfile(remote.profile);
           status('✅ Novější postup načtený z cloudu.', '✅ New progress loaded from cloud.');
           return;
@@ -171,12 +186,12 @@
           action:'save',id:identity.id,token:identity.token,
           expectedRevision:identity.revision,profile:current
         });
-        identity.revision = saved.revision; identity.base = serial(current);persist();
+        identity.revision = saved.revision; identity.base = serial(current);markSynced(identity);
         conflict = null;
         status('✅ Postup uložený do cloudu.', '✅ Progress saved to cloud.');
         if (serial(game.getProfile()) !== identity.base) schedule();
       } else {
-        conflict = null;
+        conflict = null;markSynced(identity);
         status('✅ Postup je synchronizovaný.', '✅ Progress is synced.');
       }
     } catch (error) {
@@ -196,7 +211,7 @@
       const remote = await request({action:'load',id:link.id,token:link.token});
       if (!valid(remote.profile)) throw Error('invalid_remote');
       if (preference === 'cloud') {
-        link.revision = remote.revision;link.base = serial(remote.profile);persist();
+        link.revision = remote.revision;link.base = serial(remote.profile);markSynced();
         conflict = null;game.setProfile(remote.profile);
       } else {
         const local = game.getProfile();
@@ -205,7 +220,7 @@
           action:'save',id:link.id,token:link.token,
           expectedRevision:remote.revision,profile:local
         });
-        link.revision = saved.revision;link.base = serial(local);persist();conflict = null;
+        link.revision = saved.revision;link.base = serial(local);markSynced();conflict = null;
         if (serial(game.getProfile()) !== link.base) schedule();
       }
       confirmResolution = '';
@@ -270,7 +285,7 @@
   async function deleteAllProgress(){
     if(deleting || busy)return;
     if(el('deleteProgressPhrase').value.trim().toLocaleUpperCase() !== (cs() ? 'SMAZAT' : 'DELETE'))return;
-    deleting = true; el('deleteProgressFinal').disabled=true;
+    deleting = true;clearTimeout(timer); el('deleteProgressFinal').disabled=true;
     el('deleteProgressCancel').disabled=true;
     el('deleteProgressStart').disabled=true;
     el('deleteProgressStatus').textContent=msg('⏳ Mažu připojený cloudový profil a místní postup…','⏳ Removing cloud profile and local progress…');
@@ -299,6 +314,7 @@
       el('deleteProgressStart').disabled=false;
       updateDeleteConfirmation();
       refresh();
+      if(link) schedule();
     }
   }
   function closeDeleteAfterSuccess(){
