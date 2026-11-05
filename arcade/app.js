@@ -41,6 +41,11 @@
       :walletStatus==='ready'?'✅ Jedna společná peněženka pro všechny hry.'
       :'☁️ Peněženka zatím není načtená.';
     el('shopStatus').textContent=status;
+    if(document.body?.classList){
+      for(const id of ['retro','royal','ocean'])
+        document.body.classList.toggle('arcade-theme-'+id,
+          ready&&sharedCosmetics.equipped_theme===id);
+    }
     el('shopRefresh').disabled=walletBusy||!user;
     el('shopOpenChest').disabled=walletBusy||!ready||
       (walletNumber(sharedWallet.free_chests)===0&&walletNumber(sharedWallet.shards)<25);
@@ -98,6 +103,7 @@
     if(kind==='theme'&&!THEME_IDS.has(theme))return;
     const id=user.id;
     walletBusy=true;renderWallet();
+    el('shopChestVisual').classList.toggle('spinning',kind==='chest');
     const messageBox=el('shopChestResult');
     if(kind==='chest')messageBox.textContent='🎁 Otevírám truhlu…';
     else el('shopStatus').textContent='🔄 Provádím změnu motivu…';
@@ -132,6 +138,7 @@
       if(kind==='chest')messageBox.textContent='⚠️ '+reason;
       else el('shopStatus').textContent='⚠️ '+reason;
     }finally{
+      el('shopChestVisual').classList.remove('spinning');
       walletBusy=false;renderWallet();
     }
   }
