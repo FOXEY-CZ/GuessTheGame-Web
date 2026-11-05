@@ -30,10 +30,12 @@ jobs:
           const js=fs.readFileSync('arcade/app.js','utf8');
           const config=fs.readFileSync('arcade/config.js','utf8');
           const gameConfig=fs.readFileSync('account-config.js','utf8');
+          const avatars=fs.readFileSync('arcade/avatars.js','utf8');
           const gameAuth=fs.readFileSync('account-test.js','utf8');
-          for(const id of ['page-home','page-games','page-play','page-community','page-account','page-settings','authForm','nickname','avatar','signOut','gameFrame','headerXp','headerShards','headerCrowns','homeXp','homeLevel','homeShards','homeCrowns','accountXp','accountLevel','accountShards','accountCrowns'])
+          for(const id of ['page-home','page-games','page-play','page-community','page-account','page-settings','authForm','nickname','avatar','signOut','gameFrame','headerArcadeXp','headerArcadeLevel','homeArcadeXp','homeArcadeLevel','accountArcadeXp','accountArcadeLevel','homeXp','homeLevel','homeShards','homeCrowns','accountXp','accountLevel','accountShards','accountCrowns'])
             if(!html.includes('id="'+id+'"')) throw Error('Missing UI element '+id);
-          if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./config.js'))
+          if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./config.js')||
+             !html.includes('./avatars.js')||!avatars.includes('FOXEY_AVATAR_ART'))
             throw Error('Missing relative asset links');
           if(!config.includes('sb_publishable_')||/sb_secret_|ghp_[A-Za-z0-9]{20,}|postgres:\/\//.test(config))
             throw Error('Unexpected key or secret in public config');
