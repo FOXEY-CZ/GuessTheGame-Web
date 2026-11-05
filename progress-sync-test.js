@@ -49,6 +49,9 @@
       ? msg('✅ Propojeno. Synchronizuje se při připojení.', '✅ Linked. Syncs when online.')
       : msg('Zatím není propojeno. Místní postup zůstává zachován.', 'Not linked. Local progress stays here.'));
     el('syncCreate').disabled = busy || !!link;
+    el('syncCreate').textContent = link
+      ? msg('✅ PROPOJENO', '✅ LINKED')
+      : msg('VYTVOŘIT PROPOJENÍ', 'CREATE LINK');
     el('syncConnect').disabled = busy || !!link;
     el('syncNow').disabled = busy || !link;
     el('syncCopy').disabled = !link;
