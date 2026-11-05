@@ -6,6 +6,7 @@ on:
       - 'preview-auth-test.html'
       - 'account-config.js'
       - 'account-test.js'
+      - 'account-merge.js'
       - 'tests/account-flow.cjs'
       - '.github/workflows/verify-auth-preview.yml'
   workflow_dispatch:
@@ -24,6 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check account-test.js
+          node --check account-merge.js
           node --check account-config.js
           node --check tests/account-flow.cjs
           node tests/account-flow.cjs
