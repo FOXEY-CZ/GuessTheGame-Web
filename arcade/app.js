@@ -1,6 +1,6 @@
 /* FOXEY Arcade — central platform shell, deliberately separate from game logic.
  * Browser-safe Supabase publishable key only. Never mutate Guess the Game saves.
- * Unreleased community/wallet features have no backend writes yet. */
+ * All shop purchases and chest draws use server-authorized RPC transactions. */
 (() => {
   'use strict';
   const el = id => document.getElementById(id);
@@ -13,12 +13,128 @@
     if(markup)target.innerHTML=markup;
     else target.textContent=AVATARS[id]||'🎮';
   }
-  const PAGES = new Set(['home','games','play','community','account','settings']);
+  const PAGES = new Set(['home','games','play','shop','community','account','settings']);
   const GAME_URL = '../preview-auth-test.html';
   let supa=null, user=null, profile=null, mode='login', busy=false;
   // Read-only snapshot of the signed-in player's Guess the Game cloud save.
   // This is not the future cross-game XP/wallet and never writes any currency.
   let gameProgress=null, progressStatus='guest', progressRevision=null, progressRequest=0;
+  // One shared FOXEY Arcade currency wallet (never game-local wallets).
+  let sharedWallet=null,sharedCosmetics=null,walletStatus='guest',
+      walletBusy=false,walletRequest=0;
+  const THEME_IDS=new Set(['classic','retro','royal','ocean']);
+  const walletNumber=v=>Number.isSafeInteger(v)&&v>=0?v:0;
+  function renderWallet(){
+    const ready=!!user&&!!sharedWallet&&!!sharedCosmetics;
+    const shards=ready?fmt(walletNumber(sharedWallet.shards)):'—';
+    const crowns=ready?fmt(walletNumber(sharedWallet.crowns)):'—';
+    const free=ready?fmt(walletNumber(sharedWallet.free_chests)):'—';
+    for(const [id,value] of Object.entries({
+      headerShards:shards,headerCrowns:crowns,
+      homeSharedShards:shards,homeSharedCrowns:crowns,
+      accountSharedShards:shards,accountSharedCrowns:crowns,
+      shopShards:shards,shopCrowns:crowns,shopFreeChests:free
+    }))el(id).textContent=value;
+    const status=!user?'Přihlas se, abys mohl nakupovat a používat společné odměny.'
+      :walletStatus==='loading'?'☁️ Načítám společnou peněženku…'
+      :walletStatus==='error'?'⚠️ Peněženku se nepodařilo načíst. Zkus Aktualizovat.'
+      :walletStatus==='ready'?'✅ Jedna společná peněženka pro všechny hry.'
+      :'☁️ Peněženka zatím není načtená.';
+    el('shopStatus').textContent=status;
+    el('shopRefresh').disabled=walletBusy||!user;
+    el('shopOpenChest').disabled=walletBusy||!ready||
+      (walletNumber(sharedWallet.free_chests)===0&&walletNumber(sharedWallet.shards)<25);
+    el('shopOpenChest').textContent=ready&&walletNumber(sharedWallet.free_chests)>0
+      ?'🎁 Otevřít truhlu zdarma':'🎁 Otevřít za 25 💎';
+    document.querySelectorAll('[data-theme]').forEach(btn=>{
+      const id=btn.dataset.theme;
+      const owned=ready&&Array.isArray(sharedCosmetics.owned_themes)
+        &&sharedCosmetics.owned_themes.includes(id);
+      const equipped=owned&&sharedCosmetics.equipped_theme===id;
+      btn.disabled=walletBusy||!ready||!!equipped;
+      btn.textContent=!ready?'Přihlas se'
+        :equipped?'✓ Používáš'
+        :owned?'Použít motiv'
+        :id==='retro'?'Koupit za 35 💎'
+        :id==='royal'?'Koupit za 20 👑'
+        :id==='ocean'?'Koupit za 50 💎':'Použít';
+    });
+  }
+  function notifyThemeUpdate(){
+    const frame=el('gameFrame');
+    if(!user||frame.dataset.player!==user.id||!frame.contentWindow?.postMessage)return;
+    frame.contentWindow.postMessage({type:'foxey-arcade:cosmetic-updated',userId:user.id},location.origin);
+  }
+  async function loadSharedWallet(){
+    const id=user?.id,seq=++walletRequest;
+    if(!id||!supa){
+      sharedWallet=null;sharedCosmetics=null;walletStatus='guest';renderWallet();return;
+    }
+    walletStatus='loading';renderWallet();
+    try{
+      // First call atomically imports historical GTG balances once, then
+      // credits only new cumulative game earnings. No browser-side sums.
+      const sync=await supa.rpc('arcade_sync_legacy');
+      if(sync.error)throw sync.error;
+      const [wr,cr]=await Promise.all([
+        supa.from('arcade_wallets')
+          .select('shards,crowns,free_chests,chests_opened').eq('user_id',id).maybeSingle(),
+        supa.from('arcade_cosmetics')
+          .select('owned_themes,equipped_theme').eq('user_id',id).maybeSingle()
+      ]);
+      if(!user||user.id!==id||seq!==walletRequest)return;
+      if(wr.error)throw wr.error;
+      if(cr.error)throw cr.error;
+      if(!wr.data||!cr.data)throw Error('wallet_missing');
+      sharedWallet=wr.data;sharedCosmetics=cr.data;walletStatus='ready';
+    }catch(_){
+      if(user?.id!==id||seq!==walletRequest)return;
+      sharedWallet=null;sharedCosmetics=null;walletStatus='error';
+    }
+    if(seq===walletRequest)renderWallet();
+  }
+  async function performShop(kind,theme){
+    if(!user||walletBusy||!sharedWallet||!sharedCosmetics||!supa)return;
+    if(kind==='theme'&&!THEME_IDS.has(theme))return;
+    const id=user.id;
+    walletBusy=true;renderWallet();
+    const messageBox=el('shopChestResult');
+    if(kind==='chest')messageBox.textContent='🎁 Otevírám truhlu…';
+    else el('shopStatus').textContent='🔄 Provádím změnu motivu…';
+    try{
+      let reply;
+      if(kind==='chest'){
+        // Persist operation UUID until acknowledged: retry cannot charge twice.
+        const key='foxey.arcade.chestPending.'+id;
+        let op=null;
+        try{op=sessionStorage.getItem(key);}catch(_){}
+        if(!op){op=crypto.randomUUID();try{sessionStorage.setItem(key,op);}catch(_){}}
+        reply=await supa.rpc('arcade_open_chest',{p_operation:op});
+        if(reply.error)throw reply.error;
+        try{sessionStorage.removeItem(key);}catch(_){}
+        messageBox.textContent='🎉 Z truhly jsi získal '+fmt(walletNumber(reply.data?.amount))+' 👑 korunek!';
+      }else{
+        const owned=sharedCosmetics.owned_themes.includes(theme);
+        if(!owned){
+          reply=await supa.rpc('arcade_buy_theme',{p_theme:theme,p_operation:crypto.randomUUID()});
+          if(reply.error)throw reply.error;
+        }
+        reply=await supa.rpc('arcade_equip_theme',{p_theme:theme});
+        if(reply.error)throw reply.error;
+        notifyThemeUpdate();
+        el('shopStatus').textContent='✅ Motiv byl úspěšně vybrán.';
+      }
+      await loadSharedWallet();
+    }catch(e){
+      const raw=String(e.message||'').toLowerCase();
+      const reason=raw.includes('insufficient_funds')?'Nemáš dost společných krystalů nebo korunek.'
+        :raw.includes('not_authenticated')?'Zkus se znovu přihlásit.':'Operace se nezdařila. Zkus ji zopakovat.';
+      if(kind==='chest')messageBox.textContent='⚠️ '+reason;
+      else el('shopStatus').textContent='⚠️ '+reason;
+    }finally{
+      walletBusy=false;renderWallet();
+    }
+  }
   const fmt=n=>n.toLocaleString('cs-CZ');
   const safeNum=v=>Number.isSafeInteger(v)&&v>=0&&v<100000000?v:0;
   function renderGameProgress(){
@@ -111,6 +227,7 @@
       }
     }
     for(const name of PAGES)show('page-'+name,name===page);
+    if(page==='shop'&&user&&supa)void loadSharedWallet();
     // On return from playing, re-read the authoritative cloud row. The iframe
     // also sends a lightweight synced notification for live updates.
     if(page!=='play' && user && supa)void loadGameProgress();
@@ -152,6 +269,7 @@
     }
     renderGameProgress();
     renderArcadeProgress();
+    renderWallet();
   }
   function setMode(next){
     if(busy)return;
@@ -191,9 +309,11 @@
         try{profile=await getProfile(user.id);}
         catch(_){message('⚠️ Účet je přihlášený, ale profil se nyní nepodařilo načíst. Zkus obnovit stránku.');}
         await loadGameProgress();
+        await loadSharedWallet();
       }
     }catch(_){
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
+      ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
       user=null;profile=null;
       message('⚠️ Nepodařilo se ověřit přihlášení. Zkontroluj internet.');
     }finally{
@@ -267,6 +387,7 @@
       const res=await supa.auth.signOut({scope:'local'});
       if(res.error)throw res.error;
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
+      ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
       user=null;profile=null;closeGameOnIdentityChange();go('home');
       message('🎮 Odhlášeno. Můžeš hrát jako host.');
     }catch(_){message('⚠️ Odhlášení se nezdařilo.');}
@@ -280,6 +401,11 @@
   el('authForm').addEventListener('submit',authenticate);
   el('profileForm').addEventListener('submit',saveProfile);
   el('signOut').addEventListener('click',signOut);
+  el('shopOpenChest').addEventListener('click',()=>{void performShop('chest');});
+  el('shopRefresh').addEventListener('click',()=>{if(user)void loadSharedWallet();});
+  document.querySelectorAll('[data-theme]').forEach(btn=>btn.addEventListener('click',()=>{
+    void performShop('theme',btn.dataset.theme);
+  }));
   document.querySelectorAll('[data-action="refreshProgress"]').forEach(button=>{
     button.addEventListener('click',()=>{if(user&&supa)void loadGameProgress();});
   });
@@ -289,6 +415,7 @@
     if(!user || event.data.userId!==user.id)return;
     // Trust the verified account and Supabase RLS, never numbers from postMessage.
     void loadGameProgress();
+    void loadSharedWallet();
   });
   window.addEventListener('hashchange',()=>{
     const target=location.hash.replace(/^#/,'');
