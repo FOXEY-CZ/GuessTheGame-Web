@@ -128,6 +128,20 @@
         },location.origin);
     }catch(_){}
   }
+  async function refreshArcadeAvatar(){
+    const id=user?.id;
+    if(!id){game.setArcadeAvatar(null);return;}
+    try{
+      const {data,error}=await client.from('arcade_profiles')
+        .select('avatar_id').eq('user_id',id).maybeSingle();
+      if(user?.id!==id)return; // Never apply another player's avatar.
+      if(error)throw error;
+      game.setArcadeAvatar(data?.avatar_id||null);
+    }catch(_){
+      // Keep the last known avatar on transient network errors.
+      // No writes into game cosmetics, XP or saved progression.
+    }
+  }
   function acceptRemote(row){
     if(!row || !isProfile(row.profile) || !Number.isSafeInteger(row.revision))throw Error('bad_remote');
     state={revision:row.revision,base:serial(row.profile),lastSyncedAt:new Date().toISOString()};
@@ -292,6 +306,9 @@
     }
     captureGuest();
     user=nextUser;firstChoice=false;state=null;conflict=null;conflictArmed='';formMode='';mergePrepared=null;
+    // Separate, read-only account avatar. Does not modify GTG save data.
+    game.setArcadeAvatar(null);
+    void refreshArcadeAvatar();
     render();
     const cached=load(accountKey(user.id));
     if(cached && isProfile(cached.profile) && Number.isSafeInteger(cached.revision)
@@ -495,6 +512,7 @@
       if(error)throw error;
       clearTimeout(timer);
       user=null;state=null;firstChoice=false;conflict=null;mergePrepared=null;formMode='';
+      game.setArcadeAvatar(null);
       recoveryActive=false;
       el('authNewPassword').value='';el('authNewPasswordAgain').value='';
       const guest=load(guestKey);
@@ -515,7 +533,7 @@
       if(error)throw error;
       clearTimeout(timer);
       user=null;state=null;firstChoice=false;conflict=null;conflictArmed='';mergePrepared=null;
-      formMode='';busy=false;
+      formMode='';busy=false;game.setArcadeAvatar(null);
       setActiveProfile(load(guestKey) || game.getEmptyProfile());
       store(guestKey,game.getProfile());
       setFeedback('🎮 Odhlášeno. Pokračuješ jako host.','🎮 Signed out. Continuing as guest.');
@@ -578,6 +596,14 @@
   el('deleteProgressCancel').addEventListener('click',()=>{show('deleteProgressConfirm',false);el('deleteProgressPhrase').value='';});
   el('deleteProgressPhrase').addEventListener('input',updateDelete);
   el('deleteProgressFinal').addEventListener('click',deleteProgress);
+  window.addEventListener('message',event=>{
+    // This cross-frame message is only a refresh signal, not a trusted avatar.
+    // The game reads the authoritative avatar with its own authenticated RLS.
+    if(event.origin!==location.origin||event.source!==window.parent)return;
+    if(event.data?.type!=='foxey-arcade:avatar-updated')return;
+    if(!user||event.data.userId!==user.id)return;
+    void refreshArcadeAvatar();
+  });
   window.addEventListener('gtg-profile-saved',profileChanged);
   window.addEventListener('gtg-profile-screen',render);
   window.addEventListener('gtg-home-screen',schedule);
