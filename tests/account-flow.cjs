@@ -35,6 +35,8 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
     getProfile:()=>clone(gameProfile),
     getEmptyProfile:()=>profile(0),
     setArcadeAvatar:id=>{game.arcadeAvatar=id;},
+    setArcadeWallet:wallet=>{game.sharedWallet=wallet;},
+    setArcadeTheme:theme=>{game.sharedTheme=theme;},
     setProfile:p=>{gameProfile=clone(p);storage.set('gtg.accountTest.v1.profile',JSON.stringify(gameProfile));emit('gtg-profile-saved')},
     resetProgress:()=>{gameProfile=profile(0);storage.set('gtg.accountTest.v1.profile',JSON.stringify(gameProfile));emit('gtg-profile-saved')}
   };
@@ -92,7 +94,9 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
   const win={
     GTGSync:game,
     GTGAuthConfig:{url:'https://fake.supabase.co',publishableKey:'fake',storageKey:'fakeAuth'},
-    supabase:{createClient:()=>({auth,from})},
+    supabase:{createClient:()=>({auth,from,rpc:async(name)=>({
+      data:name==='arcade_sync_legacy'?{shards:0,crowns:0}:null,error:null
+    })})},
     addEventListener:(k,cb)=>events.set('window:'+k,cb)
   };
   const doc={getElementById:getEl,addEventListener:(k,cb)=>events.set('document:'+k,cb),hidden:false};
