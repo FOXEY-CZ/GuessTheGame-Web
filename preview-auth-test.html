@@ -131,7 +131,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
 
       <section class="daily-banner"><div class="daily-icon">🎁</div><div><b data-i18n="dailyGift">DENNÍ ODMĚNA</b><small id="dailyGiftInfo" data-i18n="dailyGiftDesc">Vyzvedni si 20 XP zdarma!</small></div><button id="claimDaily" class="claim" type="button" data-i18n="claim">VYZVEDNOUT</button></section>
 
-      <button type="button" id="openShopHome" class="shop-cta"><span class="shop-cta-icon"></span><span><b data-i18n="shopCta">VIZUÁLNÍ ODMĚNY</b><small data-i18n="shopCtaDesc">Utrať krystaly a koruny za vzhled a truhly</small></span><span class="shop-cta-chevron">→</span></button>
+      <p class="save-help">🛍️ Nákupy, motivy a truhly najdeš v hlavním obchodě FOXEY Arcade.</p>
 
       <button type="button" id="openChallengeHome" class="challenge-cta"><span class="challenge-cta-emblem" aria-hidden="true">⚔</span><span><b data-i18n="challengeTitle">VÝZVA KAMARÁDOVI</b><small data-i18n="challengeCtaDesc">Stejné otázky · sdílený odkaz · porovnání skóre</small></span><span class="shop-cta-chevron">→</span></button>
       <div class="streak-cta"><span>🔥</span><span id="streakHomeText">Denní série: 0 / 7</span><span id="streakHomeGift">🎁</span></div>
@@ -218,7 +218,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
       <button id="profileBack" type="button" class="back" data-i18n="back">← MENU</button>
       <section class="profile-card glow-card"><div class="profile-face">👾</div><span class="tag neon" data-i18n="playerProfile">HERNÍ PROFIL</span><h1 id="profileLevel">LEVEL 1</h1><div class="meter"><div id="profileXpFill" class="meter-fill"></div></div><p id="profileXpDetail" class="subtext">0 / 100 XP</p></section>
       <div class="profile-stats"><div><b id="profileXp">0</b><span data-i18n="totalXp">CELKEM XP</span></div><div><b id="profilePlayed">0</b><span data-i18n="played">KVÍZŮ</span></div><div><b id="profileBest">0</b><span data-i18n="best">REKORD</span></div><div><b id="profileCorrect">0</b><span data-i18n="correct">SPRÁVNĚ</span></div></div><div class="reward-bank"><div><b id="profileShards">0</b><span data-i18n="shards">KRYSTALY</span></div><div><b id="profileCrowns">0</b><span data-i18n="crowns">KORUNY</span></div></div>
-      <button type="button" id="openShopProfile" class="shop-cta shop-cta-profile"><span class="shop-cta-icon"></span><span><b data-i18n="shopCta">OBCHOD S ODMĚNAMI</b><small data-i18n="shopCtaDesc">Utrať krystaly a koruny za vzhled a truhly</small></span><span class="shop-cta-chevron">→</span></button>
+      <p class="save-help">🛍️ Nákupy, motivy a truhly najdeš v hlavním obchodě FOXEY Arcade.</p>
       <div class="section-heading"><h2 data-i18n="achievements">ODZNAKY</h2><span>🏅</span></div>
       <div class="badge-grid" id="badges"></div>
       <section class="profile-tools">
@@ -316,17 +316,9 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
       </section>
     </main>
 
-    <main id="shop" class="screen hidden">
-      <button id="shopBack" type="button" class="back" data-i18n="back">← MENU</button>
-      <section class="shop-hero glow-card"><span class="shop-title-icon" id="shopHeroIcon"></span><span class="tag neon" data-i18n="shopTitle">OBCHOD S ODMĚNAMI</span><h1 data-i18n="shopHero">Tvůj styl, ne emoji</h1><p class="subtext" data-i18n="shopSubtitle">Vlastní ikonky, rarity a hezčí obchod bez změny obtížnosti.</p>
-        <div class="shop-wallet"><div><strong><span class="wallet-icon" id="walletShardIcon"></span><span id="shopShards">0</span></strong><small data-i18n="shards">KRYSTALY</small></div><div><strong><span class="wallet-icon" id="walletCrownIcon"></span><span id="shopCrowns">0</span></strong><small data-i18n="crowns">KORUNY</small></div></div>
-      </section>
-      <section class="chest-panel glow-card"><div class="chest-visual" aria-hidden="true" id="chestIcon"></div><div class="chest-details"><h2 data-i18n="chestTitle">VIZUÁLNÍ TRUHLA</h2><p data-i18n="chestDescription">Získej korunky. Každá 7. dokončená denní výzva v řadě dá truhlu zdarma.</p><div id="freeChestInfo" class="free-chest-info"></div></div><button id="openChest" type="button" class="chest-button"><span data-i18n="openPaidChest">Otevřít za 25 krystalů</span></button><p id="chestReward" class="chest-reward hidden" role="status" aria-live="polite"></p></section>
-      <div class="streak-shop"><div class="streak-shop-heading"><b>🔥 <span data-i18n="dailyStreakTitle">DENNÍ SÉRIE</span></b><b id="streakShopCount">0 / 7</b></div><p data-i18n="dailyStreakDesc">Dokonči denní výzvu 7 dní po sobě. Sedmý den získáš truhlu zdarma.</p><div class="streak-dots" id="streakDots"></div><small id="streakShopHint"></small></div>
-      <div class="section-heading"><h2 data-i18n="themeTitle">VZHLED HRY</h2><span class="section-icon" id="themeHeadingIcon"></span></div>
-      <div id="themeItems" class="shop-grid"></div>
-      <p class="save-help" id="arcadeAvatarShopHelp" data-i18n="arcadeAvatarShopHelp">👤 Avatara si nyní vybereš ve svém profilu FOXEY Arcade. V této hře si dál můžeš pořizovat motivy.</p>
-    </main>
+    <main id="shop" class="screen hidden"></main>
+
+
 
     <footer><span>GUESS THE GAME <b>3.6 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
   </div>
@@ -547,62 +539,6 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const activeAvatar = arcadeAvatarId || profile.cosmetics.avatar;
     const chosen=shopItems.find(x=>x.type==='avatar'&&x.id===activeAvatar)||shopItems.find(x=>x.id==='alien');
     document.querySelectorAll('.player-avatar,.profile-face,.avatar').forEach(n=>{n.replaceChildren(iconToNode(chosen.icon));});
-  }
-  function shopAction(item){
-    // Avatar purchases and selection have moved to FOXEY Arcade profiles.
-    if(item.type!=='theme')return;
-    fixCosmetics();const c=profile.cosmetics, plural='themes',selected='theme';
-    if(!c[plural].includes(item.id)){
-      if(item.price===null)return;
-      if((profile[item.currency]||0)<item.price){toast(T(item.currency==='crowns'?'insufficientCrowns':'insufficientShards'));return;}
-      profile[item.currency]-=item.price;c[plural].push(item.id);
-      toast(fmt(T('shopBought'),{item:T(item.name)}));playFeedback(true);burst();
-    } else if(c[selected]===item.id){return;}
-    c[selected]=item.id;saveProfile();applyCosmetics();renderShop();
-    toast(fmt(T('shopEquippedMsg'),{item:T(item.name)}));
-  }
-  function renderShop(){
-    fixCosmetics();translate();applyCosmetics();
-    updateText('shopShards',String(profile.shards||0));updateText('shopCrowns',String(profile.crowns||0));
-    element('shopHeroIcon').innerHTML=iconSvg('shop'); element('walletShardIcon').innerHTML=iconSvg('shard'); element('walletCrownIcon').innerHTML=iconSvg('crown'); element('chestIcon').innerHTML=iconSvg('chest'); element('themeHeadingIcon').innerHTML=iconSvg('palette');
-    const free=profile.freeChests||0;updateText('freeChestInfo',fmt(T('freeChests'),{count:free}));
-    const chest=element('openChest');chest.disabled=free===0&&(profile.shards||0)<25;
-    updateText('openChest',T(free?'openFreeChest':'openPaidChest'));
-    const count=activeDailyStreak();updateText('streakShopCount',(count%7===0&&count>0?'7':count%7)+' / 7');
-    const dots=element('streakDots');dots.replaceChildren();for(let i=0;i<7;i++){const dot=document.createElement('span');dot.className='dot'+(i<(count%7===0&&count>0?7:count%7)?' done':'');dot.textContent=String(i+1);dots.append(dot);}
-    updateText('streakShopHint',profile.dailyStreak.lastDay===utcDate()?T('dailyStreakDone'):T('dailyStreakPrompt'));
-    for(const type of ['theme']){
-      const root=element(type==='theme'?'themeItems':'avatarItems');root.replaceChildren();
-      const owned=profile.cosmetics[type==='theme'?'themes':'avatars'];
-      for(const item of shopItems.filter(x=>x.type===type)){
-        const card=document.createElement('article');card.className='shop-card'+(owned.includes(item.id)?' owned':'')+(profile.cosmetics[type]===item.id?' equipped':'');
-        const chip=document.createElement('span');chip.className='rarity-chip rarity-'+item.rarity;chip.textContent=T(rarityKey(item.rarity));
-        const art=document.createElement('div');art.className='shop-card-art';art.innerHTML=iconSvg(item.icon);
-        const title=document.createElement('b');title.textContent=T(item.name);
-        const desc=document.createElement('small');desc.textContent=T(item.desc);
-        const btn=document.createElement('button');btn.type='button';const isOwned=owned.includes(item.id),isEquipped=profile.cosmetics[type]===item.id;
-        if(isEquipped){btn.textContent='✓ '+T('shopEquipped');btn.disabled=true;btn.className='equipped';}
-        else if(isOwned){btn.textContent=T('shopEquip');btn.className='equip';btn.addEventListener('click',()=>shopAction(item));}
-        else if(item.price===null){btn.textContent=T('shopLocked');btn.disabled=true;}
-        else {btn.innerHTML='<span class="price-row"><span>'+T('shopBuy')+' · '+item.price+'</span>'+currencyDisplay(item.currency)+'</span>';btn.disabled=profile[item.currency]<item.price;btn.addEventListener('click',()=>shopAction(item));}
-        card.append(chip,art,title,desc,btn);root.append(card);
-      }
-    }
-    show('shop');
-  }
-  function openChest(){
-    fixCosmetics();const free=profile.freeChests>0;
-    if(!free && profile.shards<25){toast(T('insufficientShards'));return;}
-    if(free)profile.freeChests--;else profile.shards-=25;
-    const sequence=profile.chestsOpened%6;profile.chestsOpened++;
-    let message='';
-    if(sequence===5){
-      // Keep previously unlocked Glitch avatars in old saves, but never award
-      // new account avatars through a single game's loot-chest economy.
-      profile.crowns+=12;message=fmt(T('chestCrowns'),{count:12});
-    }else {const amount=[4,6,5,8,5][sequence];profile.crowns+=amount;message=fmt(T('chestCrowns'),{count:amount});}
-    saveProfile();playFeedback(true);burst();renderShop();updateText('chestReward',message);element('chestReward').classList.remove('hidden');
-    const panel=document.querySelector('.chest-panel');panel.classList.remove('opening');void panel.offsetWidth;panel.classList.add('opening');setTimeout(()=>panel.classList.remove('opening'),600);
   }
   function markDailyStreak(s){
     if(s.mode!=='daily'||s.lives===0||s.idx!==s.ids.length-1)return null;
@@ -1216,7 +1152,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   element('joinChallenge').addEventListener('click',joinChallenge);
   element('shareSavedChallenge').addEventListener('click',shareChallengeScore);
   element('addFriendScore').addEventListener('click',addFriendScore);
-  element('openShopHome').addEventListener('click',renderShop);element('openShopProfile').addEventListener('click',renderShop);element('shopBack').addEventListener('click',home);element('openChest').addEventListener('click',openChest);
+  // Shop, theme selection and chest opening are managed centrally by FOXEY Arcade.
   for(const [id,mode] of [['startClassic','classic'],['startMystery','mystery'],['startDaily','daily'],['startEasy','easy'],['startMedium','medium'],['startHard','hard']])element(id).addEventListener('click',()=>start(mode));
   element('resume').addEventListener('click',()=>{if(session){lastMode=session.mode;game();}});
   element('gameBack').addEventListener('click',home);element('hintButton').addEventListener('click',hint);element('revealButton').addEventListener('click',reveal);element('nextButton').addEventListener('click',next);
