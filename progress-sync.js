@@ -43,8 +43,10 @@
   };
   function status(cz, en) { prompt = msg(cz, en); refresh(); }
   function refresh() {
-    // A linked device should always show its existing code, even after a restart.
-    if (link && !el('syncCode').value.trim()) el('syncCode').value = linkCode(link);
+    // Present either onboarding or a compact linked-state card.
+    el('syncSetup').classList.toggle('hidden', !!link);
+    el('syncLinked').classList.toggle('hidden', !link);
+    if (link) el('syncLinkedCode').value = linkCode(link);
     el('syncStatus').textContent = prompt || (link
       ? msg('✅ Propojeno. Synchronizuje se při připojení.', '✅ Linked. Syncs when online.')
       : msg('Zatím není propojeno. Místní postup zůstává zachován.', 'Not linked. Local progress stays here.'));
@@ -94,10 +96,10 @@
           !Number.isSafeInteger(created.revision)) throw Error('invalid_response');
       link = {id:created.id,token:created.token,revision:created.revision,base:serial(local)};
       persist();
-      const codeField = el('syncCode');
-      codeField.value = linkCode(link);
-      status('✅ Propojení vytvořeno! Kód je v poli níže. Uchovej ho v soukromí.', '✅ Link created! The code is in the field below. Keep it private.');
-      codeField.scrollIntoView({block:'center',behavior:'smooth'});
+      status('✅ Propojení vytvořeno! Kód je v nastavení níže. Uchovej ho v soukromí.', '✅ Link created! The code is in the settings below. Keep it private.');
+      el('syncManage').open = true;
+      el('syncLinkedCode').value = linkCode(link);
+      el('syncLinkedCode').scrollIntoView({block:'center',behavior:'smooth'});
     } catch (error) {
       const reason = String(error && error.message || 'unknown_error').slice(0,80).replace(/[^a-zA-Z0-9_ -]/g,'');
       status('❌ Kód se nepodařilo vytvořit (' + reason + '). Zkus zkontrolovat internet.', '❌ Could not create code (' + reason + '). Check your internet connection.');
@@ -213,7 +215,7 @@
   async function copyCode() {
     if (!link) return;
     const code = linkCode(link);
-    const field = el('syncCode');
+    const field = el('syncLinkedCode');
     // Show the same code we copy. Clipboard success must not leave the field blank.
     field.value = code;
     field.scrollIntoView({block:'center',behavior:'smooth'});
@@ -239,7 +241,7 @@
       return;
     }
     link = null; conflict = null; confirmDisconnect = false;
-    clearTimeout(timer); persist(); el('syncCode').value = '';
+    clearTimeout(timer); persist(); el('syncCode').value = ''; el('syncLinkedCode').value = ''; el('syncManage').open = false;
     status('Odpojeno. Místní XP zůstávají.', 'Disconnected. Local XP remain.');
   }
   el('syncCreate').addEventListener('click', create);
