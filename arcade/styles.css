@@ -87,3 +87,17 @@ h1{font-size:clamp(30px,5vw,56px);line-height:1.12;letter-spacing:-.045em;margin
  .chestshop{align-items:flex-start;gap:12px}
  .chestshop-icon{font-size:45px}
 }
+
+/* A purchased theme is equipped once and affects the platform as well as GTG. */
+body.arcade-theme-retro{--bg:#1b1428;--panel:#291c38;--stroke:#6a486e;--accent:#f9a8d4;--accent2:#f9cf78}
+body.arcade-theme-royal{--bg:#171226;--panel:#251b43;--stroke:#7356a2;--accent:#f4d07a;--accent2:#dcbaff}
+body.arcade-theme-ocean{--bg:#081b2b;--panel:#112c44;--stroke:#2f6d83;--accent:#76d3ff;--accent2:#6ffbe9}
+body.arcade-theme-retro .hero{background:radial-gradient(circle at 95% 15%,#79437780,transparent 43%),linear-gradient(135deg,#3b243e,#24192e 55%,#18152d)}
+body.arcade-theme-royal .hero{background:radial-gradient(circle at 95% 15%,#90733780,transparent 43%),linear-gradient(135deg,#37264c,#231a3b 55%,#17182b)}
+body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f9980,transparent 43%),linear-gradient(135deg,#103f5b,#10283d 55%,#101c34)}
+.chestshop-icon.spinning{animation:chest-spin .55s ease-in-out infinite alternate}
+@keyframes chest-spin{
+  0%{transform:rotate(-14deg) scale(.92)}
+  45%{transform:rotate(13deg) scale(1.15)}
+  100%{transform:rotate(-8deg) scale(1.03)}
+}
