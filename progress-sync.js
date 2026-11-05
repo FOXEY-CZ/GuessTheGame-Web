@@ -77,16 +77,26 @@
     if (link || busy) return;
     const local = game.getProfile();
     if (!valid(local)) { status('❌ Místní profil nelze synchronizovat.', '❌ Local profile cannot be synced.'); return; }
-    busy = true; refresh();
+    if (window.GTGAndroid && typeof window.GTGAndroid.syncRequest !== 'function') {
+      status('❌ Tato APK nemá funkční synchronizační modul. Nainstaluj novější Sync Test.', '❌ This APK lacks a working sync module. Install the latest Sync Test.');
+      return;
+    }
+    busy = true;
+    status('⏳ Vytvářím propojovací kód…', '⏳ Creating the linking code…');
     try {
       const created = await request({action:'create',profile:local});
       if (!parseCode('GTGS1:' + created.id + ':' + created.token) ||
           !Number.isSafeInteger(created.revision)) throw Error('invalid_response');
       link = {id:created.id,token:created.token,revision:created.revision,base:serial(local)};
       persist();
-      el('syncCode').value = linkCode(link);
-      status('✅ Propojení vytvořeno! Zkopíruj kód do druhého zařízení.', '✅ Link created! Copy the code to your other device.');
-    } catch (_) { status('❌ Propojení se nezdařilo, postup zůstal uložený.', '❌ Linking failed. Your progress is safe locally.'); }
+      const codeField = el('syncCode');
+      codeField.value = linkCode(link);
+      status('✅ Propojení vytvořeno! Kód je v poli níže. Uchovej ho v soukromí.', '✅ Link created! The code is in the field below. Keep it private.');
+      codeField.scrollIntoView({block:'center',behavior:'smooth'});
+    } catch (error) {
+      const reason = String(error && error.message || 'unknown_error').slice(0,80).replace(/[^a-zA-Z0-9_ -]/g,'');
+      status('❌ Kód se nepodařilo vytvořit (' + reason + '). Zkus zkontrolovat internet.', '❌ Could not create code (' + reason + '). Check your internet connection.');
+    }
     finally { busy = false; refresh(); }
   }
   async function connect() {
