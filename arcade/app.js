@@ -9,6 +9,74 @@
   const PAGES = new Set(['home','games','play','community','account','settings']);
   const GAME_URL = '../preview-auth-test.html';
   let supa=null, user=null, profile=null, mode='login', busy=false;
+  // Read-only snapshot of the signed-in player's Guess the Game cloud save.
+  // This is not the future cross-game XP/wallet and never writes any currency.
+  let gameProgress=null, progressStatus='guest', progressRevision=null, progressRequest=0;
+  const fmt=n=>n.toLocaleString('cs-CZ');
+  const safeNum=v=>Number.isSafeInteger(v)&&v>=0&&v<100000000?v:0;
+  function renderGameProgress(){
+    const valid=!!user && !!gameProgress;
+    const p=gameProgress||{};
+    const stats={
+      Xp:valid?fmt(p.xp):'—',
+      Level:valid?fmt(1+Math.floor(p.xp/100)):'—',
+      Shards:valid?fmt(p.shards):'—',
+      Crowns:valid?fmt(p.crowns):'—',
+      Played:valid?fmt(p.played):'—'
+    };
+    for(const [name,value] of Object.entries(stats)){
+      const home=el('home'+name);
+      if(home)home.textContent=value;
+      const account=el('account'+name);
+      if(account)account.textContent=value;
+    }
+    el('headerXp').textContent=stats.Xp;
+    el('headerShards').textContent=stats.Shards;
+    el('headerCrowns').textContent=stats.Crowns;
+    const text= !user?'Přihlas se pro načtení cloudového postupu.'
+      :progressStatus==='loading'?'☁️ Načítám postup z cloudu…'
+      :progressStatus==='error'?'⚠️ Postup se nepodařilo načíst. Zkus Aktualizovat.'
+      :progressStatus==='missing'?'☁️ K tomuto účtu zatím nemáme cloudový postup Guess the Game.'
+      :progressStatus==='ready'?'✅ Aktuální hodnoty z cloudového postupu Guess the Game.'
+      :'☁️ Cloudový postup není načtený.';
+    el('homeProgressStatus').textContent=text;
+    el('accountProgressStatus').textContent=text;
+  }
+  async function loadGameProgress(){
+    const id=user?.id;
+    const current=++progressRequest;
+    if(!id||!supa){
+      gameProgress=null;progressRevision=null;progressStatus='guest';renderGameProgress();return;
+    }
+    progressStatus='loading';
+    renderGameProgress();
+    try{
+      const {data,error}=await supa.from('gtg36_account_progress')
+        .select('profile,revision').eq('user_id',id).maybeSingle();
+      if(user?.id!==id||current!==progressRequest)return;
+      if(error)throw error;
+      if(!data){
+        gameProgress=null;progressRevision=null;progressStatus='missing';
+      }else if(!data.profile||typeof data.profile!=='object'||Array.isArray(data.profile)
+        ||!Number.isSafeInteger(data.profile.xp)||data.profile.xp<0
+        ||!Number.isSafeInteger(data.revision)||data.revision<0){
+        throw Error('invalid_game_profile');
+      }else{
+        gameProgress={
+          xp:safeNum(data.profile.xp),
+          played:safeNum(data.profile.played),
+          shards:safeNum(data.profile.shards),
+          crowns:safeNum(data.profile.crowns)
+        };
+        progressRevision=data.revision;
+        progressStatus='ready';
+      }
+    }catch(_){
+      if(user?.id!==id||current!==progressRequest)return;
+      gameProgress=null;progressRevision=null;progressStatus='error';
+    }
+    if(current===progressRequest)renderGameProgress();
+  }
   const show=(id,visible)=>el(id).classList.toggle('hidden',!visible);
   const message=(text)=>{el('accountNotice').textContent=text;};
   function go(page){
@@ -24,6 +92,9 @@
       }
     }
     for(const name of PAGES)show('page-'+name,name===page);
+    // On return from playing, re-read the authoritative cloud row. The iframe
+    // also sends a lightweight synced notification for live updates.
+    if(page!=='play' && user && supa)void loadGameProgress();
     document.querySelectorAll('.mainnav [data-page]').forEach(button=>{
       const active=button.dataset.page===page;
       button.classList.toggle('active',active);
@@ -59,6 +130,7 @@
       el('nickname').value=profile?.nickname||'';
       el('avatar').value=profile?.avatar_id||'fox';
     }
+    renderGameProgress();
   }
   function setMode(next){
     if(busy)return;
@@ -88,13 +160,19 @@
     try{
       const result=await supa.auth.getUser();
       if(result.error)throw result.error;
-      user=result.data?.user||null;
+      const nextUser=result.data?.user||null;
+      if(user?.id!==nextUser?.id){
+        ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
+      }
+      user=nextUser;
       profile=null;
       if(user){
         try{profile=await getProfile(user.id);}
         catch(_){message('⚠️ Účet je přihlášený, ale profil se nyní nepodařilo načíst. Zkus obnovit stránku.');}
+        await loadGameProgress();
       }
     }catch(_){
+      ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       user=null;profile=null;
       message('⚠️ Nepodařilo se ověřit přihlášení. Zkontroluj internet.');
     }finally{render();}
@@ -154,6 +232,7 @@
     try{
       const res=await supa.auth.signOut({scope:'local'});
       if(res.error)throw res.error;
+      ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       user=null;profile=null;closeGameOnIdentityChange();go('home');
       message('🎮 Odhlášeno. Můžeš hrát jako host.');
     }catch(_){message('⚠️ Odhlášení se nezdařilo.');}
@@ -167,6 +246,16 @@
   el('authForm').addEventListener('submit',authenticate);
   el('profileForm').addEventListener('submit',saveProfile);
   el('signOut').addEventListener('click',signOut);
+  document.querySelectorAll('[data-action="refreshProgress"]').forEach(button=>{
+    button.addEventListener('click',()=>{if(user&&supa)void loadGameProgress();});
+  });
+  window.addEventListener('message',event=>{
+    if(event.origin!==location.origin || event.source!==el('gameFrame').contentWindow)return;
+    if(event.data?.type!=='foxey-arcade:gtg-cloud-synced')return;
+    if(!user || event.data.userId!==user.id)return;
+    // Trust the verified account and Supabase RLS, never numbers from postMessage.
+    void loadGameProgress();
+  });
   window.addEventListener('hashchange',()=>{
     const target=location.hash.replace(/^#/,'');
     go(target==='domu'?'home':target);
