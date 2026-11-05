@@ -121,6 +121,9 @@
   // fetches its own owner-scoped RLS row; no game stats or tokens are sent.
   function notifyArcadeCloudSync(revision){
     if(!user || !Number.isSafeInteger(revision))return;
+    // On each confirmed GTG cloud revision, reconcile cumulative game earnings
+    // with the single server-owned Arcade wallet. This is not a client-side transfer.
+    void refreshArcadeBenefits();
     try{
       if(window.parent && window.parent!==window && typeof window.parent.postMessage==='function')
         window.parent.postMessage({
@@ -140,6 +143,29 @@
     }catch(_){
       // Keep the last known avatar on transient network errors.
       // No writes into game cosmetics, XP or saved progression.
+    }
+  }
+  async function refreshArcadeBenefits(){
+    const id=user?.id;
+    if(!id){game.setArcadeWallet(null);game.setArcadeTheme(null);return;}
+    try{
+      const synced=await client.rpc('arcade_sync_legacy');
+      if(user?.id!==id)return;
+      if(synced.error)throw synced.error;
+      const [wr,theme]=await Promise.all([
+        client.from('arcade_wallets')
+          .select('shards,crowns,free_chests').eq('user_id',id).maybeSingle(),
+        client.from('arcade_cosmetics')
+          .select('equipped_theme').eq('user_id',id).maybeSingle()
+      ]);
+      if(user?.id!==id)return;
+      if(wr.error)throw wr.error;
+      if(theme.error)throw theme.error;
+      if(wr.data)game.setArcadeWallet(wr.data);
+      game.setArcadeTheme(theme.data?.equipped_theme||'classic');
+    }catch(_){
+      // Retain the last server-confirmed values, never use untrusted message
+      // payloads to set account balances or grant rewards.
     }
   }
   function acceptRemote(row){
@@ -308,6 +334,8 @@
     user=nextUser;firstChoice=false;state=null;conflict=null;conflictArmed='';formMode='';mergePrepared=null;
     // Separate, read-only account avatar. Does not modify GTG save data.
     game.setArcadeAvatar(null);
+    game.setArcadeWallet(null);
+    game.setArcadeTheme(null);
     void refreshArcadeAvatar();
     render();
     const cached=load(accountKey(user.id));
@@ -512,7 +540,7 @@
       if(error)throw error;
       clearTimeout(timer);
       user=null;state=null;firstChoice=false;conflict=null;mergePrepared=null;formMode='';
-      game.setArcadeAvatar(null);
+      game.setArcadeAvatar(null);game.setArcadeWallet(null);game.setArcadeTheme(null);
       recoveryActive=false;
       el('authNewPassword').value='';el('authNewPasswordAgain').value='';
       const guest=load(guestKey);
@@ -534,6 +562,7 @@
       clearTimeout(timer);
       user=null;state=null;firstChoice=false;conflict=null;conflictArmed='';mergePrepared=null;
       formMode='';busy=false;game.setArcadeAvatar(null);
+      game.setArcadeWallet(null);game.setArcadeTheme(null);
       setActiveProfile(load(guestKey) || game.getEmptyProfile());
       store(guestKey,game.getProfile());
       setFeedback('🎮 Odhlášeno. Pokračuješ jako host.','🎮 Signed out. Continuing as guest.');
@@ -600,9 +629,12 @@
     // This cross-frame message is only a refresh signal, not a trusted avatar.
     // The game reads the authoritative avatar with its own authenticated RLS.
     if(event.origin!==location.origin||event.source!==window.parent)return;
-    if(event.data?.type!=='foxey-arcade:avatar-updated')return;
-    if(!user||event.data.userId!==user.id)return;
-    void refreshArcadeAvatar();
+    if(!user||event.data?.userId!==user.id)return;
+    if(event.data.type==='foxey-arcade:avatar-updated')
+      void refreshArcadeAvatar();
+    else if(event.data.type==='foxey-arcade:cosmetic-updated'
+      ||event.data.type==='foxey-arcade:wallet-updated')
+      void refreshArcadeBenefits();
   });
   window.addEventListener('gtg-profile-saved',profileChanged);
   window.addEventListener('gtg-profile-screen',render);
