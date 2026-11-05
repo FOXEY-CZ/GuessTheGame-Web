@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#090e1e">
   <meta name="description" content="Guess the Game — offline mobile gaming quiz">
-  <title>Guess the Game 3.5.1 — Challenge Link Fix</title>
+  <title>Guess the Game 3.5.2 — Challenge Scores Fix</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20108%20108%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23253b71%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2315182d%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22108%22%20rx%3D%2225%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Cpath%20d%3D%22M34%2038c2-23%2039-23%2041%200%201%2017-20%2020-20%2031%22%20fill%3D%22none%22%20stroke%3D%22%2368eee5%22%20stroke-width%3D%2211%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2286%22%20r%3D%226.5%22%20fill%3D%22%23ffc86a%22%2F%3E%3Cpath%20d%3D%22M17%2023h13M23.5%2016v14%22%20stroke%3D%22%23ae95ff%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2280%22%20r%3D%225%22%20fill%3D%22%238c78ff%22%2F%3E%3C%2Fsvg%3E">
   <link rel="manifest" href="site.webmanifest">
   <style>
@@ -93,6 +93,12 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
 /* Guess the Game 3.5 — equal-seed friend challenges and head-to-head results. */
 .challenge-cta{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:linear-gradient(108deg,#243e62,#2f2857);border:1px solid #756ab9;border-radius:15px;padding:12px 13px;margin-top:12px;min-height:64px;box-shadow:0 8px 25px #120e3952}.challenge-cta>span:nth-child(2){flex:1;display:grid;gap:5px}.challenge-cta b{font-size:12px;letter-spacing:.8px}.challenge-cta small{font-size:10px;color:#c9d8ec;line-height:1.4}.challenge-cta-emblem{width:43px;height:43px;display:grid;place-items:center;background:linear-gradient(135deg,#6ad9e3,#7663cf);color:#0e1530;font-size:29px;font-weight:900;border-radius:12px;flex:none}.challenge-cta:active{transform:scale(.99)}
 .challenge-hero,.challenge-join{padding:21px 18px 19px;margin-top:15px}.challenge-heading{display:flex;align-items:center;gap:12px}.challenge-icon{width:48px;height:48px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:13px;color:#111a2c;font-weight:900;font-size:31px}.challenge-hero h1{font-size:27px;letter-spacing:-.7px;margin:16px 0 8px}.challenge-label{font-size:10px;letter-spacing:1.1px;color:#a6b9da;font-weight:900;display:block;margin:17px 0 8px}.challenge-input{display:block;width:100%;min-height:44px;border:1px solid #4d648b;background:#0d1932;color:#f1f7ff;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;outline:none}.challenge-input:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 2px #68eee536}.challenge-url{font-size:11px;color:#b0d9e6;font-family:ui-monospace,Consolas,monospace}.challenge-code-row{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:18px;margin-bottom:8px;color:#9fb5d9;font-size:10px;font-weight:900;letter-spacing:.8px}.challenge-code-row strong{color:var(--gold);letter-spacing:.6px;font-size:12px;overflow-wrap:anywhere}.challenge-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.challenge-actions .tool-action{min-width:0;min-height:47px}.challenge-actions .tool-action:last-child{grid-column:1/-1}.challenge-start{margin-top:18px}.challenge-join h2{font-size:13px;letter-spacing:.8px;margin:0 0 12px}.challenge-join .subtext{margin-bottom:10px}.challenge-paste{min-height:75px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:11px}.challenge-join .tool-action{width:100%;margin-top:9px}.challenge-fairness{color:#91a3c3;font-size:10px;line-height:1.55;margin:15px 7px}.challenge-comparison,.challenge-result{border:1px solid #516b93;border-radius:14px;background:#111f3c;margin-top:18px;padding:14px 12px;text-align:center}.challenge-result-title{font-size:12px;letter-spacing:1.1px;font-weight:950;color:var(--cyan);margin-bottom:12px}.challenge-score-columns{display:grid;grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr);gap:8px;align-items:center}.challenge-score-columns>div{border:1px solid #3f5678;border-radius:12px;padding:12px 6px;background:#182747;min-width:0}.challenge-score-columns small{display:block;font-size:10px;color:#9eb5d8;letter-spacing:.3px;overflow-wrap:anywhere}.challenge-score-columns strong{display:block;margin:4px 0;color:var(--gold);font-size:27px;font-variant-numeric:tabular-nums}.challenge-versus{font-size:12px;font-weight:900;color:#acb8e2}.challenge-comparison-text{color:#e3ecff;font-size:12px;line-height:1.5;margin:13px 1px 0;font-weight:750}.challenge-result-hint{color:#91a3c3;line-height:1.4;font-size:10px;margin:10px 2px 0}.challenge-result .challenge-comparison-text{font-size:13px}.challenge-result.win{border-color:#3a947b;box-shadow:0 0 22px #44e3ae13}.challenge-result.lose{border-color:#b77b83}.challenge-result.draw{border-color:#a98bd9}
+.challenge-score-tip{font-size:11px;line-height:1.5;color:#c5ddfc;border-left:3px solid #6adcd4;background:#132940;padding:10px 11px;margin:10px 0 2px;border-radius:0 9px 9px 0}
+.challenge-compare-tools{display:flex;flex-direction:column;gap:8px;padding:12px;margin-top:13px;background:#0f1c32;border:1px solid #344969;border-radius:12px;text-align:left}
+.challenge-compare-tools label{color:#c9d9f9;font-size:10px;font-weight:950;letter-spacing:.7px}
+.challenge-compare-tools .challenge-paste{width:100%;min-height:58px;margin:0;font-size:11px}
+.challenge-compare-tools button{min-height:39px}
+.challenge-result-hint[role=status]{font-size:11px;color:#b9cdec}
 @media(max-width:365px){.challenge-score-columns{grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr);gap:4px}.challenge-score-columns strong{font-size:22px}.challenge-actions .tool-action{font-size:10px}.challenge-hero{padding:16px 12px}}
 @media(prefers-reduced-motion:reduce){.challenge-cta{transition:none!important}}
 
@@ -102,7 +108,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
   <div class="app">
     <header class="topbar">
-      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.5.1 · CHALLENGE</small></span></button>
+      <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.5.2 · SCORES</small></span></button>
       <div class="top-actions"><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
     </header>
 
@@ -149,6 +155,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <input id="challengeName" class="challenge-input" type="text" maxlength="20" autocomplete="nickname" placeholder="FOXEY">
         <div class="challenge-code-row"><span data-i18n="challengeCodeLabel">KÓD VÝZVY</span><strong id="challengeCodeDisplay">—</strong></div>
         <input id="challengeLink" class="challenge-input challenge-url" type="text" spellcheck="false" readonly aria-label="Challenge link">
+        <p class="challenge-score-tip" id="challengeScoreTip" role="status" aria-live="polite"></p>
         <div class="challenge-actions">
           <button id="createChallenge" class="tool-action" type="button" data-i18n="challengeNew">NOVÁ VÝZVA</button>
           <button id="copyChallenge" class="tool-action primary" type="button" data-i18n="challengeCopy">📋 KOPÍROVAT ODKAZ</button>
@@ -192,6 +199,12 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <div class="challenge-result-title" data-i18n="challengeDuel">⚔ VÝSLEDEK VÝZVY</div>
         <div class="challenge-score-columns"><div><small data-i18n="challengeYou">TY</small><strong id="resultChallengeOwn">—</strong><small id="resultChallengeOwnInfo"></small></div><span class="challenge-versus">VS</span><div><small id="resultChallengeOppName">KAMARÁD</small><strong id="resultChallengeOpp">—</strong><small id="resultChallengeOppInfo"></small></div></div>
         <p id="resultChallengeOutcome" class="challenge-comparison-text"></p>
+        <p id="resultChallengeHelp" class="challenge-result-hint" role="status" aria-live="polite"></p>
+        <div id="resultCompareTools" class="challenge-compare-tools">
+          <label for="resultOpponentLink" data-i18n="challengeAddFriendLabel">MÁŠ KAMARÁDŮV VÝSLEDKOVÝ ODKAZ?</label>
+          <textarea id="resultOpponentLink" class="challenge-input challenge-paste" rows="2" maxlength="1500" spellcheck="false" autocapitalize="off" placeholder="https://foxey-cz.github.io/GuessTheGame-Web/?challenge=..."></textarea>
+          <button id="addFriendScore" type="button" class="tool-action primary" data-i18n="challengeCompareNow">⚔ POROVNAT SKÓRE</button>
+        </div>
         <p class="challenge-result-hint" data-i18n="challengeFirstCounts">Pro soutěž se počítá první dokončený pokus. Opakování je pouze trénink.</p>
       </div><div id="levelUp" class="level-up hidden">✦ LEVEL UP! ✦</div><button id="playAgain" type="button" class="next-button" data-i18n="playAgain">HRÁT ZNOVU →</button><button id="shareResult" type="button" class="share-button" data-i18n="shareResult">📤 SDÍLET VÝSLEDEK</button><button id="resultHome" type="button" class="back result-home" data-i18n="menu">← ZPĚT DO MENU</button></section>
     </main>
@@ -230,7 +243,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
       <div id="avatarItems" class="shop-grid"></div>
     </main>
 
-    <footer><span>GUESS THE GAME <b>3.5.1 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
+    <footer><span>GUESS THE GAME <b>3.5.2 BETA</b></span><span data-i18n="footer">Offline · bez reklam · bez účtu</span></footer>
   </div>
   <div id="toast" class="toast hidden" role="status"></div><div id="achievementLayer"></div><div id="sparkles" class="sparkles" aria-hidden="true"></div>
   <script>
@@ -260,7 +273,13 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       challengeInvalid:'❌ Neplatný odkaz nebo kód výzvy.',challengeJoined:'✅ Výzva načtena! Otázky budou stejné.',challengeCreated:'⚔ Nová výzva připravena.',
       challengeScoreLink:'Vyzkoušej moji výzvu a překonej moje skóre!',challengeInviteLink:'Zahraj si se mnou stejných 10 herních otázek!',
       challengePractice:'Opakovaný pokus – bez dalších odměn. Do souboje se počítá první skóre.',challengePrevious:'První pokus: {score} XP',
-      challengeSoloResult:'Pošli svůj výsledek. Kamarád po otevření odkazu uvidí vaše srovnání.',challengeNickname:'Hráč',
+      challengeSoloResult:'Zatím tu není soupeřovo skóre. Pro srovnání potřebuješ jeho výsledkový odkaz.',challengeNickname:'Hráč',
+      challengeScoreReady:'Tento odkaz obsahuje tvůj první výsledek. Kamarád po dohrání uvidí vaše skóre vedle sebe.',
+      challengeScoreMissing:'Tento odkaz obsahuje pouze otázky. Pokud chceš, aby kamarád viděl tvoje skóre po dohrání, zahraj nejdřív výzvu a potom pošli nový odkaz.',
+      challengeResultMissing:'Soupeřovo skóre v pozvánce nebylo. Bez serveru ho nelze automaticky načíst. Pošlete si výsledkové odkazy a vlož kamarádův sem.',
+      challengeResultPresent:'Super! Soupeřovo skóre se načetlo ze sdíleného odkazu. Níže vidíš skutečné porovnání.',
+      challengeAddFriendLabel:'MÁŠ KAMARÁDŮV VÝSLEDKOVÝ ODKAZ?',challengeCompareNow:'⚔ POROVNAT SKÓRE',
+      challengeWrongResult:'Tento odkaz nemá skóre nebo patří k jiné výzvě.',challengeFriendLoaded:'✅ Skóre kamaráda načteno a porovnáno.',
       offline:'OFFLINE HERNÍ KVÍZ',hero:'Poznáš hru podle indicií?',subtitle:'Hraj, získávej XP a odemykej další obtížnosti.',yourProfile:'TVŮJ HERNÍ PROFIL',
       dailyGift:'DENNÍ ODMĚNA',dailyGiftDesc:'Vyzvedni si 20 XP zdarma!',claim:'VYZVEDNOUT',claimed:'VYZVEDNUTO',chooseMode:'VYBER REŽIM',
       mystery:'MYSTERY MODE',mysteryDesc:'10 her · 3 postupné indicie',mysteryReveal:'🔎 ODKRÝT DALŠÍ INDICII (−5 XP)',mysteryStage:'INDICIE {stage} / 3',mysteryReward:'ZÍSKÁŠ {points} XP',mysteryTitle:'INDICIE {stage}',
@@ -309,7 +328,13 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       challengeInvalid:'❌ Invalid challenge link or code.',challengeJoined:'✅ Challenge loaded! Questions will match.',challengeCreated:'⚔ New challenge ready.',
       challengeScoreLink:'Try my game challenge and beat my score!',challengeInviteLink:'Play the same 10 gaming questions as me!',
       challengePractice:'Replay only – no extra rewards. Your first attempt is your official score.',challengePrevious:'First attempt: {score} XP',
-      challengeSoloResult:'Share your score. Your friend can open the link to compare your results.',challengeNickname:'Player',
+      challengeSoloResult:'No opponent score yet. To compare, you need their score link.',challengeNickname:'Player',
+      challengeScoreReady:'This invite already includes your first score. Your friend will see both scores after finishing.',
+      challengeScoreMissing:'This invite only includes the questions. To let your friend see your score after playing, play this challenge first and then send the updated link.',
+      challengeResultMissing:'The invitation does not contain an opponent score. There is no server to retrieve it. Exchange score links and paste your opponent score link below.',
+      challengeResultPresent:'Great! The opponent score was loaded from the shared link. Here are both results.',
+      challengeAddFriendLabel:'HAVE AN OPPONENT SCORE LINK?',challengeCompareNow:'⚔ COMPARE SCORES',
+      challengeWrongResult:'This link has no score or belongs to a different challenge.',challengeFriendLoaded:'✅ Friend score loaded and compared.',
       offline:'OFFLINE GAMING QUIZ',hero:'Can you guess the game from the clues?',subtitle:'Play, earn XP, and unlock new difficulties.',yourProfile:'YOUR GAMER PROFILE',
       dailyGift:'DAILY REWARD',dailyGiftDesc:'Claim 20 free XP!',claim:'CLAIM',claimed:'CLAIMED',chooseMode:'CHOOSE A MODE',
       mystery:'MYSTERY MODE',mysteryDesc:'10 games · reveal 3 clues',mysteryReveal:'🔎 REVEAL THE NEXT CLUE (−5 XP)',mysteryStage:'CLUE {stage} / 3',mysteryReward:'EARN {points} XP',mysteryTitle:'CLUE {stage}',
@@ -362,6 +387,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   let screen = 'home';
   let lastMode = 'classic';
   let challengeDraft = null;
+  const storedChallenge=get('lastChallenge',null);
   let challengeName = get('challengeName','');
 
   const shopItems = [
@@ -648,11 +674,11 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       if(player.length>80)throw Error('invalid name');
       opponent={name:nickname(player),score:num('score',200),correct:num('correct',10),streak:num('streak',10)};
     }
-    return {seed,ids,opponent};
+    return {seed,ids,opponent,autoPlay:url.searchParams.get('play')==='1'};
   }
   function challengeUrl(ch,score=null){
     const url=new URL(CHALLENGE_URL);url.searchParams.set('challenge',challengeCode(ch.seed));url.searchParams.set('q',ch.ids.join('.'));
-    if(score){url.searchParams.set('player',nickname(challengeName));url.searchParams.set('score',String(score.score));url.searchParams.set('correct',String(score.correct));url.searchParams.set('streak',String(score.streak));}
+    if(score){url.searchParams.set('player',nickname(challengeName));url.searchParams.set('score',String(score.score));url.searchParams.set('correct',String(score.correct));url.searchParams.set('streak',String(score.streak));url.searchParams.set('play','1');}
     return url.toString();
   }
   function myChallengeRecord(ch){
@@ -681,15 +707,21 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   function newChallenge(){
     challengeDraft={seed:makeChallengeSeed(),ids:[],opponent:null};
     challengeDraft.ids=challengeIds(challengeDraft.seed);
+    set('lastChallenge',{seed:challengeDraft.seed,ids:challengeDraft.ids});
     renderChallengeLobby();toast(T('challengeCreated'));
   }
   function renderChallengeLobby(){
-    if(!challengeDraft){challengeDraft={seed:makeChallengeSeed(),ids:[],opponent:null};challengeDraft.ids=challengeIds(challengeDraft.seed);}
+    if(!challengeDraft){
+      if(storedChallenge&&Number.isSafeInteger(storedChallenge.seed)&&storedChallenge.seed>=0&&storedChallenge.seed<=0xffffffff&&validChallengeIds(storedChallenge.ids)&&storedChallenge.ids.join('.')===challengeIds(storedChallenge.seed).join('.'))challengeDraft={seed:storedChallenge.seed,ids:storedChallenge.ids.slice(),opponent:null};
+      else {challengeDraft={seed:makeChallengeSeed(),ids:[],opponent:null};challengeDraft.ids=challengeIds(challengeDraft.seed);}
+    }
     translate();applyCosmetics();
     element('challengeName').value=challengeName||T('challengeNickname');
     updateText('challengeCodeDisplay',challengeCode(challengeDraft.seed));
-    element('challengeLink').value=challengeUrl(challengeDraft);
-    const my=myChallengeRecord(challengeDraft);comparePanel('lobby',challengeDraft,my);
+    const my=myChallengeRecord(challengeDraft);
+    element('challengeLink').value=challengeUrl(challengeDraft,my);
+    updateText('challengeScoreTip',T(my?'challengeScoreReady':'challengeScoreMissing'));
+    comparePanel('lobby',challengeDraft,my);
     element('shareSavedChallenge').classList.toggle('hidden',!my);
     show('challenge');
   }
@@ -698,7 +730,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       const parsed=parseChallengeLink(element('challengeJoinInput').value);
       challengeDraft=parsed;
       // A normal invitation launches the shared round; result links show a score preview.
-      if(parsed.opponent){renderChallengeLobby();toast(T('challengeJoined'));}
+      if(parsed.opponent&&!parsed.autoPlay){renderChallengeLobby();toast(T('challengeJoined'));}
       else startChallenge();
     }catch(_){toast(T('challengeInvalid'));}
   }
@@ -709,6 +741,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(!element('challengeName').value.trim())element('challengeName').value=challengeName||T('challengeNickname');
     updateChallengeName();
     const ch={seed:challengeDraft.seed,ids:challengeDraft.ids.slice(),opponent:challengeDraft.opponent?{...challengeDraft.opponent}:null};
+    set('lastChallenge',{seed:ch.seed,ids:ch.ids});
     session={mode:'challenge',day:date(),seed:ch.seed,ids:ch.ids.slice(),challenge:ch,idx:0,score:0,correct:0,streak:0,maxStreak:0,lives:3,hint:false,selected:null,gained:0,reveal:0};
     lastMode='challenge';saveSession();game();
   }
@@ -726,13 +759,14 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   async function sendChallengeLink(score=null){
     if(!challengeDraft)return;
     updateChallengeName();
-    const url=challengeUrl(challengeDraft,score);
-    const label=T(score?'challengeScoreLink':'challengeInviteLink');
+    const saved=score||myChallengeRecord(challengeDraft);
+    const url=challengeUrl(challengeDraft,saved);
+    const label=T(saved?'challengeScoreLink':'challengeInviteLink');
     if(typeof navigator.share==='function'){
       try{await navigator.share({title:'Guess the Game – Challenge',text:label,url});return;}
       catch(error){if(error?.name==='AbortError')return;}
     }
-    await copyChallengeText(url,score?'score':'invite');
+    await copyChallengeText(url,saved?'score':'invite');
   }
   function shareChallengeScore(){
     const ch=(screen==='result'&&result?.mode==='challenge')?result.challenge:challengeDraft;
@@ -743,6 +777,20 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     sendChallengeLink(saved);
   }
 
+  function addFriendScore(){
+    if(!result||result.mode!=='challenge'||!result.challenge)return;
+    try{
+      const incoming=parseChallengeLink(element('resultOpponentLink').value);
+      const own=result.challenge;
+      if(!incoming.opponent||incoming.seed!==own.seed||incoming.ids.join('.')!==own.ids.join('.'))throw Error('mismatch');
+      result.challenge.opponent={...incoming.opponent};
+      challengeDraft={...result.challenge};
+      comparePanel('result',result.challenge,myChallengeRecord(result.challenge));
+      updateText('resultChallengeHelp',T('challengeResultPresent'));
+      element('resultOpponentLink').value='';
+      toast(T('challengeFriendLoaded'));
+    }catch(_){toast(T('challengeWrongResult'));}
+  }
   function shareResult(){
     if(!result)return;
     if(result.mode==='challenge'){shareChallengeScore();return;}
@@ -912,6 +960,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(challengeOn){
       challengeDraft={...r.challenge};
       comparePanel('result',r.challenge,myChallengeRecord(r.challenge));
+      updateText('resultChallengeHelp',T(r.challenge.opponent?'challengeResultPresent':'challengeResultMissing'));
       updateText('shareResult',T('challengeShareScore'));
     }else{updateText('shareResult',T('shareResult'));}
     show('result');
@@ -930,11 +979,12 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   element('challengeBack').addEventListener('click',home);
   element('challengeName').addEventListener('change',updateChallengeName);
   element('createChallenge').addEventListener('click',newChallenge);
-  element('copyChallenge').addEventListener('click',()=>{updateChallengeName();copyChallengeText(challengeUrl(challengeDraft),'invite');});
-  element('shareChallenge').addEventListener('click',()=>sendChallengeLink());
+  element('copyChallenge').addEventListener('click',()=>{updateChallengeName();const saved=challengeDraft&&myChallengeRecord(challengeDraft);copyChallengeText(challengeUrl(challengeDraft,saved),saved?'score':'invite');});
+  element('shareChallenge').addEventListener('click',()=>sendChallengeLink(challengeDraft&&myChallengeRecord(challengeDraft)));
   element('startChallenge').addEventListener('click',startChallenge);
   element('joinChallenge').addEventListener('click',joinChallenge);
   element('shareSavedChallenge').addEventListener('click',shareChallengeScore);
+  element('addFriendScore').addEventListener('click',addFriendScore);
   element('openShopHome').addEventListener('click',renderShop);element('openShopProfile').addEventListener('click',renderShop);element('shopBack').addEventListener('click',home);element('openChest').addEventListener('click',openChest);
   for(const [id,mode] of [['startClassic','classic'],['startMystery','mystery'],['startDaily','daily'],['startEasy','easy'],['startMedium','medium'],['startHard','hard']])element(id).addEventListener('click',()=>start(mode));
   element('resume').addEventListener('click',()=>{if(session){lastMode=session.mode;game();}});
@@ -961,7 +1011,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   if(urlInput.has('challenge')){
     try{
       challengeDraft=parseChallengeLink(window.location.href);
-      if(challengeDraft.opponent)renderChallengeLobby();
+      if(challengeDraft.opponent&&!challengeDraft.autoPlay)renderChallengeLobby();
       else startChallenge();
     }catch(_){home();toast(T('challengeInvalid'));}
   }else home();
