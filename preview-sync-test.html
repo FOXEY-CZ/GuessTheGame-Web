@@ -227,7 +227,7 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <label class="preference"><span data-i18n="hapticsLabel">📳 Vibrace při odpovědi</span><input type="checkbox" id="hapticsToggle" aria-label="Vibrace při odpovědi"></label>
       </section>
       <section class="profile-tools" id="syncSection">
-        <h2 data-i18n="syncTitle">☁️ SYNCHRONIZACE POSTUPU</h2>
+        <h2 data-i18n="syncTitle">☁️ SYNCHRONIZACE</h2>
         <p class="save-help" data-i18n="syncHelp">Jednou propoj web a Android. Potom se postup synchronizuje automaticky, i když hraješ offline.</p>
         <p class="save-help" id="syncStatus" role="status" aria-live="polite"></p>
         <div id="syncSetup">
@@ -270,6 +270,21 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <button type="button" class="tool-action primary" id="restoreSave" style="width:100%" data-i18n="restoreSave">OBNOVIT Z KÓDU</button>
       </section>
       </details>
+      <section class="profile-tools" id="deleteDataSection">
+        <h2 data-i18n="deleteTitle">🗑️ SMAZÁNÍ DAT</h2>
+        <p class="save-help" data-i18n="deleteHelp">Natrvalo smaže tvůj postup na tomto zařízení a připojený cloudový profil. Bez registrace žádný samostatný uživatelský účet nemáš.</p>
+        <button type="button" class="tool-action" id="deleteProgressStart" data-i18n="deleteStart" style="width:100%">SMAZAT POSTUP / ÚČET</button>
+        <div id="deleteProgressConfirm" class="hidden">
+          <p class="save-help" data-i18n="deleteWarning">⚠️ Pozor: XP, levely, odznaky, měny i další místní data se smažou. Pokud je připojen cloud, smaže se také jeho kopie. Nejdřív si případně vytvoř zálohu.</p>
+          <label class="save-help" for="deleteProgressPhrase" data-i18n="deletePhraseHint">Pro potvrzení napiš SMAZAT:</label>
+          <input id="deleteProgressPhrase" type="text" class="save-code" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="SMAZAT" style="width:100%;min-height:44px">
+          <p id="deleteProgressStatus" class="save-help" role="status" aria-live="polite"></p>
+          <div class="tool-buttons">
+            <button type="button" class="tool-action" id="deleteProgressCancel" data-i18n="deleteCancel">ZRUŠIT</button>
+            <button type="button" class="tool-action" id="deleteProgressFinal" data-i18n="deleteFinal" disabled>SMAZAT NATRVALO</button>
+          </div>
+        </div>
+      </section>
     </main>
 
     <main id="shop" class="screen hidden">
@@ -349,8 +364,9 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       themeClassic:'Klasický neon',themeClassicDesc:'Původní kombinace tyrkysové a fialové',themeRetro:'Retro Wave',themeRetroDesc:'Zlaté a růžové retro barvy',themeRoyal:'Královský',themeRoyalDesc:'Fialová a zlatá pro vítěze',themeOcean:'Deep Blue',themeOceanDesc:'Oceánská modrá a chladné světlo',
       avatarAlien:'Herní vetřelec',avatarAlienDesc:'Původní avatar 👾',avatarFox:'Lišák',avatarFoxDesc:'Liška do každého kvízu 🦊',avatarRobot:'Robot',avatarRobotDesc:'Ocelový společník 🤖',avatarCrown:'Král',avatarCrownDesc:'Královský avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exkluzivní avatar z truhly', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Vizuální odměny mají vlastní ikonky a rarity.',
       onlineCreated:'Online výzva vytvořena!',onlineFailed:'Online služba je nedostupná. Zkus to později.',onlineFinished:'Tento souboj už máš dohraný.',onlineReady:'Oba hráči dohráli. Výsledek je připraven!',onlineWaiting:'Čekáme na soupeře. Skóre se doplní automaticky.',onlineRetry:'Výsledek čeká na odeslání. Zkus zkontrolovat skóre při připojení.',settingsTitle:'⚙️ NASTAVENÍ', soundsLabel:'🔊 Zvukové efekty', hapticsLabel:'📳 Vibrace při odpovědi',
-      syncTitle:'☁️ SYNCHRONIZACE POSTUPU',syncHelp:'Jednou propoj web a Android. Pak se postup synchronizuje automaticky, i když hraješ offline.',syncHaveCode:'Už mám kód z jiného zařízení',syncCodeHelp:'Zadej soukromý propojovací kód ze svého druhého zařízení.',syncAutoHint:'Postup se průběžně synchronizuje s cloudem. Nic dalšího mačkat nemusíš.',syncManageTitle:'⚙️ Spravovat propojení',syncPrivateHint:'Tento kód funguje jako heslo k hernímu postupu. Nesdílej ho veřejně.',backupOptions:'💾 Ruční záloha postupu (pokročilé)',
+      syncTitle:'☁️ SYNCHRONIZACE',syncHelp:'Jednou propoj web a Android. Pak se postup synchronizuje automaticky, i když hraješ offline.',syncHaveCode:'Už mám kód z jiného zařízení',syncCodeHelp:'Zadej soukromý propojovací kód ze svého druhého zařízení.',syncAutoHint:'Postup se průběžně synchronizuje s cloudem. Nic dalšího mačkat nemusíš.',syncManageTitle:'⚙️ Spravovat propojení',syncPrivateHint:'Tento kód funguje jako heslo k hernímu postupu. Nesdílej ho veřejně.',backupOptions:'💾 Ruční záloha postupu (pokročilé)',
       syncCreate:'ZAPNOUT CLOUDOVÉ UKLÁDÁNÍ',syncConnect:'PROPOJIT ZAŘÍZENÍ',syncNow:'SYNCHRONIZOVAT NYNÍ',syncCopy:'📋 KOPÍROVAT KÓD',syncDisconnect:'ODPOJIT TOTO ZAŘÍZENÍ',syncConflictHelp:'Obě zařízení mají rozdílný postup. Vyber, který zachovat; druhým klepnutím potvrď.',syncCloud:'POUŽÍT CLOUD',syncDevice:'POUŽÍT TOTO ZAŘÍZENÍ',
+      deleteTitle:'🗑️ SMAZÁNÍ DAT',deleteHelp:'Natrvalo smaže tvůj postup na tomto zařízení a připojený cloudový profil. Bez registrace žádný samostatný uživatelský účet nemáš.',deleteStart:'SMAZAT POSTUP / ÚČET',deleteWarning:'⚠️ Smažou se XP, levely, odznaky, měny i další místní data. Pokud je připojen cloud, smaže se i jeho kopie. Případnou zálohu si vytvoř předem.',deletePhraseHint:'Pro potvrzení napiš SMAZAT:',deleteCancel:'ZRUŠIT',deleteFinal:'SMAZAT NATRVALO',
       backupTitle:'💾 ZÁLOHA POSTUPU',backupHelp:'Vytvoř kód a ulož si ho. Přenese XP, statistiky, odznaky a nastavení mezi zařízeními. Rozehranou otázku nepřenáší.',
       generateSave:'VYTVOŘIT KÓD',copySave:'📋 KOPÍROVAT',restoreSave:'OBNOVIT Z KÓDU',
       backupReady:'✅ Záložní kód je připraven.',backupCopied:'📋 Kód zkopírován.',copyManual:'Vyber kód a zkopíruj ho ručně.',
@@ -406,8 +422,9 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       themeClassic:'Classic neon',themeClassicDesc:'Original cyan and purple colors',themeRetro:'Retro Wave',themeRetroDesc:'Golden and pink retro palette',themeRoyal:'Royal',themeRoyalDesc:'Purple and gold for champions',themeOcean:'Deep Blue',themeOceanDesc:'Ocean blues with cool glow',
       avatarAlien:'Arcade alien',avatarAlienDesc:'Original avatar 👾',avatarFox:'Fox',avatarFoxDesc:'A fox for your gaming quizzes 🦊',avatarRobot:'Robot',avatarRobotDesc:'Steel friend 🤖',avatarCrown:'King',avatarCrownDesc:'Royal avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exclusive chest avatar', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Visual rewards now use custom icons and rarities.',
       onlineCreated:'Online challenge created!',onlineFailed:'Online service is unavailable. Try again later.',onlineFinished:'You already finished this duel.',onlineReady:'Both players finished. Final score is ready!',onlineWaiting:'Waiting for your opponent. Score will update automatically.',onlineRetry:'Your score is waiting to upload. Check again when online.',settingsTitle:'⚙️ SETTINGS',soundsLabel:'🔊 Sound effects',hapticsLabel:'📳 Answer vibration',
-      syncTitle:'☁️ CLOUD PROGRESS SYNC',syncHelp:'Link web and Android once. Progress syncs automatically, even when you play offline.',syncHaveCode:'I already have a code from another device',syncCodeHelp:'Enter the private code from your other device.',syncAutoHint:'Your progress syncs automatically. No need to press anything.',syncManageTitle:'⚙️ Manage linked devices',syncPrivateHint:'This code works like a password for your game progress. Do not share it publicly.',backupOptions:'💾 Manual backup (advanced)',
+      syncTitle:'☁️ SYNCHRONIZATION',syncHelp:'Link web and Android once. Progress syncs automatically, even when you play offline.',syncHaveCode:'I already have a code from another device',syncCodeHelp:'Enter the private code from your other device.',syncAutoHint:'Your progress syncs automatically. No need to press anything.',syncManageTitle:'⚙️ Manage linked devices',syncPrivateHint:'This code works like a password for your game progress. Do not share it publicly.',backupOptions:'💾 Manual backup (advanced)',
       syncCreate:'TURN ON CLOUD SAVE',syncConnect:'LINK DEVICE',syncNow:'SYNC NOW',syncCopy:'📋 COPY CODE',syncDisconnect:'DISCONNECT THIS DEVICE',syncConflictHelp:'Both devices have changed progress. Choose what to keep and tap the same choice again to confirm.',syncCloud:'USE CLOUD',syncDevice:'USE THIS DEVICE',
+      deleteTitle:'🗑️ DELETE DATA',deleteHelp:'Permanently deletes progress on this device and any linked cloud profile. There is no separate user account unless you registered elsewhere.',deleteStart:'DELETE PROGRESS / ACCOUNT',deleteWarning:'⚠️ This removes XP, levels, badges, currencies and other local game data. A linked cloud copy will be deleted too. Back up first if needed.',deletePhraseHint:'Type DELETE to confirm:',deleteCancel:'CANCEL',deleteFinal:'DELETE PERMANENTLY',
       backupTitle:'💾 SAVE BACKUP',backupHelp:'Generate a code and keep it safe. Transfer XP, stats, badges and preferences between devices. Unfinished rounds are not included.',
       generateSave:'GENERATE CODE',copySave:'📋 COPY',restoreSave:'RESTORE FROM CODE',
       backupReady:'✅ Backup code is ready.',backupCopied:'📋 Code copied.',copyManual:'Select and copy the code manually.',
@@ -1124,6 +1141,15 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       else if(screen==='home')home();
     },
     canApply:()=>screen==='home'||screen==='profile',
+    resetProgress:()=>{
+      // Purge only this edition's own local game data; other editions stay untouched.
+      try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith(KEY))localStorage.removeItem(k);}}catch(_){}
+      backup={};profile=blankProfile();session=null;result=null;challengeDraft=null;challengeName='';
+      prefs={sound:true,haptics:true};restoreArmed='';lastMode='classic';
+      set('profile',profile);set('session',null);set('prefs',prefs);set('lang',lang);
+      if(element('saveCode'))element('saveCode').value='';
+      home();
+    },
     language:()=>lang
   };
   window.gtgBack=()=>{if(screen==='game'||screen==='profile'||screen==='result'||screen==='shop'||screen==='challenge'){home();return true;}return false;};
