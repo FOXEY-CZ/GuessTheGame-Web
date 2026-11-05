@@ -117,6 +117,17 @@
     try{game.setProfile(clone(p));}finally{applying=false;}
     cacheAccount();
   }
+  // Notify only after a verified cloud save/load. The Arcade parent then
+  // fetches its own owner-scoped RLS row; no game stats or tokens are sent.
+  function notifyArcadeCloudSync(revision){
+    if(!user || !Number.isSafeInteger(revision))return;
+    try{
+      if(window.parent && window.parent!==window && typeof window.parent.postMessage==='function')
+        window.parent.postMessage({
+          type:'foxey-arcade:gtg-cloud-synced', userId:user.id, revision
+        },location.origin);
+    }catch(_){}
+  }
   function acceptRemote(row){
     if(!row || !isProfile(row.profile) || !Number.isSafeInteger(row.revision))throw Error('bad_remote');
     state={revision:row.revision,base:serial(row.profile),lastSyncedAt:new Date().toISOString()};
@@ -124,6 +135,7 @@
     setActiveProfile(row.profile);
     cacheAccount();
     render();
+    notifyArcadeCloudSync(row.revision);
   }
   async function readRemote(){
     if(!user)throw Error('not_authenticated');
@@ -320,6 +332,7 @@
       if(localJSON===cloudJSON){
         state={revision:remote.revision,base:cloudJSON,lastSyncedAt:new Date().toISOString()};
         cacheAccount();
+        notifyArcadeCloudSync(state.revision);
         setFeedback('✅ Synchronizováno.','✅ Synced.');
         return;
       }
@@ -341,6 +354,7 @@
         if(!data)throw Error('conflict');
         state={revision:data.revision,base:localJSON,lastSyncedAt:new Date().toISOString()};
         cacheAccount();
+        notifyArcadeCloudSync(state.revision);
         setFeedback('✅ Postup uložený do účtu.','✅ Progress saved to your account.');
         return;
       }
