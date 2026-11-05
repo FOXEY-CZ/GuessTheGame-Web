@@ -8,6 +8,9 @@
   const cfg = window.GTGAuthConfig;
   const prefix = 'gtg.accountTest.v1.';
   const guestKey = prefix + 'guestProfile';
+  const oldSyncKeys = ['gtg.syncTest.v1.cloudSync', 'gtg.v2.cloudSync'];
+  const oldSyncAPI = 'https://ivfhfdrjkktfueeqdgej.supabase.co/functions/v1/gtg36-sync';
+  const linkPattern = /^GTGS1:([0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}):([0-9a-f]{64})$/i;
   const accountKey = id => prefix + 'accountCache.' + id;
   const cs = () => game.language() === 'cs';
   const msg = (cz, en) => cs() ? cz : en;
@@ -28,6 +31,7 @@
   let client = null, user = null, state = null, busy = false, applying = false;
   let formMode = '', firstChoice = false, conflict = null, conflictArmed = '';
   let timer = null, feedback = '', deletionInProgress = false;
+  let authChecking = true, legacyPrepared = null;
   if(!game || !cfg || !window.supabase || typeof window.supabase.createClient !== 'function'){
     el('authStatus').textContent = '❌ ' + 'Přihlašovací knihovna se nenačetla. Zkontroluj připojení a obnov stránku.';
     el('authShowSignup').disabled = true;el('authShowLogin').disabled = true;
@@ -65,7 +69,14 @@
     el('authSyncNow').disabled = busy || !state || !!conflict || firstChoice;
     for(const id of ['authImportGuest','authStartFresh','authChooseCloud','authChooseLocal','authLogout'])
       el(id).disabled=busy || deletionInProgress;
-    el('authSubmit').disabled=busy;
+    el('authSubmit').disabled=busy || authChecking;
+    el('authShowSignup').disabled=authChecking;
+    el('authShowLogin').disabled=authChecking;
+    el('authImportLegacy').disabled=busy || deletionInProgress;
+    const legacy = oldSyncKeys.map(load).find(x => x && typeof x.id === 'string' && typeof x.token === 'string');
+    el('authLegacyAvailable').textContent = legacy
+      ? msg('☁️ Na tomto prohlížeči je dostupné dřívější propojení. Kód nemusíš vkládat.', '☁️ Existing link detected in this browser. No need to paste the code.')
+      : msg('Pokud máš propojovací kód z jiného zařízení, můžeš ho vložit níže.', 'Paste a linking code from another device if you have one.');
   }
   function captureGuest(){
     const existing=load(guestKey);
@@ -95,10 +106,12 @@
     if(error)throw error;
     return data;
   }
-  async function createAccountSave(choice){
+  async function createAccountSave(choice, importedProfile = null){
     if(!user || busy || !firstChoice)return;
     const guest=load(guestKey);
-    const profile=choice==='guest' && isProfile(guest) ? guest : game.getEmptyProfile();
+    const profile=choice==='legacy' && isProfile(importedProfile)
+      ? importedProfile
+      : choice==='guest' && isProfile(guest) ? guest : game.getEmptyProfile();
     if(!isProfile(profile))return setFeedback('❌ Neplatný místní postup.','❌ Invalid local progress.');
     busy=true;render();
     try{
@@ -106,6 +119,7 @@
         .insert({user_id:user.id,profile}).select('profile,revision').single();
       if(error)throw error;
       acceptRemote(data);
+      legacyPrepared=null;el('authLegacyCode').value='';el('authLegacyStatus').textContent='';
       setFeedback('✅ Postup účtu je připravený. Hostův postup zůstal zálohovaný.','✅ Account progress is ready. Guest progress remains backed up.');
     }catch(e){
       const exists=await readRemote().catch(()=>null);
@@ -114,6 +128,54 @@
                   '⚠️ Failed to create cloud save: '+String(e.message||'error').slice(0,80));
     }finally{busy=false;render();}
   }
+
+  // Optional migration: COPY the old cloud profile into a new authenticated
+  // account, never delete the old profile/link automatically.
+  function getLegacyCode(){
+    const typed=el('authLegacyCode').value.trim();
+    if(typed)return typed;
+    for(const key of oldSyncKeys){
+      const saved=load(key);
+      if(saved && typeof saved.id==='string' && typeof saved.token==='string')
+        return 'GTGS1:'+saved.id+':'+saved.token;
+    }
+    return '';
+  }
+  async function importLegacy(){
+    if(!user || !firstChoice || busy || deletionInProgress)return;
+    const raw=getLegacyCode();
+    const matches=linkPattern.exec(raw);
+    if(!matches){
+      el('authLegacyStatus').textContent=msg('❌ Nemám platný propojovací kód GTGS1.', '❌ No valid GTGS1 linking code.');
+      return;
+    }
+    busy=true;render();
+    try{
+      const response=await fetch(oldSyncAPI,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        cache:'no-store',
+        body:JSON.stringify({action:'load',id:matches[1].toLowerCase(),token:matches[2].toLowerCase()})
+      });
+      const value=await response.json();
+      if(!response.ok || !value.ok || !isProfile(value.profile))throw Error('unavailable');
+      const fingerprint=serial(value.profile);
+      if(!legacyPrepared || legacyPrepared.code!==raw || legacyPrepared.snapshot!==fingerprint){
+        legacyPrepared={code:raw,snapshot:fingerprint};
+        el('authLegacyStatus').textContent=msg(
+          '☁️ Nalezeno '+value.profile.xp+' XP. Klepni znovu na PŘEVÉST pro potvrzení. Původní cloud zůstane uložený.',
+          '☁️ Found '+value.profile.xp+' XP. Tap IMPORT again to confirm. The original cloud copy will remain.');
+      }else{
+        busy=false;render();
+        await createAccountSave('legacy',clone(value.profile));
+      }
+    }catch(e){
+      legacyPrepared=null;
+      el('authLegacyStatus').textContent=msg('⚠️ Starší cloud není dostupný nebo kód neplatí. Nic se nezměnilo.',
+        '⚠️ Old cloud unavailable or invalid code. Nothing changed.');
+    }finally{busy=false;render();}
+  }
+
   async function activate(nextUser){
     if(!nextUser || !nextUser.id)return;
     if(user && user.id===nextUser.id)return;
@@ -231,7 +293,7 @@
     timer=setTimeout(()=>syncNow(),1800);
   }
   function profileChanged(){
-    if(applying)return;
+    if(applying || (authChecking && !user))return;
     if(user){cacheAccount();schedule();}
     else store(guestKey,game.getProfile());
   }
@@ -331,6 +393,10 @@
   el('authSyncNow').addEventListener('click',()=>syncNow());
   el('authImportGuest').addEventListener('click',()=>createAccountSave('guest'));
   el('authStartFresh').addEventListener('click',()=>createAccountSave('fresh'));
+  el('authImportLegacy').addEventListener('click',importLegacy);
+  el('authLegacyCode').addEventListener('input',()=>{
+    legacyPrepared=null;el('authLegacyStatus').textContent='';
+  });
   el('authChooseCloud').addEventListener('click',()=>resolveConflict('cloud'));
   el('authChooseLocal').addEventListener('click',()=>resolveConflict('local'));
   el('authLogout').addEventListener('click',logout);
@@ -345,13 +411,25 @@
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule();});
   setInterval(()=>{if(user&&!document.hidden)schedule();},60000);
   render();
-  // Restore an authenticated session only after verifying it with Auth.
-  client.auth.getUser().then(({data,error})=>{
-    if(!error && data && data.user)activate(data.user);
-    else if(!load(guestKey))store(guestKey,game.getProfile());
+  // Do not interpret the last account save as guest progress on an
+  // unauthenticated/offline reload. Previous guest snapshots remain separate.
+  function restoreGuest(){
+    const guest=load(guestKey);
+    if(isProfile(guest))setActiveProfile(guest);
+    else store(guestKey,game.getProfile());
+  }
+  client.auth.getUser().then(async ({data,error})=>{
+    if(!error && data && data.user){
+      await activate(data.user);
+    }else{
+      restoreGuest();
+    }
   }).catch(()=>{
-    if(!load(guestKey))store(guestKey,game.getProfile());
-    setFeedback('⚠️ Ověření přihlášení není dostupné. Host může hrát lokálně.',
-                '⚠️ Could not verify account. Guest can still play locally.');
+    restoreGuest();
+    setFeedback('⚠️ Přihlášení teď nelze ověřit. Účet zůstává uložený pro pozdější přihlášení, můžeš hrát jako host.',
+                '⚠️ Cannot verify sign-in right now. Account data remains cached; you can play as guest.');
+  }).finally(()=>{
+    authChecking=false;
+    render();
   });
 })();
