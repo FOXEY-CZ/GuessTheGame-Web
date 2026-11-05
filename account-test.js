@@ -32,6 +32,7 @@
   let formMode = '', firstChoice = false, conflict = null, conflictArmed = '';
   let timer = null, feedback = '', deletionInProgress = false;
   let authChecking = true, legacyPrepared = null, mergePrepared = null;
+  let recoveryActive = false, recoveryBusy = false;
   if(!game || !cfg || !window.supabase || typeof window.supabase.createClient !== 'function'){
     el('authStatus').textContent = '❌ ' + 'Přihlašovací knihovna se nenačetla. Zkontroluj připojení a obnov stránku.';
     el('authShowSignup').disabled = true;el('authShowLogin').disabled = true;
@@ -40,11 +41,27 @@
   client = window.supabase.createClient(cfg.url,cfg.publishableKey,{
     auth:{storageKey:cfg.storageKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
   });
+  // Do not call other Supabase methods within this synchronous auth callback.
+  // PASSWORD_RECOVERY proves the user followed a valid reset link.
+  if (typeof client.auth.onAuthStateChange === 'function') {
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' && session) {
+        recoveryActive = true;
+        el('authRecoveryStatus').textContent = msg(
+          '✅ Odkaz ověřen. Zvol nové heslo.', '✅ Reset link verified. Choose a new password.');
+        render();
+      }
+    });
+  }
   const setFeedback = (cz,en) => {feedback=msg(cz,en);render();};
   function render(){
     show('authGuest',!user && !formMode);
     show('authForm',!user && !!formMode);
     show('authAccount',!!user);
+    show('authForgotPassword',!user && formMode==='login');
+    show('authPasswordLabel',formMode!=='reset');
+    show('authPasswordInput',formMode!=='reset');
+    show('authRecoveryOverlay',recoveryActive);
     el('authStatus').textContent = feedback || (user
       ? msg('✅ Přihlášený hráč — cloudové ukládání.','✅ Signed in — cloud saving.')
       : msg('🎮 Režim hosta — jen místní ukládání.','🎮 Guest mode — local saving only.'));
@@ -72,6 +89,8 @@
     el('authSubmit').disabled=busy || authChecking;
     el('authShowSignup').disabled=authChecking;
     el('authShowLogin').disabled=authChecking;
+    el('authRecoverySave').disabled=recoveryBusy;
+    el('authRecoveryCancel').disabled=recoveryBusy;
     el('authImportLegacy').disabled=busy || deletionInProgress;
     const guest=load(guestKey);
     show('authGuestMergePanel',!!user && !!state && !firstChoice && isProfile(guest) &&
@@ -377,10 +396,10 @@
     formMode=mode;
     el('authFormTitle').textContent=mode==='signup'
       ? msg('Vytvoření účtu','Create account')
-      : msg('Přihlášení','Sign in');
+      : mode==='reset' ? msg('Obnova hesla','Reset password') : msg('Přihlášení','Sign in');
     el('authSubmit').textContent=mode==='signup'
       ? msg('VYTVOŘIT ÚČET','CREATE ACCOUNT')
-      : msg('PŘIHLÁSIT SE','SIGN IN');
+      : mode==='reset' ? msg('ODESLAT OBNOVOVACÍ ODKAZ','SEND RESET EMAIL') : msg('PŘIHLÁSIT SE','SIGN IN');
     el('authFormStatus').textContent='';
     el('authPasswordInput').value='';
     render();
@@ -389,12 +408,27 @@
     if(busy || user || !formMode)return;
     const email=el('authEmailInput').value.trim();
     const password=el('authPasswordInput').value;
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length<8 || password.length>128){
-      el('authFormStatus').textContent=msg('Zadej platný e-mail a heslo dlouhé alespoň 8 znaků.','Enter a valid email and a password of at least 8 characters.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+       (formMode!=='reset' && (password.length<8 || password.length>128))){
+      el('authFormStatus').textContent=msg(
+        'Zadej platný e-mail a pro přihlášení heslo dlouhé alespoň 8 znaků.',
+        'Enter a valid email and, for sign-in, a password of at least 8 characters.');
       return;
     }
     captureGuest();busy=true;render();
     try{
+      if(formMode==='reset'){
+        const {error}=await client.auth.resetPasswordForEmail(email,{
+          redirectTo:location.origin+location.pathname
+        });
+        if(error)throw error;
+        formMode='';
+        el('authPasswordInput').value='';
+        setFeedback(
+          '📧 Pokud k adrese existuje účet, dorazí odkaz na obnovu. Zkontroluj také spam.',
+          '📧 If an account exists, a reset link will arrive. Check your spam folder too.');
+        return;
+      }
       const result=formMode==='signup'
         ? await client.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}})
         : await client.auth.signInWithPassword({email,password});
@@ -412,6 +446,52 @@
       const code=String(e&&e.message||'auth_failed').slice(0,120);
       el('authFormStatus').textContent=msg('❌ Přihlášení/registrace: ','❌ Authentication: ')+code;
     }finally{busy=false;render();if(user&&state)schedule();}
+  }
+
+  async function saveRecoveredPassword(){
+    if(!recoveryActive || recoveryBusy)return;
+    const password=el('authNewPassword').value;
+    const repeated=el('authNewPasswordAgain').value;
+    if(password.length<8 || password.length>128 || password!==repeated){
+      el('authRecoveryStatus').textContent=msg(
+        '❌ Hesla se musí shodovat a mít alespoň 8 znaků.',
+        '❌ Passwords must match and be at least 8 characters long.');
+      return;
+    }
+    recoveryBusy=true;render();
+    try{
+      const {error}=await client.auth.updateUser({password});
+      if(error)throw error;
+      el('authNewPassword').value='';
+      el('authNewPasswordAgain').value='';
+      recoveryActive=false;
+      setFeedback('✅ Heslo změněno. Herní postup zůstal zachovaný.',
+        '✅ Password changed. Your game progress was preserved.');
+    }catch(_){
+      el('authRecoveryStatus').textContent=msg(
+        '⚠️ Heslo se nepodařilo změnit. Zkus to znovu nebo požádej o nový odkaz.',
+        '⚠️ Could not change the password. Retry or request another reset link.');
+    }finally{recoveryBusy=false;render();}
+  }
+  async function cancelRecovery(){
+    if(!recoveryActive || recoveryBusy)return;
+    recoveryBusy=true;render();
+    try{
+      const {error}=await client.auth.signOut({scope:'local'});
+      if(error)throw error;
+      clearTimeout(timer);
+      user=null;state=null;firstChoice=false;conflict=null;mergePrepared=null;formMode='';
+      recoveryActive=false;
+      el('authNewPassword').value='';el('authNewPasswordAgain').value='';
+      const guest=load(guestKey);
+      setActiveProfile(isProfile(guest)?guest:game.getEmptyProfile());
+      setFeedback('Obnova zrušena. Pokračuješ jako host.',
+        'Recovery cancelled. You are playing as guest.');
+    }catch(_){
+      el('authRecoveryStatus').textContent=msg(
+        '⚠️ Odhlášení se nezdařilo. Zkus znovu.',
+        '⚠️ Could not sign out. Please try again.');
+    }finally{recoveryBusy=false;render();}
   }
   async function logout(){
     if(!user||busy)return;
@@ -466,6 +546,9 @@
   el('authShowLogin').addEventListener('click',()=>chooseForm('login'));
   el('authCancel').addEventListener('click',()=>{formMode='';render();});
   el('authSubmit').addEventListener('click',submitAuth);
+  el('authForgotPassword').addEventListener('click',()=>chooseForm('reset'));
+  el('authRecoverySave').addEventListener('click',saveRecoveredPassword);
+  el('authRecoveryCancel').addEventListener('click',cancelRecovery);
   el('authSyncNow').addEventListener('click',()=>syncNow());
   el('authImportGuest').addEventListener('click',()=>createAccountSave('guest'));
   el('authStartFresh').addEventListener('click',()=>createAccountSave('fresh'));
