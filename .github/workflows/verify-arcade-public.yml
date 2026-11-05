@@ -46,7 +46,7 @@ jobs:
           set -euo pipefail
           for i in 1 2 3 4 5 6; do
             if curl -fLsS --max-time 15 'https://foxey-cz.github.io/GuessTheGame-Web/arcade/index.html' -o /tmp/arcade.html && \
-               grep -q 'FOXEY ARCADE' /tmp/arcade.html && \
+               grep -q 'Hry jsou lepší' /tmp/arcade.html && \
                curl -fLsS --max-time 15 'https://foxey-cz.github.io/GuessTheGame-Web/arcade/app.js' -o /tmp/arcade.js; then
               node --check /tmp/arcade.js
               echo 'Public Arcade preview is online.'
