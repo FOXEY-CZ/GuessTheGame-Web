@@ -30,6 +30,7 @@
   };
   let link = null, busy = false, timer = null, conflict = null;
   let prompt = '', confirmCode = '', confirmResolution = '', confirmDisconnect = false;
+  let deleting = false;
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
     if (saved && parseCode(linkCode(saved)) && Number.isSafeInteger(saved.revision) &&
@@ -244,6 +245,68 @@
     clearTimeout(timer); persist(); el('syncCode').value = ''; el('syncLinkedCode').value = ''; el('syncManage').open = false;
     status('Odpojeno. Místní XP zůstávají.', 'Disconnected. Local XP remain.');
   }
+
+  // Destructive action is separate from sync controls; never delete on a single tap.
+  function updateDeleteConfirmation(){
+    const phrase = cs() ? 'SMAZAT' : 'DELETE';
+    const typed = el('deleteProgressPhrase').value.trim().toLocaleUpperCase();
+    el('deleteProgressFinal').disabled = deleting || busy || typed !== phrase;
+  }
+  function closeDeleteConfirmation(){
+    if(deleting)return;
+    el('deleteProgressConfirm').classList.add('hidden');
+    el('deleteProgressPhrase').value='';
+    el('deleteProgressStatus').textContent='';
+    updateDeleteConfirmation();
+  }
+  function openDeleteConfirmation(){
+    if(deleting || busy)return;
+    el('deleteProgressConfirm').classList.remove('hidden');
+    el('deleteProgressPhrase').value='';
+    el('deleteProgressStatus').textContent='';
+    updateDeleteConfirmation();
+    el('deleteProgressConfirm').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  async function deleteAllProgress(){
+    if(deleting || busy)return;
+    if(el('deleteProgressPhrase').value.trim().toLocaleUpperCase() !== (cs() ? 'SMAZAT' : 'DELETE'))return;
+    deleting = true; el('deleteProgressFinal').disabled=true;
+    el('deleteProgressCancel').disabled=true;
+    el('deleteProgressStart').disabled=true;
+    el('deleteProgressStatus').textContent=msg('⏳ Mažu připojený cloudový profil a místní postup…','⏳ Removing cloud profile and local progress…');
+    try{
+      // If cloud deletion fails, preserve everything, including the local link and XP.
+      // Deleting the server copy requires the current device's private capability token.
+      if(link){
+        if(navigator.onLine===false)throw Error('offline');
+        await request({action:'delete',id:link.id,token:link.token});
+      }
+      link=null;conflict=null;prompt='';
+      clearTimeout(timer);persist();
+      el('syncCode').value='';
+      el('syncLinkedCode').value='';
+      el('syncManage').open=false;
+      game.resetProgress();
+      closeDeleteAfterSuccess();
+      status('🗑️ Postup na tomto zařízení a připojený cloudový profil byly smazány.','🗑️ Local progress and linked cloud profile were deleted.');
+    }catch(e){
+      // A failed network operation must never erase or reset local data.
+      const error=String(e&&e.message||'connection_failed').slice(0,60).replace(/[^a-zA-Z0-9_ -]/g,'');
+      el('deleteProgressStatus').textContent=msg('⚠️ Mazání se nezdařilo ('+error+'). Nic místního nebylo smazáno.','⚠️ Deletion failed ('+error+'). Local progress was preserved.');
+    }finally{
+      deleting=false;
+      el('deleteProgressCancel').disabled=false;
+      el('deleteProgressStart').disabled=false;
+      updateDeleteConfirmation();
+      refresh();
+    }
+  }
+  function closeDeleteAfterSuccess(){
+    el('deleteProgressConfirm').classList.add('hidden');
+    el('deleteProgressPhrase').value='';
+    el('deleteProgressStatus').textContent='';
+  }
+
   el('syncCreate').addEventListener('click', create);
   el('syncConnect').addEventListener('click', connect);
   el('syncNow').addEventListener('click', syncNow);
@@ -252,6 +315,10 @@
   el('syncCloud').addEventListener('click', () => resolve('cloud'));
   el('syncDevice').addEventListener('click', () => resolve('device'));
   el('syncCode').addEventListener('input', () => {confirmCode = '';});
+  el('deleteProgressStart').addEventListener('click',openDeleteConfirmation);
+  el('deleteProgressCancel').addEventListener('click',closeDeleteConfirmation);
+  el('deleteProgressPhrase').addEventListener('input',updateDeleteConfirmation);
+  el('deleteProgressFinal').addEventListener('click',deleteAllProgress);
   window.addEventListener('gtg-profile-screen', () => {refresh();schedule();});
   window.addEventListener('gtg-home-screen', schedule);
   window.addEventListener('gtg-profile-saved', schedule);
