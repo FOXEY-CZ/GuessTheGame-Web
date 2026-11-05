@@ -34,6 +34,7 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
     canApply:()=>true,
     getProfile:()=>clone(gameProfile),
     getEmptyProfile:()=>profile(0),
+    setArcadeAvatar:id=>{game.arcadeAvatar=id;},
     setProfile:p=>{gameProfile=clone(p);storage.set('gtg.accountTest.v1.profile',JSON.stringify(gameProfile));emit('gtg-profile-saved')},
     resetProgress:()=>{gameProfile=profile(0);storage.set('gtg.accountTest.v1.profile',JSON.stringify(gameProfile));emit('gtg-profile-saved')}
   };
@@ -48,7 +49,13 @@ function browser({name='browser',initialXP=0,storage=new Map(),initialUser=null,
     updateUser:async({password})=>{auth.updatedPassword=password;return {error:null}},
     onAuthStateChange:cb=>{auth.emitAuth=cb;return {data:{subscription:{unsubscribe(){}}}}}
   };
-  const from=()=>{
+  const from=(table)=>{
+    if(table==='arcade_profiles'){
+      const stub={select:()=>stub,eq:()=>stub,
+        maybeSingle:async()=>({data:{avatar_id:'fox'},error:null})};
+      return stub;
+    }
+    assert.equal(table,'gtg36_account_progress','Game must query its own save or Arcade avatar');
     let action='read',data=null,where={};
     const builder={
       select:()=>builder,
