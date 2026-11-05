@@ -31,7 +31,7 @@
   let client = null, user = null, state = null, busy = false, applying = false;
   let formMode = '', firstChoice = false, conflict = null, conflictArmed = '';
   let timer = null, feedback = '', deletionInProgress = false;
-  let authChecking = true, legacyPrepared = null;
+  let authChecking = true, legacyPrepared = null, mergePrepared = null;
   if(!game || !cfg || !window.supabase || typeof window.supabase.createClient !== 'function'){
     el('authStatus').textContent = '❌ ' + 'Přihlašovací knihovna se nenačetla. Zkontroluj připojení a obnov stránku.';
     el('authShowSignup').disabled = true;el('authShowLogin').disabled = true;
@@ -73,6 +73,13 @@
     el('authShowSignup').disabled=authChecking;
     el('authShowLogin').disabled=authChecking;
     el('authImportLegacy').disabled=busy || deletionInProgress;
+    const guest=load(guestKey);
+    show('authGuestMergePanel',!!user && !!state && !firstChoice && isProfile(guest) &&
+      serial(guest)!==serial(game.getEmptyProfile()));
+    el('authMergeGuest').disabled=busy || deletionInProgress || !user || !state || firstChoice || !!conflict;
+    el('authMergeGuest').textContent = mergePrepared
+      ? msg('✅ POTVRDIT SLOUČENÍ','✅ CONFIRM MERGE')
+      : msg('ZKONTROLOVAT SLOUČENÍ','PREVIEW MERGE');
     const legacy = oldSyncKeys.map(load).find(x => x && typeof x.id === 'string' && typeof x.token === 'string');
     el('authLegacyAvailable').textContent = legacy
       ? msg('☁️ Na tomto prohlížeči je dostupné dřívější propojení. Kód nemusíš vkládat.', '☁️ Existing link detected in this browser. No need to paste the code.')
@@ -176,6 +183,75 @@
     }finally{busy=false;render();}
   }
 
+  async function mergeGuestIntoAccount(){
+    if(!user || !state || busy || firstChoice || conflict || deletionInProgress)return;
+    const guest=load(guestKey);
+    if(!isProfile(guest)){
+      el('authMergePreview').textContent=msg('🎮 Nenalezen žádný platný postup hosta.','🎮 No valid guest progress found.');
+      return;
+    }
+    if(!window.GTGAccountMerge || navigator.onLine===false){
+      el('authMergePreview').textContent=msg('📴 Pro sloučení musíš být online.','📴 You must be online to merge.');
+      return;
+    }
+    busy=true;render();
+    const id=user.id;
+    try{
+      const row=await readRemote();
+      if(!user || user.id!==id || !row || !isProfile(row.profile) || !Number.isSafeInteger(row.revision))
+        throw Error('account_changed');
+      // Never overwrite unsynced account changes. A separate sync must settle first.
+      if(serial(row.profile)!==serial(game.getProfile())){
+        mergePrepared=null;
+        el('authMergePreview').textContent=msg(
+          '⚠️ Účet má neuložené nebo novější změny. Nejdřív stiskni SYNCHRONIZOVAT NYNÍ.',
+          '⚠️ Account has unsaved or newer changes. Press SYNC NOW first.');
+        return;
+      }
+      const result=window.GTGAccountMerge.merge(row.profile,guest);
+      if(!isProfile(result))throw Error('bad_merge');
+      const cloudSnapshot=serial(row.profile),guestSnapshot=serial(guest);
+      if(serial(result)===cloudSnapshot){
+        mergePrepared=null;
+        el('authMergePreview').textContent=msg(
+          '✅ Účet už obsahuje tento postup. Není co přidat. Hostův postup zůstává zachovaný.',
+          '✅ Account already has this progress. Nothing new to merge. Guest save is preserved.');
+        return;
+      }
+      const expected=mergePrepared && mergePrepared.revision===row.revision &&
+        mergePrepared.cloud===cloudSnapshot && mergePrepared.guest===guestSnapshot &&
+        mergePrepared.userId===id;
+      if(!expected){
+        mergePrepared={userId:id,revision:row.revision,cloud:cloudSnapshot,guest:guestSnapshot};
+        el('authMergePreview').textContent=msg(
+          '☁️ Účet: '+row.profile.xp+' XP · Host: '+guest.xp+' XP → Po sloučení: '+result.xp+
+          ' XP. Odznaky a vzhledy se sjednotí, odměny se nesčítají. Klepni znovu na POTVRDIT SLOUČENÍ.',
+          '☁️ Account: '+row.profile.xp+' XP · Guest: '+guest.xp+' XP → Merged: '+result.xp+
+          ' XP. Unlocks are combined, rewards are not added. Tap CONFIRM MERGE again.');
+        return;
+      }
+      // Keep an unchanged copy of the previous cloud profile before a write.
+      if(!store(accountKey(id)+'.beforeMerge', {profile:row.profile,revision:row.revision,createdAt:new Date().toISOString()}))
+        throw Error('backup_unavailable');
+      const {data,error}=await client.from('gtg36_account_progress')
+        .update({profile:result,revision:row.revision+1,updated_at:new Date().toISOString()})
+        .eq('user_id',id).eq('revision',row.revision).select('revision').maybeSingle();
+      if(error || !data)throw error || Error('conflict');
+      state={revision:data.revision,base:serial(result),lastSyncedAt:new Date().toISOString()};
+      setActiveProfile(result);
+      cacheAccount();
+      mergePrepared=null;
+      el('authMergePreview').textContent=msg(
+        '✅ Sloučeno! Účet má '+result.xp+' XP. Původní hostův postup i záloha účtu zůstaly zachované.',
+        '✅ Merged! Account has '+result.xp+' XP. Original guest save and account backup were preserved.');
+      setFeedback('✅ Postup hosta bezpečně sloučený s účtem.','✅ Guest progress safely merged into account.');
+    }catch(e){
+      mergePrepared=null;
+      el('authMergePreview').textContent=msg(
+        '⚠️ Sloučení se nepodařilo, nic nebylo přepsáno. Synchronizuj a zkus to znovu.',
+        '⚠️ Merge failed; nothing was overwritten. Sync and try again.');
+    }finally{busy=false;render();}
+  }
   async function activate(nextUser){
     if(!nextUser || !nextUser.id)return;
     if(user && user.id===nextUser.id)return;
@@ -184,7 +260,7 @@
       state=null;conflict=null;
     }
     captureGuest();
-    user=nextUser;firstChoice=false;state=null;conflict=null;conflictArmed='';formMode='';
+    user=nextUser;firstChoice=false;state=null;conflict=null;conflictArmed='';formMode='';mergePrepared=null;
     render();
     const cached=load(accountKey(user.id));
     if(cached && isProfile(cached.profile) && Number.isSafeInteger(cached.revision)
@@ -344,7 +420,7 @@
       const {error}=await client.auth.signOut({scope:'local'});
       if(error)throw error;
       clearTimeout(timer);
-      user=null;state=null;firstChoice=false;conflict=null;conflictArmed='';
+      user=null;state=null;firstChoice=false;conflict=null;conflictArmed='';mergePrepared=null;
       formMode='';busy=false;
       setActiveProfile(load(guestKey) || game.getEmptyProfile());
       store(guestKey,game.getProfile());
@@ -400,6 +476,7 @@
   el('authChooseCloud').addEventListener('click',()=>resolveConflict('cloud'));
   el('authChooseLocal').addEventListener('click',()=>resolveConflict('local'));
   el('authLogout').addEventListener('click',logout);
+  el('authMergeGuest').addEventListener('click',mergeGuestIntoAccount);
   el('deleteProgressStart').addEventListener('click',showDelete);
   el('deleteProgressCancel').addEventListener('click',()=>{show('deleteProgressConfirm',false);el('deleteProgressPhrase').value='';});
   el('deleteProgressPhrase').addEventListener('input',updateDelete);
