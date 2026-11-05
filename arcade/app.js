@@ -6,6 +6,13 @@
   const el = id => document.getElementById(id);
   const cfg = window.FOXEY_ARCADE_CONFIG;
   const AVATARS = Object.freeze({fox:'🦊',robot:'🤖',alien:'👽',crown:'👑'});
+  // Same exact SVG art as Guess the Game, loaded from a trusted static asset.
+  const avatarMarkup=id=>window.FOXEY_AVATAR_ART?.[id]||null;
+  function showAvatar(id, target){
+    const markup=avatarMarkup(id);
+    if(markup)target.innerHTML=markup;
+    else target.textContent=AVATARS[id]||'🎮';
+  }
   const PAGES = new Set(['home','games','play','community','account','settings']);
   const GAME_URL = '../preview-auth-test.html';
   let supa=null, user=null, profile=null, mode='login', busy=false;
@@ -30,9 +37,8 @@
       const account=el('account'+name);
       if(account)account.textContent=value;
     }
-    el('headerXp').textContent=stats.Xp;
-    el('headerShards').textContent=stats.Shards;
-    el('headerCrowns').textContent=stats.Crowns;
+    // The header belongs to the platform, never use game XP as global XP.
+
     const text= !user?'Přihlas se pro načtení cloudového postupu.'
       :progressStatus==='loading'?'☁️ Načítám postup z cloudu…'
       :progressStatus==='error'?'⚠️ Postup se nepodařilo načíst. Zkus Aktualizovat.'
@@ -41,6 +47,19 @@
       :'☁️ Cloudový postup není načtený.';
     el('homeProgressStatus').textContent=text;
     el('accountProgressStatus').textContent=text;
+  }
+  function renderArcadeProgress(){
+    const active=!!user&&!!profile;
+    const xp=active?safeNum(profile.arcade_xp):0;
+    const values={
+      homeArcadeXp:active?fmt(xp):'—',
+      homeArcadeLevel:active?fmt(1+Math.floor(xp/100)):'—',
+      headerArcadeXp:active?fmt(xp):'—',
+      headerArcadeLevel:active?fmt(1+Math.floor(xp/100)):'—',
+      accountArcadeXp:active?fmt(xp):'—',
+      accountArcadeLevel:active?fmt(1+Math.floor(xp/100)):'—'
+    };
+    for(const [id,value] of Object.entries(values))el(id).textContent=value;
   }
   async function loadGameProgress(){
     const id=user?.id;
@@ -115,7 +134,8 @@
     show('guestAccount',!loggedIn);
     show('playerAccount',loggedIn);
     el('headerName').textContent=loggedIn?(profile?.nickname||'Hráč'):'Host';
-    el('headerAvatar').textContent=loggedIn?(AVATARS[profile?.avatar_id]||'🦊'):'🎮';
+    if(loggedIn)showAvatar(profile?.avatar_id||'fox',el('headerAvatar'));
+    else el('headerAvatar').textContent='🎮';
     el('connectionStatus').textContent=loggedIn?'● Přihlášen':'○ Režim hosta';
     el('tabLogin').classList.toggle('selected',mode==='login');
     el('tabSignup').classList.toggle('selected',mode==='signup');
@@ -124,13 +144,14 @@
     el('profileSave').disabled=busy;
     el('signOut').disabled=busy;
     if(loggedIn){
-      el('profileAvatar').textContent=AVATARS[profile?.avatar_id]||'🦊';
+      showAvatar(profile?.avatar_id||'fox',el('profileAvatar'));
       el('profileName').textContent=profile?.nickname||'Hráč FOXEY Arcade';
       el('profileEmail').textContent=user.email||'';
       el('nickname').value=profile?.nickname||'';
       el('avatar').value=profile?.avatar_id||'fox';
     }
     renderGameProgress();
+    renderArcadeProgress();
   }
   function setMode(next){
     if(busy)return;
@@ -142,14 +163,14 @@
   }
   async function getProfile(uid){
     const get=()=>supa.from('arcade_profiles')
-      .select('user_id,nickname,avatar_id').eq('user_id',uid).maybeSingle();
+      .select('user_id,nickname,avatar_id,arcade_xp').eq('user_id',uid).maybeSingle();
     const response=await get();
     if(response.error)throw response.error;
     if(response.data)return response.data;
     // First FOXEY Arcade sign-in: create platform profile without touching
     // existing Guess the Game progress or account password.
     const inserted=await supa.from('arcade_profiles')
-      .insert({user_id:uid}).select('user_id,nickname,avatar_id').single();
+      .insert({user_id:uid}).select('user_id,nickname,avatar_id,arcade_xp').single();
     if(inserted.data && !inserted.error)return inserted.data;
     // Another tab may have inserted the same row in the meantime.
     const retry=await get();
@@ -175,7 +196,12 @@
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       user=null;profile=null;
       message('⚠️ Nepodařilo se ověřit přihlášení. Zkontroluj internet.');
-    }finally{render();}
+    }finally{
+      render();
+      // If the user directly opened the playable route, reload the iframe
+      // under the authenticated identity instead of leaving it in Guest mode.
+      if(location.hash==='#play')go('play');
+    }
   }
   async function authenticate(event){
     event.preventDefault();
@@ -217,9 +243,17 @@
     try{
       const res=await supa.from('arcade_profiles').update({
         nickname:nickname||null,avatar_id,updated_at:new Date().toISOString()
-      }).eq('user_id',user.id).select('user_id,nickname,avatar_id').single();
+      }).eq('user_id',user.id).select('user_id,nickname,avatar_id,arcade_xp').single();
       if(res.error)throw res.error;
       profile=res.data;
+      // Refresh the in-app avatar from trusted server data; don't send the
+      // selected ID to the game as an authoritative value.
+      const frame=el('gameFrame');
+      if(frame.dataset.player===user.id && frame.contentWindow?.postMessage){
+        frame.contentWindow.postMessage({
+          type:'foxey-arcade:avatar-updated',userId:user.id
+        },location.origin);
+      }
       message('✅ Profil FOXEY Arcade uložený.');
     }catch(e){
       const duplicate=String(e.code||'')==='23505';
