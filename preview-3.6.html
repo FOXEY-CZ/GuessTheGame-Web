@@ -224,6 +224,28 @@ body.theme-ocean{--cyan:#81d8ff;--purple:#5f9dd8;--gold:#83ecde;--green:#8adee9}
         <label class="preference"><span data-i18n="hapticsLabel">📳 Vibrace při odpovědi</span><input type="checkbox" id="hapticsToggle" aria-label="Vibrace při odpovědi"></label>
       </section>
       <section class="profile-tools">
+        <h2 data-i18n="syncTitle">☁️ SYNCHRONIZACE POSTUPU</h2>
+        <p class="save-help" data-i18n="syncHelp">Volitelné propojení webu a Androidu bez účtu. Kód chraň jako heslo. Hra funguje i offline.</p>
+        <p class="save-help" id="syncStatus" role="status" aria-live="polite"></p>
+        <div class="tool-buttons">
+          <button class="tool-action primary" id="syncCreate" data-i18n="syncCreate">VYTVOŘIT PROPOJENÍ</button>
+          <button class="tool-action" id="syncNow" data-i18n="syncNow">SYNCHRONIZOVAT</button>
+        </div>
+        <textarea class="save-code" id="syncCode" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód propojení" placeholder="GTGS1:..."></textarea>
+        <div class="tool-buttons">
+          <button class="tool-action primary" id="syncConnect" data-i18n="syncConnect">PROPOJIT ZAŘÍZENÍ</button>
+          <button class="tool-action" id="syncCopy" data-i18n="syncCopy">📋 KOPÍROVAT KÓD</button>
+        </div>
+        <div id="syncConflict" class="hidden">
+          <p class="save-help" data-i18n="syncConflictHelp">Obě zařízení mají rozdílný postup. Vyber, který zachovat; druhým klepnutím potvrď.</p>
+          <div class="tool-buttons">
+            <button class="tool-action" id="syncCloud" data-i18n="syncCloud">POUŽÍT CLOUD</button>
+            <button class="tool-action" id="syncDevice" data-i18n="syncDevice">POUŽÍT TOTO ZAŘÍZENÍ</button>
+          </div>
+        </div>
+        <button class="tool-action" id="syncDisconnect" data-i18n="syncDisconnect">ODPOJIT TOTO ZAŘÍZENÍ</button>
+      </section>
+      <section class="profile-tools">
         <h2 data-i18n="backupTitle">💾 ZÁLOHA POSTUPU</h2>
         <p class="save-help" data-i18n="backupHelp">Vygeneruj kód, zkopíruj si ho a použij na jiném zařízení. Zahrnuje XP, statistiky, odznaky a nastavení. Nezahrnuje rozehranou otázku.</p>
         <div class="tool-buttons"><button type="button" class="tool-action primary" id="generateSave" data-i18n="generateSave">VYTVOŘIT KÓD</button><button type="button" class="tool-action" id="copySave" data-i18n="copySave">📋 KOPÍROVAT</button></div>
@@ -309,6 +331,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       themeClassic:'Klasický neon',themeClassicDesc:'Původní kombinace tyrkysové a fialové',themeRetro:'Retro Wave',themeRetroDesc:'Zlaté a růžové retro barvy',themeRoyal:'Královský',themeRoyalDesc:'Fialová a zlatá pro vítěze',themeOcean:'Deep Blue',themeOceanDesc:'Oceánská modrá a chladné světlo',
       avatarAlien:'Herní vetřelec',avatarAlienDesc:'Původní avatar 👾',avatarFox:'Lišák',avatarFoxDesc:'Liška do každého kvízu 🦊',avatarRobot:'Robot',avatarRobotDesc:'Ocelový společník 🤖',avatarCrown:'Král',avatarCrownDesc:'Královský avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exkluzivní avatar z truhly', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Vizuální odměny mají vlastní ikonky a rarity.',
       onlineCreated:'Online výzva vytvořena!',onlineFailed:'Online služba je nedostupná. Zkus to později.',onlineFinished:'Tento souboj už máš dohraný.',onlineReady:'Oba hráči dohráli. Výsledek je připraven!',onlineWaiting:'Čekáme na soupeře. Skóre se doplní automaticky.',onlineRetry:'Výsledek čeká na odeslání. Zkus zkontrolovat skóre při připojení.',settingsTitle:'⚙️ NASTAVENÍ', soundsLabel:'🔊 Zvukové efekty', hapticsLabel:'📳 Vibrace při odpovědi',
+      syncTitle:'☁️ SYNCHRONIZACE POSTUPU',syncHelp:'Volitelné propojení webu a Androidu bez účtu. Kód chraň jako heslo. Hra funguje i offline.',
+      syncCreate:'VYTVOŘIT PROPOJENÍ',syncConnect:'PROPOJIT ZAŘÍZENÍ',syncNow:'SYNCHRONIZOVAT',syncCopy:'📋 KOPÍROVAT KÓD',syncDisconnect:'ODPOJIT TOTO ZAŘÍZENÍ',syncConflictHelp:'Obě zařízení mají rozdílný postup. Vyber, který zachovat; druhým klepnutím potvrď.',syncCloud:'POUŽÍT CLOUD',syncDevice:'POUŽÍT TOTO ZAŘÍZENÍ',
       backupTitle:'💾 ZÁLOHA POSTUPU',backupHelp:'Vytvoř kód a ulož si ho. Přenese XP, statistiky, odznaky a nastavení mezi zařízeními. Rozehranou otázku nepřenáší.',
       generateSave:'VYTVOŘIT KÓD',copySave:'📋 KOPÍROVAT',restoreSave:'OBNOVIT Z KÓDU',
       backupReady:'✅ Záložní kód je připraven.',backupCopied:'📋 Kód zkopírován.',copyManual:'Vyber kód a zkopíruj ho ručně.',
@@ -364,6 +388,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       themeClassic:'Classic neon',themeClassicDesc:'Original cyan and purple colors',themeRetro:'Retro Wave',themeRetroDesc:'Golden and pink retro palette',themeRoyal:'Royal',themeRoyalDesc:'Purple and gold for champions',themeOcean:'Deep Blue',themeOceanDesc:'Ocean blues with cool glow',
       avatarAlien:'Arcade alien',avatarAlienDesc:'Original avatar 👾',avatarFox:'Fox',avatarFoxDesc:'A fox for your gaming quizzes 🦊',avatarRobot:'Robot',avatarRobotDesc:'Steel friend 🤖',avatarCrown:'King',avatarCrownDesc:'Royal avatar 👑',avatarGlitch:'Glitch',avatarGlitchDesc:'Exclusive chest avatar', rarityCommon:'BASIC',rarityRare:'RARE',rarityEpic:'EPIC',rarityLegendary:'LEGENDARY', visualUpdate:'Visual rewards now use custom icons and rarities.',
       onlineCreated:'Online challenge created!',onlineFailed:'Online service is unavailable. Try again later.',onlineFinished:'You already finished this duel.',onlineReady:'Both players finished. Final score is ready!',onlineWaiting:'Waiting for your opponent. Score will update automatically.',onlineRetry:'Your score is waiting to upload. Check again when online.',settingsTitle:'⚙️ SETTINGS',soundsLabel:'🔊 Sound effects',hapticsLabel:'📳 Answer vibration',
+      syncTitle:'☁️ CLOUD PROGRESS SYNC',syncHelp:'Optional web/Android linking without an account. Keep the code private like a password. Offline play still works.',
+      syncCreate:'CREATE LINK',syncConnect:'LINK DEVICE',syncNow:'SYNC NOW',syncCopy:'📋 COPY CODE',syncDisconnect:'DISCONNECT THIS DEVICE',syncConflictHelp:'Both devices have changed progress. Choose what to keep and tap the same choice again to confirm.',syncCloud:'USE CLOUD',syncDevice:'USE THIS DEVICE',
       backupTitle:'💾 SAVE BACKUP',backupHelp:'Generate a code and keep it safe. Transfer XP, stats, badges and preferences between devices. Unfinished rounds are not included.',
       generateSave:'GENERATE CODE',copySave:'📋 COPY',restoreSave:'RESTORE FROM CODE',
       backupReady:'✅ Backup code is ready.',backupCopied:'📋 Code copied.',copyManual:'Select and copy the code manually.',
@@ -540,7 +566,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   const random = seed => () => {let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;};
   const shuffle = (a,seed) => {const arr=a.slice(),rng=random(seed);for(let i=arr.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;};
   const options = q => shuffle([q.answer,...q.wrong],session.seed ^ hash(q.id));
-  const saveProfile = () => set('profile',profile);
+  const saveProfile = () => {set('profile',profile);window.dispatchEvent(new Event('gtg-profile-saved'));};
   const saveSession = () => set('session',session);
   const updateText = (id, text) => {element(id).textContent=text;};
   const burst = () => {const root=element('sparkles');root.replaceChildren();for(let i=0;i<20;i++){const x=document.createElement('span');x.className='confetti';x.style.left=(5+90*Math.random())+'%';x.style.background=['#6beee8','#9287ff','#ffd17b','#f6a0c3'][i%4];x.style.animationDelay=(Math.random()*.4)+'s';root.append(x);}setTimeout(()=>root.replaceChildren(),1750);};
@@ -924,7 +950,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     updateText('mediumDesc',T(medium?'mediumDesc':'mediumLock'));updateText('hardDesc',T(hard?'hardDesc':'hardLock'));updateText('mediumLock',medium?'→':'🔒');updateText('hardLock',hard?'→':'🔒');
     const valid = session && Array.isArray(session.ids) && session.ids.length && session.ids.every(id=>byId[id]) && session.idx>=0 && session.idx<session.ids.length && session.lives>0;
     if(!valid){session=null;saveSession();}element('resume').classList.toggle('hidden',!valid);if(valid)updateText('resumeDesc',fmt(T('session'),{round:session.idx+1,total:session.ids.length}));
-    show('home');
+    show('home');window.dispatchEvent(new Event('gtg-home-screen'));
   }
   function dailyReward(){if(profile.dailyClaimed===date()){toast(T('alreadyClaimed'));return;}playFeedback(true);profile.dailyClaimed=date();profile.xp+=20;saveProfile();burst();home();toast(T('rewardToast'));}
   function makeIds(seed,mode){
@@ -1063,12 +1089,25 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     show('result');
     if(challengeOn&&r.challenge.online)refreshOnline(r.challenge);
   }
-  function renderProfile(){translate();applyCosmetics();const p=progress();updateText('profileLevel','LEVEL '+p.level);element('profileXpFill').style.width=p.fraction+'%';updateText('profileXpDetail',p.fraction+' / 100 XP');
+  function renderProfile(){translate();applyCosmetics();window.dispatchEvent(new Event('gtg-profile-screen'));const p=progress();updateText('profileLevel','LEVEL '+p.level);element('profileXpFill').style.width=p.fraction+'%';updateText('profileXpDetail',p.fraction+' / 100 XP');
     updateText('profileXp',String(profile.xp));updateText('profilePlayed',String(profile.played));updateText('profileBest',String(profile.bestScore));updateText('profileCorrect',String(profile.totalCorrect));updateText('profileShards',String(profile.shards||0));updateText('profileCrowns',String(profile.crowns||0));
     const unlockedMap=profile.badgeState||{};
     element('soundsToggle').checked=prefs.sound;element('hapticsToggle').checked=prefs.haptics;
     const list=element('badges');list.replaceChildren();badgeDefs.forEach(def=>{const unlocked=!!unlockedMap[def.id];const tile=document.createElement('div');tile.className='badge-tile'+(unlocked?'':' locked');const art=document.createElement('span');art.className='badge-icon';art.textContent=unlocked?def.icon:'🔒';const label=document.createElement('span');const bold=document.createElement('b');bold.textContent=T(def.name);const small=document.createElement('small');small.textContent=T(def.desc);label.append(bold,small);if(unlocked){const note=document.createElement('span');note.className='badge-note';note.textContent='+'+'2 '+T('crowns');label.append(note);}tile.append(art,label);list.append(tile);});show('profile');
   }
+  window.GTGSync={
+    getProfile:()=>JSON.parse(JSON.stringify(profile)),
+    setProfile:(value)=>{
+      if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid_profile');
+      profile={...blankProfile(),...JSON.parse(JSON.stringify(value))};
+      fixCosmetics();normalizeChallengeResults();
+      saveProfile();
+      if(screen==='profile')renderProfile();
+      else if(screen==='home')home();
+    },
+    canApply:()=>screen==='home'||screen==='profile',
+    language:()=>lang
+  };
   window.gtgBack=()=>{if(screen==='game'||screen==='profile'||screen==='result'||screen==='shop'||screen==='challenge'){home();return true;}return false;};
   element('logoHome').addEventListener('click',home);element('profileTop').addEventListener('click',renderProfile);element('profileOpen').addEventListener('click',renderProfile);
   element('profileBack').addEventListener('click',home);element('langToggle').addEventListener('click',()=>{lang=lang==='cs'?'en':'cs';set('lang',lang);if(screen==='home')home();else if(screen==='game')game();else if(screen==='result')renderResult();else if(screen==='shop')renderShop();else if(screen==='challenge')renderChallengeLobby();else renderProfile();});
@@ -1121,5 +1160,6 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
 })();
 
 </script>
+<script src="progress-sync.js"></script>
 </body>
 </html>
