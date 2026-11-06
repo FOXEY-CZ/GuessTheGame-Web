@@ -3,6 +3,17 @@
  * All shop purchases and chest draws use server-authorized RPC transactions. */
 (() => {
   'use strict';
+  // Defense in depth: if the early document redirect is delayed, never let
+  // the Arcade SPA router overwrite recovery tokens.
+  if(new URLSearchParams(location.search).get('auth')==='recovery'){
+    const target=new URL('./reset.html',location.href);
+    const params=new URLSearchParams(location.search);
+    params.delete('auth');
+    target.search=params.toString();
+    target.hash=location.hash;
+    location.replace(target.href);
+    return;
+  }
   const el = id => document.getElementById(id);
   const cfg = window.FOXEY_ARCADE_CONFIG;
   const AVATARS = Object.freeze({fox:'🦊',robot:'🤖',alien:'👽',crown:'👑',glitch:'⚡'});

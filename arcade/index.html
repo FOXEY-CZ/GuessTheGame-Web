@@ -6,6 +6,17 @@
   <meta name="theme-color" content="#0b1020">
   <meta name="description" content="FOXEY Arcade — jeden účet, více her, společná komunita.">
   <title>FOXEY Arcade — herní domov</title>
+  <script>
+    // Keep recovery tokens intact before the Arcade router or Auth SDK loads.
+    if(new URLSearchParams(location.search).get('auth')==='recovery'){
+      const target=new URL('./reset.html',location.href);
+      const params=new URLSearchParams(location.search);
+      params.delete('auth');
+      target.search=params.toString();
+      target.hash=location.hash;
+      location.replace(target.href);
+    }
+  </script>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
