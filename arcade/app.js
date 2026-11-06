@@ -376,7 +376,13 @@
       if(active)button.setAttribute('aria-current','page');
       else button.removeAttribute('aria-current');
     });
-    history.replaceState(null,'','#'+(page==='home'?'domu':page));
+    // Supabase's implicit password-recovery callback carries short-lived
+    // tokens in the URL fragment. Never overwrite it before Auth consumes it.
+    const authHash=new URLSearchParams(location.hash.slice(1));
+    const hasAuthCallback=authHash.has('access_token')||
+      authHash.has('refresh_token')||authHash.has('error')||
+      authHash.has('error_code')||authHash.has('type');
+    if(!hasAuthCallback)history.replaceState(null,'','#'+(page==='home'?'domu':page));
   }
   // Reuse the existing GTG challenge UI, not a second unverified scoring engine.
   // Both pages are served from the same trusted GitHub Pages origin.
@@ -673,7 +679,15 @@
       recoveryVerified=true;
       authView='reset';
       // Let Supabase finish storing the recovery session before rendering it.
-      queueMicrotask(()=>{go('account');render();message('🔐 Odkaz ověřen. Nastav si nové heslo.');});
+      queueMicrotask(()=>{
+        // URL fragment already consumed by Supabase. Remove recovery-only
+        // callback parameters from the address without logging any tokens.
+        const clean=new URL(location.href);
+        clean.searchParams.delete('auth');
+        history.replaceState(null,'',clean.pathname+clean.search+'#account');
+        go('account');render();
+        message('🔐 Odkaz ověřen. Nastav si nové heslo.');
+      });
     }
   });
   // A recovery URL must never present a password form without a verified session.
