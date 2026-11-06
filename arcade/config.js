@@ -5,5 +5,5 @@ window.FOXEY_ARCADE_CONFIG=Object.freeze({
   publishableKey:'sb_publishable_A569sxFOTtPwwFJQtSC7Sg_o47CQEwU',
   sessionKey:'foxey.arcade.auth.v1',
   // Flip this only after the Google provider and OAuth redirect are configured.
-  googleOAuthEnabled:false
+  googleOAuthEnabled:true
 });
