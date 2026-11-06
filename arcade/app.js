@@ -525,8 +525,9 @@
   async function refresh(){
     try{
       const result=await supa.auth.getUser();
-      if(result.error)throw result.error;
-      const nextUser=result.data?.user||null;
+      // A visitor without a session is a normal guest, not an offline error.
+      if(result.error && result.error.name!=='AuthSessionMissingError' && !/auth session missing/i.test(result.error.message||''))throw result.error;
+      const nextUser=result.error?null:(result.data?.user||null);
       if(user?.id!==nextUser?.id){
         ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
         ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
