@@ -31,6 +31,7 @@
   const PAGES = new Set(['home','games','play','shop','challenges','community','account','settings']);
   const GAME_URL = '../preview-auth-test.html';
   let supa=null, user=null, profile=null, mode='login', busy=false;
+  let authView='default', recoveryVerified=false;
   // Read-only snapshot of the signed-in player's Guess the Game cloud save.
   // This is not the future cross-game XP/wallet and never writes any currency.
   let gameProgress=null, progressStatus='guest', progressRevision=null, progressRequest=0;
@@ -410,8 +411,10 @@
   }
   function render(){
     const loggedIn=!!user;
-    show('guestAccount',!loggedIn);
-    show('playerAccount',loggedIn);
+    show('guestAccount',!loggedIn&&authView==='default');
+    show('playerAccount',loggedIn&&authView==='default');
+    show('recoverAccount',authView==='request');
+    show('resetAccount',authView==='reset'&&recoveryVerified);
     el('headerName').textContent=loggedIn?(profile?.nickname||'Hráč'):'Host';
     if(loggedIn)showAvatar(profile?.avatar_id||'fox',el('headerAvatar'));
     else el('headerAvatar').textContent='🎮';
@@ -432,6 +435,68 @@
     renderGameProgress();
     renderArcadeProgress();
     renderWallet();
+  }
+  function setAuthView(view){
+    if(busy)return;
+    authView=view;
+    if(view==='request')el('recoveryEmail').value=el('email').value.trim();
+    message('');
+    go('account');
+    render();
+  }
+  function recoveryRedirect(){
+    // The URL is the actual deployed entry point, never an arbitrary supplied redirect.
+    const url=new URL(location.origin+location.pathname);
+    url.searchParams.set('auth','recovery');
+    return url.toString();
+  }
+  async function requestPasswordRecovery(event){
+    event.preventDefault();
+    if(busy||!supa)return;
+    const email=el('recoveryEmail').value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){message('⚠️ Zkontroluj e-mail.');return;}
+    if(location.protocol!=='https:'&&location.hostname!=='localhost'){
+      message('⚠️ Obnova hesla potřebuje zabezpečenou HTTPS stránku.');return;
+    }
+    busy=true;
+    el('recoveryRequestSubmit').disabled=true;
+    message('📧 Odesílám odkaz pro obnovu…');
+    try{
+      const result=await supa.auth.resetPasswordForEmail(email,{redirectTo:recoveryRedirect()});
+      if(result.error)throw result.error;
+      message('📧 Pokud k e-mailu existuje účet, přijde ti odkaz. Zkontroluj i spam. Platnost odkazu je omezená.');
+    }catch(e){
+      const msg=String(e.message||'');
+      message(/rate|limit|too many/i.test(msg)
+        ?'⚠️ Příliš mnoho pokusů. Zkus to později.'
+        :'⚠️ Odeslání se nezdařilo. Zkontroluj připojení a nastavení e-mailů.');
+    }finally{busy=false;el('recoveryRequestSubmit').disabled=false;}
+  }
+  async function applyRecoveredPassword(event){
+    event.preventDefault();
+    if(busy||!recoveryVerified||!supa)return;
+    const password=el('newPassword').value;
+    const confirm=el('confirmNewPassword').value;
+    if(password.length<8||password.length>128){message('⚠️ Heslo musí mít 8–128 znaků.');return;}
+    if(password!==confirm){message('⚠️ Hesla se neshodují.');return;}
+    busy=true;el('resetPasswordSubmit').disabled=true;message('🔐 Ukládám nové heslo…');
+    try{
+      const result=await supa.auth.updateUser({password});
+      if(result.error)throw result.error;
+      el('newPassword').value='';el('confirmNewPassword').value='';
+      recoveryVerified=false;authView='default';
+      const clean=new URL(location.href);
+      clean.searchParams.delete('auth');
+      clean.hash='';
+      history.replaceState(null,'',clean.pathname+clean.search+'#account');
+      const signout=await supa.auth.signOut({scope:'local'});
+      if(signout.error)throw signout.error;
+      closeGameOnIdentityChange();
+      await refresh();
+      go('account');
+      message('✅ Heslo změněno. Přihlas se novým heslem.');
+    }catch(_){message('⚠️ Heslo se nepodařilo změnit. Ověř platnost odkazu a zkus to znovu.');}
+    finally{busy=false;el('resetPasswordSubmit').disabled=false;render();}
   }
   function setMode(next){
     if(busy)return;
@@ -560,6 +625,10 @@
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
   el('authForm').addEventListener('submit',authenticate);
+  el('forgotPassword').addEventListener('click',()=>setAuthView('request'));
+  el('recoveryBack').addEventListener('click',()=>setAuthView('default'));
+  el('recoveryRequestForm').addEventListener('submit',requestPasswordRecovery);
+  el('resetPasswordForm').addEventListener('submit',applyRecoveredPassword);
   el('profileForm').addEventListener('submit',saveProfile);
   el('signOut').addEventListener('click',signOut);
   el('shopOpenChest').addEventListener('click',()=>{void performShop('chest');});
@@ -598,5 +667,15 @@
   supa=window.supabase.createClient(cfg.supabaseUrl,cfg.publishableKey,{
     auth:{storageKey:cfg.sessionKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
   });
+  supa.auth.onAuthStateChange((event)=>{
+    if(event==='PASSWORD_RECOVERY'){
+      recoveryVerified=true;
+      authView='reset';
+      // Let Supabase finish storing the recovery session before rendering it.
+      queueMicrotask(()=>{go('account');render();message('🔐 Odkaz ověřen. Nastav si nové heslo.');});
+    }
+  });
+  // A recovery URL must never present a password form without a verified session.
+  // PASSWORD_RECOVERY is emitted by Supabase after successfully consuming the link.
   refresh();
 })();
