@@ -101,3 +101,54 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
   45%{transform:rotate(13deg) scale(1.15)}
   100%{transform:rotate(-8deg) scale(1.03)}
 }
+
+
+/* Rewards 2.0 — collectible portraits, no-duplicate cosmetic chests, prestige. */
+.reward-chest-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.reward-chest{display:flex;gap:16px;align-items:center;border-radius:20px;padding:23px;
+  background:radial-gradient(circle at 12% 15%,#246e9b55,transparent 56%),linear-gradient(135deg,#173451,#10192e);
+  border:1px solid #3779a0;box-shadow:inset 0 1px #ffffff15}
+.reward-chest.epic{background:radial-gradient(circle at 12% 15%,#7e47d977,transparent 56%),linear-gradient(135deg,#39265b,#19172e);border-color:#8455cf}
+.reward-chest .chestshop-icon{font-size:66px;filter:drop-shadow(0 8px 16px #02081680)}
+.reward-chest h3{margin:9px 0 6px;font-size:18px}
+.reward-chest p{font-size:12px;line-height:1.65;color:var(--muted);margin:6px 0 12px}
+.reward-chest button{width:100%;margin-top:13px}
+.chest-price{font-size:18px;font-weight:850}.chest-price span{font-size:11px;color:var(--muted);font-weight:500}
+.rarity-label{display:inline-block;border:1px solid #57769a;color:#a5dfff;border-radius:7px;font-size:9px;font-weight:900;letter-spacing:1.3px;padding:5px 7px}
+.epic-label{border-color:#a06eed;color:#d9bbff;background:#aa73f41c}
+.legendary-label{border-color:#e6c379;color:#ffe3a3;background:#f1c55b1a}
+.basic-label{border-color:#4fa3bb;color:#a7ebff;background:#4fa3bb13}
+.avatar-catalog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:15px 0 24px}
+.avatar-item{background:linear-gradient(145deg,#202a43,#141c31);border:1px solid #3c506b;
+  border-radius:18px;padding:17px;display:flex;flex-direction:column;gap:8px;min-width:0;transition:border-color .2s,transform .2s}
+.avatar-item.owned{border-color:#59bfae;box-shadow:0 0 0 1px #46ceab25}
+.avatar-item.epic{background:linear-gradient(145deg,#33264d,#161c31);border-color:#705b97}
+.avatar-item.legendary{background:linear-gradient(145deg,#47351f,#181e30);border-color:#a88b50}
+.avatar-art{width:100%;max-width:144px;aspect-ratio:1;display:grid;place-items:center;margin:auto}
+.avatar-art .custom-icon{width:100%;height:100%;display:grid;place-items:center}
+.avatar-art svg{width:100%;height:100%;filter:drop-shadow(0 6px 18px #0007)}
+.avatar-item h3{font-size:16px;margin:5px 0 0;text-align:center}
+.avatar-item p{font-size:12px;line-height:1.55;text-align:center;color:var(--muted);flex:1;margin:0}
+.avatar-item .rarity-label{align-self:center}
+.avatar-item button{margin-top:5px}
+.reward-reveal{display:flex;align-items:center;gap:18px;margin:18px 0;padding:18px;border-radius:17px;
+  border:1px solid #c5a668;background:linear-gradient(130deg,#463a27,#24203e);animation:reward-pop .4s ease-out}
+.reward-reveal h3{margin:8px 0;font-size:24px;color:#ffe7a2}
+.reward-reveal p{margin:4px 0;color:#d8d1eb}
+.reward-reveal-art{width:94px;flex:none;filter:drop-shadow(0 5px 20px #f4d17d77)}
+.reward-reveal-art .custom-icon{width:94px;height:94px}
+.reward-reveal-art svg{width:100%;height:100%}
+@keyframes reward-pop{from{opacity:0;transform:scale(.88) translateY(8px)}to{opacity:1;transform:none}}
+.prestige-panel{margin:20px 0;padding:24px;display:flex;align-items:center;gap:20px;border:1px solid #c6a15e;
+  border-radius:20px;background:radial-gradient(circle at 2% 5%,#ad85494e,transparent 50%),linear-gradient(130deg,#382d36,#151d31)}
+.prestige-panel h3{margin:9px 0}.prestige-panel p{color:#d2c8bc;font-size:12px;line-height:1.65}
+.prestige-symbol{font-size:60px;filter:drop-shadow(0 8px 20px #e4b55c55)}
+.prestige-meter{height:9px;border-radius:20px;overflow:hidden;background:#0b1425;border:1px solid #826a48;margin:14px 0}
+.prestige-meter>div{width:0;height:100%;background:linear-gradient(90deg,#df9f3a,#ffe5a5);transition:width .3s}
+.inventory-panel{margin:24px 0}.inventory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:15px}
+.inventory-item{border-radius:16px;background:#1a263d;border:1px solid #3c5577;padding:13px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.inventory-item.epic{border-color:#8d6cb9}.inventory-item.legendary{border-color:#c5a265}
+.inventory-item .avatar-art{max-width:85px}.inventory-item strong{text-align:center;font-size:12px}.inventory-item button{width:100%;font-size:11px;margin-top:auto}
+@media(max-width:820px){.reward-chest-grid{grid-template-columns:1fr}.avatar-catalog{grid-template-columns:repeat(2,minmax(0,1fr))}.inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:510px){.reward-chest{padding:16px;gap:12px}.reward-chest .chestshop-icon{font-size:48px}.avatar-catalog{gap:9px}.avatar-item{padding:11px}.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.prestige-panel{gap:10px;padding:17px}.prestige-symbol{font-size:36px}}
+@media(prefers-reduced-motion:reduce){.reward-reveal{animation:none}}
