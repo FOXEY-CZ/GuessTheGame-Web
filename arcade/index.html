@@ -199,8 +199,30 @@
           <label for="email">E-mail</label><input required id="email" type="email" maxlength="254" autocomplete="email" placeholder="tvuj@email.cz">
           <label for="password">Heslo</label><input required id="password" type="password" minlength="8" maxlength="128" autocomplete="current-password" placeholder="Nejméně 8 znaků">
           <button class="primary full" id="authSubmit" type="submit">Přihlásit se</button>
+          <button class="secondary full" id="forgotPassword" type="button">🔑 Zapomenuté heslo?</button>
         </form>
         <p class="note">Účet funguje se stejnými přihlašovacími údaji jako naše testovací Guess the Game. Režim hosta nevyžaduje přihlášení.</p>
+      </div>
+      <div id="recoverAccount" class="accountpanel hidden">
+        <h2>🔑 Obnova hesla</h2>
+        <p>Zadej e-mail účtu. Pokud k němu existuje účet, dorazí odkaz pro nastavení nového hesla.</p>
+        <form id="recoveryRequestForm">
+          <label for="recoveryEmail">E-mail</label>
+          <input id="recoveryEmail" type="email" required maxlength="254" autocomplete="email" placeholder="tvuj@email.cz">
+          <button class="primary full" id="recoveryRequestSubmit" type="submit">📧 Poslat odkaz pro obnovu</button>
+        </form>
+        <button class="secondary full" id="recoveryBack" type="button">← Zpět na přihlášení</button>
+      </div>
+      <div id="resetAccount" class="accountpanel hidden">
+        <h2>🔐 Nastavit nové heslo</h2>
+        <p>Požadavek na obnovu byl ověřen. Zvol nové heslo.</p>
+        <form id="resetPasswordForm">
+          <label for="newPassword">Nové heslo</label>
+          <input id="newPassword" type="password" required minlength="8" maxlength="128" autocomplete="new-password">
+          <label for="confirmNewPassword">Potvrdit nové heslo</label>
+          <input id="confirmNewPassword" type="password" required minlength="8" maxlength="128" autocomplete="new-password">
+          <button class="primary full" id="resetPasswordSubmit" type="submit">✓ Uložit nové heslo</button>
+        </form>
       </div>
       <div id="playerAccount" class="accountpanel hidden">
         <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName">Hráč FOXEY Arcade</h2><p class="small" id="profileEmail"></p><p class="small">Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p></div></div>
