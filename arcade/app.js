@@ -28,7 +28,7 @@
     if(markup)target.innerHTML=markup;
     else target.textContent=AVATARS[id]||'🎮';
   }
-  const PAGES = new Set(['home','games','play','shop','community','account','settings']);
+  const PAGES = new Set(['home','games','play','shop','challenges','community','account','settings']);
   const GAME_URL = '../preview-auth-test.html';
   let supa=null, user=null, profile=null, mode='login', busy=false;
   // Read-only snapshot of the signed-in player's Guess the Game cloud save.
@@ -377,6 +377,30 @@
     });
     history.replaceState(null,'','#'+(page==='home'?'domu':page));
   }
+  // Reuse the existing GTG challenge UI, not a second unverified scoring engine.
+  // Both pages are served from the same trusted GitHub Pages origin.
+  function openChallengeInGame(){
+    const frame=el('gameFrame');
+    const identity=user?.id||'guest';
+    el('challengeLaunchStatus').textContent='⚔️ Otevírám výzvy v Guess the Game…';
+    go('play');
+    const open=()=>{
+      if(frame.dataset.player!==identity)return false;
+      try{
+        const button=frame.contentDocument?.getElementById('openChallengeHome');
+        if(!button)return false;
+        button.click();
+        el('challengeLaunchStatus').textContent='✅ Výzvy jsou otevřené ve hře.';
+        return true;
+      }catch(_){return false;}
+    };
+    if(open())return;
+    // A fresh iframe must finish loading before its menu buttons exist.
+    // Register only one load callback for this request.
+    frame.addEventListener('load',()=>{
+      if(!open())el('challengeLaunchStatus').textContent='⚠️ Otevři ve hře tlačítko „Výzva kamarádovi“.';
+    },{once:true});
+  }
   function closeGameOnIdentityChange(){
     // Unload an old iframe session on account switch/logout, so another player
     // cannot briefly see the previous user's account/game data.
@@ -532,6 +556,7 @@
   document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',event=>{
     event.preventDefault();go(button.dataset.page);
   }));
+  el('launchChallenge').addEventListener('click',openChallengeInGame);
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
   el('authForm').addEventListener('submit',authenticate);
