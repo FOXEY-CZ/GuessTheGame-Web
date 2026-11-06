@@ -5,7 +5,22 @@
   'use strict';
   const el = id => document.getElementById(id);
   const cfg = window.FOXEY_ARCADE_CONFIG;
-  const AVATARS = Object.freeze({fox:'🦊',robot:'🤖',alien:'👽',crown:'👑'});
+  const AVATARS = Object.freeze({fox:'🦊',robot:'🤖',alien:'👽',crown:'👑',glitch:'⚡'});
+  const AVATAR_CATALOG=Object.freeze({
+    fox:{name:'Liška',rarity:'basic'},robot:{name:'Robot',rarity:'basic'},
+    alien:{name:'Mimozemšťan',rarity:'basic'},crown:{name:'Koruna',rarity:'basic'},
+    glitch:{name:'Glitch',rarity:'legendary'},
+    'pixel-fox':{name:'Pixel Fox',rarity:'basic'},
+    'neon-ghost':{name:'Neon Ghost',rarity:'basic'},
+    'space-cat':{name:'Space Cat',rarity:'basic'},
+    'cyber-fox':{name:'Cyber Fox',rarity:'epic'},
+    'arcade-dragon':{name:'Arcade Dragon',rarity:'epic'},
+    'legend-fox':{name:'Legendární FOXEY',rarity:'legendary'}
+  });
+  const CHEST_POOLS=Object.freeze({
+    basic:['pixel-fox','neon-ghost','space-cat'],
+    epic:['cyber-fox','arcade-dragon']
+  });
   // Same exact SVG art as Guess the Game, loaded from a trusted static asset.
   const avatarMarkup=id=>window.FOXEY_AVATAR_ART?.[id]||null;
   function showAvatar(id, target){
@@ -24,6 +39,69 @@
       walletBusy=false,walletRequest=0;
   const THEME_IDS=new Set(['classic','retro','royal','ocean']);
   const walletNumber=v=>Number.isSafeInteger(v)&&v>=0?v:0;
+  const ownedAvatars=()=>Array.isArray(sharedCosmetics?.owned_avatars)
+    ?sharedCosmetics.owned_avatars.filter(id=>Object.hasOwn(AVATAR_CATALOG,id))
+    :['fox','robot','alien','crown'];
+  const hasAvatar=id=>ownedAvatars().includes(id);
+  const collectionFull=tier=>CHEST_POOLS[tier].every(hasAvatar);
+  function notifyAvatarUpdate(){
+    const frame=el('gameFrame');
+    if(user&&frame.dataset.player===user.id&&frame.contentWindow?.postMessage)
+      frame.contentWindow.postMessage({type:'foxey-arcade:avatar-updated',userId:user.id},location.origin);
+  }
+  function renderPrestige(){
+    const played=user&&gameProgress?walletNumber(gameProgress.played):0;
+    const unlocked=!!sharedCosmetics&&hasAvatar('legend-fox');
+    el('prestigeProgress').textContent=unlocked?'🏆 Legendární avatar je ve tvém inventáři':
+      Math.min(played,10)+' / 10 dokončených kvízů';
+    if(el('prestigeFill').style)el('prestigeFill').style.width=Math.min(played*10,100)+'%';
+    el('claimPrestige').disabled=walletBusy||walletStatus!=='ready'||unlocked||played<10;
+    el('claimPrestige').textContent=unlocked?'✓ Odemčeno':played>=10?'🏆 Vyzvednout zdarma':'🔒 Vyžaduje 10 kvízů';
+  }
+  function renderAvatarInventory(){
+    const ready=!!user&&!!sharedCosmetics;
+    const ids=ready?ownedAvatars():[];
+    el('shopOwnedCount').textContent=ready?ids.length+' avatarů v inventáři':'Přihlas se';
+    const art={
+      'pixel-fox':'avatarArtPixelFox','neon-ghost':'avatarArtNeonGhost',
+      'space-cat':'avatarArtSpaceCat','cyber-fox':'avatarArtCyberFox',
+      'arcade-dragon':'avatarArtArcadeDragon','legend-fox':'avatarArtLegendFox'
+    };
+    for(const [id,target] of Object.entries(art))showAvatar(id,el(target));
+    document.querySelectorAll('[data-avatar]').forEach(btn=>{
+      const id=btn.dataset.avatar,owned=ready&&ids.includes(id);
+      const selected=owned&&profile?.avatar_id===id;
+      btn.disabled=walletBusy||!owned||selected;
+      btn.textContent=!ready?'Přihlas se':selected?'✓ Používáš':owned?'Použít':'🔒 Neodemčeno';
+      const card=btn.closest?.('[data-avatar-card]');
+      if(card?.classList)card.classList.toggle('owned',!!owned);
+    });
+    if(typeof document.createElement!=='function')return;
+    const select=el('avatar');
+    if(ready&&typeof select.replaceChildren==='function'){
+      const options=ids.map(id=>{
+        const node=document.createElement('option');
+        node.value=id;node.textContent=AVATAR_CATALOG[id].name;
+        return node;
+      });
+      select.replaceChildren(...options);
+      select.value=ids.includes(profile?.avatar_id)?profile.avatar_id:'fox';
+    }
+    const root=el('inventoryGrid');
+    if(typeof root.replaceChildren!=='function')return;
+    root.replaceChildren();
+    el('inventoryCount').textContent=ids.length+' avatarů';
+    for(const id of ids){
+      const item=document.createElement('article');item.className='inventory-item '+AVATAR_CATALOG[id].rarity;
+      const icon=document.createElement('div');icon.className='avatar-art';showAvatar(id,icon);
+      const name=document.createElement('strong');name.textContent=AVATAR_CATALOG[id].name;
+      const btn=document.createElement('button');btn.type='button';btn.className='secondary';
+      btn.disabled=walletBusy||profile?.avatar_id===id;
+      btn.textContent=profile?.avatar_id===id?'✓ Používáš':'Použít';
+      btn.addEventListener('click',()=>{void equipAvatar(id);});
+      item.append(icon,name,btn);root.append(item);
+    }
+  }
   function renderWallet(){
     const ready=!!user&&!!sharedWallet&&!!sharedCosmetics;
     const shards=ready?fmt(walletNumber(sharedWallet.shards)):'—';
@@ -47,10 +125,16 @@
           ready&&sharedCosmetics.equipped_theme===id);
     }
     el('shopRefresh').disabled=walletBusy||!user;
-    el('shopOpenChest').disabled=walletBusy||!ready||
-      (walletNumber(sharedWallet.free_chests)===0&&walletNumber(sharedWallet.shards)<25);
-    el('shopOpenChest').textContent=ready&&walletNumber(sharedWallet.free_chests)>0
-      ?'🎁 Otevřít truhlu zdarma':'🎁 Otevřít za 25 💎';
+    el('shopOpenChest').disabled=walletBusy||!ready||collectionFull('basic')||
+      (walletNumber(sharedWallet.free_chests)===0&&walletNumber(sharedWallet.shards)<100);
+    el('shopOpenChest').textContent=ready&&collectionFull('basic')
+      ?'✓ Běžná sbírka kompletní'
+      :ready&&walletNumber(sharedWallet.free_chests)>0
+      ?'🎁 Otevřít zdarma':'🎁 Otevřít za 100 💎';
+    el('shopOpenEpicChest').disabled=walletBusy||!ready||collectionFull('epic')||
+      walletNumber(sharedWallet.shards)<300;
+    el('shopOpenEpicChest').textContent=ready&&collectionFull('epic')
+      ?'✓ Epická sbírka kompletní':'💜 Otevřít za 300 💎';
     document.querySelectorAll('[data-theme]').forEach(btn=>{
       const id=btn.dataset.theme;
       const owned=ready&&Array.isArray(sharedCosmetics.owned_themes)
@@ -64,6 +148,8 @@
         :id==='royal'?'Koupit za 20 👑'
         :id==='ocean'?'Koupit za 50 💎':'Použít';
     });
+    renderAvatarInventory();
+    renderPrestige();
   }
   function notifyThemeUpdate(){
     const frame=el('gameFrame');
@@ -81,11 +167,13 @@
       // credits only new cumulative game earnings. No browser-side sums.
       const sync=await supa.rpc('arcade_sync_legacy');
       if(sync.error)throw sync.error;
+      const init=await supa.rpc('arcade_init_inventory');
+      if(init.error)throw init.error;
       const [wr,cr]=await Promise.all([
         supa.from('arcade_wallets')
           .select('shards,crowns,free_chests,chests_opened').eq('user_id',id).maybeSingle(),
         supa.from('arcade_cosmetics')
-          .select('owned_themes,equipped_theme').eq('user_id',id).maybeSingle()
+          .select('owned_themes,equipped_theme,owned_avatars').eq('user_id',id).maybeSingle()
       ]);
       if(!user||user.id!==id||seq!==walletRequest)return;
       if(wr.error)throw wr.error;
@@ -98,27 +186,67 @@
     }
     if(seq===walletRequest)renderWallet();
   }
+  async function equipAvatar(id){
+    if(!user||walletBusy||!hasAvatar(id)||!Object.hasOwn(AVATAR_CATALOG,id))return;
+    walletBusy=true;renderWallet();
+    try{
+      const r=await supa.rpc('arcade_equip_avatar',{p_avatar:id});
+      if(r.error)throw r.error;
+      profile={...profile,avatar_id:id};
+      notifyAvatarUpdate();
+      el('shopStatus').textContent='✅ '+AVATAR_CATALOG[id].name+' je tvůj aktuální avatar.';
+    }catch(_){el('shopStatus').textContent='⚠️ Avatar se nepodařilo nastavit.';}
+    finally{walletBusy=false;render();}
+  }
+  async function claimPrestige(){
+    if(!user||walletBusy||!sharedCosmetics||hasAvatar('legend-fox'))return;
+    walletBusy=true;renderWallet();
+    try{
+      const r=await supa.rpc('arcade_claim_prestige');
+      if(r.error)throw r.error;
+      await loadSharedWallet();
+      el('shopStatus').textContent='🏆 Legendární FOXEY odemčen! Najdeš ho v inventáři.';
+    }catch(e){
+      el('shopStatus').textContent=String(e.message||'').includes('not_eligible')
+        ?'🔒 Je potřeba 10 dokončených kvízů.':'⚠️ Odměnu se nepodařilo vyzvednout.';
+    }finally{walletBusy=false;render();}
+  }
   async function performShop(kind,theme){
     if(!user||walletBusy||!sharedWallet||!sharedCosmetics||!supa)return;
     if(kind==='theme'&&!THEME_IDS.has(theme))return;
     const id=user.id;
     walletBusy=true;renderWallet();
+    const chestKind=kind==='chest'||kind==='epic-chest';
     el('shopChestVisual').classList.toggle('spinning',kind==='chest');
+    el('shopEpicVisual').classList.toggle('spinning',kind==='epic-chest');
     const messageBox=el('shopChestResult');
-    if(kind==='chest')messageBox.textContent='🎁 Otevírám truhlu…';
+    if(chestKind){
+      messageBox.textContent='🎁 Otevírám truhlu…';
+      el('shopRewardReveal').classList.add('hidden');
+    }
     else el('shopStatus').textContent='🔄 Provádím změnu motivu…';
     try{
       let reply;
-      if(kind==='chest'){
-        // Persist operation UUID until acknowledged: retry cannot charge twice.
-        const key='foxey.arcade.chestPending.'+id;
+      if(chestKind){
+        // Store operation UUID until the server acknowledges its result.
+        const tier=kind==='epic-chest'?'epic':'basic';
+        const key='foxey.arcade.v2.pending.'+id+'.'+tier;
         let op=null;
         try{op=sessionStorage.getItem(key);}catch(_){}
         if(!op){op=crypto.randomUUID();try{sessionStorage.setItem(key,op);}catch(_){}}
-        reply=await supa.rpc('arcade_open_chest',{p_operation:op});
+        reply=await supa.rpc('arcade_open_cosmetic_chest',{
+          p_tier:tier,p_operation:op
+        });
         if(reply.error)throw reply.error;
         try{sessionStorage.removeItem(key);}catch(_){}
-        messageBox.textContent='🎉 Z truhly jsi získal '+fmt(walletNumber(reply.data?.amount))+' 👑 korunek!';
+        const avatar=reply.data?.avatar;
+        if(!Object.hasOwn(AVATAR_CATALOG,avatar))throw Error('invalid_reward');
+        showAvatar(avatar,el('shopRewardArt'));
+        el('shopRewardName').textContent=AVATAR_CATALOG[avatar].name;
+        el('shopRewardRarity').textContent=tier==='epic'?'EPICKÁ ODMĚNA':'NOVÝ AVATAR';
+        el('shopRewardCaption').textContent='V inventáři • '+(tier==='epic'?'epická':'běžná')+' sbírka';
+        el('shopRewardReveal').classList.remove('hidden');
+        messageBox.textContent='🎉 Odemčen avatar '+AVATAR_CATALOG[avatar].name+'!';
       }else{
         const owned=sharedCosmetics.owned_themes.includes(theme);
         if(!owned){
@@ -133,12 +261,14 @@
       await loadSharedWallet();
     }catch(e){
       const raw=String(e.message||'').toLowerCase();
-      const reason=raw.includes('insufficient_funds')?'Nemáš dost společných krystalů nebo korunek.'
+      const reason=raw.includes('insufficient_funds')?'Nemáš dost krystalů.'
+        :raw.includes('collection_complete')?'Tuto sbírku už máš kompletní.'
         :raw.includes('not_authenticated')?'Zkus se znovu přihlásit.':'Operace se nezdařila. Zkus ji zopakovat.';
-      if(kind==='chest')messageBox.textContent='⚠️ '+reason;
+      if(chestKind)messageBox.textContent='⚠️ '+reason;
       else el('shopStatus').textContent='⚠️ '+reason;
     }finally{
       el('shopChestVisual').classList.remove('spinning');
+      el('shopEpicVisual').classList.remove('spinning');
       walletBusy=false;renderWallet();
     }
   }
@@ -170,6 +300,7 @@
       :'☁️ Cloudový postup není načtený.';
     el('homeProgressStatus').textContent=text;
     el('accountProgressStatus').textContent=text;
+    renderPrestige();
   }
   function renderArcadeProgress(){
     const active=!!user&&!!profile;
@@ -309,6 +440,7 @@
       const nextUser=result.data?.user||null;
       if(user?.id!==nextUser?.id){
         ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
+        ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
       }
       user=nextUser;
       profile=null;
@@ -365,22 +497,19 @@
     if(nickname&&!/^[A-Za-z0-9_]{3,20}$/.test(nickname)){
       message('⚠️ Přezdívka musí mít 3–20 znaků (A–Z, 0–9, _).');return;
     }
-    if(!Object.hasOwn(AVATARS,avatar_id))return;
+    if(!Object.hasOwn(AVATAR_CATALOG,avatar_id)||!hasAvatar(avatar_id))return;
     busy=true;render();message('🔄 Ukládám profil…');
     try{
       const res=await supa.from('arcade_profiles').update({
-        nickname:nickname||null,avatar_id,updated_at:new Date().toISOString()
+        nickname:nickname||null,updated_at:new Date().toISOString()
       }).eq('user_id',user.id).select('user_id,nickname,avatar_id,arcade_xp').single();
       if(res.error)throw res.error;
-      profile=res.data;
+      const equipped=await supa.rpc('arcade_equip_avatar',{p_avatar:avatar_id});
+      if(equipped.error)throw equipped.error;
+      profile={...res.data,avatar_id};
       // Refresh the in-app avatar from trusted server data; don't send the
       // selected ID to the game as an authoritative value.
-      const frame=el('gameFrame');
-      if(frame.dataset.player===user.id && frame.contentWindow?.postMessage){
-        frame.contentWindow.postMessage({
-          type:'foxey-arcade:avatar-updated',userId:user.id
-        },location.origin);
-      }
+      notifyAvatarUpdate();
       message('✅ Profil FOXEY Arcade uložený.');
     }catch(e){
       const duplicate=String(e.code||'')==='23505';
@@ -409,6 +538,11 @@
   el('profileForm').addEventListener('submit',saveProfile);
   el('signOut').addEventListener('click',signOut);
   el('shopOpenChest').addEventListener('click',()=>{void performShop('chest');});
+  el('shopOpenEpicChest').addEventListener('click',()=>{void performShop('epic-chest');});
+  el('claimPrestige').addEventListener('click',()=>{void claimPrestige();});
+  document.querySelectorAll('[data-avatar]').forEach(btn=>
+    btn.addEventListener('click',()=>{void equipAvatar(btn.dataset.avatar);})
+  );
   el('shopRefresh').addEventListener('click',()=>{if(user)void loadSharedWallet();});
   document.querySelectorAll('[data-theme]').forEach(btn=>btn.addEventListener('click',()=>{
     void performShop('theme',btn.dataset.theme);
