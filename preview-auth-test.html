@@ -257,6 +257,7 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
 }
 
 </style>
+<script src="arcade/avatars.js"></script>
 </head>
 <body>
   <div style="padding:7px 12px;background:#3e2855;color:#fff;text-align:center;font:700 12px system-ui">🧪 TEST ÚČTŮ / GUEST – oddělený postup, běžná hra zůstává beze změny</div>
@@ -709,7 +710,14 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     }
     const activeAvatar = arcadeAvatarId || profile.cosmetics.avatar;
     const chosen=shopItems.find(x=>x.type==='avatar'&&x.id===activeAvatar)||shopItems.find(x=>x.id==='alien');
-    document.querySelectorAll('.player-avatar,.profile-face,.avatar').forEach(n=>{n.replaceChildren(iconToNode(chosen.icon));});
+    const trusted=window.FOXEY_AVATAR_ART?.[activeAvatar];
+    document.querySelectorAll('.player-avatar,.profile-face,.avatar').forEach(n=>{
+      if(trusted){
+        const template=document.createElement('template');
+        template.innerHTML=trusted.trim();
+        n.replaceChildren(template.content.firstChild);
+      }else n.replaceChildren(iconToNode(chosen.icon));
+    });
   }
   function markDailyStreak(s){
     if(s.mode!=='daily'||s.lives===0||s.idx!==s.ids.length-1)return null;
@@ -1294,7 +1302,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     // Called by the authenticated game bridge after reading arcade_profiles.
     // Does not change XP, currencies, purchases or any saved game field.
     setArcadeAvatar:(id)=>{
-      const next=['fox','robot','alien','crown'].includes(id)?id:null;
+      const next=['fox','robot','alien','crown','glitch','pixel-fox','neon-ghost',
+        'space-cat','cyber-fox','arcade-dragon','legend-fox'].includes(id)?id:null;
       if(next===arcadeAvatarId)return;
       arcadeAvatarId=next;
       applyCosmetics();
