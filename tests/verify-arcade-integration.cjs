@@ -27,7 +27,15 @@ assert.ok(account.includes("rpc('arcade_sync_legacy')"),'Game earnings must sync
 assert.ok(account.includes("event.origin!==location.origin||event.source!==window.parent"),
           'Cross-frame signals require origin and source verification');
 assert.ok(arcade.includes("rpc('arcade_buy_theme'"),'Theme purchase must use server transaction');
-assert.ok(arcade.includes("rpc('arcade_open_chest'"),'Chest spin must use server transaction');
+assert.ok(arcade.includes("rpc('arcade_open_cosmetic_chest'"),'Avatar chests must use server transactions');
+assert.ok(arcade.includes("rpc('arcade_equip_avatar'"),'Equipping avatars must verify ownership server-side');
+assert.ok(arcade.includes("rpc('arcade_claim_prestige'"),'Prestige avatar must be earned via server-side milestone');
+assert.ok(arcadeHtml.includes('id="shopOpenEpicChest"')&&arcadeHtml.includes('id="inventoryGrid"'),
+  'Epic chests and avatar inventory must be visible in Arcade');
+assert.ok(html.includes('src="arcade/avatars.js"'),'Embedded game must load original shared avatar artwork');
+for(const id of ['pixel-fox','neon-ghost','space-cat','cyber-fox','arcade-dragon','legend-fox'])
+  assert.ok(html.includes("'"+id+"'"),'Game must accept collectible avatar '+id);
+
 assert.ok(arcadeHtml.includes('id="headerArcadeXp"')&&!arcadeHtml.includes('id="headerXp"'),
           'Global XP must remain separate from Guess the Game XP');
 assert.ok(arcadeHtml.includes('id="headerShards"')&&arcadeHtml.includes('id="headerCrowns"'),
@@ -35,6 +43,9 @@ assert.ok(arcadeHtml.includes('id="headerShards"')&&arcadeHtml.includes('id="hea
 assert.ok(arcadeHtml.includes('id="homeXp"'),'Game XP must remain visible separately');
 assert.ok(arcadeHtml.includes('id="page-shop"'),'Central shop must be present');
 assert.ok(arcadeHtml.includes('./avatars.js'),'Arcade must load the same SVG avatars');
+assert.ok(arts.includes('"legend-fox"')&&arts.includes('"arcade-dragon"'),
+  'New prestige and epic avatar art must be present');
+
 
 const gameStyle=html.match(/<style>([\s\S]*?)<\/style>/)?.[1];
 assert.ok(gameStyle,'Guess the Game stylesheet is required');
