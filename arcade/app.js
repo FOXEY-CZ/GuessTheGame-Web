@@ -41,6 +41,11 @@
   }
   const PAGES = new Set(['home','games','play','shop','challenges','community','account','settings']);
   const GAME_URL = '../preview-auth-test.html';
+  const GOOGLE_OAUTH_READY = cfg?.googleOAuthEnabled === true;
+  // Remember only whether this page was opened by an OAuth callback, never
+  // read, store or log the returned access/refresh token values.
+  const RETURNING_FROM_OAUTH = new URLSearchParams(location.hash.slice(1)).has('access_token')
+    || new URLSearchParams(location.search).has('code');
   let supa=null, user=null, profile=null, mode='login', busy=false;
   let authView='default', recoveryVerified=false;
   // Read-only snapshot of the signed-in player's Guess the Game cloud save.
@@ -440,6 +445,10 @@
     el('tabSignup').classList.toggle('selected',mode==='signup');
     el('authSubmit').textContent=mode==='login'?'Přihlásit se':'Vytvořit účet';
     el('authSubmit').disabled=busy;
+    el('googleAuthButton').disabled=busy||loggedIn||!GOOGLE_OAUTH_READY;
+    el('googleAuthNote').textContent=GOOGLE_OAUTH_READY
+      ?'Použij stejný ověřený e-mail Google jako u stávajícího účtu, aby se mohly propojit. Jiné e-maily mohou vytvořit nový profil.'
+      :'Google přihlášení zatím není aktivované. Nejdřív propojíme Google Cloud se Supabase.';
     el('profileSave').disabled=busy;
     el('signOut').disabled=busy;
     if(loggedIn){
@@ -569,6 +578,29 @@
       if(location.hash==='#play')go('play');
     }
   }
+  // Browser OAuth redirects back to the canonical Arcade directory, never
+  // to a user-controlled URL. Supabase's implicit tokens stay in the fragment
+  // until Supabase Auth processes them on page load.
+  function googleCallbackUrl(){
+    if(location.protocol!=='https:' && location.hostname!=='localhost')
+      throw Error('oauth_requires_https');
+    return new URL('./', location.href).href;
+  }
+  async function authenticateWithGoogle(){
+    if(busy||user||!supa||!GOOGLE_OAUTH_READY)return;
+    busy=true;render();
+    message('🔐 Přesměrovávám na Google…');
+    try{
+      const {error}=await supa.auth.signInWithOAuth({
+        provider:'google',
+        options:{redirectTo:googleCallbackUrl()}
+      });
+      if(error)throw error;
+      // The browser navigates to Google. Do not create a second app account here.
+    }catch(_){
+      message('⚠️ Přihlášení Googlem se nepodařilo spustit. Zkontroluj nastavení Google OAuth.');
+    }finally{busy=false;render();}
+  }
   async function authenticate(event){
     event.preventDefault();
     if(busy)return;
@@ -643,6 +675,7 @@
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
   el('authForm').addEventListener('submit',authenticate);
+  el('googleAuthButton').addEventListener('click',()=>{void authenticateWithGoogle();});
   el('forgotPassword').addEventListener('click',()=>setAuthView('request'));
   el('recoveryBack').addEventListener('click',()=>setAuthView('default'));
   el('recoveryRequestForm').addEventListener('submit',requestPasswordRecovery);
@@ -686,6 +719,11 @@
     auth:{storageKey:cfg.sessionKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
   });
   supa.auth.onAuthStateChange((event)=>{
+    if(event==='SIGNED_IN' && RETURNING_FROM_OAUTH){
+      // Supabase callback handlers must not await other Supabase calls.
+      // Refresh UI only for the OAuth return, not for normal email logins.
+      setTimeout(()=>{void refresh();go('account');},0);
+    }
     if(event==='PASSWORD_RECOVERY'){
       recoveryVerified=true;
       authView='reset';
