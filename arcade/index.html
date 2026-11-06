@@ -27,6 +27,7 @@
   <nav class="mainnav" aria-label="Hlavní navigace">
     <button data-page="home" class="active" type="button">🏠 <span>Domů</span></button>
     <button data-page="games" type="button">🎮 <span>Hry</span></button><button data-page="shop" type="button">🛍️ <span>Obchod</span></button>
+    <button data-page="challenges" type="button">⚔️ <span>Výzvy</span></button>
     <button data-page="community" type="button">👥 <span>Komunita</span></button>
     <button data-page="account" type="button">👤 <span>Profil</span></button>
     <button data-page="settings" type="button">⚙️ <span>Nastavení</span></button>
@@ -163,6 +164,24 @@
         </div>
       </article>
       <p class="note">Odměny jsou ve vývojové betě. Nákupy se provádějí na serveru a všechny předměty zůstávají v jednom inventáři FOXEY Arcade. Ochranu herních milníků proti podvádění ještě před veřejným spuštěním posílíme.</p>
+    </section>
+
+    <section class="page hidden" id="page-challenges">
+      <span class="eyebrow">FOXEY CHALLENGES · BETA</span><h1>⚔️ Výzvy mezi kamarády</h1>
+      <p>Zkus překonat kamaráda ve stejném kvízu. Výzvy zatím běží přes ověřený online systém Guess the Game — žádné druhé účty ani druhá sada výsledků.</p>
+      <div class="twogrid">
+        <article class="tile">
+          <div class="tileicon">🎮</div><h2>Guess the Game</h2>
+          <p>Vytvoř výzvu, pošli odkaz kamarádovi a porovnejte první dokončené pokusy. Oba hrajete stejné otázky.</p>
+          <button class="primary full" id="launchChallenge" type="button">⚔️ Otevřít výzvy ve hře</button>
+          <p class="note" id="challengeLaunchStatus" role="status" aria-live="polite">Výzvy fungují i bez registrace. Výsledek uchovej pomocí odkazu.</p>
+        </article>
+        <article class="tile">
+          <div class="tileicon">🏆</div><h2>Historie v Arcade</h2>
+          <p>Společná historie výzev, statistiky výher a oznámení budou další etapou. Současné odkazy a výsledky Guess the Game zůstanou funkční.</p>
+          <span class="tag">Připravujeme</span>
+        </article>
+      </div>
     </section>
 
     <section class="page hidden" id="page-community">
