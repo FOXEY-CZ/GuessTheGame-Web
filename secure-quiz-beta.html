@@ -76,6 +76,18 @@
   .async-result{border:1px solid #4c7f82;background:#123139;border-radius:18px;padding:18px;margin:16px 0}
   .async-result p{line-height:1.55}
   .header-actions{display:flex;align-items:center;gap:9px}
+  .platform-return{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:8px 14px;
+    background:#253e64;border:1px solid #6d8db9;border-radius:12px;text-decoration:none;
+    color:#effbff;font-size:.83rem;font-weight:850;white-space:nowrap}
+  .platform-return:hover,.platform-return:focus-visible{background:#324f7b;border-color:var(--aqua);color:#fff}
+  @media(max-width:600px){
+    .header{flex-wrap:wrap;row-gap:8px}
+    .brand{flex:1 1 170px}
+    .header-actions{display:contents}
+    #historyBell{order:1}
+    #lang{order:2}
+    .platform-return{order:3;flex:1 0 100%;min-height:38px;padding:6px 12px}
+  }
   #historyBell{position:relative;min-width:56px;font-size:1.2rem;white-space:nowrap}
   .notification-count{display:inline-flex;min-width:22px;height:22px;border-radius:12px;align-items:center;justify-content:center;background:#cf426f;color:#fff;border:1px solid #ff8fad;font-size:.72rem;font-weight:950;padding:0 5px}
   #historyBell .notification-count{font-size:.66rem;vertical-align:middle}
@@ -150,8 +162,9 @@
 <body>
 <main class="wrap">
   <div class="header">
-    <a class="brand" href="./arcade/">🦊 FOXEY <span>ARCADE</span></a>
+    <a id="brandLink" class="brand" href="./arcade/">🦊 FOXEY <span>ARCADE</span></a>
     <div class="header-actions">
+      <a id="backToPlatform" class="platform-return" href="./arcade/">← Zpět do Arcade</a>
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
       <button id="lang" class="lang" type="button">CZ / EN</button>
     </div>
@@ -367,6 +380,10 @@
       auditError:'⚠️ Nepodařilo se dokončit serverové ověření. Žádná odměna nebyla připsána.',
       noReward:'Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.',
       again:'HRÁT ZNOVU',back:'← ZPĚT DO ARCADE',
+      platformBack:'← Zpět do Arcade',
+      platformLeaveConfirm:'Rozehraná partie se ukládá na server. Po návratu můžeš pokračovat od poslední potvrzené akce. Vrátit se na platformu?',
+      platformPendingConfirm:'Poslední akce ještě nemusí být potvrzená serverem. Po návratu se načte pouze potvrzený postup. Opravdu odejít?',
+      platformWait:'⏳ Počkej, než server dokončí aktuální požadavek.',
       footer:'FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat',
       hearts:'Životy',
       caveat:'🧪 Oddělená beta. Starý offline kvíz stále zveřejňuje původní klíč odpovědí. Ostré výplaty jsou vypnuté.',
@@ -448,6 +465,10 @@
       auditError:'⚠️ Could not finish server verification. No rewards were credited.',
       noReward:'This security test does not credit XP or currencies to your live profile.',
       again:'PLAY AGAIN',back:'← BACK TO ARCADE',
+      platformBack:'← Back to Arcade',
+      platformLeaveConfirm:'The server saves your progress after each confirmed action. You can continue later. Return to the Arcade platform?',
+      platformPendingConfirm:'The last action may not have been confirmed by the server. Only confirmed progress will be restored. Leave anyway?',
+      platformWait:'⏳ Please wait for the current server request to finish.',
       footer:'FOXEY Arcade · Server-first beta · Answers disclosed only after the submitted choice · No payouts',
       hearts:'Lives',
       caveat:'🧪 Isolated beta. The legacy offline quiz still exposes its original answer key. Real payouts remain disabled.',
@@ -522,7 +543,7 @@
       modeEyebrow:'modeEyebrow',modeTitle:'modeTitle',modeLabel:'gameLabel',
       count:'countLabel',correct:'correctLabel',resultLabel:'resultLabel',
       resultTitle:'resultTitle',noReward:'noReward',again:'againButton',
-      back:'backArcade',footer:'footer',hearts:'hearts',
+      back:'backArcade',platformBack:'backToPlatform',footer:'footer',hearts:'hearts',
       bootTitle:'bootTitle',bootText:'bootText',bootRetry:'bootRetry',
       bootArcadeLink:'bootArcadeLink'
     };
@@ -1350,6 +1371,22 @@
     visible('bootPanel',true);visible('signIn',true);
     status(T('statusNetwork'),'error');
   }));
+  // The platform link is available on every screen (including an active
+  // quiz). Do not silently abandon an in-flight server request.
+  function confirmPlatformReturn(event){
+    if(busy){
+      event.preventDefault();
+      status(T('platformWait'),'error');
+      return;
+    }
+    if(game&&!game.resultShown){
+      const message=T(pending?'platformPendingConfirm':'platformLeaveConfirm');
+      if(typeof window.confirm==='function'&&!window.confirm(message))
+        event.preventDefault();
+    }
+  }
+  $('backToPlatform').addEventListener('click',confirmPlatformReturn);
+  $('brandLink').addEventListener('click',confirmPlatformReturn);
   $('historyBell').addEventListener('click',goToHistory);
   $('historyOverlayClose').addEventListener('click',closeHistoryOverlay);
   $('historyOverlayShade').addEventListener('click',closeHistoryOverlay);
