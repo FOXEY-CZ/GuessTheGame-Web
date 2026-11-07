@@ -300,7 +300,8 @@
       historyCopy:'📋 Kopírovat odkaz',historyCopied:'✅ Odkaz zkopírován.',
       historyUnread:'NOVÝ VÝSLEDEK',
       historyPlayingHelp:'Rozehranou výzvu zatím není možné obnovit po zavření stránky.',
-      historyBell:'Moje výzvy; nových výsledků: {n}'
+      historyBell:'Moje výzvy; nových výsledků: {n}',
+      historyFinishFirst:'🎮 Nejdřív dokonči rozehranou partii, abys nepřišel o její výsledek.'
     },
     en:{
       eyebrow:'SERVER BETA · NO PAYOUTS',
@@ -356,7 +357,8 @@
       historyCopy:'📋 Copy challenge link',historyCopied:'✅ Link copied.',
       historyUnread:'NEW RESULT',
       historyPlayingHelp:'Refreshing or closing an unfinished challenge cannot be recovered yet.',
-      historyBell:'My challenges; unread results: {n}'
+      historyBell:'My challenges; unread results: {n}',
+      historyFinishFirst:'🎮 Finish the current quiz first so its result is saved.'
     }
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
@@ -462,7 +464,7 @@
       ||data.question_ids.length!==expected)
       throw Error('invalid_run_payload');
     game={id:data.run_id,ids:data.question_ids.slice(),idx:0,mode,
-      score:0,correct:0,lives:3,answers:[],finished:false,challenge};
+      score:0,correct:0,lives:3,answers:[],finished:false,resultShown:false,challenge};
     current=null;pending=null;
     visible('modePanel',false);visible('signIn',false);
     visible('resultPanel',false);visible('gamePanel',true);
@@ -687,7 +689,10 @@
     }
   }
   function goToHistory(){
-    if(busy||(game&&!game.finished))return;
+    if(busy||(game&&!game.resultShown)){
+      status(T('historyFinishFirst'),'error');
+      return;
+    }
     if(game)modeScreen();
     $('historySection').scrollIntoView?.({behavior:'smooth',block:'start'});
   }
@@ -882,6 +887,7 @@
       $('asyncInvite').value=game.challenge.id;
     }
     visible('gamePanel',false);visible('resultPanel',true);
+    game.resultShown=true;
     lock(false);
     if(challengeState?.both_done&&game.challenge){
       try{
