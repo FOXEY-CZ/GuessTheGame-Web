@@ -12,8 +12,8 @@ const raw=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(x=>x[1]).filter(Boolean).at(-1);
 const code=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
-   'return {createAsyncChallenge,resumeAsyncChallenge,answer,next,hint,reveal,\\n'+
-   'getState:()=>({game,current,me,pending})};\\n})();');
+   'return {createAsyncChallenge,resumeAsyncChallenge,answer,next,hint,reveal,\n'+
+   'getState:()=>({game,current,me,pending})};\n})();');
 assert.ok(code.includes('return {createAsyncChallenge'));
 const owner='22222222-2222-4222-8222-222222222222';
 const outsider='33333333-3333-4333-8333-333333333333';
