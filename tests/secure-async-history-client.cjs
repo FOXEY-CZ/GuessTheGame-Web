@@ -39,7 +39,7 @@ function instance(uid, initiallyFinished=true){
   let isFinished=initiallyFinished;
   const elements=new Map();
   const get=id=>{if(!elements.has(id))elements.set(id,new E(id));return elements.get(id);};
-  const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Secure Quiz Beta',
+  const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Guess the Game',
     visibilityState:'visible',getElementById:get,createElement:tag=>new E(tag)};
   const intervals=[],listeners={};const reads=new Map(),rpcCalls=[];
   function entries(){
@@ -154,7 +154,7 @@ async function main(){
   await settle();
   assert.equal(first.app.getState().historyUnread,0);
   assert.equal(first.get('historyBellCount').textContent,'0');
-  assert.equal(first.doc.title,'FOXEY Arcade · Secure Quiz Beta');
+  assert.equal(first.doc.title,'FOXEY Arcade · Guess the Game');
   assert.ok(first.get('historyDetail').textContent.includes('Vyhráváš'));
   assert.equal(first.reads.get(challenge),true);
 
