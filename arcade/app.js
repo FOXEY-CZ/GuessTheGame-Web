@@ -577,6 +577,11 @@
       message('⚠️ Nepodařilo se ověřit přihlášení. Zkontroluj internet.');
     }finally{
       render();
+      // The global notification center shares the same Supabase Auth user
+      // across Arcade and every embedded game. Keep it optional so a failure
+      // in notifications can never prevent sign-in or playing.
+      try{window.FOXEY_ARCADE_NOTIFICATIONS?.connect(supa,user);}
+      catch(err){console.warn('FOXEY shared notifications unavailable',err);}
       // If the user directly opened the playable route, reload the iframe
       // under the authenticated identity instead of leaving it in Guest mode.
       if(location.hash==='#play')go('play');
@@ -668,6 +673,8 @@
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
       user=null;profile=null;closeGameOnIdentityChange();go('home');
+      try{window.FOXEY_ARCADE_NOTIFICATIONS?.connect(supa,null);}
+      catch(err){console.warn('FOXEY notifications logout cleanup failed',err);}
       message('🎮 Odhlášeno. Můžeš hrát jako host.');
     }catch(_){message('⚠️ Odhlášení se nezdařilo.');}
     finally{busy=false;render();}
