@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101a32">
+<title>FOXEY Arcade · Secure Quiz Beta</title>
+<style>
+  :root{color-scheme:dark;--bg:#0b1225;--panel:#152340;--edge:#3b5277;--text:#eef5ff;--sub:#a9b8d4;--aqua:#57e1d5;--purple:#8983ff;--gold:#ffcf80}
+  *{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  body{margin:0;background:radial-gradient(circle at 45% -15%,#322663 0%,transparent 48%),linear-gradient(180deg,#101730,#0b1428 65%,#0a3043);min-height:100vh}
+  .wrap{width:min(900px,100%);padding:20px 16px 90px;margin:auto}
+  .header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}
+  a{color:#b7b5ff;text-decoration:underline;text-underline-offset:3px}a:hover{color:white}
+  .brand{font-size:1.05rem;font-weight:950;letter-spacing:.1em;text-decoration:none;color:var(--text)}
+  .brand span{color:var(--aqua)}
+  button{font:inherit;cursor:pointer;min-height:45px;border-radius:13px;border:1px solid var(--edge);background:#233654;color:var(--text);font-weight:750}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--aqua);outline-offset:3px}
+  button:disabled{cursor:not-allowed;opacity:.5}
+  .lang{min-width:74px;padding:8px 12px;background:#172440}
+  .hero{text-align:center;padding:24px 10px 22px}
+  h1{font-size:clamp(1.8rem,6vw,3.2rem);line-height:1.08;margin:8px auto 16px;max-width:650px}
+  .lead{font-size:1.01rem;color:var(--sub);line-height:1.6;max-width:650px;margin:0 auto}
+  .label{color:var(--aqua);font-size:.74rem;letter-spacing:.14em;font-weight:900;text-transform:uppercase}
+  .panel{background:linear-gradient(160deg,rgba(29,45,81,.96),rgba(13,24,48,.97));border:1px solid var(--edge);box-shadow:0 12px 50px rgba(2,6,20,.35);border-radius:25px;padding:clamp(20px,4vw,38px);margin:18px auto}
+  .status{min-height:24px;color:var(--sub);text-align:center;margin:18px auto;line-height:1.5}
+  .status.error{color:#ffadbd}.status.ok{color:var(--aqua)}
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:25px}
+  .mode{padding:22px 16px;text-align:left;display:flex;flex-direction:column;gap:9px;background:#1c3052;transition:border-color .15s,transform .15s}
+  .mode:hover{border-color:var(--purple);transform:translateY(-2px)}.mode strong{font-size:1.08rem}.mode small{font-size:.82rem;font-weight:500;color:var(--sub)}
+  .line{display:flex;align-items:center;justify-content:space-between;gap:12px}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+  .stat{text-align:center;padding:12px 7px;background:#111c35;border:1px solid #344a72;border-radius:15px}
+  .stat b{display:block;font-size:clamp(1.2rem,5vw,1.7rem);color:var(--aqua)}.stat span{font-size:.68rem;color:var(--sub);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+  .progress{height:8px;border-radius:12px;background:#293555;overflow:hidden;margin:14px 0 24px}
+  .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--aqua),var(--purple));transition:width .2s}
+  .questionbox{padding:22px 18px;margin:20px 0;border-radius:22px;border:1px solid #3a527b;background:linear-gradient(180deg,#203556,#152742);min-height:145px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+  .difficulty{color:var(--gold);font-size:.74rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+  .question{font-size:clamp(1.2rem,4.5vw,1.65rem);line-height:1.45;font-weight:750;margin:0;overflow-wrap:break-word}
+  .options{display:grid;gap:11px}.option{padding:15px;text-align:left;font-weight:700;display:flex;align-items:center;gap:14px;min-height:64px;background:#1b2b48}
+  .option:hover:not(:disabled){border-color:var(--purple);background:#283a60}
+  .option span{flex:none;width:34px;height:34px;display:grid;place-items:center;background:#34496f;border-radius:10px}
+  .option.right{border-color:#49ccaa;background:#163d3f}.option.wrong{border-color:#eb7c91;background:#4a263b}
+  .primary{background:linear-gradient(110deg,#8c7cff,#5e5ae0);border-color:#aaa1ff;box-shadow:0 5px 18px #28236966;min-height:55px}
+  .primary:hover:not(:disabled){filter:brightness(1.09)}
+  .tools{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.tools button{flex:1 1 150px}
+  .hint{padding:15px;border:1px solid #507c83;border-radius:14px;color:#b9f2e7;background:#163239;margin:12px 0;line-height:1.5}
+  .message{border-radius:15px;border:1px solid #4c6588;background:#213450;padding:17px 18px;margin:12px 0;line-height:1.5}
+  .message.good{border-color:#49caaa;background:#173c3a}.message.bad{border-color:#de7895;background:#44283e}
+  .footer{text-align:center;color:#8c9ab9;font-size:.78rem;line-height:1.6;margin-top:34px}
+  .hidden{display:none!important}
+  .bottom{display:grid;gap:12px;margin-top:23px}
+  @media(min-width:680px){.bottom{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="header">
+    <a class="brand" href="./arcade/">🦊 FOXEY <span>ARCADE</span></a>
+    <button id="lang" class="lang" type="button">CZ / EN</button>
+  </div>
+  <div class="hero">
+    <div class="label" id="eyebrow">SERVEROVÁ BETA · BEZ PLATEB</div>
+    <h1 id="heroTitle">Poznáš hru bez nápovědy ze zdrojového kódu?</h1>
+    <p class="lead" id="heroLead">Otázky i správné odpovědi spravuje server. Prohlížeč dostane jen aktuální zadání a čtyři možnosti.</p>
+  </div>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+
+  <section id="signIn" class="panel hidden">
+    <h2 id="loginTitle">Nejdřív se přihlas do FOXEY Arcade</h2>
+    <p class="lead" id="loginText">Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.</p>
+    <p><a href="./arcade/" id="loginLink">Přejít do FOXEY Arcade</a></p>
+  </section>
+
+  <section id="modePanel" class="panel hidden">
+    <div class="label" id="modeEyebrow">SERVEROVÁ VOLBA OTÁZEK</div>
+    <h2 id="modeTitle">Vyber režim</h2>
+    <div class="modes" id="modes">
+      <button class="mode" type="button" data-mode="classic"><strong>🎮 Rychlá hra</strong><small>10 otázek · různé obtížnosti</small></button>
+      <button class="mode" type="button" data-mode="mystery"><strong>🔎 Mystery Mode</strong><small>10 otázek · postupné indicie</small></button>
+      <button class="mode" type="button" data-mode="daily"><strong>☀️ Denní výzva</strong><small>5 otázek · serverové zadání</small></button>
+      <button class="mode" type="button" data-mode="easy"><strong>🌱 Nováček</strong><small>10 snadných otázek</small></button>
+      <button class="mode" type="button" data-mode="medium"><strong>⚡ Zkušený hráč</strong><small>10 středních otázek</small></button>
+      <button class="mode" type="button" data-mode="hard"><strong>🔥 Hardcore</strong><small>10 těžkých otázek</small></button>
+    </div>
+  </section>
+
+  <section id="gamePanel" class="panel hidden">
+    <div class="line">
+      <div class="label" id="gameLabel">SERVEROVÝ KVÍZ</div>
+      <strong id="hearts" aria-label="Životy">❤️❤️❤️</strong>
+    </div>
+    <div class="statgrid">
+      <div class="stat"><b id="count">1 / 10</b><span id="countLabel">OTÁZKA</span></div>
+      <div class="stat"><b id="xp">0</b><span>XP</span></div>
+      <div class="stat"><b id="correct">0</b><span id="correctLabel">SPRÁVNĚ</span></div>
+    </div>
+    <div class="progress"><div id="fill"></div></div>
+    <div class="questionbox">
+      <div class="difficulty" id="difficulty"></div>
+      <p class="question" id="question"></p>
+    </div>
+    <div class="message hidden" id="clues"></div>
+    <div class="hint hidden" id="hint"></div>
+    <div class="options" id="options"></div>
+    <div class="tools">
+      <button id="hintButton" type="button">💡 Nápověda (−3 XP)</button>
+      <button id="revealButton" type="button">🔎 Další indicie (−5 XP)</button>
+    </div>
+    <div id="feedback" class="message hidden" aria-live="polite"></div>
+    <div class="bottom">
+      <button id="retryButton" class="hidden" type="button">🔄 Opakovat poslední požadavek</button>
+      <button id="nextButton" class="primary hidden" type="button">DALŠÍ OTÁZKA →</button>
+    </div>
+  </section>
+
+  <section id="resultPanel" class="panel hidden">
+    <div class="label" id="resultLabel">OVĚŘENÝ TEST</div>
+    <h2 id="resultTitle">Partie dokončena</h2>
+    <div class="statgrid">
+      <div class="stat"><b id="finalScore">0</b><span>XP</span></div>
+      <div class="stat"><b id="finalCorrect">0</b><span id="finalCorrectLabel">SPRÁVNĚ</span></div>
+      <div class="stat"><b id="finalLives">0</b><span id="finalLivesLabel">ŽIVOTY</span></div>
+    </div>
+    <div class="message" id="auditMessage"></div>
+    <p class="lead" id="noReward">Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.</p>
+    <div class="bottom">
+      <button id="againButton" class="primary" type="button">HRÁT ZNOVU</button>
+      <a href="./arcade/" id="backArcade">← ZPĚT DO ARCADE</a>
+    </div>
+  </section>
+
+  <div class="footer" id="footer">FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
+<script src="account-config.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const cfg = window.GTGAuthConfig;
+  const langKey='foxey.arcade.locale.v1';
+  const tr = {
+    cs:{
+      eyebrow:'SERVEROVÁ BETA · BEZ PLATEB',
+      title:'Poznáš hru bez nápovědy ze zdrojového kódu?',
+      lead:'Otázky i správné odpovědi spravuje server. Prohlížeč dostane jen aktuální zadání a čtyři možnosti.',
+      loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
+      loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
+      loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'SERVEROVÁ VOLBA OTÁZEK',
+      modeTitle:'Vyber režim',modeNames:['🎮 Rychlá hra','🔎 Mystery Mode','☀️ Denní výzva','🌱 Nováček','⚡ Zkušený hráč','🔥 Hardcore'],
+      modeSub:['10 otázek · různé obtížnosti','10 otázek · postupné indicie','5 otázek · serverové zadání','10 snadných otázek','10 středních otázek','10 těžkých otázek'],
+      statusReady:'✅ Připojeno k serveru. Otázky vybírá Supabase.',statusLoading:'🛡️ Připravuji serverovou partii…',statusQuestion:'Načítám otázku ze serveru…',statusNetwork:'⚠️ Nepodařilo se spojit se serverem. Opakuj stejný požadavek.',
+      statusLogin:'Přihlas se v Arcade a potom znovu otevři tuto stránku.',
+      statusOffline:'Pro serverovou betu musíš být online.',modeLabel:'SERVEROVÝ KVÍZ',count:'OTÁZKA',correct:'SPRÁVNĚ',
+      hint:'💡 Nápověda (−3 XP)',reveal:'🔎 Další indicie (−5 XP)',retry:'🔄 Opakovat poslední požadavek',
+      next:'DALŠÍ OTÁZKA →',finish:'ZOBRAZIT VÝSLEDEK →',good:'✅ Správně! +{xp} XP',
+      bad:'❌ Vedle! Správná odpověď: {answer}',clueTitle:'ODKRYTÉ INDICIE',
+      difficulty:['SNADNÉ','STŘEDNÍ','TĚŽKÉ'],resultLabel:'OVĚŘENÝ TEST',resultTitle:'Partie dokončena',
+      auditOk:'✅ Server potvrdil pořadí odpovědí, nápovědy i skóre. Žádná odměna nebyla připsána.',
+      auditFail:'⚠️ Server nepotvrdil úplnou shodu. Žádná odměna nebyla připsána.',
+      auditError:'⚠️ Nepodařilo se dokončit serverové ověření. Žádná odměna nebyla připsána.',
+      noReward:'Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.',
+      again:'HRÁT ZNOVU',back:'← ZPĚT DO ARCADE',
+      footer:'FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat',
+      hearts:'Životy'
+    },
+    en:{
+      eyebrow:'SERVER BETA · NO PAYOUTS',
+      title:'Can you guess the game without reading the answer key?',
+      lead:'The server controls questions and answers. Your browser only receives the current prompt and four choices.',
+      loginTitle:'Sign in to FOXEY Arcade first',
+      loginText:'This beta requires an account. The original guest and offline game is still available.',
+      loginLink:'Open FOXEY Arcade',modeEyebrow:'SERVER-SELECTED QUESTIONS',
+      modeTitle:'Choose a mode',modeNames:['🎮 Quick Game','🔎 Mystery Mode','☀️ Daily Challenge','🌱 Beginner','⚡ Intermediate','🔥 Hardcore'],
+      modeSub:['10 mixed questions','10 questions · reveal clues','5 server-selected questions','10 easy questions','10 medium questions','10 hard questions'],
+      statusReady:'✅ Connected. Supabase selects the questions.',statusLoading:'🛡️ Starting a verified server run…',statusQuestion:'Loading question from server…',statusNetwork:'⚠️ The server request failed. Retry the same action.',
+      statusLogin:'Sign in via Arcade and reopen this page.',statusOffline:'The secure beta requires an internet connection.',
+      modeLabel:'VERIFIED SERVER QUIZ',count:'QUESTION',correct:'CORRECT',
+      hint:'💡 Hint (−3 XP)',reveal:'🔎 Reveal clue (−5 XP)',retry:'🔄 Retry last request',
+      next:'NEXT QUESTION →',finish:'VIEW RESULT →',good:'✅ Correct! +{xp} XP',
+      bad:'❌ Incorrect. The answer was: {answer}',clueTitle:'REVEALED CLUES',
+      difficulty:['EASY','MEDIUM','HARD'],resultLabel:'VERIFICATION TEST',resultTitle:'Quiz completed',
+      auditOk:'✅ Server verified answer order, hints and score. No rewards were credited.',
+      auditFail:'⚠️ The server did not confirm a complete match. No rewards were credited.',
+      auditError:'⚠️ Could not finish server verification. No rewards were credited.',
+      noReward:'This security test does not credit XP or currencies to your live profile.',
+      again:'PLAY AGAIN',back:'← BACK TO ARCADE',
+      footer:'FOXEY Arcade · Server-first beta · Answers disclosed only after the submitted choice · No payouts',
+      hearts:'Lives'
+    }
+  };
+  let lang = 'cs', api = null, me = null, game = null, current = null;
+  let busy=false,pending=null;
+  try {lang=localStorage.getItem(langKey)==='en'?'en':'cs';}catch(_){}
+  const T=k=>tr[lang][k];
+  function visible(id,on){$(id).classList.toggle('hidden',!on);}
+  function status(text,type=''){const e=$('status');e.textContent=text;e.className='status '+type;}
+  function errorText(err){return err&&typeof err.message==='string'?err.message:'network_error';}
+  function template(s,values){return s.replace(/\{(\w+)\}/g,(_,key)=>String(values[key]??''));}
+  function language(){
+    document.documentElement.lang=lang;
+    const ids={
+      eyebrow:'eyebrow',title:'heroTitle',lead:'heroLead',
+      loginTitle:'loginTitle',loginText:'loginText',loginLink:'loginLink',
+      modeEyebrow:'modeEyebrow',modeTitle:'modeTitle',modeLabel:'gameLabel',
+      count:'countLabel',correct:'correctLabel',resultLabel:'resultLabel',
+      resultTitle:'resultTitle',noReward:'noReward',again:'againButton',
+      back:'backArcade',footer:'footer',hearts:'hearts'
+    };
+    Object.entries(ids).forEach(([key,id])=>{
+      if(key==='hearts'){$('hearts').setAttribute('aria-label',T('hearts'));return;}
+      $(id).textContent=T(key);
+    });
+    $('finalCorrectLabel').textContent=T('correct');
+    $('finalLivesLabel').textContent=T('hearts');
+    $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
+    $('retryButton').textContent=T('retry');
+    const modeButtons=[...$('modes').querySelectorAll('[data-mode]')];
+    modeButtons.forEach((btn,i)=>{
+      btn.querySelector('strong').textContent=T('modeNames')[i];
+      btn.querySelector('small').textContent=T('modeSub')[i];
+    });
+    $('lang').textContent=lang==='cs'?'EN':'CZ';
+    if(game&&current)renderQuestion();
+  }
+  function modeScreen(){
+    game=null;current=null;pending=null;busy=false;
+    visible('modePanel',!!me);visible('signIn',!me);
+    visible('gamePanel',false);visible('resultPanel',false);
+    status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
+  }
+  async function authenticate(){
+    if(!window.supabase?.createClient||!cfg?.publishableKey){status(T('statusNetwork'),'error');return;}
+    api=window.supabase.createClient(cfg.url,cfg.publishableKey,{
+      auth:{storageKey:cfg.storageKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+    });
+    const {data,error}=await api.auth.getSession();
+    me=!error&&data?.session?.user||null;
+    language();modeScreen();
+  }
+  function lock(on){
+    busy=on;
+    if(game){
+      [...$('gamePanel').querySelectorAll('button')].forEach(b=>b.disabled=on);
+      [...$('modes').querySelectorAll('button')].forEach(b=>b.disabled=on);
+    }
+  }
+  async function start(mode){
+    if(busy||!me||!api)return;
+    if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
+    lock(true);status(T('statusLoading'));
+    try {
+      const {data,error}=await api.rpc('arcade_verify_begin_server',{
+        p_mode:mode,p_operation:crypto.randomUUID()
+      });
+      const expected=mode==='daily'?5:10;
+      if(error||data?.ok!==true||data.server_issued!==true||
+         typeof data.run_id!=='string'||!Array.isArray(data.question_ids)||
+         data.question_ids.length!==expected)
+        throw Error('server_start_failed');
+      game={id:data.run_id,ids:data.question_ids.slice(),idx:0,mode,
+        score:0,correct:0,lives:3,answers:[],finished:false};
+      visible('modePanel',false);visible('signIn',false);
+      visible('resultPanel',false);visible('gamePanel',true);
+      await loadQuestion();
+    }catch(err){
+      status(T('statusNetwork')+' ('+errorText(err)+')','error');
+      if(!current){game=null;modeScreen();}
+    }finally{lock(false);}
+  }
+  async function loadQuestion(){
+    if(!game)return;
+    status(T('statusQuestion'));
+    const {data,error}=await api.rpc('arcade_quiz_current_question_shadow',{
+      p_run_id:game.id,p_index:game.idx
+    });
+    if(error||data?.ok!==true||data.shadow!==true||data.credited!==false||
+      data.index!==game.idx||data.run_id!==game.id||
+      data.id!==game.ids[game.idx]||typeof data.cs!=='string'||
+      typeof data.en!=='string'||!Array.isArray(data.options)||
+      data.options.length!==4||new Set(data.options).size!==4||
+      ['answer','wrong','hintCs','hintEn','correct_answer'].some(k=>Object.hasOwn(data,k)))
+      throw Error('untrusted_question_view');
+    current={...data,answered:false,correctAnswer:null,wasCorrect:false,awarded:0,
+      hint:null,reveals:[]};
+    status(T('statusReady'),'ok');renderQuestion();
+  }
+  function renderQuestion(){
+    if(!game||!current)return;
+    $('hearts').textContent='❤️'.repeat(game.lives)+'🖤'.repeat(3-game.lives);
+    $('count').textContent=(game.idx+1)+' / '+game.ids.length;
+    $('xp').textContent=String(game.score);$('correct').textContent=String(game.correct);
+    $('fill').style.width=String(100*(game.idx+1)/game.ids.length)+'%';
+    $('difficulty').textContent=T('difficulty')[
+      ['easy','medium','hard'].indexOf(current.difficulty)]||current.difficulty;
+    $('question').textContent=current[lang];
+    const optionBox=$('options');optionBox.replaceChildren();
+    current.options.forEach((choice,i)=>{
+      const btn=document.createElement('button');btn.type='button';btn.className='option';
+      if(current.answered&&choice===current.correctAnswer)btn.classList.add('right');
+      else if(current.answered&&choice===current.chosen)btn.classList.add('wrong');
+      const a=document.createElement('span');a.textContent='ABCD'[i];
+      const b=document.createElement('strong');b.textContent=choice;
+      btn.append(a,b);btn.disabled=busy||current.answered||!!pending;
+      if(!btn.disabled)btn.addEventListener('click',()=>answer(choice));
+      optionBox.append(btn);
+    });
+    const myst=game.mode==='mystery';
+    visible('hintButton',!myst&&!current.answered&&!current.hint);
+    visible('revealButton',myst&&!current.answered&&current.reveals.length<2);
+    $('hintButton').disabled=busy||!!pending;
+    $('revealButton').disabled=busy||!!pending;
+    visible('hint',!!current.hint);
+    if(current.hint)$('hint').textContent='💡 '+current.hint[lang];
+    visible('clues',current.reveals.length>0);
+    if(current.reveals.length){
+      $('clues').textContent=T('clueTitle')+': '+current.reveals
+        .map((v,i)=>String(i+2)+'. '+v[lang]).join(' · ');
+    }
+    visible('feedback',current.answered);
+    if(current.answered){
+      $('feedback').className='message '+(current.wasCorrect?'good':'bad');
+      $('feedback').textContent=current.wasCorrect
+        ?template(T('good'),{xp:current.awarded})
+        :template(T('bad'),{answer:current.correctAnswer});
+    }
+    visible('nextButton',current.answered);
+    $('nextButton').textContent=game.finished?T('finish'):T('next');
+    visible('retryButton',!!pending);
+  }
+  async function action(type,choice=null){
+    if(!game||!current||busy||current.answered&&type==='answer')return null;
+    const signature=game.id+':'+game.idx+':'+type+':'+String(choice??'');
+    if(pending&&pending.signature!==signature){
+      status(T('statusNetwork')+' (pending_replay_required)','error');return null;
+    }
+    if(!pending)pending={signature,type,choice,id:crypto.randomUUID()};
+    lock(true);
+    try{
+      const {data,error}=await api.rpc('arcade_verify_action_shadow',{
+        p_run_id:game.id,p_event_id:pending.id,
+        p_question_index:game.idx,p_action:type,p_choice:choice
+      });
+      if(error||data?.ok!==true||data.shadow!==true||data.credited!==false||
+         data.event_id!==pending.id||data.action!==type)
+        throw Error(error?.message||'action_receipt_invalid');
+      pending=null;
+      return data;
+    }catch(err){
+      status(T('statusNetwork')+' ('+errorText(err)+')','error');
+      return null;
+    }finally{
+      lock(false);renderQuestion();
+    }
+  }
+  async function hint(){
+    if(!current||current.hint)return;
+    const data=await action('hint');
+    if(!data)return;
+    if(typeof data.hintCs!=='string'||typeof data.hintEn!=='string')
+      {status(T('statusNetwork'),'error');return;}
+    current.hint={cs:data.hintCs,en:data.hintEn};
+    status(T('statusReady'),'ok');renderQuestion();
+  }
+  async function reveal(){
+    if(!current||game.mode!=='mystery'||current.reveals.length>=2)return;
+    const data=await action('reveal');
+    if(!data)return;
+    if(typeof data.revealCs!=='string'||typeof data.revealEn!=='string')
+      {status(T('statusNetwork'),'error');return;}
+    current.reveals.push({cs:data.revealCs,en:data.revealEn});
+    status(T('statusReady'),'ok');renderQuestion();
+  }
+  async function answer(choice){
+    if(!current||current.answered||!current.options.includes(choice))return;
+    const data=await action('answer',choice);
+    if(!data)return;
+    if(typeof data.was_correct!=='boolean'||
+       typeof data.correct_answer!=='string'||
+       !Number.isSafeInteger(data.score)||!Number.isSafeInteger(data.correct)||
+       !Number.isSafeInteger(data.lives)||!Number.isSafeInteger(data.points_awarded)||
+       typeof data.finished!=='boolean'){
+      status(T('statusNetwork')+' (invalid_feedback)','error');return;
+    }
+    current.answered=true;current.chosen=choice;
+    current.wasCorrect=data.was_correct;
+    current.correctAnswer=data.correct_answer;current.awarded=data.points_awarded;
+    game.answers.push({choice,hint:!!current.hint,reveal:current.reveals.length});
+    game.score=data.score;game.correct=data.correct;game.lives=data.lives;
+    game.finished=data.finished;
+    status(T('statusReady'),'ok');renderQuestion();
+  }
+  async function next(){
+    if(!game||!current?.answered||busy)return;
+    if(game.finished){await finish();return;}
+    game.idx++;
+    lock(true);
+    try{await loadQuestion();}
+    catch(err){game.idx--;status(T('statusNetwork')+' ('+errorText(err)+')','error');}
+    finally{lock(false);}
+  }
+  async function finish(){
+    if(!game||busy)return;
+    lock(true);status(T('statusQuestion'));
+    let confirmed=false;
+    try{
+      const completed=await api.rpc('arcade_verify_complete',{
+        p_run_id:game.id,p_answers:game.answers
+      });
+      if(completed.error||completed.data?.ok!==true)
+        throw Error(completed.error?.message||'finish_failed');
+      const audited=await api.rpc('arcade_verify_action_summary_shadow',{
+        p_run_id:game.id
+      });
+      if(audited.error)throw Error(audited.error.message);
+      confirmed=audited.data?.consistent===true&&
+        completed.data.score===game.score&&
+        completed.data.correct===game.correct&&
+        completed.data.lives===game.lives;
+      status(confirmed?T('auditOk'):T('auditFail'),confirmed?'ok':'error');
+    }catch(err){
+      status(T('auditError')+' ('+errorText(err)+')','error');
+    }
+    $('finalScore').textContent=String(game.score);
+    $('finalCorrect').textContent=String(game.correct)+' / '+game.ids.length;
+    $('finalLives').textContent=String(game.lives);
+    $('auditMessage').textContent=confirmed?T('auditOk'):T('auditFail');
+    visible('gamePanel',false);visible('resultPanel',true);
+    lock(false);
+  }
+  $('modes').addEventListener('click',event=>{
+    const btn=event.target.closest('button[data-mode]');
+    if(btn)void start(btn.dataset.mode);
+  });
+  $('hintButton').addEventListener('click',()=>void hint());
+  $('revealButton').addEventListener('click',()=>void reveal());
+  $('nextButton').addEventListener('click',()=>void next());
+  $('retryButton').addEventListener('click',()=>{
+    if(!pending)return;
+    if(pending.type==='hint')void hint();
+    else if(pending.type==='reveal')void reveal();
+    else if(pending.type==='answer')void answer(pending.choice);
+  });
+  $('againButton').addEventListener('click',modeScreen);
+  $('lang').addEventListener('click',()=>{
+    lang=lang==='cs'?'en':'cs';
+    try{localStorage.setItem(langKey,lang);}catch(_){}
+    language();
+  });
+  window.addEventListener('online',()=>{
+    if(!game&&me)status(T('statusReady'),'ok');
+  });
+  window.addEventListener('offline',()=>status(T('statusOffline'),'error'));
+  language();
+  void authenticate().catch(()=>status(T('statusNetwork'),'error'));
+})();
+</script>
+</body>
+</html>
