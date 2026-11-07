@@ -84,9 +84,17 @@
     node.textContent=text;
     node.classList.toggle('hidden',!text);
   }
+  function shadowProgressStatus(cz,en){
+    const node=el('serverProgressionStatus');
+    if(!node)return;
+    const text=msg(cz,en);
+    node.textContent=text;
+    node.classList.toggle('hidden',!text);
+  }
   function onShadowStart(event){
     const d=event.detail;
     shadowStatus('','');
+    shadowProgressStatus('','');
     if(!user||!state||firstChoice||conflict||deletionInProgress
        ||navigator.onLine===false||!d||
        !['classic','mystery','daily','easy','medium','hard'].includes(d.mode)||
@@ -141,12 +149,39 @@
           ?'✅ Server chose the questions and verified the result. No extra payout.'
           :'✅ Server verified the result. Test receipt only, no extra payout.')
         :'⚠️ The server calculated a different result. Existing reward rules still apply.');
+      if(match&&serverChosen&&record.uid===user?.id){
+        // Projection is SIMULATION ONLY, with unverified baseline for old saves.
+        // Never use its projected values to change or promise wallet balances.
+        const {data:preview,error:previewError}=await client.rpc('arcade_verify_progress_shadow',{
+          p_run_id:start.run_id
+        });
+        if(record.uid===user?.id){
+          shadowProgressStatus(!previewError&&preview?.shadow===true&&preview?.credited===false
+            ?'🧪 Server spočítal i achievementy a denní sérii. Test bez výplaty.'
+            :'⚠️ Serverový test achievementů se nepovedl, tvoje odměny zůstávají beze změny.',
+            !previewError&&preview?.shadow===true&&preview?.credited===false
+            ?'🧪 Server also calculated achievements and daily streak. Test only, no payout.'
+            :'⚠️ The server achievement test failed; existing rewards are unchanged.');
+        }
+      }
     }catch(_){
       if(record.uid===user?.id)shadowStatus(
         '⚠️ Test serverového ověření se nezdařil. Hraní a původní odměny fungují dál.',
         '⚠️ Server verification test failed. Gameplay and existing rewards are unaffected.');
     }finally{
       shadowRuns.delete(d.operation);
+    }
+  }
+  async function onShadowDailyClaim(){
+    if(!user||!state||firstChoice||conflict||deletionInProgress
+      ||navigator.onLine===false)return;
+    const uid=user.id;
+    try{
+      const {data,error}=await client.rpc('arcade_verify_daily_claim_shadow');
+      if(error||user?.id!==uid||data?.shadow!==true||data?.credited!==false)
+        throw Error('shadow_daily_claim_failed');
+    }catch(_){
+      // Shadow-only: an offline/error condition may not block the live local claim.
     }
   }
   const setFeedback = (cz,en) => {feedback=msg(cz,en);render();};
@@ -734,6 +769,7 @@
   });
   window.addEventListener('gtg-quiz-started',onShadowStart);
   window.addEventListener('gtg-quiz-finished',event=>{void onShadowFinish(event);});
+  window.addEventListener('gtg-daily-reward-claimed',()=>{void onShadowDailyClaim();});
   window.addEventListener('gtg-profile-saved',profileChanged);
   window.addEventListener('gtg-profile-screen',render);
   window.addEventListener('gtg-home-screen',schedule);
