@@ -53,6 +53,67 @@
       }
     });
   }
+  // Isolated, non-financial server verification pilot. It NEVER credits a wallet.
+  // Existing account-save sync, offline mode and rewards remain unchanged.
+  const shadowRuns=new Map();
+  function shadowStatus(cz,en){
+    const node=el('serverVerificationStatus');
+    if(!node)return;
+    const text=msg(cz,en);
+    node.textContent=text;
+    node.classList.toggle('hidden',!text);
+  }
+  function onShadowStart(event){
+    const d=event.detail;
+    shadowStatus('','');
+    if(!user||!state||firstChoice||conflict||deletionInProgress
+       ||navigator.onLine===false||!d||
+       !['classic','mystery','daily','easy','medium','hard'].includes(d.mode)||
+       !Array.isArray(d.ids)||typeof d.operation!=='string'||
+       !/^[0-9a-f-]{36}$/i.test(d.operation))return;
+    const uid=user.id;
+    const request=client.rpc('arcade_verify_begin',{
+      p_mode:d.mode,p_question_ids:d.ids,p_operation:d.operation
+    }).then(({data,error})=>{
+      if(error||!data?.ok||data.shadow!==true||typeof data.run_id!=='string')
+        throw Error('verification_start_failed');
+      return data;
+    });
+    // Catch immediately: a disconnected client must never break gameplay.
+    shadowRuns.set(d.operation,{uid,request:request.catch(()=>null)});
+    if(shadowRuns.size>12)shadowRuns.delete(shadowRuns.keys().next().value);
+  }
+  async function onShadowFinish(event){
+    const d=event.detail;
+    if(!d||typeof d.operation!=='string')return;
+    const record=shadowRuns.get(d.operation);
+    if(!record||record.uid!==user?.id)return;
+    shadowStatus('🛡️ Server kontroluje výsledek (test, bez další odměny)…',
+      '🛡️ Server is verifying the result (test, no extra reward)…');
+    try{
+      const start=await record.request;
+      if(!start||record.uid!==user?.id)throw Error('verification_start_failed');
+      const {data,error}=await client.rpc('arcade_verify_complete',{
+        p_run_id:start.run_id,p_answers:d.answers
+      });
+      if(error||data?.ok!==true||data.shadow!==true||data.credited!==false)
+        throw Error('verification_failed');
+      if(record.uid!==user?.id)return;
+      const match=data.score===d.score&&data.correct===d.correct;
+      shadowStatus(match
+        ?'✅ Server ověřil výsledek. Testovací potvrzení, bez další výplaty.'
+        :'⚠️ Server našel rozdíl mezi výsledkem hry a svým výpočtem. Odměny zůstávají podle původních pravidel.',
+        match
+        ?'✅ Server verified the result. Test receipt only, no extra payout.'
+        :'⚠️ The server calculated a different result. Existing reward rules still apply.');
+    }catch(_){
+      if(record.uid===user?.id)shadowStatus(
+        '⚠️ Test serverového ověření se nezdařil. Hraní a původní odměny fungují dál.',
+        '⚠️ Server verification test failed. Gameplay and existing rewards are unaffected.');
+    }finally{
+      shadowRuns.delete(d.operation);
+    }
+  }
   const setFeedback = (cz,en) => {feedback=msg(cz,en);render();};
   function render(){
     show('authGuest',!user && !formMode);
@@ -636,6 +697,8 @@
       ||event.data.type==='foxey-arcade:wallet-updated')
       void refreshArcadeBenefits();
   });
+  window.addEventListener('gtg-quiz-started',onShadowStart);
+  window.addEventListener('gtg-quiz-finished',event=>{void onShadowFinish(event);});
   window.addEventListener('gtg-profile-saved',profileChanged);
   window.addEventListener('gtg-profile-screen',render);
   window.addEventListener('gtg-home-screen',schedule);
