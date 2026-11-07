@@ -212,9 +212,10 @@
             :'⚠️ Server recalculated the submitted result, but the action trace differs or is incomplete. No payout.')
           :'✅ Server recalculated submitted answers. Test only, no payout.')
         :'⚠️ The server calculated a different result. Existing reward rules still apply.');
-      if(match&&serverChosen&&record.uid===user?.id){
+      if(match&&serverChosen&&actionTraceMatches&&record.uid===user?.id){
         // Projection is SIMULATION ONLY, with unverified baseline for old saves.
-        // Never use its projected values to change or promise wallet balances.
+        // Only call the ordinary client preview after an internally consistent
+        // server action chronology; financial release gates remain OFF.
         const {data:preview,error:previewError}=await client.rpc('arcade_verify_progress_shadow',{
           p_run_id:start.run_id
         });
@@ -227,6 +228,11 @@
             ?details.en
             :'⚠️ The server achievement test failed; existing rewards are unchanged.');
         }
+      }else if(serverChosen&&!actionTraceMatches&&record.uid===user?.id){
+        // A missing trace must not trigger the ordinary simulation flow.
+        shadowProgressStatus(
+          '🧪 Serverový výpočet odměn vynechán: deník akcí není ověřený. Skutečné odměny zůstávají původní.',
+          '🧪 Server reward preview skipped: action trace was not verified. Existing rewards are unchanged.');
       }
     }catch(_){
       if(record.uid===user?.id)shadowStatus(
