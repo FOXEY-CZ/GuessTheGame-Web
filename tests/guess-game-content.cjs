@@ -67,19 +67,21 @@ validate(gameFiles[1],stable.data,stable.html);
 assert.deepEqual(current.data,stable.data,
   'Beta and stable question sets differ; verify migration and old challenge links before publishing');
 
-// A lost final life is a pending result, not an invalid game to discard.
-const guard=current.html.match(/const pendingFinish = session\?\.lives===0 && session\?\.selected!==null;\s*const valid = [^;]+;/);
-assert.ok(guard,'Beta must preserve an unanswered Finish action after the final lost life');
+// Losing the third heart must immediately finalize the run and not allow Continue.
+const guard=current.html.match(/const valid = session && Array\.isArray\(session\.ids\) && [^;]+;/);
+assert.ok(guard,'Beta must have a resumable-session guard');
 const vm=require('node:vm');
 const eligible=session=>Boolean(vm.runInNewContext(guard[0]+' valid',{session,byId:{q001:{id:'q001'}}}));
-assert.equal(eligible({ids:['q001'],idx:0,lives:0,selected:2}),true,
-  'A finished round awaiting confirmation must remain resumable');
-assert.equal(eligible({ids:['q001'],idx:0,lives:0,selected:null}),false,
-  'An unfinished round with no lives left must not resume');
+assert.equal(eligible({ids:['q001'],idx:0,lives:0,selected:2}),false,
+  'Lost run must not offer Continue');
 assert.equal(eligible({ids:['q001'],idx:0,lives:1,selected:null}),true,
-  'A live round should still resume normally');
+  'Live in-progress run should remain resumable');
 assert.equal(eligible({ids:['q999'],idx:0,lives:1,selected:1}),false,
   'A session referencing missing questions should be rejected');
+assert.ok(current.html.includes("if(session.lives===0){finish();return;}"),
+  'Third wrong answer must immediately finalize the result');
+assert.ok(current.html.includes("const s=session;session=null;saveSession();"),
+  'Finalizing must clear the resumable session');
 
 // Syntax check game logic independently from rendering it or touching saves.
 for(const file of gameFiles){
