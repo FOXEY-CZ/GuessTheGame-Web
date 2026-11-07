@@ -67,5 +67,29 @@ validate(gameFiles[1],stable.data,stable.html);
 assert.deepEqual(current.data,stable.data,
   'Beta and stable question sets differ; verify migration and old challenge links before publishing');
 
+// A lost final life is a pending result, not an invalid game to discard.
+const guard=current.html.match(/const pendingFinish = session\?\.lives===0 && session\?\.selected!==null;\s*const valid = [^;]+;/);
+assert.ok(guard,'Beta must preserve an unanswered Finish action after the final lost life');
+const vm=require('node:vm');
+const eligible=session=>Boolean(vm.runInNewContext(guard[0]+' valid',{session,byId:{q001:{id:'q001'}}}));
+assert.equal(eligible({ids:['q001'],idx:0,lives:0,selected:2}),true,
+  'A finished round awaiting confirmation must remain resumable');
+assert.equal(eligible({ids:['q001'],idx:0,lives:0,selected:null}),false,
+  'An unfinished round with no lives left must not resume');
+assert.equal(eligible({ids:['q001'],idx:0,lives:1,selected:null}),true,
+  'A live round should still resume normally');
+assert.equal(eligible({ids:['q999'],idx:0,lives:1,selected:1}),false,
+  'A session referencing missing questions should be rejected');
+
+// Syntax check game logic independently from rendering it or touching saves.
+for(const file of gameFiles){
+  const html=file===gameFiles[0]?current.html:stable.html;
+  const from=html.indexOf('/* Guess the Game 2.3.');
+  const end=html.indexOf('</script>',from);
+  assert.ok(from>=0 && end>from,file+': quiz script not found');
+  new Function(html.slice(from,end));
+}
+
+
 console.log('PASS: '+current.data.length+' questions; '+JSON.stringify(currentCounts)+
   '; 6 quiz selectors, friend challenges, bilingual clues, no duplicate IDs or answers, bank parity');
