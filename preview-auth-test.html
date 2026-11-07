@@ -650,6 +650,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   let lang = sharedLocale||get('lang',previous('lang')||((navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en'));
   if(!translations[lang])lang='en';
   let session = get('session', null);
+  let quizLaunchPending = false;
   let prefs = {sound:true,haptics:true,...get('prefs',{})};
   let restoreArmed = '';
   let audioContext;
@@ -1171,15 +1172,58 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     }
     return shuffle(ids,seed^0xAACCEE);
   }
-  function start(mode){if(mode==='challenge'){startChallenge();return;}if((mode==='medium'&&level()<2)||(mode==='hard'&&level()<4)){toast(fmt(T('lockToast'),{level:mode==='medium'?2:4}));return;}
-    const seed=mode==='daily'?hash('gtg.v3.daily.'+new Date().toISOString().slice(0,10)):((Math.random()*4294967296)>>>0);
-    session={mode,day:mode==='daily'?utcDate():date(),seed,ids:makeIds(seed,mode),idx:0,score:0,correct:0,streak:0,maxStreak:0,lives:3,hint:false,selected:null,gained:0,reveal:0,
-      verifyOperation:crypto.randomUUID(),verifyAnswers:[]};
-    if(mode!=='daily'){profile.recentIds=[...(profile.recentIds||[]),...session.ids].slice(-105);saveProfile();}
+  async function start(mode){
+    if(mode==='challenge'){startChallenge();return;}
+    if(quizLaunchPending)return;
+    if((mode==='medium'&&level()<2)||(mode==='hard'&&level()<4)){
+      toast(fmt(T('lockToast'),{level:mode==='medium'?2:4}));return;
+    }
+    const seed=mode==='daily'
+      ?hash('gtg.v3.daily.'+new Date().toISOString().slice(0,10))
+      :((Math.random()*4294967296)>>>0);
+    const operation=crypto.randomUUID();
+    let ids=makeIds(seed,mode), serverIssued=null;
+    const bridge=window.GTGServerVerification;
+    quizLaunchPending=true;
+    try{
+      if(bridge?.available?.()){
+        toast(lang==='cs'?'🛡️ Připravuji otázky na serveru…'
+                        :'🛡️ Preparing questions on the server…');
+        const candidate=await Promise.race([
+          bridge.begin(mode,operation),
+          new Promise(resolve=>setTimeout(()=>resolve(null),6500))
+        ]);
+        const expected=mode==='daily'?5:10;
+        if(candidate && typeof candidate.run_id==='string'
+          && typeof candidate.user_id==='string'
+          && Array.isArray(candidate.question_ids)
+          && candidate.question_ids.length===expected
+          && new Set(candidate.question_ids).size===expected
+          && candidate.question_ids.every(id=>Object.hasOwn(byId,id))){
+          serverIssued=candidate;ids=candidate.question_ids.slice();
+        }else{
+          toast(lang==='cs'?'⚠️ Server není dostupný, hraješ v původním režimu.'
+                          :'⚠️ Server unavailable; using the original game mode.');
+        }
+      }
+    }catch(_){
+      toast(lang==='cs'?'⚠️ Server není dostupný, hraješ v původním režimu.'
+                      :'⚠️ Server unavailable; using the original game mode.');
+    }finally{quizLaunchPending=false;}
+    session={mode,day:mode==='daily'?utcDate():date(),seed,ids,
+      idx:0,score:0,correct:0,streak:0,maxStreak:0,lives:3,
+      hint:false,selected:null,gained:0,reveal:0,
+      verifyOperation:operation,verifyAnswers:[],
+      verifyRunId:serverIssued?.run_id||null,
+      verifyUserId:serverIssued?.user_id||null};
+    if(mode!=='daily'){
+      profile.recentIds=[...(profile.recentIds||[]),...session.ids].slice(-105);
+      saveProfile();
+    }
     lastMode=mode;saveSession();
-    // Shadow verification records only an audit receipt; it never writes money.
     window.dispatchEvent(new CustomEvent('gtg-quiz-started',{detail:{
-      mode,ids:session.ids.slice(),operation:session.verifyOperation
+      mode,ids:session.ids.slice(),operation:session.verifyOperation,
+      run_id:session.verifyRunId,user_id:session.verifyUserId
     }}));
     game();
   }
@@ -1292,7 +1336,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     lastMode=s.mode;renderResult();
     if(s.verifyOperation&&Array.isArray(s.verifyAnswers) && s.mode!=='challenge')
       window.dispatchEvent(new CustomEvent('gtg-quiz-finished',{detail:{
-        operation:s.verifyOperation,answers:s.verifyAnswers.slice(),score:s.score,correct:s.correct
+        operation:s.verifyOperation,answers:s.verifyAnswers.slice(),score:s.score,correct:s.correct,
+        run_id:s.verifyRunId||null,user_id:s.verifyUserId||null
       }}));
     if(challengeValid&&s.challenge.online)submitOnlineResult(s.challenge,s);
     if(levelRaised||rewardable&&perfect||newBadges.length)burst();
