@@ -82,6 +82,14 @@
   .history-actions button{flex:1 1 145px;padding:9px;font-size:.81rem;min-height:40px}
   .history-detail{font-weight:800;line-height:1.55;color:#b5f0df}
   .history-empty{font-size:.88rem;color:#9eaecc;line-height:1.5}
+  .resume-guide{border:1px solid #5374aa;border-radius:18px;background:linear-gradient(145deg,#21365b,#132841);
+    padding:17px;margin:15px 0 20px}
+  .resume-guide h3{font-size:1.06rem;margin:0 0 9px;color:#e7f6ff}
+  .resume-guide p{font-size:.86rem;color:var(--sub);line-height:1.5;margin:0 0 12px}
+  .resume-guide button{width:100%;min-height:44px;padding:10px;border:1px solid #6d91ca;border-radius:12px;
+    color:#f5fbff;background:#2b4471;font:inherit;font-weight:750;cursor:pointer}
+  #resumePanel{margin:12px 0 20px}
+  #resumeLastChallenge{width:100%;min-height:48px}
   .history-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:12px}
   .history-overlay-shade{position:absolute;inset:0;background:rgba(2,6,18,.81)}
   .history-overlay-panel{position:relative;width:min(620px,100%);max-height:min(84dvh,810px);overflow-y:auto;
@@ -164,6 +172,17 @@
   <section id="modePanel" class="panel hidden">
     <div class="label" id="modeEyebrow">SERVEROVÁ VOLBA OTÁZEK</div>
     <h2 id="modeTitle">Vyber režim</h2>
+    <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
+      <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
+      <p id="resumeText" class="async-help">Server si pamatuje odpovědi a nápovědy. Můžeš bezpečně pokračovat.</p>
+      <button id="resumeLastChallenge" class="primary" type="button">▶️ Pokračovat ve výzvě</button>
+      <p id="resumeError" class="async-help" role="status" aria-live="polite"></p>
+    </section>
+    <section id="resumeGuide" class="resume-guide" aria-labelledby="resumeGuideTitle">
+      <h3 id="resumeGuideTitle">🧪 Chceš vyzkoušet obnovení výzvy?</h3>
+      <p id="resumeGuideText">Zatím nemáš rozehranou serverovou výzvu. Vytvoř ji níže, odpověz na jednu otázku a potom obnov stránku. Běžné režimy pod tímto panelem nejsou výzvou pro kamaráda.</p>
+      <button id="jumpToChallenges" type="button">⚔️ Přejít na serverové výzvy</button>
+    </section>
     <div class="modes" id="modes">
       <button class="mode" type="button" data-mode="classic"><span class="mode-icon" aria-hidden="true">⚡</span><span class="mode-copy"><strong>Rychlá hra</strong><small>10 otázek · různé obtížnosti</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
       <button class="mode" type="button" data-mode="mystery"><span class="mode-icon" aria-hidden="true">🧩</span><span class="mode-copy"><strong>Mystery Mode</strong><small>10 otázek · postupné indicie</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
@@ -175,12 +194,7 @@
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
     </p>
-    <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
-      <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
-      <p id="resumeText" class="async-help">Server si pamatuje odpovědi a nápovědy. Můžeš bezpečně pokračovat.</p>
-      <button id="resumeLastChallenge" class="primary" type="button">▶️ Pokračovat ve výzvě</button>
-      <p id="resumeError" class="async-help" role="status" aria-live="polite"></p>
-    </section>
+
     <section class="async-box" aria-labelledby="asyncTitle">
       <h3 id="asyncTitle">⚔️ Soukromé výzvy mezi hráči</h3>
       <p class="async-help" id="asyncHelp">Vytvoř výzvu, odehraj 10 stejných otázek a pošli odkaz kamarádovi. Skóre se odhalí až po obou dohraných partiích. Zatím bez výplat.</p>
@@ -350,6 +364,9 @@
       resumePlaying:'🎮 Dokonči nejprve rozehranou partii, abys o její postup nepřišel.',
       resumeNone:'Žádnou nedokončenou výzvu se nepodařilo najít.',
       resumeRestored:'✅ Průběh partie obnoven ze serveru.',
+      resumeGuideTitle:'🧪 Chceš vyzkoušet obnovení výzvy?',
+      resumeGuideText:'Zatím nemáš rozehranou serverovou výzvu. Vytvoř ji níže, odpověz na jednu otázku a potom obnov stránku. Běžné režimy pod tímto panelem nejsou výzvou pro kamaráda.',
+      jumpToChallenges:'⚔️ Přejít na serverové výzvy',
       historyBell:'Moje výzvy; nových výsledků: {n}',
       historyOverlayTitle:'🔔 Moje výzvy',historyOverlayClose:'Zavřít oznámení',
       historyFinishFirst:'🎮 Nejdřív dokonči rozehranou partii, abys nepřišel o její výsledek.',
@@ -420,6 +437,9 @@
       resumePlaying:'🎮 Finish your current quiz first to keep its progress.',
       resumeNone:'No unfinished challenge found.',
       resumeRestored:'✅ Quiz progress restored from the server.',
+      resumeGuideTitle:'🧪 Want to test challenge recovery?',
+      resumeGuideText:'You have no active server challenge yet. Create one below, answer one question and then refresh this page. The ordinary modes below are not friend challenges.',
+      jumpToChallenges:'⚔️ Go to server challenges',
       historyBell:'My challenges; unread results: {n}',
       historyOverlayTitle:'🔔 My challenges',historyOverlayClose:'Close notifications',
       historyFinishFirst:'🎮 Finish the current quiz first so its result is saved.',
@@ -469,7 +489,8 @@
     $('historyOverlayClose').setAttribute('aria-label',T('historyOverlayClose'));
     for(const [key,id] of Object.entries({
       resumeTitle:'resumeTitle',resumeText:'resumeText',
-      resumeButton:'resumeLastChallenge'
+      resumeButton:'resumeLastChallenge',resumeGuideTitle:'resumeGuideTitle',
+      resumeGuideText:'resumeGuideText',jumpToChallenges:'jumpToChallenges'
     })){
       const element=$(id);if(element)element.textContent=T(key);
     }
@@ -525,10 +546,25 @@
     }catch(_){}
     renderResumePrompt();
   }
+  function getResumeCandidate(){
+    const stored=getActiveChallenge();
+    // A freshly signed-in device may have no local marker at all. Recover
+    // available matches from the authenticated server-owned history.
+    const candidate=historyItems.find(entry=>
+      entry&&entry.both_done===false&&entry.status!=='expired'&&
+      (entry.role==='creator'&&entry.creator_done===false||
+       entry.role==='challenger'&&entry.challenger_done===false));
+    const storedEntry=historyItems.find(entry=>entry.challenge_id===stored);
+    const storedIsFinished=storedEntry&&(
+      storedEntry.both_done||storedEntry.status==='expired'||
+      storedEntry.role==='creator'&&storedEntry.creator_done===true||
+      storedEntry.role==='challenger'&&storedEntry.challenger_done===true);
+    return stored&&!storedIsFinished?stored:candidate?.challenge_id||null;
+  }
   function renderResumePrompt(){
-    const id=getActiveChallenge();
-    const panel=$('resumePanel');
-    if(panel)visible('resumePanel',!!me&&!!id);
+    const id=me?getResumeCandidate():null;
+    if($('resumePanel'))visible('resumePanel',!!id);
+    if($('resumeGuide'))visible('resumeGuide',!!me&&!id);
     if(!id&&$('resumeError'))$('resumeError').textContent='';
   }
   async function authenticate(){
@@ -877,6 +913,7 @@
       historyItems=data.items.filter(entry=>uuidPattern.test(entry?.challenge_id)&&
         (entry.role==='creator'||entry.role==='challenger'));
       historyUnread=data.unread;
+      renderResumePrompt();
       renderHistory();
     }catch(err){
       if(me?.id===uid){
@@ -1142,9 +1179,12 @@
     void refreshHistory();
   }
   $('resumeLastChallenge').addEventListener('click',()=>{
-    const id=getActiveChallenge();
+    const id=getResumeCandidate();
     if(id)void resumeAsyncChallenge(id);
     else if($('resumeError'))$('resumeError').textContent=T('resumeNone');
+  });
+  $('jumpToChallenges').addEventListener('click',()=>{
+    $('asyncTitle').scrollIntoView?.({behavior:'smooth',block:'center'});
   });
   $('bootRetry').addEventListener('click',()=>void authenticate().catch(err=>{
     $('bootText').textContent=T('bootFailed')+' ('+errorText(err)+')';
