@@ -26,7 +26,15 @@ class Element {
   addEventListener(name,callback){this.listeners[name]=callback;}
   append(...children){this.children.push(...children);}
   replaceChildren(...children){this.children=[...children];}
-  querySelectorAll(){return this.id==='modes'?modeButtons:[];}
+  querySelectorAll(){
+    if(this.id==='modes')return modeButtons;
+    if(this.id==='gamePanel')return [
+      ...(elements.get('options')?.children||[]),
+      ...['hintButton','revealButton','nextButton','retryButton']
+        .map(id=>elements.get(id)).filter(Boolean)
+    ];
+    return [];
+  }
   querySelector(tag){return this[tag]||(this[tag]=new Element());}
 }
 const modeButtons=Array.from({length:6},(_,i)=>new Element('mode'+i));
@@ -96,10 +104,19 @@ async function main(){
  assert.ok(game.getState().me,'Same-origin sign-in must be discovered');
  await game.start('classic');
  assert.equal(game.getState().current.cs,'Otázka 0');
- await game.hint();
- await game.answer('Wrong 0');
+ const firstButtons=elements.get('options').children;
+ assert.equal(firstButtons.length,4,'First question must show four choices');
+ assert.ok(firstButtons.every(btn=>!btn.disabled),'Choices should unlock after the first question loads');
+ assert.ok(firstButtons.every(btn=>typeof btn.listeners.click==='function'),
+   'All four answer buttons must be clickable before using a hint');
+ // Regression for mobile bug: previously first-render buttons had no click
+ // listener because they were created while start() held busy=true.
+ assert.equal(calls.filter(name=>name==='arcade_verify_action_shadow').length,0);
+ await firstButtons[1].listeners.click();
+ assert.equal(acceptedAnswers,1,'A direct click without hint must submit the first answer');
  assert.equal(game.getState().game.lives,2);
  await game.next();
+ await game.hint();
  await game.answer('Wrong 1');
  await game.next();
  await game.answer('Wrong 2');
@@ -109,6 +126,6 @@ async function main(){
  assert.ok(calls.includes('arcade_verify_action_summary_shadow'));
  assert.equal(elements.get('finalScore').textContent,'0');
  assert.equal(acceptedAnswers,3);
- console.log('PASS: answer-blind cards, hint, server actions, three-strikes, final audit, no payouts');
+ console.log('PASS: first-answer click WITHOUT hint, 4 active buttons, hint, three-strikes, audit, no payouts');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
