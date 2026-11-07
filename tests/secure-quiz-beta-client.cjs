@@ -9,11 +9,11 @@ assert.ok(!html.includes('GTG_QUESTIONS'),'Secure beta must not embed the legacy
 assert.ok(!html.includes('service_role'),'Service-role secrets must never be in frontend');
 assert.ok(!html.includes('arcade_verify_progress_shadow'),'Beta must not mint shadow rewards');
 assert.ok(!html.includes('arcade_sync_legacy'),'Beta must not mint live rewards');
-const js=[...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/g)]
+const js=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(match=>match[1]).filter(Boolean).at(-1);
 assert.ok(js&&js.includes('arcade_quiz_current_question_shadow'),'Expected server card API');
-const exposed=js.replace(/^\\s*\\(\\(\\) => \\{/,'return (() => {')
- .replace(/\\}\\)\\(\\);\\s*$/,'return {start,hint,reveal,answer,next,getState:()=>({game,current,me})};\\n})();');
+const exposed=js.replace(/^\s*\(\(\) => \{/,'return (() => {')
+ .replace(/\}\)\(\);\s*$/,'return {start,hint,reveal,answer,next,getState:()=>({game,current,me})};\n})();');
 assert.ok(exposed.includes('return {start,hint'),'Could not build isolated game harness');
 const elements=new Map();
 class Element {
