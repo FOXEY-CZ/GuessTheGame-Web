@@ -45,7 +45,8 @@ const makeLaunch=new Function('el','go','user','location',
 const sent=[],loads=[],pages=[];
 const frame={
  contentDocument:{readyState:'complete'},
- contentWindow:{postMessage:(message,origin)=>sent.push({message,origin})},
+ contentWindow:{location:{pathname:'/GuessTheGame-Web/secure-quiz-beta.html'},
+   postMessage:(message,origin)=>sent.push({message,origin})},
  addEventListener:(name,fn,opts)=>loads.push({name,fn,opts})
 };
 const status={textContent:''};
@@ -64,6 +65,15 @@ assert.equal(loads.length,0,'Already loaded iframe should receive direct message
 frame.contentDocument={readyState:'loading'};sent.length=0;loads.length=0;
 fn();assert.equal(sent.length,0);assert.equal(loads.length,1);
 assert.equal(loads[0].name,'load');assert.equal(loads[0].opts.once,true);
+loads[0].fn();assert.equal(sent.length,1);
+// A stale/about:blank iframe may report readyState=complete just after
+// navigation. Never send to the wrong document before the secure load.
+frame.contentDocument={readyState:'complete'};
+frame.contentWindow.location.pathname='/GuessTheGame-Web/preview-auth-test.html';
+sent.length=0;loads.length=0;
+fn();assert.equal(sent.length,0);
+assert.equal(loads.length,1);
+frame.contentWindow.location.pathname='/GuessTheGame-Web/secure-quiz-beta.html';
 loads[0].fn();assert.equal(sent.length,1);
 const inspect=new Function('window',beta.match(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)
  .at(-1).replace(/^<script(?:\s[^>]*)?>|<\/script>$/g,''));
