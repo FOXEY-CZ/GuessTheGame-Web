@@ -407,36 +407,28 @@
     if(!hasAuthCallback)history.replaceState(null,'','#'+(page==='home'?'domu':page));
     window.FOXEY_I18N?.apply();
   }
-  // The new embedded game exposes authenticated, server-verified challenges
-  // under its own "Soukromé výzvy" panel (not the old guest UI).
+  // Ask the secure, owner-scoped quiz to reveal its authenticated challenge
+  // section without reloading an active iframe or discarding its run.
   function openChallengeInGame(){
     const frame=el('gameFrame');
-    const identity=user?.id||'guest';
-    el('challengeLaunchStatus').textContent=
-      user?'⚔️ Otevírám zabezpečené výzvy…':
-        '🔐 Pro nové serverové výzvy se přihlas ke svému FOXEY Arcade účtu.';
+    el('challengeLaunchStatus').textContent=user?
+      '⚔️ Otevírám zabezpečené výzvy…':
+      '🔐 Pro nové serverové výzvy se přihlas ke svému FOXEY Arcade účtu.';
     go('play');
-    const open=()=>{
-      if(frame.dataset.player!==identity)return false;
+    const request=()=>{
       try{
-        const target=frame.contentDocument?.getElementById('asyncTitle');
-        if(!target||target.closest('#modePanel')?.classList.contains('hidden'))
-          return false;
-        target.scrollIntoView?.({behavior:'smooth',block:'start'});
-        el('challengeLaunchStatus').textContent=
-          '✅ Sekce serverových výzev je otevřená ve hře.';
+        if(!frame.contentWindow)return false;
+        frame.contentWindow.postMessage({
+          type:'foxey-arcade:open-challenges'
+        },location.origin);
         return true;
       }catch(_){return false;}
     };
-    if(open())return;
-    // Authentication resolves asynchronously inside the iframe; the same-
-    // origin page sends a specific readiness event when its menu is ready.
-    frame.addEventListener('load',()=>{
-      if(open())return;
-      el('challengeLaunchStatus').textContent=user?
-        '⚔️ Ve hře najdi sekci „Soukromé výzvy mezi hráči“.':
-        '🔐 Přihlas se v profilu FOXEY Arcade a potom otevři výzvy.';
-    },{once:true});
+    if(frame.contentDocument?.readyState==='complete'){
+      request();
+    }else{
+      frame.addEventListener('load',request,{once:true});
+    }
   }
   function closeGameOnIdentityChange(){
     // Unload an old iframe session on account switch/logout, so another player
