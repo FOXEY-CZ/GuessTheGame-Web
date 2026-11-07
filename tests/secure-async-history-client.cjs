@@ -12,7 +12,7 @@ const raw=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(m=>m[1]).filter(Boolean).at(-1);
 const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
-   'return {refreshHistory,openHistoryResult,renderHistory,getState:()=>({historyUnread,historyItems,me})};\n})();');
+   'return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},getState:()=>({historyUnread,historyItems,me,game})};\n})();');
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
 const other='44444444-4444-4444-8444-444444444444';
@@ -21,7 +21,11 @@ const friend='33333333-3333-4333-8333-333333333333';
 class E {
   constructor(id=''){this.id=id;this.textContent='';this.value='';this.className='';
     this.dataset={};this.disabled=false;this.children=[];this.listeners={};this.attributes={};
-    this.classList={toggle(){},add(){},remove(){}};
+    this.hidden=false;
+    this.classList={toggle:(name,turn)=>{if(name==='hidden')this.hidden=!!turn;},
+      add:(name)=>{if(name==='hidden')this.hidden=true;},
+      remove:(name)=>{if(name==='hidden')this.hidden=false;},
+      contains:(name)=>name==='hidden'&&this.hidden};
   }
   addEventListener(name,listener){this.listeners[name]=listener;}
   setAttribute(key,val){this.attributes[key]=val;}
@@ -114,6 +118,19 @@ async function main(){
   assert.ok(first.doc.title.startsWith('(1)'));
   assert.equal(first.app.getState().historyItems.length,2);
   assert.equal(first.get('historyList').children.length,2);
+  // The bell is ALWAYS clickable during the active quiz. Viewing the shared
+  // inbox must not discard the round, answer choices or pending RPC state.
+  const activeRound={id:'test-active-run',idx:5,finished:false,resultShown:false,
+    answers:[{choice:'A'}],lives:2};
+  first.app.setTestGame(activeRound);
+  first.app.goToHistory();
+  assert.equal(first.app.getState().game,activeRound);
+  assert.equal(first.get('historyOverlay').hidden,false);
+  assert.equal(first.get('historyOverlayList').children.length,2);
+  first.app.closeHistoryOverlay();
+  assert.equal(first.get('historyOverlay').hidden,true);
+  assert.equal(first.app.getState().game,activeRound);
+  assert.equal(first.app.getState().game.idx,5);
   const finished=first.get('historyList').children[0];
   assert.ok(finished.children[2].textContent.includes('Vyhráváš'));
   const pending=first.get('historyList').children[1];
