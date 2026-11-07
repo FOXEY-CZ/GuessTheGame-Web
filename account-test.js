@@ -279,7 +279,10 @@
           profile:clone(conflict.profile)
         };
       }
-      const file=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+      // Filter accidental credential-like fields from imported legacy profiles.
+      const safeJSON=JSON.stringify(payload,(key,value)=>
+        /(?:token|password|secret|api.?key|authorization)/i.test(key)?undefined:value,2);
+      const file=new Blob([safeJSON],{type:'application/json'});
       const url=URL.createObjectURL(file);
       try{
         const anchor=document.createElement('a');
