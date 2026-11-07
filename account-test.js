@@ -130,11 +130,16 @@
         throw Error('verification_failed');
       if(record.uid!==user?.id)return;
       const match=data.score===d.score&&data.correct===d.correct;
+      const serverChosen=typeof d.run_id==='string'&&d.user_id===record.uid;
       shadowStatus(match
-        ?'✅ Server ověřil výsledek. Testovací potvrzení, bez další výplaty.'
+        ?(serverChosen
+          ?'✅ Server vybral otázky a ověřil výsledek. Test bez další výplaty.'
+          :'✅ Server ověřil výsledek. Testovací potvrzení, bez další výplaty.')
         :'⚠️ Server našel rozdíl mezi výsledkem hry a svým výpočtem. Odměny zůstávají podle původních pravidel.',
         match
-        ?'✅ Server verified the result. Test receipt only, no extra payout.'
+        ?(serverChosen
+          ?'✅ Server chose the questions and verified the result. No extra payout.'
+          :'✅ Server verified the result. Test receipt only, no extra payout.')
         :'⚠️ The server calculated a different result. Existing reward rules still apply.');
     }catch(_){
       if(record.uid===user?.id)shadowStatus(
