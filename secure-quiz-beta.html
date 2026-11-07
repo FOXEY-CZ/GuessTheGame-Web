@@ -59,6 +59,26 @@
   .async-buttons button{flex:1 1 170px}
   .async-result{border:1px solid #4c7f82;background:#123139;border-radius:18px;padding:18px;margin:16px 0}
   .async-result p{line-height:1.55}
+  .header-actions{display:flex;align-items:center;gap:9px}
+  #historyBell{position:relative;min-width:56px;font-size:1.2rem;white-space:nowrap}
+  .notification-count{display:inline-flex;min-width:22px;height:22px;border-radius:12px;align-items:center;justify-content:center;background:#cf426f;color:#fff;border:1px solid #ff8fad;font-size:.72rem;font-weight:950;padding:0 5px}
+  #historyBell .notification-count{font-size:.66rem;vertical-align:middle}
+  .inbox-box{border:1px solid #526d9f;border-radius:20px;margin-top:20px;padding:18px;background:linear-gradient(160deg,#1d2c51,#101e35)}
+  .inbox-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .inbox-head h3{margin:0;font-size:1.13rem;display:flex;align-items:center;gap:7px}
+  .inbox-head button{padding:9px 12px;font-size:.8rem;min-height:40px}
+  .history-list{display:grid;gap:10px}
+  .history-entry{padding:15px;border-radius:15px;border:1px solid #435d84;background:#142541;display:grid;gap:8px}
+  .history-entry.is-unread{border-color:#c775c9;box-shadow:inset 3px 0 #c775c9}
+  .history-entry-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.96rem}
+  .history-entry-title strong{color:#f1f5ff}
+  .history-entry-sub{color:#a8badd;font-size:.8rem}
+  .history-entry-result{font-size:.88rem;font-weight:750;color:#b5f0df;line-height:1.55}
+  .history-actions{display:flex;gap:9px;flex-wrap:wrap}
+  .history-actions button{flex:1 1 145px;padding:9px;font-size:.81rem;min-height:40px}
+  .history-detail{font-weight:800;line-height:1.55;color:#b5f0df}
+  .history-empty{font-size:.88rem;color:#9eaecc;line-height:1.5}
+  @media(max-width:380px){.inbox-box{padding:14px}.inbox-head h3{font-size:1rem}#historyBell{min-width:50px}}
   .hidden{display:none!important}
   .bottom{display:grid;gap:12px;margin-top:23px}
   @media(min-width:680px){.bottom{grid-template-columns:1fr 1fr}}
@@ -96,7 +116,10 @@
 <main class="wrap">
   <div class="header">
     <a class="brand" href="./arcade/">🦊 FOXEY <span>ARCADE</span></a>
-    <button id="lang" class="lang" type="button">CZ / EN</button>
+    <div class="header-actions">
+      <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
+      <button id="lang" class="lang" type="button">CZ / EN</button>
+    </div>
   </div>
   <div class="hero">
     <div class="label" id="eyebrow">SERVEROVÁ BETA · BEZ PLATEB</div>
@@ -142,6 +165,16 @@
       </div>
       <p class="async-help" id="asyncLobbyStatus" role="status" aria-live="polite"></p>
       <p class="async-help"><a id="challengeLink" href="./arcade/">↩ Starší offline výzvy v původní FOXEY Arcade</a></p>
+    </section>
+    <section id="historySection" class="inbox-box" aria-labelledby="historyTitle">
+      <div class="inbox-head">
+        <h3 id="historyTitle">🔔 Moje výzvy <span id="historyBadge" class="notification-count hidden">0</span></h3>
+        <button id="historyRefresh" type="button">🔄 Obnovit</button>
+      </div>
+      <p id="historyNotice" class="async-help" role="status" aria-live="polite">Načítám historii výzev…</p>
+      <div id="historyList" class="history-list"></div>
+      <p id="historyDetail" class="history-detail" role="status" aria-live="polite"></p>
+      <p id="historyHint" class="async-help">Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.</p>
     </section>
   </section>
 
@@ -253,7 +286,21 @@
       asyncWaiting:'⏳ Výsledek zatím není k dispozici. Pro porovnání musí oba hráči dokončit.',
       asyncError:'⚠️ Výzvu se nepodařilo ověřit: {error}',
       asyncCopied:'✅ Odkaz zkopírován.',
-      asyncInvalid:'⚠️ Zadej platný odkaz nebo ID výzvy.'
+      asyncInvalid:'⚠️ Zadej platný odkaz nebo ID výzvy.',
+      historyTitle:'🔔 Moje výzvy',historyRefresh:'🔄 Obnovit',
+      historyHint:'Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.',
+      historyLoading:'Načítám historii výzev…',historyEmpty:'Zatím tu nemáš žádné serverové výzvy.',
+      historyNew:'🔔 Máš {n} nepřečtených výsledků!',historyClear:'Žádné nové výsledky.',
+      historyError:'⚠️ Historii výzev se nepodařilo načíst: {error}',
+      historySent:'Odeslaná výzva',historyReceived:'Přijatá výzva',
+      historyStatusFinished:'🏁 Dokončeno',historyStatusWaiting:'⏳ Čeká se na soupeře',
+      historyStatusCreatorPlaying:'🎮 Rozehraná výzva',historyStatusChallengerPlaying:'🎮 Soupeř právě hraje',
+      historyStatusExpired:'⌛ Platnost výzvy skončila',
+      historyOpen:'🏆 Zobrazit výsledek',historyCheck:'👀 Zobrazit stav',
+      historyCopy:'📋 Kopírovat odkaz',historyCopied:'✅ Odkaz zkopírován.',
+      historyUnread:'NOVÝ VÝSLEDEK',
+      historyPlayingHelp:'Rozehranou výzvu zatím není možné obnovit po zavření stránky.',
+      historyBell:'Moje výzvy; nových výsledků: {n}'
     },
     en:{
       eyebrow:'SERVER BETA · NO PAYOUTS',
@@ -295,12 +342,27 @@
       asyncWaiting:'⏳ Result not ready. Both players must finish for a comparison.',
       asyncError:'⚠️ Could not verify challenge: {error}',
       asyncCopied:'✅ Link copied.',
-      asyncInvalid:'⚠️ Enter a valid challenge link or ID.'
+      asyncInvalid:'⚠️ Enter a valid challenge link or ID.',
+      historyTitle:'🔔 My challenges',historyRefresh:'🔄 Refresh',
+      historyHint:'Results update automatically while this page is open. Phone push notifications are not available yet.',
+      historyLoading:'Loading challenge history…',historyEmpty:'No secure challenges here yet.',
+      historyNew:'🔔 You have {n} unread results!',historyClear:'No new results.',
+      historyError:'⚠️ Failed to load challenge history: {error}',
+      historySent:'Challenge sent',historyReceived:'Challenge received',
+      historyStatusFinished:'🏁 Completed',historyStatusWaiting:'⏳ Waiting for opponent',
+      historyStatusCreatorPlaying:'🎮 Challenge in progress',historyStatusChallengerPlaying:'🎮 Opponent is playing',
+      historyStatusExpired:'⌛ Challenge expired',
+      historyOpen:'🏆 View result',historyCheck:'👀 View status',
+      historyCopy:'📋 Copy challenge link',historyCopied:'✅ Link copied.',
+      historyUnread:'NEW RESULT',
+      historyPlayingHelp:'Refreshing or closing an unfinished challenge cannot be recovered yet.',
+      historyBell:'My challenges; unread results: {n}'
     }
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
   let busy=false,pending=null;
   let createOperation=null;
+  let historyItems=[],historyUnread=0,historyLoading=false;
   try {lang=localStorage.getItem(langKey)==='en'?'en':'cs';}catch(_){}
   const T=k=>tr[lang][k];
   function visible(id,on){$(id).classList.toggle('hidden',!on);}
@@ -327,7 +389,9 @@
       asyncTitle:'asyncTitle',asyncHelp:'asyncHelp',asyncCreate:'createAsyncChallenge',
       asyncLabel:'asyncInviteLabel',asyncJoin:'joinAsyncChallenge',
       asyncCheck:'checkAsyncChallenge',asyncResultTitle:'asyncResultTitle',
-      asyncShareLabel:'asyncShareLabel',asyncCopy:'asyncCopy',asyncRefresh:'asyncRefresh'
+      asyncShareLabel:'asyncShareLabel',asyncCopy:'asyncCopy',asyncRefresh:'asyncRefresh',
+      historyTitle:'historyTitle',historyRefresh:'historyRefresh',
+      historyHint:'historyHint'
     }))$(id).textContent=T(key);
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
@@ -339,6 +403,7 @@
       btn.querySelector('small').textContent=T('modeSub')[i];
     });
     $('lang').textContent=lang==='cs'?'EN':'CZ';
+    renderHistory();
     if(game&&current)renderQuestion();
   }
   function modeScreen(){
@@ -346,6 +411,7 @@
     visible('modePanel',!!me);visible('signIn',!me);
     visible('gamePanel',false);visible('resultPanel',false);
     status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
+    if(me)void refreshHistory();
   }
   async function authenticate(){
     if(!window.supabase?.createClient||!cfg?.publishableKey){status(T('statusNetwork'),'error');return;}
@@ -419,7 +485,9 @@
     return url.toString();
   }
   function asyncSummary(data){
-    if(!data||data.both_done!==true)return T('asyncWaiting');
+    if(!data||data.both_done!==true||data.role==='invitee'
+      ||!Number.isFinite(data.your_score)||!Number.isFinite(data.opponent_score))
+      return T('asyncWaiting');
     const vals={you:data.your_score,other:data.opponent_score};
     return template(data.winner==='you'?T('asyncWin'):
       data.winner==='opponent'?T('asyncLose'):T('asyncTie'),vals);
@@ -492,9 +560,136 @@
       $('asyncLobbyStatus').textContent=asyncSummary(data);
       if(game?.challenge?.id===id&&data.role!=='invitee')
         showAsyncResult(asyncSummary(data),game.challenge);
+      if(data.both_done&&data.role!=='invitee'){
+        const marked=await api.rpc('arcade_async_challenge_mark_seen',{
+          p_challenge_id:id
+        });
+        if(marked.error||marked.data?.seen!==true)
+          throw Error(marked.error?.message||'mark_seen_failed');
+      }
+      void refreshHistory();
     }catch(err){
       $('asyncLobbyStatus').textContent=template(T('asyncError'),{error:errorText(err)});
     }
+  }
+  function historyLabel(entry){
+    if(entry.both_done)return T('historyStatusFinished');
+    const states={
+      waiting:'historyStatusWaiting',creator_playing:'historyStatusCreatorPlaying',
+      challenger_playing:'historyStatusChallengerPlaying',expired:'historyStatusExpired'
+    };
+    return T(states[entry.status]||'historyStatusWaiting');
+  }
+  function renderHistory(){
+    const count=Number.isFinite(historyUnread)?historyUnread:0;
+    const badgeText=count>99?'99+':String(count);
+    $('historyBellCount').textContent=badgeText;
+    $('historyBadge').textContent=badgeText;
+    visible('historyBell',!!me);
+    visible('historyBellCount',count>0);
+    visible('historyBadge',count>0);
+    $('historyBell').setAttribute('aria-label',template(T('historyBell'),{n:count}));
+    $('historyBell').setAttribute('title',template(T('historyBell'),{n:count}));
+    document.title=(count>0?'('+count+') ':'')+'FOXEY Arcade · Secure Quiz Beta';
+    const box=$('historyList');box.replaceChildren();
+    $('historyNotice').textContent=count>0?
+      template(T('historyNew'),{n:count}):T('historyClear');
+    if(!historyItems.length){
+      const empty=document.createElement('p');empty.className='history-empty';
+      empty.textContent=T('historyEmpty');box.append(empty);return;
+    }
+    for(const entry of historyItems){
+      const wrap=document.createElement('article');
+      wrap.className='history-entry'+(entry.unread?' is-unread':'');
+      const heading=document.createElement('div');heading.className='history-entry-title';
+      const name=document.createElement('strong');
+      name.textContent=(entry.role==='creator'?T('historySent'):T('historyReceived'))+
+        ' · '+(entry.mode==='mystery'?'🧩 Mystery':'⚡ Classic');
+      heading.append(name);
+      if(entry.unread){
+        const unread=document.createElement('span');unread.className='notification-count';
+        unread.textContent=T('historyUnread');heading.append(unread);
+      }
+      const sub=document.createElement('span');sub.className='history-entry-sub';
+      let dateText='';
+      try{dateText=new Intl.DateTimeFormat(lang==='cs'?'cs-CZ':'en-US',
+        {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+          .format(new Date(entry.created_at));}catch(_){}
+      sub.textContent=historyLabel(entry)+(dateText?' · '+dateText:'');
+      const outcome=document.createElement('div');outcome.className='history-entry-result';
+      outcome.textContent=entry.both_done?asyncSummary(entry):
+        entry.status==='creator_playing'||entry.status==='challenger_playing'?
+          T('historyPlayingHelp'):historyLabel(entry);
+      const controls=document.createElement('div');controls.className='history-actions';
+      const show=document.createElement('button');show.type='button';
+      show.textContent=entry.both_done?T('historyOpen'):T('historyCheck');
+      show.addEventListener('click',()=>void openHistoryResult(entry.challenge_id));
+      controls.append(show);
+      if(entry.role==='creator'){
+        const copy=document.createElement('button');copy.type='button';
+        copy.textContent=T('historyCopy');
+        copy.addEventListener('click',()=>void copyHistoryLink(entry.challenge_id));
+        controls.append(copy);
+      }
+      wrap.append(heading,sub,outcome,controls);box.append(wrap);
+    }
+  }
+  async function refreshHistory(){
+    if(!me||!api||historyLoading||navigator.onLine===false)return;
+    historyLoading=true;
+    const uid=me.id;
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_inbox',{p_limit:40});
+      if(error||data?.ok!==true||!Array.isArray(data.items)||
+          !Number.isInteger(data.unread)||data.unread<0)
+        throw Error(error?.message||'invalid_history');
+      if(!me||me.id!==uid)return;
+      historyItems=data.items.filter(entry=>uuidPattern.test(entry?.challenge_id)&&
+        (entry.role==='creator'||entry.role==='challenger'));
+      historyUnread=data.unread;
+      renderHistory();
+    }catch(err){
+      if(me?.id===uid)
+        $('historyNotice').textContent=template(T('historyError'),{error:errorText(err)});
+    }finally{historyLoading=false;}
+  }
+  async function openHistoryResult(id){
+    if(!me||!api||busy)return;
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_status',{
+        p_challenge_id:id
+      });
+      if(error||data?.ok!==true||data.role==='invitee')
+        throw Error(error?.message||'challenge_not_yours');
+      $('historyDetail').textContent=asyncSummary(data);
+      if(data.both_done){
+        const marked=await api.rpc('arcade_async_challenge_mark_seen',{
+          p_challenge_id:id
+        });
+        if(marked.error||marked.data?.seen!==true)
+          throw Error(marked.error?.message||'mark_seen_failed');
+        await refreshHistory();
+      }
+      $('historyDetail').scrollIntoView?.({behavior:'smooth',block:'nearest'});
+    }catch(err){
+      $('historyDetail').textContent=template(T('asyncError'),{error:errorText(err)});
+    }
+  }
+  async function copyHistoryLink(id){
+    const link=challengeUrl(id);
+    try{
+      await navigator.clipboard.writeText(link);
+      $('historyDetail').textContent=T('historyCopied');
+    }catch(_){
+      $('asyncInvite').value=link;
+      $('asyncInvite').focus();$('asyncInvite').select();
+      $('historyDetail').textContent=link;
+    }
+  }
+  function goToHistory(){
+    if(busy||(game&&!game.finished))return;
+    if(game)modeScreen();
+    $('historySection').scrollIntoView?.({behavior:'smooth',block:'start'});
   }
   function showQuestionLoadError(){
     $('question').textContent=T('statusQuestion');
@@ -688,7 +883,17 @@
     }
     visible('gamePanel',false);visible('resultPanel',true);
     lock(false);
+    if(challengeState?.both_done&&game.challenge){
+      try{
+        await api.rpc('arcade_async_challenge_mark_seen',{
+          p_challenge_id:game.challenge.id
+        });
+      }catch(_){}
+    }
+    void refreshHistory();
   }
+  $('historyBell').addEventListener('click',goToHistory);
+  $('historyRefresh').addEventListener('click',()=>void refreshHistory());
   $('createAsyncChallenge').addEventListener('click',()=>void createAsyncChallenge());
   $('joinAsyncChallenge').addEventListener('click',()=>void joinAsyncChallenge());
   $('checkAsyncChallenge').addEventListener('click',()=>void checkAsyncChallenge());
@@ -726,6 +931,10 @@
     if(!game&&me)status(T('statusReady'),'ok');
   });
   window.addEventListener('offline',()=>status(T('statusOffline'),'error'));
+  window.addEventListener('focus',()=>{if(me)void refreshHistory();});
+  window.setInterval?.(()=>{
+    if(me&&document.visibilityState!=='hidden')void refreshHistory();
+  },45000);
   language();
   void authenticate().catch(()=>status(T('statusNetwork'),'error'));
 })();
