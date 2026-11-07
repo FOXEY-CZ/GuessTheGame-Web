@@ -108,6 +108,33 @@ const translations=Function('return ('+current.html.slice(dictStart,dictEnd)+')'
 const missingKeys=Object.keys(translations.cs).filter(key=>!Object.hasOwn(translations.en,key));
 assert.deepEqual(missingKeys,[],'English translation is missing keys, including reward descriptions');
 
+// Shadow-only server receipt bridge must never touch the Arcade wallet.
+const accountSource=fs.readFileSync(path.join(root,'account-test.js'),'utf8');
+assert.ok(current.html.includes('id="serverVerificationStatus"'),
+  'Server verification status must be available on the results screen');
+assert.ok(current.html.includes("new CustomEvent('gtg-quiz-started'"),
+  'Game should signal an independent audit run on start');
+assert.ok(current.html.includes("new CustomEvent('gtg-quiz-finished'"),
+  'Game should submit a separate audit trace on finish');
+assert.ok(current.html.includes('verifyAnswers.push('),
+  'Answer choices and hint usage must be recorded in the pending run');
+assert.ok(current.html.includes('account-test.js?v=shadow-verify-20261107'),
+  'Versioned account bridge must avoid stale cached code');
+const shadowStart=accountSource.indexOf('const shadowRuns=new Map()');
+const shadowEnd=accountSource.indexOf('const setFeedback =',shadowStart);
+assert.ok(shadowStart>0 && shadowEnd>shadowStart,'No standalone shadow bridge found');
+const shadow=accountSource.slice(shadowStart,shadowEnd);
+assert.ok(shadow.includes("client.rpc('arcade_verify_begin'"),
+  'Bridge must ask the server to issue a run receipt');
+assert.ok(shadow.includes("client.rpc('arcade_verify_complete'"),
+  'Bridge must complete the server receipt exactly once');
+assert.ok(shadow.includes('data.credited!==false'),
+  'Shadow response must explicitly declare that no new wallet credit happened');
+for(const forbidden of ['arcade_buy_theme','arcade_open_cosmetic_chest',
+                        'arcade_wallet_events','arcade_wallets'])
+  assert.ok(!shadow.includes(forbidden),'Shadow bridge must never modify money: '+forbidden);
+new Function(accountSource);
+
 // Syntax check game logic independently from rendering it or touching saves.
 for(const file of gameFiles){
   const html=file===gameFiles[0]?current.html:stable.html;
