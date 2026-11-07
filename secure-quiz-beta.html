@@ -317,7 +317,10 @@
       const a=document.createElement('span');a.textContent='ABCD'[i];
       const b=document.createElement('strong');b.textContent=choice;
       btn.append(a,b);btn.disabled=busy||current.answered||!!pending;
-      if(!btn.disabled)btn.addEventListener('click',()=>answer(choice));
+      // Always register the handler, even during the first busy render.
+      // start() unlocks the button after loading; without a listener it
+      // previously only worked after hint() triggered a fresh render.
+      btn.addEventListener('click',()=>answer(choice));
       optionBox.append(btn);
     });
     const myst=game.mode==='mystery';
