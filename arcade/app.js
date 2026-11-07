@@ -424,11 +424,16 @@
         return true;
       }catch(_){return false;}
     };
-    if(frame.contentDocument?.readyState==='complete'){
-      request();
-    }else{
-      frame.addEventListener('load',request,{once:true});
-    }
+    // After assigning iframe.src, the browser can temporarily report an
+    // already-complete about:blank/previous document. Only consider the
+    // iframe ready if it is really showing our new secure game path.
+    let secureReady=false;
+    try{
+      secureReady=frame.contentDocument?.readyState==='complete'&&
+        frame.contentWindow?.location?.pathname?.endsWith('/secure-quiz-beta.html');
+    }catch(_){}
+    if(secureReady)request();
+    else frame.addEventListener('load',request,{once:true});
   }
   function closeGameOnIdentityChange(){
     // Unload an old iframe session on account switch/logout, so another player
