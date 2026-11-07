@@ -291,7 +291,7 @@
     if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
     lock(true);status(T('statusLoading'));
     try {
-      const {data,error}=await api.rpc('arcade_verify_begin_server',{
+      const {data,error}=await api.rpc('arcade_verify_begin_secure_server',{
         p_mode:mode,p_operation:crypto.randomUUID()
       });
       const expected=mode==='daily'?5:10;
