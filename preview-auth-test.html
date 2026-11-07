@@ -548,7 +548,17 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       shareResult:'📤 SDÍLET VÝSLEDEK',shareCopied:'📋 Výsledek zkopírován.',shareTitle:'🎮 Guess the Game',shareScore:'Získal jsem {score} XP · správně {correct}/{total}!' 
     },
     en: {
-
+      shards:'CRYSTALS',crowns:'CROWNS',streakReward:'STREAK REWARD',
+      rewardsSummary:'Bonuses: {summary}',rewardPerfect:'Perfect run +1 crown',
+      rewardStreak:'Streak {streak} +{bonus} crystals',
+      rewardRecord:'New record (no crown bonus)',
+      rewardLevel:'Level 10 milestone +1 crown',
+      rewardBadge:'New badge +1 crown each',
+      ribbonTop:'Legendary run. Maximum score!',
+      ribbonMid:'Nice run. Try a longer streak next time.',
+      ribbonLow:'You are earning XP and rewards. Keep going!',
+      ribbonDead:'You still earned something. Better luck next time!',
+      achievementsNew:'NEW BADGES',
       challengeTitle:'CHALLENGE A FRIEND',challengeCtaDesc:'Same questions · share link · compare scores',challengeHero:'Who is the bigger gamer?',
       challengeIntro:'Create a challenge, send the link and both play the same 10 questions. Your first completed attempt counts.',
       challengeNameLabel:'YOUR NICKNAME',challengeCodeLabel:'DUEL ID',challengeNew:'NEW CHALLENGE',challengeCopy:'📋 COPY LINK',challengeShare:'SHARE CHALLENGE',
@@ -1221,7 +1231,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(!rewardable)return {perfect:0,milestone:0,badges:0,total:0};
     const perfectCrowns=perfect?1:0;
     const milestone=Math.max(0,
-      Math.floor((currentLevel-1)/10)-Math.floor((previousLevel-1)/10));
+      Math.floor(currentLevel/10)-Math.floor(previousLevel/10));
     const badges=badgeCount;
     return {perfect:perfectCrowns,milestone,badges,
       total:perfectCrowns+milestone+badges};
