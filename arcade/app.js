@@ -368,7 +368,9 @@
     if(current===progressRequest)renderGameProgress();
   }
   const show=(id,visible)=>el(id).classList.toggle('hidden',!visible);
-  const message=(text)=>{el('accountNotice').textContent=text;};
+  const message=(text)=>{
+    el('accountNotice').textContent=window.FOXEY_I18N?.t(text)||text;
+  };
   function go(page){
     if(!PAGES.has(page))page='home';
     if(page==='play'){
@@ -399,6 +401,7 @@
       authHash.has('refresh_token')||authHash.has('error')||
       authHash.has('error_code')||authHash.has('type');
     if(!hasAuthCallback)history.replaceState(null,'','#'+(page==='home'?'domu':page));
+    window.FOXEY_I18N?.apply();
   }
   // Reuse the existing GTG challenge UI, not a second unverified scoring engine.
   // Both pages are served from the same trusted GitHub Pages origin.
@@ -461,6 +464,7 @@
     renderGameProgress();
     renderArcadeProgress();
     renderWallet();
+    window.FOXEY_I18N?.apply();
   }
   function setAuthView(view){
     if(busy)return;

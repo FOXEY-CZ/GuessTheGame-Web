@@ -373,11 +373,8 @@
   };
   const t=(cs)=>locale==='en'?translateValue(cs):cs;
   window.FOXEY_I18N=Object.freeze({getLocale:()=>locale,setLocale,apply,schedule,t});
-  if(typeof MutationObserver==='function'){
-    const observer=new MutationObserver(schedule);
-    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,
-      attributeFilter:['title','aria-label','placeholder']});
-  }
+  // Explicit updates from the launcher avoid MutationObserver feedback loops
+  // that can starve browser input and prevent the app from initializing.
   window.addEventListener('storage',event=>{
     if(event.key===KEY&&supported.has(event.newValue))setLocale(event.newValue);
   });
