@@ -57,6 +57,8 @@
   // Existing account-save sync, offline mode and rewards remain unchanged.
   // Ask the backend to select questions, without authorizing any payout.
   window.GTGServerVerification=Object.freeze({
+    available:()=>Boolean(user&&state&&!firstChoice&&!busy&&!conflict&&!deletionInProgress
+      &&navigator.onLine!==false),
     begin:async (mode,operation)=>{
       if(!user||!state||firstChoice||busy||conflict||deletionInProgress
          ||navigator.onLine===false
