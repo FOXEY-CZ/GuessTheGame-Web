@@ -1143,7 +1143,10 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const medium=level()>=2,hard=level()>=4;
     element('startMedium').disabled=!medium;element('startHard').disabled=!hard;element('startMedium').classList.toggle('mode-locked',!medium);element('startHard').classList.toggle('mode-locked',!hard);
     updateText('mediumDesc',T(medium?'mediumDesc':'mediumLock'));updateText('hardDesc',T(hard?'hardDesc':'hardLock'));updateText('mediumLock',medium?'→':'🔒');updateText('hardLock',hard?'→':'🔒');
-    const valid = session && Array.isArray(session.ids) && session.ids.length && session.ids.every(id=>byId[id]) && session.idx>=0 && session.idx<session.ids.length && session.lives>0;
+    // A round that has just lost its last life is still resumable until the
+    // player confirms Finish. Do not discard completed results on menu return.
+    const pendingFinish = session?.lives===0 && session?.selected!==null;
+    const valid = session && Array.isArray(session.ids) && session.ids.length && session.ids.every(id=>byId[id]) && session.idx>=0 && session.idx<session.ids.length && (session.lives>0 || pendingFinish);
     if(!valid){session=null;saveSession();}element('resume').classList.toggle('hidden',!valid);if(valid)updateText('resumeDesc',fmt(T('session'),{round:session.idx+1,total:session.ids.length}));
     show('home');window.dispatchEvent(new Event('gtg-home-screen'));
   }
