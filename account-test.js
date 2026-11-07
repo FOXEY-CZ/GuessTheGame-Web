@@ -587,7 +587,7 @@
       if(!isProfile(localBefore))throw Error('bad_local');
       // Preserve BOTH sides on this device before replacing either version.
       // A full localStorage quota stops the destructive resolution entirely.
-      const backupKey=accountKey(user.id)+'.beforeConflict.'+Date.now();
+      const backupKey=accountKey(user.id)+'.beforeConflict.'+latest.revision+'.'+Date.now();
       const backup={
         userId:user.id,revision:latest.revision,capturedAt:new Date().toISOString(),
         local:clone(localBefore),cloud:clone(latest.profile)
