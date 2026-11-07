@@ -55,6 +55,25 @@
   }
   // Isolated, non-financial server verification pilot. It NEVER credits a wallet.
   // Existing account-save sync, offline mode and rewards remain unchanged.
+  // Ask the backend to select questions, without authorizing any payout.
+  window.GTGServerVerification=Object.freeze({
+    begin:async (mode,operation)=>{
+      if(!user||!state||firstChoice||busy||conflict||deletionInProgress
+         ||navigator.onLine===false
+         ||!['classic','mystery','daily','easy','medium','hard'].includes(mode)
+         ||typeof operation!=='string')return null;
+      const uid=user.id;
+      try{
+        const {data,error}=await client.rpc('arcade_verify_begin_server',{
+          p_mode:mode,p_operation:operation
+        });
+        if(error||user?.id!==uid||!data?.ok||data.server_issued!==true
+          ||data.shadow!==true||!Array.isArray(data.question_ids)
+          ||typeof data.run_id!=='string')throw Error('server_start_failed');
+        return {run_id:data.run_id,question_ids:data.question_ids,user_id:uid};
+      }catch(_){return null;}
+    }
+  });
   const shadowRuns=new Map();
   function shadowStatus(cz,en){
     const node=el('serverVerificationStatus');
@@ -72,6 +91,11 @@
        !Array.isArray(d.ids)||typeof d.operation!=='string'||
        !/^[0-9a-f-]{36}$/i.test(d.operation))return;
     const uid=user.id;
+    // Reuse the backend-issued receipt rather than creating another run.
+    if(typeof d.run_id==='string' && d.user_id===uid){
+      shadowRuns.set(d.operation,{uid,request:Promise.resolve({run_id:d.run_id})});
+      return;
+    }
     const request=client.rpc('arcade_verify_begin',{
       p_mode:d.mode,p_question_ids:d.ids,p_operation:d.operation
     }).then(({data,error})=>{
@@ -86,7 +110,11 @@
   async function onShadowFinish(event){
     const d=event.detail;
     if(!d||typeof d.operation!=='string')return;
-    const record=shadowRuns.get(d.operation);
+    // A refreshed browser may have lost the in-memory map; the server still
+    // validates user ownership before accepting the saved run UUID.
+    const record=shadowRuns.get(d.operation)
+      ||(typeof d.run_id==='string'&&d.user_id===user?.id
+        ?{uid:d.user_id,request:Promise.resolve({run_id:d.run_id})}:null);
     if(!record||record.uid!==user?.id)return;
     shadowStatus('🛡️ Server kontroluje výsledek (test, bez další odměny)…',
       '🛡️ Server is verifying the result (test, no extra reward)…');
