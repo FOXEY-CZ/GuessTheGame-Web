@@ -32,7 +32,7 @@
         <span class="resource" title="Společné krystaly">💎 <b id="headerShards">—</b></span>
         <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
       </div>
-      <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName">Host</span></button></div>
+      <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div>
   </header>
 
   <nav class="mainnav" aria-label="Hlavní navigace">
@@ -239,7 +239,7 @@
         </form>
       </div>
       <div id="playerAccount" class="accountpanel hidden">
-        <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName">Hráč FOXEY Arcade</h2><p class="small" id="profileEmail"></p><p class="small">Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p></div></div>
+        <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName" data-no-i18n>Hráč FOXEY Arcade</h2><p class="small" id="profileEmail" data-no-i18n></p><p class="small">Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p></div></div>
         <form id="profileForm">
           <label for="nickname">Hráčská přezdívka</label>
           <input id="nickname" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="off" placeholder="Například FOXEY_CZ">
@@ -267,6 +267,15 @@
 
     <section class="page hidden" id="page-settings">
       <span class="eyebrow">NASTAVENÍ PLATFORMY</span><h1>O FOXEY Arcade</h1>
+      <article class="tile language-settings" aria-labelledby="languageTitle">
+        <h2 id="languageTitle">🌍 Jazyk / Language</h2>
+        <p>Zvolený jazyk platí pro launcher i vestavěnou Guess the Game. Změní se okamžitě a zůstane uložený v tomto prohlížeči.</p>
+        <label for="arcadeLanguage">Jazyk rozhraní</label>
+        <select id="arcadeLanguage" name="arcadeLanguage" autocomplete="off">
+          <option value="cs">🇨🇿 Čeština</option>
+          <option value="en">🇬🇧 English</option>
+        </select>
+      </article>
       <article class="tile"><h2>Správa dat</h2><p>Zde později přibude záloha a smazání postupu jednotlivých her, smazání veškerého postupu a úplné smazání účtu — vždy s potvrzením.</p><span class="tag">Připravujeme</span></article>
       <article class="tile"><h2>Aktuální fáze</h2><p>První centrální aplikace. Přihlašování a osobní profil jsou propojené se stávajícím Supabase projektem. Společná peněženka, komunitní funkce a integrace her jsou zatím ve vývoji.</p></article>
     </section>
@@ -275,7 +284,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script src="./config.js?v=google-oauth-on-20261106"></script>
+<script src="./i18n.js?v=arcade-i18n-20261107"></script>
 <script src="./avatars.js"></script>
-<script src="./app.js?v=google-oauth-on-20261106"></script>
+<script src="./app.js?v=arcade-i18n-20261107"></script>
 </body>
 </html>

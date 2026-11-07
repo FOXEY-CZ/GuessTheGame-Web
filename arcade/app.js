@@ -289,7 +289,7 @@
       walletBusy=false;renderWallet();
     }
   }
-  const fmt=n=>n.toLocaleString('cs-CZ');
+  const fmt=n=>n.toLocaleString(window.FOXEY_I18N?.getLocale()==='en'?'en-US':'cs-CZ');
   const safeNum=v=>Number.isSafeInteger(v)&&v>=0&&v<100000000?v:0;
   function renderGameProgress(){
     const valid=!!user && !!gameProgress;
@@ -437,7 +437,7 @@
     show('playerAccount',loggedIn&&authView==='default');
     show('recoverAccount',authView==='request');
     show('resetAccount',authView==='reset'&&recoveryVerified);
-    el('headerName').textContent=loggedIn?(profile?.nickname||'Hráč'):'Host';
+    el('headerName').textContent=loggedIn?(profile?.nickname||(window.FOXEY_I18N?.t('Hráč')||'Hráč')):(window.FOXEY_I18N?.t('Host')||'Host');
     if(loggedIn)showAvatar(profile?.avatar_id||'fox',el('headerAvatar'));
     else el('headerAvatar').textContent='🎮';
     el('connectionStatus').textContent=loggedIn?'● Přihlášen':'○ Režim hosta';
@@ -453,7 +453,7 @@
     el('signOut').disabled=busy;
     if(loggedIn){
       showAvatar(profile?.avatar_id||'fox',el('profileAvatar'));
-      el('profileName').textContent=profile?.nickname||'Hráč FOXEY Arcade';
+      el('profileName').textContent=profile?.nickname||(window.FOXEY_I18N?.t('Hráč FOXEY Arcade')||'Hráč FOXEY Arcade');
       el('profileEmail').textContent=user.email||'';
       el('nickname').value=profile?.nickname||'';
       el('avatar').value=profile?.avatar_id||'fox';
@@ -674,6 +674,22 @@
   el('launchChallenge').addEventListener('click',openChallengeInGame);
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
+  // Shared locale is independent of authentication, wallets and game saves.
+  el('arcadeLanguage').addEventListener('change',event=>{
+    window.FOXEY_I18N?.setLocale(event.target.value);
+  });
+  window.addEventListener('foxey-arcade:locale-changed',event=>{
+    if(!['cs','en'].includes(event.detail?.locale))return;
+    render(); // Re-render locale-sensitive numbers and statuses, never user data.
+    const frame=el('gameFrame');
+    if(frame.getAttribute('src')&&frame.contentWindow?.postMessage){
+      frame.contentWindow.postMessage({
+        type:'foxey-arcade:locale-changed',
+        locale:event.detail.locale
+      },location.origin);
+    }
+    window.FOXEY_I18N?.schedule();
+  });
   el('authForm').addEventListener('submit',authenticate);
   el('googleAuthButton').addEventListener('click',()=>{void authenticateWithGoogle();});
   el('forgotPassword').addEventListener('click',()=>setAuthView('request'));
@@ -697,6 +713,11 @@
   });
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin || event.source!==el('gameFrame').contentWindow)return;
+    if(event.data?.type==='foxey-arcade:locale-changed'){
+      if(['cs','en'].includes(event.data.locale))
+        window.FOXEY_I18N?.setLocale(event.data.locale);
+      return;
+    }
     if(event.data?.type!=='foxey-arcade:gtg-cloud-synced')return;
     if(!user || event.data.userId!==user.id)return;
     // Trust the verified account and Supabase RLS, never numbers from postMessage.

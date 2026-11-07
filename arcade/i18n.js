@@ -1,0 +1,385 @@
+/* FOXEY Arcade bilingual localization (client-only, no external service).
+ * Czech source strings remain the fallback; only UI text is translated.
+ * Never translate player-entered values, game data or HTML markup. */
+(() => {
+  'use strict';
+  const KEY='foxey.arcade.locale.v1';
+  const EN=Object.freeze({
+  "FOXEY Arcade — herní domov": "FOXEY Arcade — Gaming hub",
+  "Jeden účet. Spousta her.": "One account. Lots of games.",
+  "Načítám účet…": "Loading account…",
+  "Host": "Guest",
+  "Domů": "Home",
+  "Hry": "Games",
+  "Obchod": "Shop",
+  "Výzvy": "Challenges",
+  "Komunita": "Community",
+  "Profil": "Profile",
+  "Nastavení": "Settings",
+  "VÍTEJ V NOVÉM HERNÍM SVĚTĚ": "WELCOME TO A NEW GAMING WORLD",
+  "Hry jsou lepší": "Games are better",
+  "společně.": "together.",
+  "Jeden profil, společné odměny a postupně stále více miniher. Začínáme Guess the Game!": "One profile, shared rewards, and more mini-games on the way. Starting with Guess the Game!",
+  "🎮 Prozkoumat hry": "🎮 Explore games",
+  "👤 Můj účet": "👤 My account",
+  "GLOBÁLNÍ PROFIL": "GLOBAL PROFILE",
+  "Upravit profil": "Edit profile",
+  "✨ Globální XP": "✨ Global XP",
+  "🎖️ Globální level": "🎖️ Global level",
+  "💎 Společné krystaly": "💎 Shared crystals",
+  "👑 Společné korunky": "👑 Shared crowns",
+  "Globální XP patří celé Arcade. Krystaly a korunky jsou jediné společné zůstatky pro všechny minihry. Připisování globálních XP za hraní připravujeme.": "Global XP belongs to Arcade as a whole. Crystals and crowns are shared across all mini-games. Earning global XP through play is coming later.",
+  "TVŮJ CLOUDOVÝ POSTUP": "YOUR CLOUD PROGRESS",
+  "↻ Aktualizovat": "↻ Refresh",
+  "Přihlas se, aby se načetly statistiky.": "Sign in to load your stats.",
+  "🎖️ Level": "🎖️ Level",
+  "💎 Krystaly": "💎 Crystals",
+  "👑 Korunky": "👑 Crowns",
+  "🎮 Kvízy": "🎮 Quizzes",
+  "XP, level a rekordy jsou pouze pro Guess the Game. Krystaly a korunky najdeš v jedné společné peněžence nahoře.": "XP, level, and records belong only to Guess the Game. Crystals and crowns are in your shared wallet above.",
+  "Tvůj herní domov": "Your gaming home",
+  "Základ platformy • vývojová verze": "Platform foundation • development build",
+  "Jeden účet": "One account",
+  "Přihlášení platí pro FOXEY Arcade. Používáme stejné Supabase účty jako v testovací Guess the Game.": "Your sign-in works across FOXEY Arcade. We use the same Supabase accounts as the Guess the Game beta.",
+  "Společná peněženka": "Shared wallet",
+  "Krystaly a korunky jsou společné pro všechny minihry. V hlavním obchodě kupuješ motivy a otvíráš truhly.": "Crystals and crowns are shared across mini-games. Buy themes and open chests in the main shop.",
+  "Přátelé, soukromé zprávy a společná lobby přijdou postupně. Zatím je chat vypnutý.": "Friends, private messages, and shared lobbies are coming later. Chat is currently disabled.",
+  "ARKÁDA": "ARCADE",
+  "Vyber si hru": "Choose a game",
+  "Další hry připravujeme": "More games coming soon",
+  "Hratelné": "Playable",
+  "Hádej videohry, sbírej odměny a vyzvi kamaráda. Naše první minihra.": "Guess video games, earn rewards, and challenge friends. Our first mini-game.",
+  "▶ Hrát v FOXEY Arcade": "▶ Play in FOXEY Arcade",
+  "Hraješ uvnitř FOXEY Arcade. Pokud jsi přihlášený, načte se tvůj cloudový postup z testovací Guess the Game. Starší lokální uložené pozice se automaticky nepřenášejí.": "Play inside FOXEY Arcade. If signed in, your Guess the Game beta cloud progress loads. Older local saves do not transfer automatically.",
+  "Otevřít původní stabilní verzi ↗": "Open the original stable version ↗",
+  "Připravujeme": "Coming soon",
+  "Jak dobře znáš internetové memy?": "How well do you know internet memes?",
+  "V plánu": "Planned",
+  "Jeden kreslí, ostatní hádají.": "One player draws, others guess.",
+  "Krátké zápasy a bláznivé tratě.": "Quick matches and wild courses.",
+  "← Zpět na hry": "← Back to games",
+  "Cloudové ukládání přes účet FOXEY Arcade": "Cloud saves via your FOXEY Arcade account",
+  "Otevřít samostatně ↗": "Open separately ↗",
+  "Používáme testovací verzi Guess the Game se synchronizací účtu. Ve hře zatím zůstává i stará správa účtu; přesuneme ji až po dokončení centrální správy v Arcade.": "This is the Guess the Game beta with account syncing. The game still has its older account controls; we'll move them after Arcade account management is finished.",
+  "JEDEN OBCHOD PRO VŠECHNY HRY": "ONE SHOP FOR ALL GAMES",
+  "🛍️ Obchod FOXEY Arcade": "🛍️ FOXEY Arcade Shop",
+  "Spravuj motivy, utrácej společné krystaly a korunky a otevírej truhly. Všechny odměny patří tvému účtu.": "Manage themes, spend shared crystals and crowns, and open chests. All rewards belong to your account.",
+  "Přihlas se pro načtení peněženky.": "Sign in to load your wallet.",
+  "🎁 Truhly zdarma": "🎁 Free chests",
+  "🎨 Motivy Guess the Game": "🎨 Guess the Game themes",
+  "Platí pro tvůj účet": "Applies to your account",
+  "Výchozí motiv.": "Default theme.",
+  "Načítání…": "Loading…",
+  "35 krystalů 💎": "35 crystals 💎",
+  "20 korunek 👑": "20 crowns 👑",
+  "50 krystalů 💎": "50 crystals 💎",
+  "🎁 Truhly 2.0": "🎁 Chests 2.0",
+  "Nové avatary, bez duplicit": "New avatars, no duplicates",
+  "BĚŽNÁ": "COMMON",
+  "Pixelová truhla": "Pixel Chest",
+  "Jeden ze tří avatarů: Pixel Fox, Neon Ghost nebo Space Cat. Každý dosud nezískaný má stejnou šanci.": "One of three avatars: Pixel Fox, Neon Ghost, or Space Cat. Each unowned avatar has an equal chance.",
+  "nebo 1 truhla zdarma": "or 1 free chest",
+  "Otevřít běžnou": "Open common chest",
+  "EPICKÁ": "EPIC",
+  "Kybernetická truhla": "Cyber Chest",
+  "Jeden ze dvou epických avatarů: Cyber Fox nebo Arcade Dragon. Každý nezískaný má stejnou šanci.": "One of two epic avatars: Cyber Fox or Arcade Dragon. Each unowned avatar has an equal chance.",
+  "krystalů": "crystals",
+  "Otevřít epickou": "Open epic chest",
+  "NOVÁ ODMĚNA": "NEW REWARD",
+  "Nový avatar": "New avatar",
+  "Přidáno do inventáře.": "Added to inventory.",
+  "Truhly dávají pouze kosmetické předměty, nikoliv prémiové korunky. V každé truhle se losuje rovnoměrně jen z dosud neodemčených avatarů. Kompletní sbírku už znovu neplatíš. Skutečné peníze za náhodné odměny nepřijímáme.": "Chests contain cosmetic items only, never premium crowns. All unowned avatars in a chest are equally likely. You won't pay again for a completed collection. We do not accept real money for random rewards.",
+  "🦊 Sbírka avatarů": "🦊 Avatar Collection",
+  "Načítám inventář…": "Loading inventory…",
+  "BĚŽNÝ": "COMMON",
+  "Pixelová liška z herní arkády.": "A pixel fox from the arcade.",
+  "Zamčeno": "Locked",
+  "Duch z neonového světa.": "A ghost from a neon world.",
+  "Kočičí cestovatel vesmírem.": "A feline space traveler.",
+  "EPICKÝ": "EPIC",
+  "Kybernetická liščí maska.": "A cybernetic fox mask.",
+  "Drak strážící herní rekordy.": "A dragon guarding arcade records.",
+  "LEGENDÁRNÍ": "LEGENDARY",
+  "Legendární FOXEY": "Legendary FOXEY",
+  "Jen za herní úspěch. Nikdy v truhle ani za peníze.": "Earned by playing only. Never found in chests or sold for money.",
+  "ODZNAK HRANÍ": "PLAYING BADGE",
+  "Cesta k legendární lišce": "Road to the Legendary Fox",
+  "Dokonči 10 kvízů Guess the Game na svém účtu a legendární avatar si můžeš vyzvednout zdarma.": "Complete 10 Guess the Game quizzes on your account to claim the legendary avatar for free.",
+  "0 / 10 dokončených kvízů": "0 / 10 completed quizzes",
+  "Vyzvednout legendárního avatara": "Claim legendary avatar",
+  "Odměny jsou ve vývojové betě. Nákupy se provádějí na serveru a všechny předměty zůstávají v jednom inventáři FOXEY Arcade. Ochranu herních milníků proti podvádění ještě před veřejným spuštěním posílíme.": "Rewards are in beta. Purchases are processed on the server and items stay in one FOXEY Arcade inventory. We'll strengthen anti-cheat checks before public launch.",
+  "⚔️ Výzvy mezi kamarády": "⚔️ Challenge your friends",
+  "Zkus překonat kamaráda ve stejném kvízu. Výzvy zatím běží přes ověřený online systém Guess the Game — žádné druhé účty ani druhá sada výsledků.": "Beat a friend at the same quiz. Challenges currently use Guess the Game's existing online system — no duplicate accounts or scores.",
+  "Vytvoř výzvu, pošli odkaz kamarádovi a porovnejte první dokončené pokusy. Oba hrajete stejné otázky.": "Create a challenge, share a link, and compare your first completed attempts. You both play the same questions.",
+  "⚔️ Otevřít výzvy ve hře": "⚔️ Open challenges in game",
+  "Výzvy fungují i bez registrace. Výsledek uchovej pomocí odkazu.": "Challenges work even without signing up. Keep your result using the link.",
+  "Historie v Arcade": "Arcade history",
+  "Společná historie výzev, statistiky výher a oznámení budou další etapou. Současné odkazy a výsledky Guess the Game zůstanou funkční.": "Shared challenge history, win stats, and notifications are coming later. Current Guess the Game links and results will keep working.",
+  "KOMUNITA": "COMMUNITY",
+  "Společné hraní": "Play together",
+  "Přátelé": "Friends",
+  "Vyhledávání, žádosti o přátelství a pozvánky do her budou přístupné přes společný účet.": "Find players, send friend requests, and invite friends to games through your shared account.",
+  "Soukromé zprávy, blokování a nahlašování jsou ve vývojovém plánu. Nic se tu zatím neodesílá.": "Private messages, blocking, and reporting are planned. Nothing is sent from here yet.",
+  "JEDEN ÚČET PRO VŠECHNY HRY": "ONE ACCOUNT FOR ALL GAMES",
+  "Hráčský profil": "Player profile",
+  "Přihlásit se": "Sign in",
+  "Vytvořit účet": "Create account",
+  "Heslo": "Password",
+  "🔑 Zapomenuté heslo?": "🔑 Forgot password?",
+  "nebo": "or",
+  "Pokračovat přes Google": "Continue with Google",
+  "Google přihlášení právě nastavujeme.": "Google sign-in is being configured.",
+  "Účet funguje se stejnými přihlašovacími údaji jako naše testovací Guess the Game. Režim hosta nevyžaduje přihlášení.": "Use the same sign-in as the Guess the Game beta. Guest mode does not require an account.",
+  "🔑 Obnova hesla": "🔑 Password recovery",
+  "Zadej e-mail účtu. Pokud k němu existuje účet, dorazí odkaz pro nastavení nového hesla.": "Enter your account email. If an account exists, you'll receive a link to set a new password.",
+  "📧 Poslat odkaz pro obnovu": "📧 Send recovery link",
+  "← Zpět na přihlášení": "← Back to sign in",
+  "🔐 Nastavit nové heslo": "🔐 Set a new password",
+  "Požadavek na obnovu byl ověřen. Zvol nové heslo.": "Your recovery request has been verified. Choose a new password.",
+  "Nové heslo": "New password",
+  "Potvrdit nové heslo": "Confirm new password",
+  "✓ Uložit nové heslo": "✓ Save new password",
+  "Hráč FOXEY Arcade": "FOXEY Arcade player",
+  "Globální úroveň": "Global level",
+  "Hráčská přezdívka": "Player nickname",
+  "3–20 znaků: písmena A–Z, čísla a podtržítko. Přezdívka zatím není veřejně vyhledatelná.": "3–20 characters: letters A–Z, numbers, and underscores. Nicknames aren't publicly searchable yet.",
+  "Společný avatar ve FOXEY Arcade a ve hrách": "Shared avatar across FOXEY Arcade and games",
+  "🦊 Liška": "🦊 Fox",
+  "👽 Mimozemšťan": "👽 Alien",
+  "👑 Koruna": "👑 Crown",
+  "Uložit profil": "Save profile",
+  "🎒 Můj inventář": "🎒 My inventory",
+  "Tvoje vlastněné avatary. Kliknutím je nastavíš pro celý účet i Guess the Game.": "Your owned avatars. Click to equip them for your entire account and Guess the Game.",
+  "🎮 Vlastní postup Guess the Game": "🎮 My Guess the Game progress",
+  "Načítám postup…": "Loading progress…",
+  "↻ Obnovit": "↻ Reload",
+  "XP a level patří jen Guess the Game. Společná peněženka: 💎": "XP and level are Guess the Game only. Shared wallet: 💎",
+  "Další minihry": "More mini-games",
+  "😂 Guess the Meme · 🎨 Draw & Guess · ⛳ Mini Golf — každá bude mít své vlastní XP, level a rekordy.": "😂 Guess the Meme · 🎨 Draw & Guess · ⛳ Mini Golf — each has its own XP, level, and records.",
+  "Odhlásit se": "Sign out",
+  "NASTAVENÍ PLATFORMY": "PLATFORM SETTINGS",
+  "O FOXEY Arcade": "About FOXEY Arcade",
+  "Správa dat": "Data management",
+  "Zde později přibude záloha a smazání postupu jednotlivých her, smazání veškerého postupu a úplné smazání účtu — vždy s potvrzením.": "Backups, deleting individual game progress, deleting all progress, and deleting your account are coming later — always with confirmation.",
+  "Aktuální fáze": "Current stage",
+  "První centrální aplikace. Přihlašování a osobní profil jsou propojené se stávajícím Supabase projektem. Společná peněženka, komunitní funkce a integrace her jsou zatím ve vývoji.": "First central app. Sign-in and profiles use the existing Supabase project. Shared wallets, community features, and game integrations are still in development.",
+  "© FOXEY Arcade · Testovací základ · Současné Guess the Game zůstává samostatně funkční": "© FOXEY Arcade · Beta foundation · The existing Guess the Game remains available",
+  "tvuj@email.cz": "your@email.com",
+  "Nejméně 8 znaků": "At least 8 characters",
+  "Například FOXEY_CZ": "For example FOXEY_CZ",
+  "FOXEY Arcade – domů": "FOXEY Arcade – home",
+  "Globální účet FOXEY Arcade": "Global FOXEY Arcade account",
+  "Globální XP FOXEY Arcade": "FOXEY Arcade global XP",
+  "Globální level FOXEY Arcade": "FOXEY Arcade global level",
+  "Společné krystaly": "Shared crystals",
+  "Společné korunky": "Shared crowns",
+  "Hlavní navigace": "Main navigation",
+  "Globální profil FOXEY Arcade": "FOXEY Arcade global profile",
+  "Aktuální postup v Guess the Game": "Current Guess the Game progress",
+  "Znovu načíst z cloudu": "Reload from cloud",
+  "Guess the Game – vestavěná hra": "Guess the Game – embedded game",
+  "Inventář odměn": "Reward inventory",
+  "Přihlas se": "Sign in",
+  "✓ Používáš": "✓ Equipped",
+  "Použít": "Equip",
+  "🔒 Neodemčeno": "🔒 Locked",
+  "avatarů": "avatars",
+  "avatarů v inventáři": "avatars in inventory",
+  "🏆 Legendární avatar je ve tvém inventáři": "🏆 Legendary avatar is in your inventory",
+  "dokončených kvízů": "completed quizzes",
+  "✓ Odemčeno": "✓ Unlocked",
+  "🏆 Vyzvednout zdarma": "🏆 Claim for free",
+  "🔒 Vyžaduje 10 kvízů": "🔒 Requires 10 quizzes",
+  "Přihlas se, abys mohl nakupovat a používat společné odměny.": "Sign in to shop and use shared rewards.",
+  "☁️ Načítám společnou peněženku…": "☁️ Loading shared wallet…",
+  "⚠️ Peněženku se nepodařilo načíst. Zkus Aktualizovat.": "⚠️ Couldn't load wallet. Try Refresh.",
+  "✅ Jedna společná peněženka pro všechny hry.": "✅ One shared wallet for all games.",
+  "☁️ Peněženka zatím není načtená.": "☁️ Wallet not loaded yet.",
+  "✓ Běžná sbírka kompletní": "✓ Common collection complete",
+  "🎁 Otevřít zdarma": "🎁 Open for free",
+  "🎁 Otevřít za 100 💎": "🎁 Open for 100 💎",
+  "✓ Epická sbírka kompletní": "✓ Epic collection complete",
+  "💜 Otevřít za 300 💎": "💜 Open for 300 💎",
+  "Použít motiv": "Apply theme",
+  "Koupit za 35 💎": "Buy for 35 💎",
+  "Koupit za 20 👑": "Buy for 20 👑",
+  "Koupit za 50 💎": "Buy for 50 💎",
+  "⚠️ Avatar se nepodařilo nastavit.": "⚠️ Couldn't equip avatar.",
+  "🏆 Legendární FOXEY odemčen! Najdeš ho v inventáři.": "🏆 Legendary FOXEY unlocked! Find it in your inventory.",
+  "🔒 Je potřeba 10 dokončených kvízů.": "🔒 You need 10 completed quizzes.",
+  "⚠️ Odměnu se nepodařilo vyzvednout.": "⚠️ Couldn't claim the reward.",
+  "🎁 Otevírám truhlu…": "🎁 Opening chest…",
+  "🔄 Provádím změnu motivu…": "🔄 Changing theme…",
+  "EPICKÁ ODMĚNA": "EPIC REWARD",
+  "NOVÝ AVATAR": "NEW AVATAR",
+  "✅ Motiv byl úspěšně vybrán.": "✅ Theme successfully selected.",
+  "Nemáš dost krystalů.": "Not enough crystals.",
+  "Tuto sbírku už máš kompletní.": "You have already completed this collection.",
+  "Zkus se znovu přihlásit.": "Sign in again.",
+  "Operace se nezdařila. Zkus ji zopakovat.": "Operation failed. Please try again.",
+  "Přihlas se pro načtení cloudového postupu.": "Sign in to load cloud progress.",
+  "☁️ Načítám postup z cloudu…": "☁️ Loading progress from cloud…",
+  "⚠️ Postup se nepodařilo načíst. Zkus Aktualizovat.": "⚠️ Couldn't load progress. Try Refresh.",
+  "☁️ K tomuto účtu zatím nemáme cloudový postup Guess the Game.": "☁️ No Guess the Game cloud progress for this account yet.",
+  "✅ Aktuální hodnoty z cloudového postupu Guess the Game.": "✅ Current Guess the Game cloud progress.",
+  "☁️ Cloudový postup není načtený.": "☁️ Cloud progress not loaded.",
+  "⚔️ Otevírám výzvy v Guess the Game…": "⚔️ Opening challenges in Guess the Game…",
+  "✅ Výzvy jsou otevřené ve hře.": "✅ Challenges are open in game.",
+  "⚠️ Otevři ve hře tlačítko „Výzva kamarádovi“.": "⚠️ Open “Challenge a friend” in game.",
+  "Hráč": "Player",
+  "● Přihlášen": "● Signed in",
+  "○ Režim hosta": "○ Guest mode",
+  "Použij stejný ověřený e-mail Google jako u stávajícího účtu, aby se mohly propojit. Jiné e-maily mohou vytvořit nový profil.": "Use the same verified Google email as your existing account to link them. A different email may create a new profile.",
+  "Google přihlášení zatím není aktivované. Nejdřív propojíme Google Cloud se Supabase.": "Google sign-in isn't active yet. We must connect Google Cloud to Supabase first.",
+  "⚠️ Zkontroluj e-mail.": "⚠️ Check your email address.",
+  "⚠️ Obnova hesla potřebuje zabezpečenou HTTPS stránku.": "⚠️ Password recovery requires a secure HTTPS page.",
+  "📧 Odesílám odkaz pro obnovu…": "📧 Sending recovery link…",
+  "📧 Pokud k e-mailu existuje účet, přijde ti odkaz. Zkontroluj i spam. Platnost odkazu je omezená.": "📧 If this email has an account, a recovery link will arrive. Check spam too. The link expires.",
+  "⚠️ Příliš mnoho pokusů. Zkus to později.": "⚠️ Too many attempts. Try again later.",
+  "⚠️ Odeslání se nezdařilo. Zkontroluj připojení a nastavení e-mailů.": "⚠️ Couldn't send the email. Check your connection and email settings.",
+  "⚠️ Heslo musí mít 8–128 znaků.": "⚠️ Password must be 8–128 characters.",
+  "⚠️ Hesla se neshodují.": "⚠️ Passwords do not match.",
+  "🔐 Ukládám nové heslo…": "🔐 Saving your new password…",
+  "✅ Heslo změněno. Přihlas se novým heslem.": "✅ Password changed. Sign in with your new password.",
+  "⚠️ Heslo se nepodařilo změnit. Ověř platnost odkazu a zkus to znovu.": "⚠️ Couldn't change password. Check the link and try again.",
+  "⚠️ Účet je přihlášený, ale profil se nyní nepodařilo načíst. Zkus obnovit stránku.": "⚠️ Signed in, but couldn't load the profile. Refresh the page.",
+  "⚠️ Nepodařilo se ověřit přihlášení. Zkontroluj internet.": "⚠️ Couldn't verify sign-in. Check your connection.",
+  "🔐 Přesměrovávám na Google…": "🔐 Redirecting to Google…",
+  "⚠️ Přihlášení Googlem se nepodařilo spustit. Zkontroluj nastavení Google OAuth.": "⚠️ Couldn't start Google sign-in. Check Google OAuth settings.",
+  "⚠️ Zkontroluj e-mail a heslo (8–128 znaků).": "⚠️ Check email and password (8–128 characters).",
+  "⚠️ Pro potvrzení registrace spusť aplikaci přes HTTP/HTTPS, ne jako soubor.": "⚠️ Sign-up confirmation requires HTTP/HTTPS, not a local file.",
+  "🔄 Ověřuji účet…": "🔄 Checking account…",
+  "✅ Úspěšně přihlášeno.": "✅ Signed in successfully.",
+  "📧 Zkontroluj e-mail a potvrď účet. Odkaz potřebuje povolenou návratovou adresu v Supabase.": "📧 Check your email to confirm your account. Supabase must allow the return URL.",
+  "⚠️ Přezdívka musí mít 3–20 znaků (A–Z, 0–9, _).": "⚠️ Nickname must be 3–20 characters (A–Z, 0–9, _).",
+  "🔄 Ukládám profil…": "🔄 Saving profile…",
+  "✅ Profil FOXEY Arcade uložený.": "✅ FOXEY Arcade profile saved.",
+  "⚠️ Tuhle přezdívku už někdo používá.": "⚠️ This nickname is already taken.",
+  "⚠️ Profil se nepodařilo uložit. Zkus to znovu.": "⚠️ Couldn't save the profile. Try again.",
+  "🎮 Odhlášeno. Můžeš hrát jako host.": "🎮 Signed out. You can play as a guest.",
+  "⚠️ Odhlášení se nezdařilo.": "⚠️ Sign-out failed.",
+  "⚠️ Offline": "⚠️ Offline",
+  "⚠️ Nepodařilo se načíst přihlášení. Zkontroluj připojení a obnov stránku.": "⚠️ Couldn't load authentication. Check your connection and refresh.",
+  "🔐 Odkaz ověřen. Nastav si nové heslo.": "🔐 Link verified. Choose a new password.",
+  "V inventáři • epická sbírka": "In inventory • epic collection",
+  "V inventáři • běžná sbírka": "In inventory • common collection",
+  "🌍 Jazyk / Language": "🌍 Language / Jazyk",
+  "Jazyk rozhraní": "Interface language",
+  "Zvolený jazyk platí pro launcher i vestavěnou Guess the Game. Změní se okamžitě a zůstane uložený v tomto prohlížeči.": "The selected language applies to the launcher and embedded Guess the Game. Changes are instant and saved in this browser.",
+  "FOXEY Arcade — jeden účet, více her, společná komunita.": "FOXEY Arcade — one account, more games, one community.",
+  "Obnova hesla – FOXEY Arcade": "Password recovery – FOXEY Arcade",
+  "Ověřuji obnovovací odkaz…": "Verifying recovery link…",
+  "← Zpět na přihlášení / vyžádat nový odkaz": "← Back to sign in / request another link",
+  "⚠️ Odkaz je neplatný nebo vypršel. Vrať se k přihlášení a požádej o nový.": "⚠️ The link is invalid or expired. Return to sign in and request a new one.",
+  "⚠️ Přihlášení teď není dostupné. Zkus stránku znovu načíst.": "⚠️ Authentication is unavailable. Try reloading the page.",
+  "✅ Odkaz ověřen. Teď si zvol nové heslo.": "✅ Link verified. Choose a new password.",
+  "⚠️ Obnovovací odkaz se nepodařilo ověřit. Vyžádej si nový odkaz v přihlašování.": "⚠️ Couldn't verify the recovery link. Request another one from sign in.",
+  "✅ Heslo bylo změněno. Nyní se přihlas novým heslem.": "✅ Your password was changed. Sign in with your new password.",
+  "→ Přejít na přihlášení": "→ Go to sign in",
+  "✅ Heslo bylo změněno. Pro bezpečnost se odhlas a přihlas novým heslem.": "✅ Your password changed. For security, sign out and use your new password.",
+  "⚠️ Heslo se nepodařilo změnit. Zkontroluj odkaz a zkus to znovu.": "⚠️ Couldn't change your password. Check the link and try again.",
+  "Liška": "Fox",
+  "Mimozemšťan": "Alien",
+  "Koruna": "Crown"
+});
+  const supported=new Set(['cs','en']);
+  const readPreferred=()=>{
+    try{const v=localStorage.getItem(KEY);if(supported.has(v))return v;}catch(_){}
+    return String(navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en';
+  };
+  let locale=readPreferred();
+  // Make the launcher's initial browser-language choice visible to games,
+  // even before the player changes the preference manually.
+  try{
+    if(!supported.has(localStorage.getItem(KEY)))localStorage.setItem(KEY,locale);
+  }catch(_){} 
+  const originalText=new WeakMap();
+  const sourceStrings=new WeakMap();
+  const translateValue=(text)=>{
+    const tr=EN[text];
+    if(tr)return tr;
+    let match=text.match(/^(\d+) avatarů v inventáři$/);
+    if(match)return match[1]+' avatars in inventory';
+    match=text.match(/^(\d+) avatarů$/);
+    if(match)return match[1]+' avatars';
+    match=text.match(/^(\d+) \/ 10 dokončených kvízů$/);
+    if(match)return match[1]+' / 10 completed quizzes';
+    if(text.startsWith('✅ ')&&text.endsWith(' je tvůj aktuální avatar.'))
+      return '✅ '+text.slice(2,-' je tvůj aktuální avatar.'.length).trim()+' is your current avatar.';
+    if(text.startsWith('🎉 Odemčen avatar ')&&text.endsWith('!'))
+      return '🎉 Avatar '+text.slice('🎉 Odemčen avatar '.length,-1)+' unlocked!';
+    return text;
+  };
+  const translateNode=node=>{
+    if(!node.parentElement||node.parentElement.closest('script,style,[data-no-i18n]'))return;
+    const current=node.nodeValue;
+    let state=originalText.get(node);
+    if(!state||current!==state.rendered)state={source:current,rendered:current};
+    const trimmed=state.source.trim();
+    const next=trimmed&&locale==='en'
+      ?state.source.replace(trimmed,translateValue(trimmed)):state.source;
+    state.rendered=next;
+    originalText.set(node,state);
+    if(next!==current)node.nodeValue=next;
+  };
+  const attrs=['title','aria-label','placeholder','content'];
+  const translateAttrs=node=>{
+    if(node.closest('script,style,[data-no-i18n]'))return;
+    if(!node.hasAttributes?.())return;
+    let states=sourceStrings.get(node)||{};
+    for(const attr of attrs){
+      if(attr==='content'&&!(node.matches?.('meta[name="description"]')))continue;
+      if(!node.hasAttribute(attr))continue;
+      const current=node.getAttribute(attr),state=states[attr];
+      const source=state&&current===state.rendered?state.source:current;
+      const next=locale==='en'?translateValue(source):source;
+      states[attr]={source,rendered:next};
+      if(next!==current)node.setAttribute(attr,next);
+    }
+    sourceStrings.set(node,states);
+  };
+  let applying=false;
+  const apply=()=>{
+    if(applying)return;
+    applying=true;
+    try{
+      document.documentElement.lang=locale;
+      for(const source of ['FOXEY Arcade — herní domov','Obnova hesla – FOXEY Arcade']){
+        if(document.title===source||document.title===EN[source]){
+          document.title=locale==='en'?EN[source]:source;
+          break;
+        }
+      }
+      const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+      let node;
+      while((node=tw.nextNode()))translateNode(node);
+      document.querySelectorAll('[title],[aria-label],[placeholder],meta[name="description"]').forEach(translateAttrs);
+      const picker=document.getElementById('arcadeLanguage');
+      if(picker&&picker.value!==locale)picker.value=locale;
+    }finally{applying=false;}
+  };
+  let scheduled=false;
+  const schedule=()=>{
+    if(scheduled)return;
+    scheduled=true;
+    queueMicrotask(()=>{scheduled=false;apply();});
+  };
+  const setLocale=(next)=>{
+    if(!supported.has(next)||next===locale)return;
+    locale=next;
+    try{localStorage.setItem(KEY,next);}catch(_){}
+    apply();
+    window.dispatchEvent(new CustomEvent('foxey-arcade:locale-changed',{detail:{locale:next}}));
+  };
+  const t=(cs)=>locale==='en'?translateValue(cs):cs;
+  window.FOXEY_I18N=Object.freeze({getLocale:()=>locale,setLocale,apply,schedule,t});
+  if(typeof MutationObserver==='function'){
+    const observer=new MutationObserver(schedule);
+    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,
+      attributeFilter:['title','aria-label','placeholder']});
+  }
+  window.addEventListener('storage',event=>{
+    if(event.key===KEY&&supported.has(event.newValue))setLocale(event.newValue);
+  });
+  apply();
+})();

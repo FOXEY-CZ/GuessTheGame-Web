@@ -159,3 +159,10 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
 .google-oauth{display:flex;align-items:center;justify-content:center;gap:11px;min-height:44px}
 .google-symbol{font-weight:800;font-family:Arial,sans-serif;font-size:19px;color:#f0b443}
 .google-oauth:disabled{opacity:.56;cursor:not-allowed}
+
+/* Language preference is shared with the embedded game, not with auth data. */
+.language-settings{display:grid;gap:10px;margin-bottom:16px;max-width:670px}
+.language-settings h2,.language-settings p{margin:0}
+.language-settings label{color:var(--muted);font-weight:700}
+.language-settings select{width:min(100%,320px);padding:12px;border-radius:12px;background:#10192b;color:var(--text);border:1px solid var(--stroke);font:inherit}
+.language-settings select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
