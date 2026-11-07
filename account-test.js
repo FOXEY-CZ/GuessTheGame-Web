@@ -235,7 +235,13 @@
     }
     show('authFirstChoice',!!user && firstChoice);
     show('authConflict',!!user && !!conflict);
-    el('authSyncNow').disabled = busy || !state || !!conflict || firstChoice;
+    // The normal sync cannot overwrite diverged saves. Keep its control useful
+    // by turning it into a safe route to the explicit conflict choices.
+    const syncNowButton=el('authSyncNow');
+    syncNowButton.disabled=busy || !state || firstChoice || deletionInProgress;
+    syncNowButton.textContent=conflict
+      ? msg('⚠️ VYŘEŠIT KONFLIKT SAVŮ','⚠️ RESOLVE SAVE CONFLICT')
+      : msg('🔄 SYNCHRONIZOVAT NYNÍ','🔄 SYNC NOW');
     for(const id of ['authImportGuest','authStartFresh','authChooseCloud','authChooseLocal','authLogout'])
       el(id).disabled=busy || deletionInProgress;
     el('authSubmit').disabled=busy || authChecking;
@@ -841,7 +847,18 @@
   el('authForgotPassword').addEventListener('click',()=>chooseForm('reset'));
   el('authRecoverySave').addEventListener('click',saveRecoveredPassword);
   el('authRecoveryCancel').addEventListener('click',cancelRecovery);
-  el('authSyncNow').addEventListener('click',()=>syncNow());
+  function onSyncButtonClick(){
+    if(conflict){
+      // This action must NEVER pick a winner or send a cloud write.
+      setFeedback(
+        '⚠️ Synchronizace čeká na výběr savu. Nejdřív ulož zálohu, potom níže zvol CLOUD nebo TOTO ZAŘÍZENÍ a volbu potvrď dvakrát.',
+        '⚠️ Sync is waiting for a save choice. Download a backup first, then select CLOUD or THIS DEVICE below and confirm twice.');
+      el('authConflict').scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    void syncNow();
+  }
+  el('authSyncNow').addEventListener('click',onSyncButtonClick);
   el('authExportBackup').addEventListener('click',exportProgressBackup);
   el('authImportGuest').addEventListener('click',()=>createAccountSave('guest'));
   el('authStartFresh').addEventListener('click',()=>createAccountSave('fresh'));
