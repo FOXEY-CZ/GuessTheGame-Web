@@ -31,6 +31,7 @@
   let client = null, user = null, state = null, busy = false, applying = false;
   let formMode = '', firstChoice = false, conflict = null, conflictArmed = '';
   let timer = null, feedback = '', deletionInProgress = false;
+  let syncRequestedWhileBusy = false;
   let authChecking = true, legacyPrepared = null, mergePrepared = null;
   let recoveryActive = false, recoveryBusy = false;
   if(!game || !cfg || !window.supabase || typeof window.supabase.createClient !== 'function'){
@@ -483,6 +484,7 @@
     }
     captureGuest();
     user=nextUser;firstChoice=false;state=null;conflict=null;conflictArmed='';formMode='';mergePrepared=null;
+    syncRequestedWhileBusy=false;
     // Separate, read-only account avatar. Does not modify GTG save data.
     game.setArcadeAvatar(null);
     game.setArcadeWallet(null);
@@ -558,7 +560,15 @@
       setFeedback('⚠️ Obě zařízení změnila postup. Vyber verzi k zachování.','⚠️ Both devices changed progress. Choose which one to keep.');
     }catch(e){
       setFeedback('⚠️ Synchronizace selhala. Místní data zůstávají.','⚠️ Sync failed. Local progress is preserved.');
-    }finally{busy=false;render();}
+    }finally{
+      busy=false;render();
+      // Edits made while a network write was pending must be scheduled after
+      // the acknowledged revision, not silently wait for the next minute.
+      if(syncRequestedWhileBusy && user?.id===identity && state && !conflict){
+        syncRequestedWhileBusy=false;
+        schedule();
+      }
+    }
   }
   async function resolveConflict(mode){
     if(!user||!conflict||busy)return;
@@ -572,6 +582,17 @@
       const latest=await readRemote();
       if(!latest)throw Error('missing');
       if(latest.revision!==conflict.revision)throw Error('changed');
+      if(!isProfile(latest.profile))throw Error('bad_cloud');
+      const localBefore=game.getProfile();
+      if(!isProfile(localBefore))throw Error('bad_local');
+      // Preserve BOTH sides on this device before replacing either version.
+      // A full localStorage quota stops the destructive resolution entirely.
+      const backupKey=accountKey(user.id)+'.beforeConflict.'+Date.now();
+      const backup={
+        userId:user.id,revision:latest.revision,capturedAt:new Date().toISOString(),
+        local:clone(localBefore),cloud:clone(latest.profile)
+      };
+      if(!store(backupKey,backup))throw Error('backup_unavailable');
       if(mode==='cloud'){
         if(!game.canApply())throw Error('game_in_progress');
         acceptRemote(latest);
@@ -586,10 +607,18 @@
         state={revision:data.revision,base:serial(local),lastSyncedAt:new Date().toISOString()};
         cacheAccount();conflict=null;conflictArmed='';
       }
-      setFeedback('✅ Vybraný postup je uložený.','✅ Selected progress saved.');
+      setFeedback(
+        '✅ Vybraný postup je uložený. Obě původní verze jsou zálohované v tomto prohlížeči.',
+        '✅ Selected progress saved. Both previous versions are backed up in this browser.');
     }catch(e){
       conflict=null;conflictArmed='';
-      setFeedback('⚠️ Postup se mezitím změnil. Zkus synchronizovat znovu.','⚠️ Progress changed. Try syncing again.');
+      setFeedback(
+        e?.message==='backup_unavailable'
+          ?'⚠️ Zálohu nelze uložit. Kvůli ochraně postupu se žádná verze nepřepsala.'
+          :'⚠️ Postup se mezitím změnil. Zkus synchronizovat znovu.',
+        e?.message==='backup_unavailable'
+          ?'⚠️ Could not save backup. Neither progress version was replaced.'
+          :'⚠️ Progress changed. Try syncing again.');
     }finally{busy=false;render();}
   }
   function schedule(){
@@ -599,8 +628,11 @@
   }
   function profileChanged(){
     if(applying || (authChecking && !user))return;
-    if(user){cacheAccount();schedule();}
-    else store(guestKey,game.getProfile());
+    if(user){
+      cacheAccount();
+      if(busy){syncRequestedWhileBusy=true;return;}
+      schedule();
+    }else store(guestKey,game.getProfile());
   }
   function chooseForm(mode){
     formMode=mode;
@@ -712,6 +744,7 @@
       if(error)throw error;
       clearTimeout(timer);
       user=null;state=null;firstChoice=false;conflict=null;conflictArmed='';mergePrepared=null;
+      syncRequestedWhileBusy=false;
       formMode='';busy=false;game.setArcadeAvatar(null);
       game.setArcadeWallet(null);game.setArcadeTheme(null);
       setActiveProfile(load(guestKey) || game.getEmptyProfile());
