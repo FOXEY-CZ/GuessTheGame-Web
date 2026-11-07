@@ -29,7 +29,19 @@
   .panel{background:linear-gradient(160deg,rgba(29,45,81,.96),rgba(13,24,48,.97));border:1px solid var(--edge);box-shadow:0 12px 50px rgba(2,6,20,.35);border-radius:25px;padding:clamp(20px,4vw,38px);margin:18px auto}
   .status{min-height:24px;color:var(--sub);text-align:center;margin:18px auto;line-height:1.5}
   .status.error{color:#ffadbd}.status.ok{color:var(--aqua)}
-  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:25px}
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:12px}
+  .mode-choice{border-radius:19px;border:1px solid #446292;background:#1c3052;padding:16px;display:grid;gap:13px}
+  .mode-choice-head{display:flex;align-items:center;gap:13px;min-width:0}
+  .mode-choice .mode-copy strong{font-size:1.08rem}
+  .mode-choice .mode-copy small{font-size:.83rem;line-height:1.35;color:var(--sub)}
+  .mode-choice-actions{display:flex;flex-wrap:wrap;gap:9px}
+  .mode-choice-actions button{flex:1 1 116px;min-width:0;min-height:45px;padding:10px 8px;font-size:.83rem}
+  .solo-start{background:#263c62;border-color:#6480ac}
+  .solo-continue{background:linear-gradient(115deg,#7465e9,#515bc9);border-color:#a39bf9}
+  .mode-choice-progress{margin:0;color:#b0f1e7;font-size:.79rem;line-height:1.45}
+  .solo-head{margin-top:15px;align-items:center}
+  .solo-head p{margin:0;flex:1 1 170px}
+  .solo-head button{padding:7px 10px;font-size:.77rem;min-height:40px}
   .mode{padding:22px 16px;text-align:left;display:flex;flex-direction:column;gap:9px;background:#1c3052;transition:border-color .15s,transform .15s}
   .mode:hover{border-color:var(--purple);transform:translateY(-2px)}.mode strong{font-size:1.08rem}.mode small{font-size:.82rem;font-weight:500;color:var(--sub)}
   .line{display:flex;align-items:center;justify-content:space-between;gap:12px}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
@@ -115,11 +127,11 @@
   .hero-spark-a{top:14px;left:10px}.hero-spark-b{right:3px;top:41px;color:#b6a0ff}.hero-spark-c{bottom:12px;left:20px;color:var(--aqua)}
   .mode{flex-direction:row;align-items:center;gap:12px;min-width:0;padding:17px 13px}
   .mode-icon{display:grid;place-items:center;flex:0 0 49px;height:49px;border-radius:15px;font-size:1.65rem;background:linear-gradient(135deg,#45558e,#292d68);border:1px solid #7772cf66;box-shadow:inset 0 1px #ffffff1b}
-  .mode[data-mode="mystery"] .mode-icon{background:linear-gradient(135deg,#276b77,#333669)}
-  .mode[data-mode="daily"] .mode-icon{background:linear-gradient(135deg,#69517b,#9b5c54)}
-  .mode[data-mode="easy"] .mode-icon{background:linear-gradient(135deg,#20564e,#2b445f)}
-  .mode[data-mode="medium"] .mode-icon{background:linear-gradient(135deg,#76502e,#5a3a67)}
-  .mode[data-mode="hard"] .mode-icon{background:linear-gradient(135deg,#863b52,#512b54)}
+  .mode-choice[data-mode-card="mystery"] .mode-icon{background:linear-gradient(135deg,#276b77,#333669)}
+  .mode-choice[data-mode-card="daily"] .mode-icon{background:linear-gradient(135deg,#69517b,#9b5c54)}
+  .mode-choice[data-mode-card="easy"] .mode-icon{background:linear-gradient(135deg,#20564e,#2b445f)}
+  .mode-choice[data-mode-card="medium"] .mode-icon{background:linear-gradient(135deg,#76502e,#5a3a67)}
+  .mode-choice[data-mode-card="hard"] .mode-icon{background:linear-gradient(135deg,#863b52,#512b54)}
   .mode-copy{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
   .mode-arrow{font-size:1.55rem;color:var(--aqua);margin-left:auto;opacity:.8}
   .stat .stat-icon{display:block;font-size:1.15rem;margin-bottom:5px;line-height:1.4}
@@ -131,7 +143,7 @@
   .result-art{display:grid;place-items:center;font-size:64px;width:103px;height:103px;margin:0 auto 18px;border-radius:28px;background:linear-gradient(145deg,#39366f,#1b4056);border:1px solid #8a89d479;box-shadow:0 0 32px #6360d333}
   #resultPanel{text-align:center}
   #resultPanel .statgrid{text-align:center}
-  @media(max-width:380px){.mode-icon{flex-basis:43px;height:43px;font-size:1.35rem}.mode{gap:10px;padding:13px 10px}.mode strong{font-size:.96rem}.mode small{font-size:.75rem}.hero-art{width:142px;height:103px;margin:9px auto}.hero-mark{font-size:68px}.questionbox{min-height:175px}}
+  @media(max-width:380px){.mode-icon{flex-basis:43px;height:43px;font-size:1.35rem}.mode-choice{padding:12px}.mode-choice-head{gap:10px}.mode-choice .mode-copy strong{font-size:.99rem}.mode-choice .mode-copy small{font-size:.76rem}.mode-choice-actions button{font-size:.78rem;padding:9px 6px}.hero-art{width:142px;height:103px;margin:9px auto}.hero-mark{font-size:68px}.questionbox{min-height:175px}}
   @media(prefers-reduced-motion:reduce){.mode,.progress>div{transition:none!important}}
 </style>
 </head>
@@ -183,13 +195,38 @@
       <p id="resumeGuideText">Zatím nemáš rozehranou serverovou výzvu. Vytvoř ji níže, odpověz na jednu otázku a potom obnov stránku. Běžné režimy pod tímto panelem nejsou výzvou pro kamaráda.</p>
       <button id="jumpToChallenges" type="button">⚔️ Přejít na serverové výzvy</button>
     </section>
+    <div class="inbox-head solo-head"><p id="soloUpdateStatus" class="async-help" role="status" aria-live="polite">Načítám rozehrané hry…</p><button id="soloRefresh" type="button">🔄 Obnovit</button></div>
     <div class="modes" id="modes">
-      <button class="mode" type="button" data-mode="classic"><span class="mode-icon" aria-hidden="true">⚡</span><span class="mode-copy"><strong>Rychlá hra</strong><small>10 otázek · různé obtížnosti</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
-      <button class="mode" type="button" data-mode="mystery"><span class="mode-icon" aria-hidden="true">🧩</span><span class="mode-copy"><strong>Mystery Mode</strong><small>10 otázek · postupné indicie</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
-      <button class="mode" type="button" data-mode="daily"><span class="mode-icon" aria-hidden="true">📅</span><span class="mode-copy"><strong>Denní výzva</strong><small>5 otázek · serverové zadání</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
-      <button class="mode" type="button" data-mode="easy"><span class="mode-icon" aria-hidden="true">🟢</span><span class="mode-copy"><strong>Nováček</strong><small>10 snadných otázek</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
-      <button class="mode" type="button" data-mode="medium"><span class="mode-icon" aria-hidden="true">🟠</span><span class="mode-copy"><strong>Zkušený hráč</strong><small>10 středních otázek</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
-      <button class="mode" type="button" data-mode="hard"><span class="mode-icon" aria-hidden="true">🔥</span><span class="mode-copy"><strong>Hardcore</strong><small>10 těžkých otázek</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
+      <article class="mode-choice" data-mode-card="classic">
+        <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">⚡</span><span class="mode-copy"><strong id="soloName_classic">Rychlá hra</strong><small id="soloSub_classic">10 otázek · různé obtížnosti</small></span></div>
+        <p class="mode-choice-progress hidden" id="soloProgress_classic" aria-live="polite"></p>
+        <div class="mode-choice-actions"><button class="solo-start" id="soloStart_classic" type="button" data-mode="classic">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_classic" type="button" data-solo-continue="classic">▶️ Pokračovat</button></div>
+      </article>
+      <article class="mode-choice" data-mode-card="mystery">
+        <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">🧩</span><span class="mode-copy"><strong id="soloName_mystery">Mystery Mode</strong><small id="soloSub_mystery">10 otázek · postupné indicie</small></span></div>
+        <p class="mode-choice-progress hidden" id="soloProgress_mystery" aria-live="polite"></p>
+        <div class="mode-choice-actions"><button class="solo-start" id="soloStart_mystery" type="button" data-mode="mystery">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_mystery" type="button" data-solo-continue="mystery">▶️ Pokračovat</button></div>
+      </article>
+      <article class="mode-choice" data-mode-card="daily">
+        <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">📅</span><span class="mode-copy"><strong id="soloName_daily">Denní výzva</strong><small id="soloSub_daily">5 otázek · serverové zadání</small></span></div>
+        <p class="mode-choice-progress hidden" id="soloProgress_daily" aria-live="polite"></p>
+        <div class="mode-choice-actions"><button class="solo-start" id="soloStart_daily" type="button" data-mode="daily">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_daily" type="button" data-solo-continue="daily">▶️ Pokračovat</button></div>
+      </article>
+      <article class="mode-choice" data-mode-card="easy">
+        <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">🟢</span><span class="mode-copy"><strong id="soloName_easy">Nováček</strong><small id="soloSub_easy">10 snadných otázek</small></span></div>
+        <p class="mode-choice-progress hidden" id="soloProgress_easy" aria-live="polite"></p>
+        <div class="mode-choice-actions"><button class="solo-start" id="soloStart_easy" type="button" data-mode="easy">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_easy" type="button" data-solo-continue="easy">▶️ Pokračovat</button></div>
+      </article>
+      <article class="mode-choice" data-mode-card="medium">
+        <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">🟠</span><span class="mode-copy"><strong id="soloName_medium">Zkušený hráč</strong><small id="soloSub_medium">10 středních otázek</small></span></div>
+        <p class="mode-choice-progress hidden" id="soloProgress_medium" aria-live="polite"></p>
+        <div class="mode-choice-actions"><button class="solo-start" id="soloStart_medium" type="button" data-mode="medium">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_medium" type="button" data-solo-continue="medium">▶️ Pokračovat</button></div>
+      </article>
+      <article class="mode-choice" data-mode-card="hard">
+        <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">🔥</span><span class="mode-copy"><strong id="soloName_hard">Hardcore</strong><small id="soloSub_hard">10 těžkých otázek</small></span></div>
+        <p class="mode-choice-progress hidden" id="soloProgress_hard" aria-live="polite"></p>
+        <div class="mode-choice-actions"><button class="solo-start" id="soloStart_hard" type="button" data-mode="hard">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_hard" type="button" data-solo-continue="hard">▶️ Pokračovat</button></div>
+      </article>
     </div>
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
