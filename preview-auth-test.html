@@ -624,7 +624,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   const get = (k, def=null) => {try{const v=localStorage.getItem(KEY+k);return v===null?def:JSON.parse(v);}catch(_){return Object.hasOwn(backup,k)?backup[k]:def;}};
   const set = (k, v) => {backup[k]=v;try{localStorage.setItem(KEY+k,JSON.stringify(v));}catch(_){}};
   const previous = k => {try {const v=localStorage.getItem('gtg.accountTest.legacy.'+k);return v===null?null:JSON.parse(v);}catch(_){return null;}};
-  const blankProfile = () => ({xp:0,played:previous('gamesPlayed')||0,bestScore:previous('bestClassic')||0,totalCorrect:0,bestStreak:0,dailyClaimed:null,dailyBest:null,shards:0,crowns:0,perfectRuns:0,badgeState:{},cosmetics:{themes:["classic"],avatars:["alien"],theme:"classic",avatar:"alien"},freeChests:0,chestsOpened:0,dailyStreak:{lastDay:null,count:0,awardedMilestones:0},dailyPaidDay:null,challengeResults:{}});
+  const blankProfile = () => ({xp:0,played:previous('gamesPlayed')||0,bestScore:previous('bestClassic')||0,totalCorrect:0,bestStreak:0,dailyClaimed:null,dailyBest:null,shards:0,crowns:0,perfectRuns:0,badgeState:{},cosmetics:{themes:["classic"],avatars:["alien"],theme:"classic",avatar:"alien"},freeChests:0,chestsOpened:0,dailyStreak:{lastDay:null,count:0,awardedMilestones:0},dailyPaidDay:null,perfectPaidDay:null,challengeResults:{}});
   let profile = {...blankProfile(),...get('profile',{})};
   // Account avatar is owned by FOXEY Arcade; never written into game saves.
   // Guest/legacy game saves keep their original cosmetics intact.
