@@ -197,7 +197,11 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
 .arcade-notice-sub{font-size:12px;color:#b3c5e7}
 .arcade-notice-score{font-size:14px;color:#d5f6ea;margin:0;line-height:1.5}
 .arcade-notice-actions{display:flex;flex-wrap:wrap;gap:8px}
-.arcade-notice-actions button{flex:1 1 150px;padding:10px;font-size:12px}
+.arcade-notice-actions button,.arcade-notice-actions .arcade-notice-resume{
+  flex:1 1 150px;padding:10px;font-size:12px;min-height:40px;
+  display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+  border-radius:12px;text-align:center
+}
 .arcade-notice-detail{font-size:14px;color:#bdf5df;font-weight:700;line-height:1.55}
 .arcade-notice-empty{font-size:14px;color:#a8b8d4}
 .arcade-notice-copy{width:100%;padding:12px;border-radius:10px;border:1px solid #6b88ab;
