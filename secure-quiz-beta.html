@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101a32">
-<title>FOXEY Arcade · Secure Quiz Beta</title>
+<title>FOXEY Arcade · Guess the Game</title>
 <style>
   :root{color-scheme:dark;--bg:#0b1225;--panel:#152340;--edge:#3b5277;--text:#eef5ff;--sub:#a9b8d4;--aqua:#57e1d5;--purple:#8983ff;--gold:#ffcf80}
   *{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
@@ -170,7 +170,7 @@
     </div>
   </div>
   <div class="hero">
-    <div class="label" id="eyebrow">SERVEROVÁ BETA · BEZ PLATEB</div>
+    <div class="label" id="eyebrow">SERVEROVÝ KVÍZ · ODMĚNY V TESTU</div>
     <div class="hero-art" aria-hidden="true">
       <span class="hero-orbit hero-orbit-a"></span><span class="hero-orbit hero-orbit-b"></span>
       <span class="hero-mark">?</span><span class="hero-spark hero-spark-a">✦</span>
@@ -185,7 +185,7 @@
     <h2 id="bootTitle">🛡️ Spouštím FOXEY Arcade…</h2>
     <p id="bootText" class="lead">Ověřuji přihlášení a připojení k serveru.</p>
     <button id="bootRetry" type="button" class="primary">🔄 Zkusit znovu</button>
-    <p class="lead"><a id="bootArcadeLink" href="./arcade/" target="_top">↩ Přejít do původní FOXEY Arcade</a></p>
+    <p class="lead"><a id="bootArcadeLink" href="./arcade/" target="_top">↩ Přejít na hlavní FOXEY Arcade</a></p>
   </section>
 
   <section id="signIn" class="panel hidden">
@@ -256,7 +256,7 @@
         <button id="checkAsyncChallenge" type="button">🏆 Zkontrolovat výsledek</button>
       </div>
       <p class="async-help" id="asyncLobbyStatus" role="status" aria-live="polite"></p>
-      <p class="async-help"><a id="challengeLink" href="./preview-auth-test.html" target="_blank" rel="noopener noreferrer">↩ Starší offline výzvy v původní FOXEY Arcade</a></p>
+      <p class="async-help"><a id="challengeLink" href="./preview-auth-test.html" target="_blank" rel="noopener noreferrer">↩ Staré výzvy v původní Guess the Game</a></p>
     </section>
     <section id="historySection" class="inbox-box" aria-labelledby="historyTitle">
       <div class="inbox-head">
@@ -327,7 +327,7 @@
     </div>
   </section>
 
-  <div class="footer" id="footer">FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat</div>
+  <div class="footer" id="footer">FOXEY Arcade · Zabezpečená Guess the Game · Odpovědi ověřuje server · Odměny zatím testovací</div>
 </main>
 <div id="historyOverlay" class="history-overlay hidden" role="presentation">
   <div id="historyOverlayShade" class="history-overlay-shade"></div>
@@ -352,7 +352,7 @@
   const langKey='foxey.arcade.locale.v1';
   const tr = {
     cs:{
-      eyebrow:'SERVEROVÁ BETA · BEZ PLATEB',
+      eyebrow:'SERVEROVÝ KVÍZ · ODMĚNY V TESTU',
       title:'Poznáš hru bez nápovědy ze zdrojového kódu?',
       lead:'Otázky i správné odpovědi spravuje server. Prohlížeč dostane jen aktuální zadání a čtyři možnosti.',
       loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
@@ -384,10 +384,10 @@
       platformLeaveConfirm:'Rozehraná partie se ukládá na server. Po návratu můžeš pokračovat od poslední potvrzené akce. Vrátit se na platformu?',
       platformPendingConfirm:'Poslední akce ještě nemusí být potvrzená serverem. Po návratu se načte pouze potvrzený postup. Opravdu odejít?',
       platformWait:'⏳ Počkej, než server dokončí aktuální požadavek.',
-      footer:'FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat',
+      footer:'FOXEY Arcade · Zabezpečená Guess the Game · Odpovědi ověřuje server · Odměny zatím testovací',
       hearts:'Životy',
-      caveat:'🧪 Oddělená beta. Starý offline kvíz stále zveřejňuje původní klíč odpovědí. Ostré výplaty jsou vypnuté.',
-      challenges:'↩ Starší offline výzvy v původní FOXEY Arcade',
+      caveat:'🛡️ Toto je hlavní zabezpečená hra FOXEY Arcade. Původní offline verze i její postup zůstávají dostupné. Získané body jsou zatím testovací; odměny se nepřipisují.',
+      challenges:'↩ Staré výzvy v původní Guess the Game',
       asyncTitle:'⚔️ Soukromé výzvy mezi hráči',
       asyncHelp:'Vytvoř výzvu, odehraj stejných 10 otázek a pošli odkaz kamarádovi. Skóre se odhalí až po obou dohraných partiích. Zatím bez výplat.',
       asyncCreate:'⚔️ Vytvořit serverovou výzvu',asyncLabel:'Odkaz nebo ID výzvy',
@@ -433,11 +433,11 @@
       historyOverlayTitle:'🔔 Moje výzvy',historyOverlayClose:'Zavřít oznámení',
       historyFinishFirst:'🎮 Nejdřív dokonči rozehranou partii, abys nepřišel o její výsledek.',
       bootTitle:'🛡️ Spouštím FOXEY Arcade…',bootText:'Ověřuji přihlášení a připojení k serveru.',
-      bootRetry:'🔄 Zkusit znovu',bootArcadeLink:'↩ Přejít do původní FOXEY Arcade',
+      bootRetry:'🔄 Zkusit znovu',bootArcadeLink:'↩ Přejít na hlavní FOXEY Arcade',
       bootFailed:'⚠️ Spuštění se nezdařilo. Zkus obnovení připojení nebo otevři původní Arcade.'
     },
     en:{
-      eyebrow:'SERVER BETA · NO PAYOUTS',
+      eyebrow:'SERVER QUIZ · REWARDS IN TEST MODE',
       title:'Can you guess the game without reading the answer key?',
       lead:'The server controls questions and answers. Your browser only receives the current prompt and four choices.',
       loginTitle:'Sign in to FOXEY Arcade first',
@@ -469,10 +469,10 @@
       platformLeaveConfirm:'The server saves your progress after each confirmed action. You can continue later. Return to the Arcade platform?',
       platformPendingConfirm:'The last action may not have been confirmed by the server. Only confirmed progress will be restored. Leave anyway?',
       platformWait:'⏳ Please wait for the current server request to finish.',
-      footer:'FOXEY Arcade · Server-first beta · Answers disclosed only after the submitted choice · No payouts',
+      footer:'FOXEY Arcade · Secure Guess the Game · Server-verified answers · Rewards currently test-only',
       hearts:'Lives',
-      caveat:'🧪 Isolated beta. The legacy offline quiz still exposes its original answer key. Real payouts remain disabled.',
-      challenges:'↩ Legacy offline challenges in the original FOXEY Arcade',
+      caveat:'🛡️ This is now the primary secure FOXEY Arcade game. The original offline game and its progress remain available. Scores are test-only; real rewards are not credited yet.',
+      challenges:'↩ Old challenges in the original Guess the Game',
       asyncTitle:'⚔️ Private player challenges',
       asyncHelp:'Create a challenge, play the same 10 questions and send the link to a friend. Scores unlock only after both finish. No payouts yet.',
       asyncCreate:'⚔️ Create secure challenge',asyncLabel:'Challenge link or ID',
@@ -518,7 +518,7 @@
       historyOverlayTitle:'🔔 My challenges',historyOverlayClose:'Close notifications',
       historyFinishFirst:'🎮 Finish the current quiz first so its result is saved.',
       bootTitle:'🛡️ Starting FOXEY Arcade…',bootText:'Checking sign-in and server connection.',
-      bootRetry:'🔄 Try again',bootArcadeLink:'↩ Open the original FOXEY Arcade',
+      bootRetry:'🔄 Try again',bootArcadeLink:'↩ Open the FOXEY Arcade platform',
       bootFailed:'⚠️ Could not start. Retry the connection or open the original Arcade.'
     }
   };
@@ -1045,7 +1045,7 @@
       bell.setAttribute('aria-label',template(T('historyBell'),{n:count}));
       bell.setAttribute('title',template(T('historyBell'),{n:count}));
     }
-    document.title=(count>0?'('+count+') ':'')+'FOXEY Arcade · Secure Quiz Beta';
+    document.title=(count>0?'('+count+') ':'')+'FOXEY Arcade · Guess the Game';
     const notice=count>0?template(T('historyNew'),{n:count}):T('historyClear');
     for(const id of ['historyNotice','historyOverlayNotice']){
       const target=$(id);if(target)target.textContent=notice;
