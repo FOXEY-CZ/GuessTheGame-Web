@@ -82,6 +82,9 @@
       <button class="mode" type="button" data-mode="medium"><strong>⚡ Zkušený hráč</strong><small>10 středních otázek</small></button>
       <button class="mode" type="button" data-mode="hard"><strong>🔥 Hardcore</strong><small>10 těžkých otázek</small></button>
     </div>
+    <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
+      🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
+    </p>
   </section>
 
   <section id="gamePanel" class="panel hidden">
@@ -162,7 +165,8 @@
       noReward:'Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.',
       again:'HRÁT ZNOVU',back:'← ZPĚT DO ARCADE',
       footer:'FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat',
-      hearts:'Životy'
+      hearts:'Životy',
+      caveat:'🧪 Oddělená beta. Starý offline kvíz stále zveřejňuje původní klíč odpovědí. Ostré výplaty jsou vypnuté.'
     },
     en:{
       eyebrow:'SERVER BETA · NO PAYOUTS',
@@ -186,7 +190,8 @@
       noReward:'This security test does not credit XP or currencies to your live profile.',
       again:'PLAY AGAIN',back:'← BACK TO ARCADE',
       footer:'FOXEY Arcade · Server-first beta · Answers disclosed only after the submitted choice · No payouts',
-      hearts:'Lives'
+      hearts:'Lives',
+      caveat:'🧪 Isolated beta. The legacy offline quiz still exposes its original answer key. Real payouts remain disabled.'
     }
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
@@ -211,6 +216,7 @@
       if(key==='hearts'){$('hearts').setAttribute('aria-label',T('hearts'));return;}
       $(id).textContent=T(key);
     });
+    $('legacyCaveat').textContent=T('caveat');
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
