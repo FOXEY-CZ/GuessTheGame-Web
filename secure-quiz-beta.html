@@ -577,7 +577,105 @@
     visible('gamePanel',false);visible('resultPanel',false);
     status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
     renderResumePrompt();
-    if(me)void refreshHistory();
+    if(me){
+      void refreshHistory();
+      void refreshSoloModes();
+    }
+  }
+  function renderSoloModes(){
+    for(const mode of soloModes){
+      const entry=soloProgressByMode[mode];
+      visible('soloContinue_'+mode,!!me&&!!entry);
+      visible('soloProgress_'+mode,!!me&&!!entry);
+      const label=$('soloProgress_'+mode);
+      label.textContent=entry?
+        (entry.finished?T('soloFinishPending'):template(T('soloProgress'),{
+          index:entry.next_index+1,total:entry.question_count,
+          points:entry.score,lives:entry.lives
+        })):'';
+    }
+  }
+  async function refreshSoloModes(){
+    if(!me||!api||soloLoading||navigator.onLine===false)return;
+    soloLoading=true;const uid=me.id;
+    const notice=$('soloUpdateStatus');
+    if(notice)notice.textContent=T('soloLoading');
+    try{
+      const {data,error}=await api.rpc('arcade_secure_singleplayer_in_progress');
+      if(error||data?.ok!==true||data.credited!==false||!Array.isArray(data.items))
+        throw Error(error?.message||'solo_list_failed');
+      if(!me||me.id!==uid)return;
+      const parsed=Object.create(null);
+      for(const entry of data.items){
+        if(!soloModes.includes(entry?.mode)||!uuidPattern.test(entry.run_id)
+          ||!Number.isInteger(entry.next_index)||entry.next_index<0
+          ||!Number.isInteger(entry.question_count)
+          ||entry.question_count!==(entry.mode==='daily'?5:10)
+          ||entry.next_index>entry.question_count
+          ||!Number.isInteger(entry.score)||entry.score<0
+          ||!Number.isInteger(entry.lives)||entry.lives<0||entry.lives>3
+          ||typeof entry.finished!=='boolean')continue;
+        parsed[entry.mode]=entry;
+      }
+      soloProgressByMode=parsed;
+      renderSoloModes();
+      if(notice)notice.textContent=T('soloReady');
+    }catch(err){
+      if(me?.id===uid&&notice)
+        notice.textContent=template(T('soloError'),{error:errorText(err)});
+    }finally{soloLoading=false;}
+  }
+  async function resumeSolo(mode){
+    if(busy||!me||!api||!soloModes.includes(mode))return;
+    if(game&&!game.resultShown){status(T('resumePlaying'),'error');return;}
+    const saved=soloProgressByMode[mode];
+    if(!saved){status(T('soloNoSaved'),'error');void refreshSoloModes();return;}
+    if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
+    lock(true);status(T('soloResuming'));
+    try{
+      const {data,error}=await api.rpc('arcade_secure_singleplayer_resume',{
+        p_run_id:saved.run_id
+      });
+      const total=mode==='daily'?5:10;
+      if(error||data?.ok!==true||data.shadow!==true||data.credited!==false
+        ||data.resumed!==true||data.run_id!==saved.run_id||data.mode!==mode
+        ||!Array.isArray(data.question_ids)||data.question_ids.length!==total
+        ||!data.question_ids.every(id=>typeof id==='string'&&/^s[0-9]{3,}$/.test(id))
+        ||!Array.isArray(data.answers)||!Array.isArray(data.reveals)
+        ||!Number.isInteger(data.next_index)||data.next_index<0||data.next_index>total
+        ||data.answers.length!==data.next_index
+        ||!Number.isSafeInteger(data.score)||data.score<0
+        ||!Number.isSafeInteger(data.correct)||data.correct<0
+        ||!Number.isSafeInteger(data.lives)||data.lives<0||data.lives>3
+        ||typeof data.finished!=='boolean'||typeof data.hint_used!=='boolean')
+        throw Error(error?.message||'invalid_solo_resume_receipt');
+      game={id:data.run_id,ids:data.question_ids.slice(),mode,
+        idx:Math.min(data.next_index,total-1),
+        score:data.score,correct:data.correct,lives:data.lives,
+        answers:data.answers.slice(),finished:data.finished,
+        resultShown:false,challenge:null};
+      current=null;pending=null;
+      visible('modePanel',false);visible('signIn',false);
+      visible('resultPanel',false);visible('gamePanel',true);
+      if(game.finished){
+        lock(false);await finish();
+      }else{
+        game.idx=data.next_index;
+        await loadQuestion();
+        current.hint=data.hint_used&&data.hint
+          &&typeof data.hint.cs==='string'&&typeof data.hint.en==='string'?
+          {cs:data.hint.cs,en:data.hint.en}:null;
+        current.reveals=data.reveals.map(clue=>({
+          cs:String(clue.cs||''),en:String(clue.en||'')
+        }));
+        status(T('soloRestored'),'ok');
+        lock(false);renderQuestion();
+      }
+    }catch(err){
+      status(template(T('soloError'),{error:errorText(err)}),'error');
+      if(game&&!current)showQuestionLoadError();
+      else if(!game){visible('modePanel',true);visible('gamePanel',false);}
+    }finally{lock(false);}
   }
   function activeChallengeKey(){
     return me?.id?activeChallengePrefix+me.id:null;
@@ -637,7 +735,9 @@
       auth:{storageKey:cfg.storageKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
     });
     const {data,error}=await api.auth.getSession();
+    const priorUser=me?.id||null;
     me=!error&&data?.session?.user||null;
+    if(priorUser!==me?.id)soloProgressByMode=Object.create(null);
     language();modeScreen();
     try{
       const urlParams=new URL(window.location.href).searchParams;
@@ -1235,6 +1335,7 @@
       }catch(_){}
     }
     void refreshHistory();
+    if(!game.challenge)void refreshSoloModes();
   }
   $('resumeLastChallenge').addEventListener('click',()=>{
     const id=getResumeCandidate();
@@ -1272,7 +1373,10 @@
       $('asyncResultMessage').textContent=text;
     }
   });
+  $('soloRefresh').addEventListener('click',()=>void refreshSoloModes());
   $('modes').addEventListener('click',event=>{
+    const resume=event.target.closest('button[data-solo-continue]');
+    if(resume){void resumeSolo(resume.dataset.soloContinue);return;}
     const btn=event.target.closest('button[data-mode]');
     if(btn)void start(btn.dataset.mode);
   });
@@ -1295,7 +1399,12 @@
     if(!game&&me)status(T('statusReady'),'ok');
   });
   window.addEventListener('offline',()=>status(T('statusOffline'),'error'));
-  window.addEventListener('focus',()=>{if(me)void refreshHistory();});
+  window.addEventListener('focus',()=>{
+    if(me){
+      void refreshHistory();
+      if(!game||game.resultShown)void refreshSoloModes();
+    }
+  });
   window.setInterval?.(()=>{
     if(me&&document.visibilityState!=='hidden')void refreshHistory();
   },45000);
