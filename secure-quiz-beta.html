@@ -175,6 +175,12 @@
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
     </p>
+    <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
+      <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
+      <p id="resumeText" class="async-help">Server si pamatuje odpovědi a nápovědy. Můžeš bezpečně pokračovat.</p>
+      <button id="resumeLastChallenge" class="primary" type="button">▶️ Pokračovat ve výzvě</button>
+      <p id="resumeError" class="async-help" role="status" aria-live="polite"></p>
+    </section>
     <section class="async-box" aria-labelledby="asyncTitle">
       <h3 id="asyncTitle">⚔️ Soukromé výzvy mezi hráči</h3>
       <p class="async-help" id="asyncHelp">Vytvoř výzvu, odehraj 10 stejných otázek a pošli odkaz kamarádovi. Skóre se odhalí až po obou dohraných partiích. Zatím bez výplat.</p>
@@ -334,7 +340,16 @@
       historyOpen:'🏆 Zobrazit výsledek',historyCheck:'👀 Zobrazit stav',
       historyCopy:'📋 Kopírovat odkaz',historyCopied:'✅ Odkaz zkopírován.',
       historyUnread:'NOVÝ VÝSLEDEK',
-      historyPlayingHelp:'Rozehranou výzvu zatím není možné obnovit po zavření stránky.',
+      historyPlayingHelp:'Server si pamatuje průběh. Ve výzvě můžeš bezpečně pokračovat.',
+      resumeTitle:'⏯️ Máš rozehranou výzvu',
+      resumeText:'Server si pamatuje odpovědi i nápovědy. Po obnovení stránky můžeš bezpečně pokračovat.',
+      resumeButton:'▶️ Pokračovat ve výzvě',
+      resumeLoading:'⏯️ Obnovuji rozehranou výzvu ze serveru…',
+      resumeExpired:'⌛ Této partii už vypršel serverový časový limit. Nový pokus ve stejné výzvě není možný.',
+      resumeError:'⚠️ Nepodařilo se obnovit výzvu: {error}',
+      resumePlaying:'🎮 Dokonči nejprve rozehranou partii, abys o její postup nepřišel.',
+      resumeNone:'Žádnou nedokončenou výzvu se nepodařilo najít.',
+      resumeRestored:'✅ Průběh partie obnoven ze serveru.',
       historyBell:'Moje výzvy; nových výsledků: {n}',
       historyOverlayTitle:'🔔 Moje výzvy',historyOverlayClose:'Zavřít oznámení',
       historyFinishFirst:'🎮 Nejdřív dokonči rozehranou partii, abys nepřišel o její výsledek.',
@@ -395,7 +410,16 @@
       historyOpen:'🏆 View result',historyCheck:'👀 View status',
       historyCopy:'📋 Copy challenge link',historyCopied:'✅ Link copied.',
       historyUnread:'NEW RESULT',
-      historyPlayingHelp:'Refreshing or closing an unfinished challenge cannot be recovered yet.',
+      historyPlayingHelp:'The server remembers your progress. You can resume this challenge safely.',
+      resumeTitle:'⏯️ You have an unfinished challenge',
+      resumeText:'The server remembers your answers and hints. You can resume after closing or refreshing the page.',
+      resumeButton:'▶️ Resume challenge',
+      resumeLoading:'⏯️ Restoring challenge progress from the server…',
+      resumeExpired:'⌛ This run has expired. A second attempt in the same challenge is not permitted.',
+      resumeError:'⚠️ Could not resume challenge: {error}',
+      resumePlaying:'🎮 Finish your current quiz first to keep its progress.',
+      resumeNone:'No unfinished challenge found.',
+      resumeRestored:'✅ Quiz progress restored from the server.',
       historyBell:'My challenges; unread results: {n}',
       historyOverlayTitle:'🔔 My challenges',historyOverlayClose:'Close notifications',
       historyFinishFirst:'🎮 Finish the current quiz first so its result is saved.',
@@ -407,6 +431,7 @@
   let lang = 'cs', api = null, me = null, game = null, current = null;
   let busy=false,pending=null;
   let createOperation=null;
+  const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
   try {lang=localStorage.getItem(langKey)==='en'?'en':'cs';}catch(_){}
   const T=k=>tr[lang][k];
@@ -442,6 +467,12 @@
       historyRefresh:'historyOverlayRefresh'
     }))$(id).textContent=T(key);
     $('historyOverlayClose').setAttribute('aria-label',T('historyOverlayClose'));
+    for(const [key,id] of Object.entries({
+      resumeTitle:'resumeTitle',resumeText:'resumeText',
+      resumeButton:'resumeLastChallenge'
+    })){
+      const element=$(id);if(element)element.textContent=T(key);
+    }
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
@@ -466,7 +497,39 @@
     visible('modePanel',!!me);visible('signIn',!me);
     visible('gamePanel',false);visible('resultPanel',false);
     status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
+    renderResumePrompt();
     if(me)void refreshHistory();
+  }
+  function activeChallengeKey(){
+    return me?.id?activeChallengePrefix+me.id:null;
+  }
+  function getActiveChallenge(){
+    const key=activeChallengeKey();
+    if(!key)return null;
+    try{
+      const id=localStorage.getItem(key);
+      return id&&uuidPattern.test(id)?id:null;
+    }catch(_){return null;}
+  }
+  function rememberActiveChallenge(id){
+    const key=activeChallengeKey();
+    if(!key||!uuidPattern.test(id))return;
+    try{localStorage.setItem(key,id);}catch(_){}
+    renderResumePrompt();
+  }
+  function clearActiveChallenge(id){
+    const key=activeChallengeKey();
+    if(!key)return;
+    try{
+      if(!id||localStorage.getItem(key)===id)localStorage.removeItem(key);
+    }catch(_){}
+    renderResumePrompt();
+  }
+  function renderResumePrompt(){
+    const id=getActiveChallenge();
+    const panel=$('resumePanel');
+    if(panel)visible('resumePanel',!!me&&!!id);
+    if(!id&&$('resumeError'))$('resumeError').textContent='';
   }
   async function authenticate(){
     visible('bootPanel',true);
@@ -529,6 +592,7 @@
     game={id:data.run_id,ids:data.question_ids.slice(),idx:0,mode,
       score:0,correct:0,lives:3,answers:[],finished:false,resultShown:false,challenge};
     current=null;pending=null;
+    if(challenge)rememberActiveChallenge(challenge.id);
     visible('modePanel',false);visible('signIn',false);
     visible('resultPanel',false);visible('gamePanel',true);
     await loadQuestion();
@@ -548,6 +612,86 @@
     url.search='';url.hash='';
     url.searchParams.set('challenge',id);
     return url.toString();
+  }
+  async function resumeAsyncChallenge(id){
+    if(!me||!api||busy||!uuidPattern.test(id))return;
+    if(game&&!game.resultShown){
+      const warning=T('resumePlaying');
+      status(warning,'error');
+      if($('resumeError'))$('resumeError').textContent=warning;
+      setHistoryDetail(warning);
+      return;
+    }
+    if(navigator.onLine===false){
+      status(T('statusOffline'),'error');return;
+    }
+    lock(true);status(T('resumeLoading'));
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_resume',{
+        p_challenge_id:id
+      });
+      if(error||data?.ok!==true||data.shadow!==true||data.credited!==false
+        ||data.challenge_id!==id||!uuidPattern.test(data.run_id)
+        ||!['creator','challenger'].includes(data.role)
+        ||!['classic','mystery'].includes(data.mode)
+        ||!Array.isArray(data.question_ids)||data.question_ids.length!==10
+        ||!data.question_ids.every(q=>typeof q==='string'&&/^s[0-9]{3,}$/.test(q))
+        ||!Array.isArray(data.answers)
+        ||!Number.isInteger(data.next_index)||data.next_index<0||data.next_index>10
+        ||data.answers.length!==data.next_index
+        ||!Number.isSafeInteger(data.score)||data.score<0
+        ||!Number.isSafeInteger(data.correct)||data.correct<0
+        ||!Number.isSafeInteger(data.lives)||data.lives<0||data.lives>3
+        ||typeof data.finished!=='boolean'||typeof data.submitted!=='boolean'
+        ||typeof data.expired!=='boolean'||!Array.isArray(data.reveals)
+        ||typeof data.hint_used!=='boolean')
+        throw Error(error?.message||'invalid_resume_receipt');
+      if(data.expired&&!data.submitted){
+        clearActiveChallenge(id);
+        status(T('resumeExpired'),'error');
+        if($('resumeError'))$('resumeError').textContent=T('resumeExpired');
+        setHistoryDetail(T('resumeExpired'));
+        return;
+      }
+      game={
+        id:data.run_id,ids:data.question_ids.slice(),mode:data.mode,
+        idx:Math.min(data.next_index,9),
+        score:data.score,correct:data.correct,lives:data.lives,
+        answers:data.answers.slice(),finished:data.finished||data.submitted,
+        resultShown:false,challenge:{id,role:data.role}
+      };
+      current=null;pending=null;
+      rememberActiveChallenge(id);
+      visible('historyOverlay',false);
+      visible('modePanel',false);visible('signIn',false);
+      visible('resultPanel',false);
+      visible('gamePanel',true);
+      // If the last answer was committed just before a tab closed, we can
+      // complete/finalize using only server-reconstructed answers. Never
+      // replay the answer or create another run.
+      if(game.finished){
+        lock(false);
+        await finish();
+      }else{
+        game.idx=data.next_index;
+        await loadQuestion();
+        current.hint=data.hint_used&&data.hint&&
+          typeof data.hint.cs==='string'&&typeof data.hint.en==='string'?
+            {cs:data.hint.cs,en:data.hint.en}:null;
+        current.reveals=data.reveals.map(clue=>({
+          cs:String(clue.cs||''),en:String(clue.en||'')
+        }));
+        status(T('resumeRestored'),'ok');
+        lock(false);renderQuestion();
+      }
+      $('gamePanel').scrollIntoView?.({behavior:'smooth',block:'start'});
+    }catch(err){
+      const message=template(T('resumeError'),{error:errorText(err)});
+      status(message,'error');
+      if($('resumeError'))$('resumeError').textContent=message;
+      setHistoryDetail(message);
+      if(game&&!current)showQuestionLoadError();
+    }finally{lock(false);}
   }
   function asyncSummary(data){
     if(!data||data.both_done!==true||data.role==='invitee'
@@ -693,6 +837,15 @@
         entry.status==='creator_playing'||entry.status==='challenger_playing'?
           T('historyPlayingHelp'):historyLabel(entry);
       const controls=document.createElement('div');controls.className='history-actions';
+      const mayResume=(entry.role==='creator'&&!entry.creator_done
+        ||entry.role==='challenger'&&!entry.challenger_done)
+        && entry.status!=='expired';
+      if(mayResume){
+        const resume=document.createElement('button');resume.type='button';
+        resume.textContent=T('resumeButton');
+        resume.addEventListener('click',()=>void resumeAsyncChallenge(entry.challenge_id));
+        controls.append(resume);
+      }
       const show=document.createElement('button');show.type='button';
       show.textContent=entry.both_done?T('historyOpen'):T('historyCheck');
       show.addEventListener('click',()=>void openHistoryResult(entry.challenge_id));
@@ -953,6 +1106,7 @@
         if(verified.error||verified.data?.ok!==true)
           throw Error(verified.error?.message||'challenge_finalize_failed');
         challengeState=verified.data;
+        clearActiveChallenge(game.challenge.id);
       }
       status(confirmed?T('auditOk'):T('auditFail'),confirmed?'ok':'error');
     }catch(err){
@@ -983,6 +1137,11 @@
     }
     void refreshHistory();
   }
+  $('resumeLastChallenge').addEventListener('click',()=>{
+    const id=getActiveChallenge();
+    if(id)void resumeAsyncChallenge(id);
+    else if($('resumeError'))$('resumeError').textContent=T('resumeNone');
+  });
   $('bootRetry').addEventListener('click',()=>void authenticate().catch(err=>{
     $('bootText').textContent=T('bootFailed')+' ('+errorText(err)+')';
     visible('bootPanel',true);visible('signIn',true);
