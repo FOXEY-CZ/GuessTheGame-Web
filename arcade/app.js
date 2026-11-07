@@ -44,7 +44,7 @@
   // The legacy quiz stays addressable for old local progress/invite links.
   // This server-first mode is still payout-disabled; never sync quiz XP as
   // real wallet transactions until the separate verified rewards cutover.
-  const GAME_URL = '../secure-quiz-beta.html';
+  const GAME_URL = '../secure-quiz-beta.html?v=arcade-primary-20261107b';
   const GOOGLE_OAUTH_READY = cfg?.googleOAuthEnabled === true;
   // Remember only whether this page was opened by an OAuth callback, never
   // read, store or log the returned access/refresh token values.
