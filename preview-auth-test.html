@@ -631,7 +631,13 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(element('streakHomeGift'))
       element('streakHomeGift').textContent=(arcadeWallet?.free_chests??profile.freeChests)>0?'🎁':'▫️';
   }
-  let lang = get('lang',previous('lang')||((navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en'));
+  // Arcade and this embedded game share only the locale preference, not saves.
+  const ARCADE_LOCALE_KEY='foxey.arcade.locale.v1';
+  const sharedLocale=(()=>{try{
+    const v=localStorage.getItem(ARCADE_LOCALE_KEY);
+    return v==='cs'||v==='en'?v:null;
+  }catch(_){return null;}})();
+  let lang = sharedLocale||get('lang',previous('lang')||((navigator.language||'').toLowerCase().startsWith('cs')?'cs':'en'));
   if(!translations[lang])lang='en';
   let session = get('session', null);
   let prefs = {sound:true,haptics:true,...get('prefs',{})};
@@ -1332,7 +1338,35 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   };
   window.gtgBack=()=>{if(screen==='game'||screen==='profile'||screen==='result'||screen==='shop'||screen==='challenge'){home();return true;}return false;};
   element('logoHome').addEventListener('click',home);element('profileTop').addEventListener('click',renderProfile);element('profileOpen').addEventListener('click',renderProfile);
-  element('profileBack').addEventListener('click',home);element('langToggle').addEventListener('click',()=>{lang=lang==='cs'?'en':'cs';set('lang',lang);if(screen==='home')home();else if(screen==='game')game();else if(screen==='result')renderResult();else if(screen==='shop')renderShop();else if(screen==='challenge')renderChallengeLobby();else renderProfile();});
+  element('profileBack').addEventListener('click',home);function refreshLanguageView(){
+    if(screen==='home')home();
+    else if(screen==='game')game();
+    else if(screen==='result')renderResult();
+    else if(screen==='shop')renderShop();
+    else if(screen==='challenge')renderChallengeLobby();
+    else renderProfile();
+  }
+  function acceptArcadeLocale(value){
+    if((value!=='cs'&&value!=='en')||value===lang)return;
+    lang=value;set('lang',lang);
+    refreshLanguageView();
+  }
+  // Only accept a locale message from the same-origin parent Arcade iframe.
+  window.addEventListener('message',event=>{
+    if(window.parent===window||event.origin!==location.origin||event.source!==window.parent)return;
+    if(event.data?.type==='foxey-arcade:locale-changed')acceptArcadeLocale(event.data.locale);
+  });
+  window.addEventListener('storage',event=>{
+    if(event.key===ARCADE_LOCALE_KEY)acceptArcadeLocale(event.newValue);
+  });
+  element('langToggle').addEventListener('click',()=>{
+    lang=lang==='cs'?'en':'cs';set('lang',lang);
+    try{localStorage.setItem(ARCADE_LOCALE_KEY,lang);}catch(_){}
+    if(window.parent!==window)window.parent.postMessage({
+      type:'foxey-arcade:locale-changed',locale:lang
+    },location.origin);
+    refreshLanguageView();
+  });
   element('claimDaily').addEventListener('click',dailyReward);
   element('openChallengeHome').addEventListener('click',()=>{if(challengeDraft)renderChallengeLobby();else createOnlineChallenge();});
   element('challengeBack').addEventListener('click',home);
