@@ -6,6 +6,11 @@ const fs=require('node:fs');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const source=fs.readFileSync(path.join(__dirname,'..','account-test.js'),'utf8');
+const html=fs.readFileSync(path.join(__dirname,'..','preview-auth-test.html'),'utf8');
+assert.ok(html.includes('id="authExportBackup" data-i18n="authExportBackup"'),
+  'Account screen must show a translated backup button');
+assert.ok(source.includes("el('authExportBackup').addEventListener('click',exportProgressBackup)"),
+  'The exported backup button must be wired to a real click handler');
 const from=source.indexOf('  function exportProgressBackup(){');
 const to=source.indexOf('  function captureGuest(){',from);
 assert.ok(from>=0&&to>from,'Expected read-only export function');
