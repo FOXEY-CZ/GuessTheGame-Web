@@ -1,0 +1,31 @@
+name: Verify Guess the Game content
+
+on:
+  push:
+    paths:
+      - 'preview-auth-test.html'
+      - 'preview-3.6.html'
+      - 'tests/guess-game-content.cjs'
+      - '.github/workflows/verify-guess-the-game.yml'
+  pull_request:
+    paths:
+      - 'preview-auth-test.html'
+      - 'preview-3.6.html'
+      - 'tests/guess-game-content.cjs'
+      - '.github/workflows/verify-guess-the-game.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  content-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check Guess the Game question bank and modes
+        run: node tests/guess-game-content.cjs
