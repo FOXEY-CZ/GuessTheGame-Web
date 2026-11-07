@@ -552,9 +552,12 @@
         $('asyncInvite').value=value;
         $('asyncLobbyStatus').textContent=T('asyncInviteReady');
       }
-      // Standalone legacy games open this in a NEW tab so their active
-      // quiz/save remains untouched; all games share the same private inbox.
-      if(me&&urlParams.get('notifications')==='1')goToHistory();
+      // Launcher can open an unfinished challenge in a NEW tab. The
+      // server RPC still verifies that this user owns that exact run.
+      const resumeId=urlParams.get('resume');
+      if(me&&resumeId&&uuidPattern.test(resumeId))
+        void resumeAsyncChallenge(resumeId);
+      else if(me&&urlParams.get('notifications')==='1')goToHistory();
     }catch(_){}
   }
   function lock(on){
