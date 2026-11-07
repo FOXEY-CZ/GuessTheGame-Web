@@ -256,6 +256,11 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
   }
 }
 
+
+/* Unified platform notifications shortcut: opens a separate tab, never resets the running game. */
+.game-notifications-shortcut{display:inline-flex;align-items:center;justify-content:center;min-width:39px;min-height:39px;padding:5px 7px;border:1px solid #62719a;border-radius:12px;background:#263654;color:#fff;text-decoration:none;font-size:21px;line-height:1}
+.game-notifications-shortcut:hover,.game-notifications-shortcut:focus-visible{border-color:#67e5df;background:#314b6c}
+@media(max-width:400px){.game-notifications-shortcut{min-width:35px;min-height:35px;font-size:19px;padding:3px}}
 </style>
 <script src="arcade/avatars.js"></script>
 </head>
@@ -265,7 +270,7 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
   <div class="app">
     <header class="topbar">
       <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.6 · SYNC TEST</small></span></button>
-      <div class="top-actions"><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
+      <div class="top-actions"><a class="game-notifications-shortcut" href="./secure-quiz-beta.html?notifications=1" target="_blank" rel="noopener noreferrer" aria-label="Otevřít upozornění FOXEY Arcade" title="Oznámení FOXEY Arcade">🔔</a><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
     </header>
 
     <main id="home" class="screen">
