@@ -31,7 +31,8 @@ class E {
   querySelector(k){return this[k]||(this[k]=new E(k));}
   focus(){}select(){}scrollIntoView(){}
 }
-function instance(uid){
+function instance(uid, initiallyFinished=true){
+  let isFinished=initiallyFinished;
   const elements=new Map();
   const get=id=>{if(!elements.has(id))elements.set(id,new E(id));return elements.get(id);};
   const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Secure Quiz Beta',
@@ -43,9 +44,9 @@ function instance(uid){
       challenge_id:challenge,role:uid===owner?'creator':'challenger',
       mode:'classic',created_at:'2026-11-07T20:00:00.000Z',
       expires_at:'2026-11-14T20:00:00.000Z',
-      both_done:true,unread:!seen,status:'finished',
-      your_score:uid===owner?10:7,opponent_score:uid===owner?7:10,
-      winner:uid===owner?'you':'opponent'
+      both_done:isFinished,unread:isFinished&&!seen,status:isFinished?'finished':'waiting',
+      ...(isFinished?{your_score:uid===owner?10:7,opponent_score:uid===owner?7:10,
+        winner:uid===owner?'you':'opponent'}:{})
     },{
       challenge_id:other,role:'creator',mode:'mystery',
       created_at:'2026-11-07T19:00:00.000Z',
@@ -59,7 +60,7 @@ function instance(uid){
       rpcCalls.push(name);
       if(name==='arcade_async_challenge_inbox'){
         assert.equal(args.p_limit,40);
-        return {data:{ok:true,items:entries(),unread:reads.get(challenge)?0:1},error:null};
+        return {data:{ok:true,items:entries(),unread:isFinished&&!reads.get(challenge)?1:0},error:null};
       }
       if(name==='arcade_async_challenge_status'){
         assert.ok([challenge,other].includes(args.p_challenge_id));
@@ -86,10 +87,25 @@ function instance(uid){
   const navigator={onLine:true,clipboard:{writeText:async()=>{}}};
   const app=new Function('window','document','navigator','localStorage','crypto','URL',script)(
     win,doc,navigator,browserStorage,{randomUUID:()=>challenge},URL);
-  return {app,get,doc,intervals,listeners,rpcCalls,reads};
+  return {app,get,doc,intervals,listeners,rpcCalls,reads,
+    finishChallenge:()=>{isFinished=true;}};
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
 async function main(){
+  // A new result appears while the creator still has the site open.
+  const waiting=instance(owner,false);
+  await settle();
+  assert.equal(waiting.app.getState().historyUnread,0);
+  assert.ok(!waiting.app.getState().historyItems[0].both_done);
+  assert.ok(!waiting.app.getState().historyItems[0].hasOwnProperty('your_score'));
+  waiting.finishChallenge();
+  waiting.intervals[0].callback();
+  await settle();
+  assert.equal(waiting.app.getState().historyUnread,1);
+  assert.equal(waiting.get('historyBellCount').textContent,'1');
+  assert.ok(!waiting.rpcCalls.includes('arcade_async_challenge_mark_seen'));
+  assert.ok(waiting.get('historyNotice').textContent.includes('nepřečtených'));
+
   const first=instance(owner);
   await settle();
   assert.equal(first.app.getState().me.id,owner);
