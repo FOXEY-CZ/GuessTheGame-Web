@@ -74,6 +74,21 @@
       const score=document.createElement('p');score.className='arcade-notice-score';
       score.textContent=resultLine(entry);
       const actions=document.createElement('div');actions.className='arcade-notice-actions';
+      const canResume=(entry.role==='creator'&&!entry.creator_done
+        ||entry.role==='challenger'&&!entry.challenger_done)
+        &&entry.status!=='expired';
+      if(canResume){
+        // Keep the currently embedded game intact: the unfinished secure
+        // challenge resumes in its own tab from authoritative server state.
+        const resume=document.createElement('a');
+        const target=new URL('../secure-quiz-beta.html',location.href);
+        target.searchParams.set('resume',entry.challenge_id);
+        resume.href=target.toString();
+        resume.target='_blank';resume.rel='noopener noreferrer';
+        resume.className='secondary arcade-notice-resume';
+        resume.textContent=choose('▶️ Pokračovat ve výzvě','▶️ Resume challenge');
+        actions.append(resume);
+      }
       const open=document.createElement('button');open.type='button';open.className='secondary';
       open.textContent=entry.both_done?
         choose('🏆 Otevřít výsledek','🏆 Open result'):
