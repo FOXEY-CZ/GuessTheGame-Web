@@ -118,6 +118,23 @@
     shadowRuns.set(d.operation,{uid,request:request.catch(()=>null)});
     if(shadowRuns.size>12)shadowRuns.delete(shadowRuns.keys().next().value);
   }
+  // Only describe trusted, non-financial simulation data returned by the
+  // server after a verified run. Never display this as an actual wallet grant.
+  function formatShadowRewardPreview(preview){
+    if(preview?.ok!==true || preview.shadow!==true || preview.credited!==false
+       || !['would_earn_xp','would_earn_shards','would_earn_crowns','would_earn_free_chests']
+         .every(key=>Number.isSafeInteger(preview[key])&&preview[key]>=0)
+       || !Array.isArray(preview.new_badges)
+       || !preview.new_badges.every(badge=>typeof badge==='string'&&badge.length<=50))
+      return null;
+    const xp=preview.would_earn_xp,shards=preview.would_earn_shards;
+    const crowns=preview.would_earn_crowns,chests=preview.would_earn_free_chests;
+    const badges=preview.new_badges.length;
+    return {
+      cz:'🧪 Serverový test: +'+xp+' XP, +'+shards+' 💎, +'+crowns+' 👑, truhly +'+chests+', nové odznaky '+badges+'. JEN SIMULACE – nic se znovu nepřipsalo.',
+      en:'🧪 Server test: +'+xp+' XP, +'+shards+' 💎, +'+crowns+' 👑, chests +'+chests+', new badges '+badges+'. SIMULATION ONLY – no additional payout.'
+    };
+  }
   async function onShadowFinish(event){
     const d=event.detail;
     if(!d||typeof d.operation!=='string')return;
@@ -157,11 +174,12 @@
           p_run_id:start.run_id
         });
         if(record.uid===user?.id){
-          shadowProgressStatus(!previewError&&preview?.shadow===true&&preview?.credited===false
-            ?'🧪 Server spočítal i achievementy a denní sérii. Test bez výplaty.'
+          const details=!previewError?formatShadowRewardPreview(preview):null;
+          shadowProgressStatus(details
+            ?details.cz
             :'⚠️ Serverový test achievementů se nepovedl, tvoje odměny zůstávají beze změny.',
-            !previewError&&preview?.shadow===true&&preview?.credited===false
-            ?'🧪 Server also calculated achievements and daily streak. Test only, no payout.'
+            details
+            ?details.en
             :'⚠️ The server achievement test failed; existing rewards are unchanged.');
         }
       }
