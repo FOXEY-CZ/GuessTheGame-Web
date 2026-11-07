@@ -108,6 +108,17 @@ const translations=Function('return ('+current.html.slice(dictStart,dictEnd)+')'
 const missingKeys=Object.keys(translations.cs).filter(key=>!Object.hasOwn(translations.en,key));
 assert.deepEqual(missingKeys,[],'English translation is missing keys, including reward descriptions');
 
+// Authenticated rounds must accept backend-selected questions before game().
+assert.ok(current.html.includes('bridge.begin(mode,operation)'),
+  'Game must await the server before choosing question IDs for signed-in users');
+assert.ok(current.html.includes('serverIssued=candidate;ids=candidate.question_ids.slice();'),
+  'Run must use the exact question IDs chosen by the server');
+assert.ok(current.html.includes('verifyRunId:serverIssued?.run_id||null'),
+  'Run must save backend-issued ID for reliable resumed completion');
+assert.ok(current.html.includes('verifyUserId:serverIssued?.user_id||null'),
+  'Run must pin the authenticated owner for cross-account safety');
+assert.ok(current.html.includes("mode==='challenge'){startChallenge();return;}"),
+  'Online friend challenges must remain independent of the verified quiz path');
 // Shadow-only server receipt bridge must never touch the Arcade wallet.
 const accountSource=fs.readFileSync(path.join(root,'account-test.js'),'utf8');
 assert.ok(current.html.includes('id="serverVerificationStatus"'),
@@ -118,12 +129,16 @@ assert.ok(current.html.includes("new CustomEvent('gtg-quiz-finished'"),
   'Game should submit a separate audit trace on finish');
 assert.ok(current.html.includes('verifyAnswers.push('),
   'Answer choices and hint usage must be recorded in the pending run');
-assert.ok(current.html.includes('account-test.js?v=shadow-verify-20261107'),
+assert.ok(current.html.includes('account-test.js?v=server-ids-20261107'),
   'Versioned account bridge must avoid stale cached code');
 const shadowStart=accountSource.indexOf('const shadowRuns=new Map()');
 const shadowEnd=accountSource.indexOf('const setFeedback =',shadowStart);
 assert.ok(shadowStart>0 && shadowEnd>shadowStart,'No standalone shadow bridge found');
 const shadow=accountSource.slice(shadowStart,shadowEnd);
+assert.ok(accountSource.includes("client.rpc('arcade_verify_begin_server'"),
+  'The signed-in bridge must call the new server-selection RPC');
+assert.ok(accountSource.includes('window.GTGServerVerification=Object.freeze('),
+  'Bridge must expose authenticated server-run capability');
 assert.ok(shadow.includes("client.rpc('arcade_verify_begin'"),
   'Bridge must ask the server to issue a run receipt');
 assert.ok(shadow.includes("client.rpc('arcade_verify_complete'"),
