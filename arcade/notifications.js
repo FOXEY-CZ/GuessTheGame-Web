@@ -74,8 +74,9 @@
       const score=document.createElement('p');score.className='arcade-notice-score';
       score.textContent=resultLine(entry);
       const actions=document.createElement('div');actions.className='arcade-notice-actions';
-      const canResume=(entry.role==='creator'&&!entry.creator_done
-        ||entry.role==='challenger'&&!entry.challenger_done)
+      const canResume=!entry.both_done&&
+        (entry.role==='creator'&&entry.creator_done===false
+          ||entry.role==='challenger'&&entry.challenger_done===false)
         &&entry.status!=='expired';
       if(canResume){
         // Keep the currently embedded game intact: the unfinished secure
