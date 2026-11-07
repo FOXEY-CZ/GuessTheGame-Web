@@ -1143,10 +1143,8 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const medium=level()>=2,hard=level()>=4;
     element('startMedium').disabled=!medium;element('startHard').disabled=!hard;element('startMedium').classList.toggle('mode-locked',!medium);element('startHard').classList.toggle('mode-locked',!hard);
     updateText('mediumDesc',T(medium?'mediumDesc':'mediumLock'));updateText('hardDesc',T(hard?'hardDesc':'hardLock'));updateText('mediumLock',medium?'→':'🔒');updateText('hardLock',hard?'→':'🔒');
-    // A round that has just lost its last life is still resumable until the
-    // player confirms Finish. Do not discard completed results on menu return.
-    const pendingFinish = session?.lives===0 && session?.selected!==null;
-    const valid = session && Array.isArray(session.ids) && session.ids.length && session.ids.every(id=>byId[id]) && session.idx>=0 && session.idx<session.ids.length && (session.lives>0 || pendingFinish);
+    // A lost game is over: only rounds with lives remaining can be resumed.
+    const valid = session && Array.isArray(session.ids) && session.ids.length && session.ids.every(id=>byId[id]) && session.idx>=0 && session.idx<session.ids.length && session.lives>0;
     if(!valid){session=null;saveSession();}element('resume').classList.toggle('hidden',!valid);if(valid)updateText('resumeDesc',fmt(T('session'),{round:session.idx+1,total:session.ids.length}));
     show('home');window.dispatchEvent(new Event('gtg-home-screen'));
   }
@@ -1208,6 +1206,9 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     playFeedback(good);if(good){session.streak++;session.maxStreak=Math.max(session.maxStreak,session.streak);session.correct++;
       const bonus=Math.min(6,Math.floor(session.streak/3)*2);session.gained=(session.mode==='mystery'?(20-5*(session.reveal||0)):Math.max(2,10-(session.hint?3:0)))+bonus;session.score+=session.gained;if(bonus>0)burst();
     }else{session.streak=0;session.lives=Math.max(0,session.lives-1);}
+    // Third wrong answer ends the run immediately and records its result.
+    // The player cannot resume a lost round; finish() keeps existing rewards.
+    if(session.lives===0){finish();return;}
     saveSession();game();
   }
   function hint(){if(!session||session.selected!==null||session.hint||session.mode==='mystery')return;session.hint=true;saveSession();game();}
