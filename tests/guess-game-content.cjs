@@ -119,6 +119,21 @@ assert.ok(current.html.includes('verifyUserId:serverIssued?.user_id||null'),
   'Run must pin the authenticated owner for cross-account safety');
 assert.ok(current.html.includes("mode==='challenge'){startChallenge();return;}"),
   'Online friend challenges must remain independent of the verified quiz path');
+// A perfect run pays one crown per UTC day in the client while server payouts remain gated.
+assert.ok(current.html.includes('perfectPaidDay:null'), 'Profile must track last perfect crown date');
+assert.ok(current.html.includes('const eligiblePerfect=perfect&&profile.perfectPaidDay!==s.day;'),
+  'The same UTC day must not pay perfect-run crown twice');
+assert.ok(current.html.includes('if(rewardable&&eligiblePerfect)profile.perfectPaidDay=s.day;'),
+  'Record the reward day only for actual eligible rewarded runs');
+assert.ok(current.html.includes('if(r.rewards?.perfectBonus) extras.push(T(\'rewardPerfect\'))'),
+  'Only display perfect crown message when paid');
+assert.ok(current.html.includes("new CustomEvent('gtg-daily-reward-claimed'"),
+  'Daily XP claim must emit a separate audit event');
+assert.ok(current.html.includes('id="serverProgressionStatus"'),
+  'Progression verification must have its own non-financial status');
+const mergeSource=fs.readFileSync(path.join(root,'account-merge.js'),'utf8');
+assert.ok(mergeSource.includes('result.perfectPaidDay=maxDate(cloud.perfectPaidDay,guest.perfectPaidDay)'),
+  'Conservative account/guest merge must never reset perfect daily cap');
 // Shadow-only server receipt bridge must never touch the Arcade wallet.
 const accountSource=fs.readFileSync(path.join(root,'account-test.js'),'utf8');
 assert.ok(current.html.includes('id="serverVerificationStatus"'),
@@ -129,7 +144,7 @@ assert.ok(current.html.includes("new CustomEvent('gtg-quiz-finished'"),
   'Game should submit a separate audit trace on finish');
 assert.ok(current.html.includes('verifyAnswers.push('),
   'Answer choices and hint usage must be recorded in the pending run');
-assert.ok(current.html.includes('account-test.js?v=server-ids-qa-20261107'),
+assert.ok(current.html.includes('account-test.js?v=shadow-progress-20261107'),
   'Versioned account bridge must avoid stale cached code');
 const shadowStart=accountSource.indexOf('const shadowRuns=new Map()');
 const shadowEnd=accountSource.indexOf('const setFeedback =',shadowStart);
@@ -137,6 +152,12 @@ assert.ok(shadowStart>0 && shadowEnd>shadowStart,'No standalone shadow bridge fo
 const shadow=accountSource.slice(shadowStart,shadowEnd);
 assert.ok(accountSource.includes('Server vybral otázky a ověřil výsledek'),
   'Show a separate success message only for fully server-selected quizzes');
+assert.ok(accountSource.includes("client.rpc('arcade_verify_progress_shadow'"),
+  'Server must calculate a separate receipt for badges and daily streaks');
+assert.ok(accountSource.includes("client.rpc('arcade_verify_daily_claim_shadow'"),
+  'Daily claim must be checked once on the server');
+assert.ok(accountSource.includes("preview?.credited===false"),
+  'Badge and daily preview must never turn into a new wallet payout');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_begin_server'"),
   'The signed-in bridge must call the new server-selection RPC');
 assert.ok(accountSource.includes('window.GTGServerVerification=Object.freeze('),
