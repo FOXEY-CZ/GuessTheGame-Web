@@ -14,6 +14,8 @@ on:
   pull_request:
     paths:
       - 'preview-auth-test.html'
+      - 'account-test.js'
+      - 'account-merge.js'
       - 'preview-3.6.html'
       - 'tests/guess-game-content.cjs'
       - 'tests/server-quiz-launch.cjs'
