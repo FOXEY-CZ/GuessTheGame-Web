@@ -155,7 +155,7 @@ class Element{
   querySelector(v){return this[v]||(this[v]=new Element(v))}
   focus(){}select(){}scrollIntoView(){}
 }
-function instance(uid=owner,storage=sharedStorage){
+function instance(uid=owner,storage=sharedStorage,href='https://foxey-cz.github.io/GuessTheGame-Web/secure-quiz-beta.html'){
   const elements=new Map();
   const get=k=>{if(!elements.has(k))elements.set(k,new Element(k));return elements.get(k)};
   const document={documentElement:{lang:'cs'},visibilityState:'visible',
@@ -166,7 +166,7 @@ function instance(uid=owner,storage=sharedStorage){
   const window={GTGAuthConfig:{url:'https://example.invalid',
       publishableKey:'mock_publishable',storageKey:'mock'},
     supabase:{createClient:()=>apiFor(uid)},
-    location:{href:'https://foxey-cz.github.io/GuessTheGame-Web/secure-quiz-beta.html'},
+    location:{href},
     addEventListener(){},setInterval(){}};
   const navigator={onLine:true,clipboard:{writeText:async()=>{}}};
   const app=new Function('window','document','navigator','localStorage','crypto','URL',code)(
@@ -214,6 +214,12 @@ async function main(){
   await actions[0].listeners.click();await settle();
   assert.equal(device.app.getState().game.idx,2);
   assert.equal(device.app.getState().game.answers.length,2);
+  // Global FOXEY Arcade opens an explicit resume URL in a new tab.
+  const deepLink=instance(owner,new Map(),
+    'https://foxey-cz.github.io/GuessTheGame-Web/secure-quiz-beta.html?resume='+cid);
+  await settle();
+  assert.equal(deepLink.app.getState().game.idx,2);
+  assert.equal(deepLink.app.getState().game.answers.length,2);
   // Disconnect just after the last answer, BEFORE finish/submit/finalize.
   await fresh.app.answer('Wrong 2');await fresh.app.next();
   await fresh.app.answer('Wrong 3');
