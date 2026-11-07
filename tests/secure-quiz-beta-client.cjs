@@ -52,7 +52,7 @@ const api={
  auth:{getSession:async()=>({data:{session:{user:{id:uid}}},error:null})},
  rpc:async(name,args)=>{
    calls.push(name);
-   if(name==='arcade_verify_begin_server')
+   if(name==='arcade_verify_begin_secure_server')
      return {data:{ok:true,server_issued:true,run_id:rid,question_ids:ids},error:null};
    if(name==='arcade_quiz_current_question_shadow'){
      assert.equal(args.p_index,serverIndex);
