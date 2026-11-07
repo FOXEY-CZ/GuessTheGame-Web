@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'preview-auth-test.html'
+      - 'account-test.js'
+      - 'account-test.js'
       - 'preview-3.6.html'
       - 'tests/guess-game-content.cjs'
       - '.github/workflows/verify-guess-the-game.yml'
