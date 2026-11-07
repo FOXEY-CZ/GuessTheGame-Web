@@ -162,9 +162,9 @@
 <body>
 <main class="wrap">
   <div class="header">
-    <a id="brandLink" class="brand" href="./arcade/">🦊 FOXEY <span>ARCADE</span></a>
+    <a id="brandLink" class="brand" href="./arcade/" target="_top">🦊 FOXEY <span>ARCADE</span></a>
     <div class="header-actions">
-      <a id="backToPlatform" class="platform-return" href="./arcade/">← Zpět do Arcade</a>
+      <a id="backToPlatform" class="platform-return" href="./arcade/" target="_top">← Zpět do Arcade</a>
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
       <button id="lang" class="lang" type="button">CZ / EN</button>
     </div>
@@ -185,13 +185,13 @@
     <h2 id="bootTitle">🛡️ Spouštím FOXEY Arcade…</h2>
     <p id="bootText" class="lead">Ověřuji přihlášení a připojení k serveru.</p>
     <button id="bootRetry" type="button" class="primary">🔄 Zkusit znovu</button>
-    <p class="lead"><a id="bootArcadeLink" href="./arcade/">↩ Přejít do původní FOXEY Arcade</a></p>
+    <p class="lead"><a id="bootArcadeLink" href="./arcade/" target="_top">↩ Přejít do původní FOXEY Arcade</a></p>
   </section>
 
   <section id="signIn" class="panel hidden">
     <h2 id="loginTitle">Nejdřív se přihlas do FOXEY Arcade</h2>
     <p class="lead" id="loginText">Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.</p>
-    <p><a href="./arcade/" id="loginLink">Přejít do FOXEY Arcade</a></p>
+    <p><a href="./arcade/" target="_top" id="loginLink">Přejít do FOXEY Arcade</a></p>
   </section>
 
   <section id="modePanel" class="panel hidden">
@@ -256,7 +256,7 @@
         <button id="checkAsyncChallenge" type="button">🏆 Zkontrolovat výsledek</button>
       </div>
       <p class="async-help" id="asyncLobbyStatus" role="status" aria-live="polite"></p>
-      <p class="async-help"><a id="challengeLink" href="./arcade/">↩ Starší offline výzvy v původní FOXEY Arcade</a></p>
+      <p class="async-help"><a id="challengeLink" href="./preview-auth-test.html" target="_blank" rel="noopener noreferrer">↩ Starší offline výzvy v původní FOXEY Arcade</a></p>
     </section>
     <section id="historySection" class="inbox-box" aria-labelledby="historyTitle">
       <div class="inbox-head">
@@ -323,7 +323,7 @@
     <p class="lead" id="noReward">Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.</p>
     <div class="bottom">
       <button id="againButton" class="primary" type="button">HRÁT ZNOVU</button>
-      <a href="./arcade/" id="backArcade">← ZPĚT DO ARCADE</a>
+      <a href="./arcade/" target="_top" id="backArcade">← ZPĚT DO ARCADE</a>
     </div>
   </section>
 
@@ -529,6 +529,8 @@
   let historyItems=[],historyUnread=0,historyLoading=false;
   const soloModes=['classic','mystery','daily','easy','medium','hard'];
   let soloProgressByMode=Object.create(null),soloLoading=false;
+  // The Arcade launcher may ask for challenges before login restore finishes.
+  let showChallengesAfterAuth=false;
   try {lang=localStorage.getItem(langKey)==='en'?'en':'cs';}catch(_){}
   const T=k=>tr[lang][k];
   function visible(id,on){$(id).classList.toggle('hidden',!on);}
@@ -762,6 +764,7 @@
     language();modeScreen();
     try{
       const urlParams=new URL(window.location.href).searchParams;
+      if(urlParams.get('view')==='challenges')showChallengesAfterAuth=true;
       const value=urlParams.get('challenge');
       if(value&&/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value)){
         $('asyncInvite').value=value;
@@ -773,8 +776,30 @@
       if(me&&resumeId&&uuidPattern.test(resumeId))
         void resumeAsyncChallenge(resumeId);
       else if(me&&urlParams.get('notifications')==='1')goToHistory();
+      if(showChallengesAfterAuth)openChallengesForLauncher();
     }catch(_){}
   }
+  function openChallengesForLauncher(){
+    if(!showChallengesAfterAuth||!me)return;
+    if(busy||game&&!game.resultShown){
+      status(T('resumePlaying'),'error');
+      showChallengesAfterAuth=false;
+      return;
+    }
+    if(game&&game.resultShown)modeScreen();
+    if($('modePanel').classList.contains('hidden'))return;
+    showChallengesAfterAuth=false;
+    $('asyncTitle').scrollIntoView?.({behavior:'smooth',block:'start'});
+  }
+  window.addEventListener('message',event=>{
+    // Only the parent document on this same GitHub Pages origin may issue
+    // navigation commands. The message NEVER changes scores or wallet state.
+    if(event.origin!==window.location.origin
+       ||event.source!==window.parent
+       ||event.data?.type!=='foxey-arcade:open-challenges')return;
+    showChallengesAfterAuth=true;
+    openChallengesForLauncher();
+  });
   function lock(on){
     busy=on;
     if(game){
