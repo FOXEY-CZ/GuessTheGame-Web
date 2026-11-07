@@ -40,7 +40,11 @@
     else target.textContent=AVATARS[id]||'🎮';
   }
   const PAGES = new Set(['home','games','play','shop','challenges','community','account','settings']);
-  const GAME_URL = '../preview-auth-test.html';
+  // Secure Quiz Beta is now the DEFAULT Guess the Game experience in Arcade.
+  // The legacy quiz stays addressable for old local progress/invite links.
+  // This server-first mode is still payout-disabled; never sync quiz XP as
+  // real wallet transactions until the separate verified rewards cutover.
+  const GAME_URL = '../secure-quiz-beta.html';
   const GOOGLE_OAUTH_READY = cfg?.googleOAuthEnabled === true;
   // Remember only whether this page was opened by an OAuth callback, never
   // read, store or log the returned access/refresh token values.
@@ -403,28 +407,35 @@
     if(!hasAuthCallback)history.replaceState(null,'','#'+(page==='home'?'domu':page));
     window.FOXEY_I18N?.apply();
   }
-  // Reuse the existing GTG challenge UI, not a second unverified scoring engine.
-  // Both pages are served from the same trusted GitHub Pages origin.
+  // The new embedded game exposes authenticated, server-verified challenges
+  // under its own "Soukromé výzvy" panel (not the old guest UI).
   function openChallengeInGame(){
     const frame=el('gameFrame');
     const identity=user?.id||'guest';
-    el('challengeLaunchStatus').textContent='⚔️ Otevírám výzvy v Guess the Game…';
+    el('challengeLaunchStatus').textContent=
+      user?'⚔️ Otevírám zabezpečené výzvy…':
+        '🔐 Pro nové serverové výzvy se přihlas ke svému FOXEY Arcade účtu.';
     go('play');
     const open=()=>{
       if(frame.dataset.player!==identity)return false;
       try{
-        const button=frame.contentDocument?.getElementById('openChallengeHome');
-        if(!button)return false;
-        button.click();
-        el('challengeLaunchStatus').textContent='✅ Výzvy jsou otevřené ve hře.';
+        const target=frame.contentDocument?.getElementById('asyncTitle');
+        if(!target||target.closest('#modePanel')?.classList.contains('hidden'))
+          return false;
+        target.scrollIntoView?.({behavior:'smooth',block:'start'});
+        el('challengeLaunchStatus').textContent=
+          '✅ Sekce serverových výzev je otevřená ve hře.';
         return true;
       }catch(_){return false;}
     };
     if(open())return;
-    // A fresh iframe must finish loading before its menu buttons exist.
-    // Register only one load callback for this request.
+    // Authentication resolves asynchronously inside the iframe; the same-
+    // origin page sends a specific readiness event when its menu is ready.
     frame.addEventListener('load',()=>{
-      if(!open())el('challengeLaunchStatus').textContent='⚠️ Otevři ve hře tlačítko „Výzva kamarádovi“.';
+      if(open())return;
+      el('challengeLaunchStatus').textContent=user?
+        '⚔️ Ve hře najdi sekci „Soukromé výzvy mezi hráči“.':
+        '🔐 Přihlas se v profilu FOXEY Arcade a potom otevři výzvy.';
     },{once:true});
   }
   function closeGameOnIdentityChange(){
