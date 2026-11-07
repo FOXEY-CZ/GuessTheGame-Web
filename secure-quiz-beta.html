@@ -483,11 +483,15 @@
     me=!error&&data?.session?.user||null;
     language();modeScreen();
     try{
-      const value=new URL(window.location.href).searchParams.get('challenge');
+      const urlParams=new URL(window.location.href).searchParams;
+      const value=urlParams.get('challenge');
       if(value&&/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value)){
         $('asyncInvite').value=value;
         $('asyncLobbyStatus').textContent=T('asyncInviteReady');
       }
+      // Standalone legacy games open this in a NEW tab so their active
+      // quiz/save remains untouched; all games share the same private inbox.
+      if(me&&urlParams.get('notifications')==='1')goToHistory();
     }catch(_){}
   }
   function lock(on){
