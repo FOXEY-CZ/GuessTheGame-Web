@@ -50,6 +50,34 @@
   .hidden{display:none!important}
   .bottom{display:grid;gap:12px;margin-top:23px}
   @media(min-width:680px){.bottom{grid-template-columns:1fr 1fr}}
+
+  /* Arcade visual identity: same colorful quiz motifs as the original design. */
+  .hero-art{width:160px;height:118px;margin:14px auto 18px;position:relative;display:grid;place-items:center;isolation:isolate}
+  .hero-orbit{position:absolute;width:128px;height:88px;border:1px solid #5ce4dd7a;border-radius:50%;transform:rotate(-27deg)}
+  .hero-orbit-b{width:140px;height:96px;border-color:#9d85ff66;transform:rotate(33deg)}
+  .hero-mark{position:relative;font-size:78px;line-height:1;font-weight:1000;color:var(--aqua);text-shadow:5px 5px 0 #8874f5,0 0 25px #48dbda55;transform:rotate(-5deg)}
+  .hero-spark{position:absolute;font-size:19px;color:var(--gold)}
+  .hero-spark-a{top:14px;left:10px}.hero-spark-b{right:3px;top:41px;color:#b6a0ff}.hero-spark-c{bottom:12px;left:20px;color:var(--aqua)}
+  .mode{flex-direction:row;align-items:center;gap:12px;min-width:0;padding:17px 13px}
+  .mode-icon{display:grid;place-items:center;flex:0 0 49px;height:49px;border-radius:15px;font-size:1.65rem;background:linear-gradient(135deg,#45558e,#292d68);border:1px solid #7772cf66;box-shadow:inset 0 1px #ffffff1b}
+  .mode[data-mode="mystery"] .mode-icon{background:linear-gradient(135deg,#276b77,#333669)}
+  .mode[data-mode="daily"] .mode-icon{background:linear-gradient(135deg,#69517b,#9b5c54)}
+  .mode[data-mode="easy"] .mode-icon{background:linear-gradient(135deg,#20564e,#2b445f)}
+  .mode[data-mode="medium"] .mode-icon{background:linear-gradient(135deg,#76502e,#5a3a67)}
+  .mode[data-mode="hard"] .mode-icon{background:linear-gradient(135deg,#863b52,#512b54)}
+  .mode-copy{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
+  .mode-arrow{font-size:1.55rem;color:var(--aqua);margin-left:auto;opacity:.8}
+  .stat .stat-icon{display:block;font-size:1.15rem;margin-bottom:5px;line-height:1.4}
+  .questionbox{text-align:center;align-items:center;min-height:205px}
+  .question-decor{display:flex;align-items:center;justify-content:center;gap:15px;width:100%;margin:1px auto 9px}
+  .question-decor strong{font-size:51px;line-height:1;color:var(--aqua);text-shadow:4px 3px #8277ec,0 0 18px #5bd4e055}
+  .question-decor span{font-size:17px;color:var(--gold)}
+  .question-decor span:last-child{color:#bfa3ff}
+  .result-art{display:grid;place-items:center;font-size:64px;width:103px;height:103px;margin:0 auto 18px;border-radius:28px;background:linear-gradient(145deg,#39366f,#1b4056);border:1px solid #8a89d479;box-shadow:0 0 32px #6360d333}
+  #resultPanel{text-align:center}
+  #resultPanel .statgrid{text-align:center}
+  @media(max-width:380px){.mode-icon{flex-basis:43px;height:43px;font-size:1.35rem}.mode{gap:10px;padding:13px 10px}.mode strong{font-size:.96rem}.mode small{font-size:.75rem}.hero-art{width:142px;height:103px;margin:9px auto}.hero-mark{font-size:68px}.questionbox{min-height:175px}}
+  @media(prefers-reduced-motion:reduce){.mode,.progress>div{transition:none!important}}
 </style>
 </head>
 <body>
@@ -60,6 +88,11 @@
   </div>
   <div class="hero">
     <div class="label" id="eyebrow">SERVEROVÁ BETA · BEZ PLATEB</div>
+    <div class="hero-art" aria-hidden="true">
+      <span class="hero-orbit hero-orbit-a"></span><span class="hero-orbit hero-orbit-b"></span>
+      <span class="hero-mark">?</span><span class="hero-spark hero-spark-a">✦</span>
+      <span class="hero-spark hero-spark-b">◆</span><span class="hero-spark hero-spark-c">✧</span>
+    </div>
     <h1 id="heroTitle">Poznáš hru bez nápovědy ze zdrojového kódu?</h1>
     <p class="lead" id="heroLead">Otázky i správné odpovědi spravuje server. Prohlížeč dostane jen aktuální zadání a čtyři možnosti.</p>
   </div>
@@ -75,12 +108,12 @@
     <div class="label" id="modeEyebrow">SERVEROVÁ VOLBA OTÁZEK</div>
     <h2 id="modeTitle">Vyber režim</h2>
     <div class="modes" id="modes">
-      <button class="mode" type="button" data-mode="classic"><strong>🎮 Rychlá hra</strong><small>10 otázek · různé obtížnosti</small></button>
-      <button class="mode" type="button" data-mode="mystery"><strong>🔎 Mystery Mode</strong><small>10 otázek · postupné indicie</small></button>
-      <button class="mode" type="button" data-mode="daily"><strong>☀️ Denní výzva</strong><small>5 otázek · serverové zadání</small></button>
-      <button class="mode" type="button" data-mode="easy"><strong>🌱 Nováček</strong><small>10 snadných otázek</small></button>
-      <button class="mode" type="button" data-mode="medium"><strong>⚡ Zkušený hráč</strong><small>10 středních otázek</small></button>
-      <button class="mode" type="button" data-mode="hard"><strong>🔥 Hardcore</strong><small>10 těžkých otázek</small></button>
+      <button class="mode" type="button" data-mode="classic"><span class="mode-icon" aria-hidden="true">⚡</span><span class="mode-copy"><strong>Rychlá hra</strong><small>10 otázek · různé obtížnosti</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
+      <button class="mode" type="button" data-mode="mystery"><span class="mode-icon" aria-hidden="true">🧩</span><span class="mode-copy"><strong>Mystery Mode</strong><small>10 otázek · postupné indicie</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
+      <button class="mode" type="button" data-mode="daily"><span class="mode-icon" aria-hidden="true">📅</span><span class="mode-copy"><strong>Denní výzva</strong><small>5 otázek · serverové zadání</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
+      <button class="mode" type="button" data-mode="easy"><span class="mode-icon" aria-hidden="true">🟢</span><span class="mode-copy"><strong>Nováček</strong><small>10 snadných otázek</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
+      <button class="mode" type="button" data-mode="medium"><span class="mode-icon" aria-hidden="true">🟠</span><span class="mode-copy"><strong>Zkušený hráč</strong><small>10 středních otázek</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
+      <button class="mode" type="button" data-mode="hard"><span class="mode-icon" aria-hidden="true">🔥</span><span class="mode-copy"><strong>Hardcore</strong><small>10 těžkých otázek</small></span><span class="mode-arrow" aria-hidden="true">→</span></button>
     </div>
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
@@ -93,12 +126,13 @@
       <strong id="hearts" aria-label="Životy">❤️❤️❤️</strong>
     </div>
     <div class="statgrid">
-      <div class="stat"><b id="count">1 / 10</b><span id="countLabel">OTÁZKA</span></div>
-      <div class="stat"><b id="xp">0</b><span>XP</span></div>
-      <div class="stat"><b id="correct">0</b><span id="correctLabel">SPRÁVNĚ</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">🎮</span><b id="count">1 / 10</b><span id="countLabel">OTÁZKA</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="xp">0</b><span>XP</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">🎯</span><b id="correct">0</b><span id="correctLabel">SPRÁVNĚ</span></div>
     </div>
     <div class="progress"><div id="fill"></div></div>
     <div class="questionbox">
+      <div class="question-decor" aria-hidden="true"><span>✦</span><strong>?</strong><span>✧</span></div>
       <div class="difficulty" id="difficulty"></div>
       <p class="question" id="question"></p>
     </div>
@@ -117,12 +151,13 @@
   </section>
 
   <section id="resultPanel" class="panel hidden">
+    <div id="resultArt" class="result-art" aria-hidden="true">🏆</div>
     <div class="label" id="resultLabel">OVĚŘENÝ TEST</div>
     <h2 id="resultTitle">Partie dokončena</h2>
     <div class="statgrid">
-      <div class="stat"><b id="finalScore">0</b><span>XP</span></div>
-      <div class="stat"><b id="finalCorrect">0</b><span id="finalCorrectLabel">SPRÁVNĚ</span></div>
-      <div class="stat"><b id="finalLives">0</b><span id="finalLivesLabel">ŽIVOTY</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="finalScore">0</b><span>XP</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">🎯</span><b id="finalCorrect">0</b><span id="finalCorrectLabel">SPRÁVNĚ</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">❤️</span><b id="finalLives">0</b><span id="finalLivesLabel">ŽIVOTY</span></div>
     </div>
     <div class="message" id="auditMessage"></div>
     <p class="lead" id="noReward">Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.</p>
@@ -150,7 +185,7 @@
       loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'SERVEROVÁ VOLBA OTÁZEK',
-      modeTitle:'Vyber režim',modeNames:['🎮 Rychlá hra','🔎 Mystery Mode','☀️ Denní výzva','🌱 Nováček','⚡ Zkušený hráč','🔥 Hardcore'],
+      modeTitle:'Vyber režim',modeNames:['Rychlá hra','Mystery Mode','Denní výzva','Nováček','Zkušený hráč','Hardcore'],
       modeSub:['10 otázek · různé obtížnosti','10 otázek · postupné indicie','5 otázek · serverové zadání','10 snadných otázek','10 středních otázek','10 těžkých otázek'],
       statusReady:'✅ Připojeno k serveru. Otázky vybírá Supabase.',statusLoading:'🛡️ Připravuji serverovou partii…',statusQuestion:'Načítám otázku ze serveru…',statusNetwork:'⚠️ Nepodařilo se spojit se serverem. Opakuj stejný požadavek.',
       statusLogin:'Přihlas se v Arcade a potom znovu otevři tuto stránku.',
@@ -175,7 +210,7 @@
       loginTitle:'Sign in to FOXEY Arcade first',
       loginText:'This beta requires an account. The original guest and offline game is still available.',
       loginLink:'Open FOXEY Arcade',modeEyebrow:'SERVER-SELECTED QUESTIONS',
-      modeTitle:'Choose a mode',modeNames:['🎮 Quick Game','🔎 Mystery Mode','☀️ Daily Challenge','🌱 Beginner','⚡ Intermediate','🔥 Hardcore'],
+      modeTitle:'Choose a mode',modeNames:['Quick Game','Mystery Mode','Daily Challenge','Beginner','Intermediate','Hardcore'],
       modeSub:['10 mixed questions','10 questions · reveal clues','5 server-selected questions','10 easy questions','10 medium questions','10 hard questions'],
       statusReady:'✅ Connected. Supabase selects the questions.',statusLoading:'🛡️ Starting a verified server run…',statusQuestion:'Loading question from server…',statusNetwork:'⚠️ The server request failed. Retry the same action.',
       statusLogin:'Sign in via Arcade and reopen this page.',statusOffline:'The secure beta requires an internet connection.',
@@ -444,6 +479,7 @@
     }catch(err){
       status(T('auditError')+' ('+errorText(err)+')','error');
     }
+    $('resultArt').textContent=game.lives===0?'💔':game.correct>=game.ids.length?'🏆':'🎮';
     $('finalScore').textContent=String(game.score);
     $('finalCorrect').textContent=String(game.correct)+' / '+game.ids.length;
     $('finalLives').textContent=String(game.lives);
