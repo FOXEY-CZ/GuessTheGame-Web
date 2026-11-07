@@ -261,6 +261,15 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
 .game-notifications-shortcut{display:inline-flex;align-items:center;justify-content:center;min-width:39px;min-height:39px;padding:5px 7px;border:1px solid #62719a;border-radius:12px;background:#263654;color:#fff;text-decoration:none;font-size:21px;line-height:1}
 .game-notifications-shortcut:hover,.game-notifications-shortcut:focus-visible{border-color:#67e5df;background:#314b6c}
 @media(max-width:400px){.game-notifications-shortcut{min-width:35px;min-height:35px;font-size:19px;padding:3px}}
+
+/* New main game entry without redirecting old challenge URLs or deleting local saves. */
+.secure-upgrade-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:3px 0 16px;padding:11px 12px;border:1px solid #528c9c;border-radius:13px;
+  background:linear-gradient(130deg,#123542,#252c51);font-size:11px;font-weight:700;line-height:1.4}
+.secure-upgrade-banner a{color:#f0ffff;text-decoration:none;background:#285f68;
+  border:1px solid #75bec0;border-radius:10px;padding:10px 11px;white-space:nowrap}
+@media(max-width:430px){.secure-upgrade-banner{flex-direction:column;align-items:stretch;text-align:center}
+.secure-upgrade-banner a{white-space:normal}}
 </style>
 <script src="arcade/avatars.js"></script>
 </head>
@@ -272,6 +281,11 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
       <button class="logo" id="logoHome" type="button" aria-label="Home"><span class="logo-symbol">?</span><span><b>GUESS THE GAME</b><small>V3.6 · SYNC TEST</small></span></button>
       <div class="top-actions"><a class="game-notifications-shortcut" href="./secure-quiz-beta.html?notifications=1" target="_blank" rel="noopener noreferrer" aria-label="Otevřít upozornění FOXEY Arcade" title="Oznámení FOXEY Arcade">🔔</a><button id="langToggle" class="pill" type="button" aria-label="Switch language">EN</button><button id="profileTop" class="avatar" type="button" aria-label="Profile">👾</button></div>
     </header>
+
+    <div class="secure-upgrade-banner">
+      <span>🛡️ Tohle je starší verze Guess the Game.</span>
+      <a href="./secure-quiz-beta.html" target="_blank" rel="noopener noreferrer">▶ Hrát novou zabezpečenou verzi</a>
+    </div>
 
     <main id="home" class="screen">
       <section class="hero glow-card">
