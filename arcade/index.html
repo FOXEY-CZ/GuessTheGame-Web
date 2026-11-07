@@ -91,10 +91,11 @@
       <div class="gamegrid">
         <article class="gamecard available"><div class="gameart">🎮<span class="shine"></span></div>
           <div class="gamecontent"><span class="tag live">Hratelné</span><h2>Guess the Game</h2>
-            <p>Hádej videohry, sbírej odměny a vyzvi kamaráda. Naše první minihra.</p>
+            <p>Poznávej hry v zabezpečeném kvízu, pokračuj v rozehraných partiích a vyzývej kamarády. Odpovědi i skóre ověřuje server.</p>
             <button class="primary full" data-page="play" type="button">▶ Hrát v FOXEY Arcade</button>
-            <p class="note">Hraješ uvnitř FOXEY Arcade. Pokud jsi přihlášený, načte se tvůj cloudový postup z testovací Guess the Game. Starší lokální uložené pozice se automaticky nepřenášejí.</p>
-            <a class="small" href="https://foxey-cz.github.io/GuessTheGame-Web/preview-3.6.html" target="_blank" rel="noopener noreferrer">Otevřít původní stabilní verzi ↗</a>
+            <p class="note">🛡️ Hlavní verzí je teď zabezpečená Guess the Game. Přihlas se ke svému účtu. Skóre nové hry se bezpečně ukládá, ale XP a měny se zatím nepřipisují do skutečné peněženky. Starý postup zůstává zachovaný odděleně.</p>
+            <a class="small" href="../preview-auth-test.html" target="_blank" rel="noopener noreferrer">🕹️ Původní Guess the Game a staré výzvy ↗</a>
+            <a class="small" href="../preview-3.6.html" target="_blank" rel="noopener noreferrer">Archivní stabilní verze ↗</a>
           </div></article>
         <article class="gamecard"><div class="gameart meme">😂</div><div class="gamecontent"><span class="tag">Připravujeme</span><h2>Guess the Meme</h2><p>Jak dobře znáš internetové memy?</p></div></article>
         <article class="gamecard"><div class="gameart draw">🎨</div><div class="gamecontent"><span class="tag">V plánu</span><h2>Draw &amp; Guess</h2><p>Jeden kreslí, ostatní hádají.</p></div></article>
@@ -105,10 +106,10 @@
     <section class="page hidden" id="page-play">
       <div class="gameplaybar">
         <button class="secondary" type="button" data-page="games">← Zpět na hry</button>
-        <div><strong>🎮 Guess the Game</strong><span class="small">Cloudové ukládání přes účet FOXEY Arcade</span></div>
-        <a class="small" href="https://foxey-cz.github.io/GuessTheGame-Web/preview-auth-test.html" target="_blank" rel="noopener noreferrer">Otevřít samostatně ↗</a>
+        <div><strong>🎮 Guess the Game</strong><span class="small">Zabezpečená serverová verze · průběh u účtu</span></div>
+        <a class="small" href="../secure-quiz-beta.html" target="_blank" rel="noopener noreferrer">Otevřít samostatně ↗</a>
       </div>
-      <p class="small" id="gameHelp">Používáme testovací verzi Guess the Game se synchronizací účtu. Ve hře zatím zůstává i stará správa účtu; přesuneme ji až po dokončení centrální správy v Arcade.</p>
+      <p class="small" id="gameHelp">🛡️ Tohle je nová zabezpečená Guess the Game: šest režimů s uloženým postupem, soukromé výzvy a historie výsledků. Vyžaduje přihlášení. Nově získané herní body jsou zatím testové a nemění skutečné XP, korunky ani krystaly.</p>
       <iframe id="gameFrame" title="Guess the Game – vestavěná hra" loading="lazy" allow="fullscreen"></iframe>
     </section>
 
@@ -180,18 +181,19 @@
 
     <section class="page hidden" id="page-challenges">
       <span class="eyebrow">FOXEY CHALLENGES · BETA</span><h1>⚔️ Výzvy mezi kamarády</h1>
-      <p>Zkus překonat kamaráda ve stejném kvízu. Výzvy zatím běží přes ověřený online systém Guess the Game — žádné druhé účty ani druhá sada výsledků.</p>
+      <p>Vytvoř zabezpečenou výzvu a pošli ji kamarádovi. Oba hrajete stejné serverové otázky, skóre se zobrazí až po dokončení obou hráčů. Pro nové výzvy je potřeba účet.</p>
       <div class="twogrid">
         <article class="tile">
           <div class="tileicon">🎮</div><h2>Guess the Game</h2>
           <p>Vytvoř výzvu, pošli odkaz kamarádovi a porovnejte první dokončené pokusy. Oba hrajete stejné otázky.</p>
           <button class="primary full" id="launchChallenge" type="button">⚔️ Otevřít výzvy ve hře</button>
-          <p class="note" id="challengeLaunchStatus" role="status" aria-live="polite">Výzvy fungují i bez registrace. Výsledek uchovej pomocí odkazu.</p>
+          <p class="note" id="challengeLaunchStatus" role="status" aria-live="polite">Nové výzvy jsou uložené na účtu a dohledáš je ve zvonečku. Staré výzvy zůstávají v původní verzi hry.</p>
+          <a class="small" href="../preview-auth-test.html" target="_blank" rel="noopener noreferrer">Původní výzvy a odkazy ↗</a>
         </article>
         <article class="tile">
           <div class="tileicon">🏆</div><h2>Historie v Arcade</h2>
-          <p>Společná historie výzev, statistiky výher a oznámení budou další etapou. Současné odkazy a výsledky Guess the Game zůstanou funkční.</p>
-          <span class="tag">Připravujeme</span>
+          <p>Historii serverových výzev a nové výsledky už najdeš ve 🔔 zvonečku nahoře i přímo ve hře. Rozšířené statistiky a přátelé přijdou později.</p>
+          <span class="tag live">Aktivní</span>
         </article>
       </div>
     </section>
