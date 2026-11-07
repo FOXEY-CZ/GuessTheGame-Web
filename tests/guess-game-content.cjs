@@ -83,6 +83,31 @@ assert.ok(current.html.includes("if(session.lives===0){finish();return;}"),
 assert.ok(current.html.includes("const s=session;session=null;saveSession();"),
   'Finalizing must clear the resumable session');
 
+// Verify that premium crowns are deliberately rare and never given on replay.
+const helperStart=current.html.indexOf('function premiumReward(');
+const helperEnd=current.html.indexOf('\n  function finish(){',helperStart);
+assert.ok(helperStart>=0&&helperEnd>helperStart,'Missing isolated premium reward calculator');
+const premium=Function(current.html.slice(helperStart,helperEnd)+'\nreturn premiumReward;')();
+assert.deepEqual(premium(true,false,1,2,0),{perfect:0,milestone:0,badges:0,total:0},
+  'An ordinary quiz must not generate premium crowns');
+assert.deepEqual(premium(true,true,1,2,0),{perfect:1,milestone:0,badges:0,total:1},
+  'A perfect quiz may earn one crown');
+assert.deepEqual(premium(true,false,9,10,0),{perfect:0,milestone:1,badges:0,total:1},
+  'One crown at level 10');
+assert.deepEqual(premium(true,false,19,20,2),{perfect:0,milestone:1,badges:2,total:3},
+  'Level 20 and two new badges are milestone rewards');
+assert.deepEqual(premium(false,true,9,10,3),{perfect:0,milestone:0,badges:0,total:0},
+  'Daily/challenge replay may never generate premium crowns');
+assert.ok(!current.html.includes('profile.crowns+=3;'),
+  'Every normal level-up must not grant three crowns');
+assert.ok(!current.html.includes('Math.floor(s.correct/4)'),
+  'Regular correct answers must not mint premium currency');
+const dictStart=current.html.indexOf('const translations = {')+'const translations = '.length;
+const dictEnd=current.html.indexOf('\n  };',dictStart)+4;
+const translations=Function('return ('+current.html.slice(dictStart,dictEnd)+')')();
+const missingKeys=Object.keys(translations.cs).filter(key=>!Object.hasOwn(translations.en,key));
+assert.deepEqual(missingKeys,[],'English translation is missing keys, including reward descriptions');
+
 // Syntax check game logic independently from rendering it or touching saves.
 for(const file of gameFiles){
   const html=file===gameFiles[0]?current.html:stable.html;
