@@ -133,6 +133,13 @@
   </div>
   <div class="status" id="status" role="status" aria-live="polite"></div>
 
+  <section id="bootPanel" class="panel" aria-live="polite">
+    <h2 id="bootTitle">🛡️ Spouštím FOXEY Arcade…</h2>
+    <p id="bootText" class="lead">Ověřuji přihlášení a připojení k serveru.</p>
+    <button id="bootRetry" type="button" class="primary">🔄 Zkusit znovu</button>
+    <p class="lead"><a id="bootArcadeLink" href="./arcade/">↩ Přejít do původní FOXEY Arcade</a></p>
+  </section>
+
   <section id="signIn" class="panel hidden">
     <h2 id="loginTitle">Nejdřív se přihlas do FOXEY Arcade</h2>
     <p class="lead" id="loginText">Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.</p>
@@ -301,7 +308,10 @@
       historyUnread:'NOVÝ VÝSLEDEK',
       historyPlayingHelp:'Rozehranou výzvu zatím není možné obnovit po zavření stránky.',
       historyBell:'Moje výzvy; nových výsledků: {n}',
-      historyFinishFirst:'🎮 Nejdřív dokonči rozehranou partii, abys nepřišel o její výsledek.'
+      historyFinishFirst:'🎮 Nejdřív dokonči rozehranou partii, abys nepřišel o její výsledek.',
+      bootTitle:'🛡️ Spouštím FOXEY Arcade…',bootText:'Ověřuji přihlášení a připojení k serveru.',
+      bootRetry:'🔄 Zkusit znovu',bootArcadeLink:'↩ Přejít do původní FOXEY Arcade',
+      bootFailed:'⚠️ Spuštění se nezdařilo. Zkus obnovení připojení nebo otevři původní Arcade.'
     },
     en:{
       eyebrow:'SERVER BETA · NO PAYOUTS',
@@ -358,7 +368,10 @@
       historyUnread:'NEW RESULT',
       historyPlayingHelp:'Refreshing or closing an unfinished challenge cannot be recovered yet.',
       historyBell:'My challenges; unread results: {n}',
-      historyFinishFirst:'🎮 Finish the current quiz first so its result is saved.'
+      historyFinishFirst:'🎮 Finish the current quiz first so its result is saved.',
+      bootTitle:'🛡️ Starting FOXEY Arcade…',bootText:'Checking sign-in and server connection.',
+      bootRetry:'🔄 Try again',bootArcadeLink:'↩ Open the original FOXEY Arcade',
+      bootFailed:'⚠️ Could not start. Retry the connection or open the original Arcade.'
     }
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
@@ -379,7 +392,9 @@
       modeEyebrow:'modeEyebrow',modeTitle:'modeTitle',modeLabel:'gameLabel',
       count:'countLabel',correct:'correctLabel',resultLabel:'resultLabel',
       resultTitle:'resultTitle',noReward:'noReward',again:'againButton',
-      back:'backArcade',footer:'footer',hearts:'hearts'
+      back:'backArcade',footer:'footer',hearts:'hearts',
+      bootTitle:'bootTitle',bootText:'bootText',bootRetry:'bootRetry',
+      bootArcadeLink:'bootArcadeLink'
     };
     Object.entries(ids).forEach(([key,id])=>{
       if(key==='hearts'){$('hearts').setAttribute('aria-label',T('hearts'));return;}
@@ -405,18 +420,30 @@
       btn.querySelector('small').textContent=T('modeSub')[i];
     });
     $('lang').textContent=lang==='cs'?'EN':'CZ';
-    renderHistory();
+    // History is optional UI; never let it abort bootstrap/authentication.
+    // Previously this ran before getSession() had even finished.
+    if(me){
+      try{renderHistory();}
+      catch(err){console.warn('FOXEY history UI is unavailable',err);}
+    }
     if(game&&current)renderQuestion();
   }
   function modeScreen(){
     game=null;current=null;pending=null;busy=false;
+    visible('bootPanel',false);
     visible('modePanel',!!me);visible('signIn',!me);
     visible('gamePanel',false);visible('resultPanel',false);
     status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
     if(me)void refreshHistory();
   }
   async function authenticate(){
-    if(!window.supabase?.createClient||!cfg?.publishableKey){status(T('statusNetwork'),'error');return;}
+    visible('bootPanel',true);
+    if(!window.supabase?.createClient||!cfg?.publishableKey){
+      $('bootText').textContent=T('bootFailed');
+      visible('signIn',true);
+      status(T('statusNetwork'),'error');
+      return;
+    }
     api=window.supabase.createClient(cfg.url,cfg.publishableKey,{
       auth:{storageKey:cfg.storageKey,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
     });
@@ -898,6 +925,11 @@
     }
     void refreshHistory();
   }
+  $('bootRetry').addEventListener('click',()=>void authenticate().catch(err=>{
+    $('bootText').textContent=T('bootFailed')+' ('+errorText(err)+')';
+    visible('bootPanel',true);visible('signIn',true);
+    status(T('statusNetwork'),'error');
+  }));
   $('historyBell').addEventListener('click',goToHistory);
   $('historyRefresh').addEventListener('click',()=>void refreshHistory());
   $('createAsyncChallenge').addEventListener('click',()=>void createAsyncChallenge());
@@ -941,8 +973,15 @@
   window.setInterval?.(()=>{
     if(me&&document.visibilityState!=='hidden')void refreshHistory();
   },45000);
-  language();
-  void authenticate().catch(()=>status(T('statusNetwork'),'error'));
+  // Bootstrap must always render at least one usable screen, even if optional
+  // history widgets, browser storage, or sign-in encounter an exception.
+  try{language();}
+  catch(err){console.warn('FOXEY optional layout failed during start',err);}
+  void authenticate().catch(err=>{
+    $('bootText').textContent=T('bootFailed')+' ('+errorText(err)+')';
+    visible('bootPanel',true);visible('signIn',true);
+    status(T('statusNetwork'),'error');
+  });
 })();
 </script>
 </body>
