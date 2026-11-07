@@ -347,6 +347,14 @@
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'SERVEROVÁ VOLBA OTÁZEK',
       modeTitle:'Vyber režim',modeNames:['Rychlá hra','Mystery Mode','Denní výzva','Nováček','Zkušený hráč','Hardcore'],
       modeSub:['10 otázek · různé obtížnosti','10 otázek · postupné indicie','5 otázek · serverové zadání','10 snadných otázek','10 středních otázek','10 těžkých otázek'],
+      soloNew:'🆕 Nová hra',soloContinue:'▶️ Pokračovat',soloLoading:'🛡️ Načítám rozehrané hry…',
+      soloRefresh:'🔄 Obnovit',soloReady:'✅ Rozehrané hry jsou synchronizované se serverem.',
+      soloError:'⚠️ Nepodařilo se načíst rozehrané hry: {error}',
+      soloNoSaved:'V tomto režimu nemáš rozehranou hru.',
+      soloProgress:'🎮 Otázka {index}/{total} · {points} bodů · {lives} životy',
+      soloFinishPending:'🏁 Dohráno · čeká na potvrzení výsledku',
+      soloResuming:'⏯️ Načítám uloženou partii ze serveru…',
+      soloRestored:'✅ Pokračuješ ve své uložené partii.',
       statusReady:'✅ Připojeno k serveru. Otázky vybírá Supabase.',statusLoading:'🛡️ Připravuji serverovou partii…',statusQuestion:'Načítám otázku ze serveru…',statusNetwork:'⚠️ Nepodařilo se spojit se serverem. Opakuj stejný požadavek.',
       statusLogin:'Přihlas se v Arcade a potom znovu otevři tuto stránku.',
       statusOffline:'Pro serverovou betu musíš být online.',modeLabel:'SERVEROVÝ KVÍZ',count:'OTÁZKA',correct:'SPRÁVNĚ',
@@ -420,6 +428,14 @@
       loginLink:'Open FOXEY Arcade',modeEyebrow:'SERVER-SELECTED QUESTIONS',
       modeTitle:'Choose a mode',modeNames:['Quick Game','Mystery Mode','Daily Challenge','Beginner','Intermediate','Hardcore'],
       modeSub:['10 mixed questions','10 questions · reveal clues','5 server-selected questions','10 easy questions','10 medium questions','10 hard questions'],
+      soloNew:'🆕 New game',soloContinue:'▶️ Continue',soloLoading:'🛡️ Loading unfinished games…',
+      soloRefresh:'🔄 Refresh',soloReady:'✅ Unfinished games are synced with the server.',
+      soloError:'⚠️ Could not load unfinished games: {error}',
+      soloNoSaved:'No unfinished game in this mode.',
+      soloProgress:'🎮 Question {index}/{total} · {points} points · {lives} lives',
+      soloFinishPending:'🏁 Played · awaiting result verification',
+      soloResuming:'⏯️ Restoring your saved game from the server…',
+      soloRestored:'✅ Your saved game is ready.',
       statusReady:'✅ Connected. Supabase selects the questions.',statusLoading:'🛡️ Starting a verified server run…',statusQuestion:'Loading question from server…',statusNetwork:'⚠️ The server request failed. Retry the same action.',
       statusLogin:'Sign in via Arcade and reopen this page.',statusOffline:'The secure beta requires an internet connection.',
       modeLabel:'VERIFIED SERVER QUIZ',count:'QUESTION',correct:'CORRECT',
@@ -490,6 +506,8 @@
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
+  const soloModes=['classic','mystery','daily','easy','medium','hard'];
+  let soloProgressByMode=Object.create(null),soloLoading=false;
   try {lang=localStorage.getItem(langKey)==='en'?'en':'cs';}catch(_){}
   const T=k=>tr[lang][k];
   function visible(id,on){$(id).classList.toggle('hidden',!on);}
@@ -535,11 +553,14 @@
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
     $('retryButton').textContent=T('retry');
-    const modeButtons=[...$('modes').querySelectorAll('[data-mode]')];
-    modeButtons.forEach((btn,i)=>{
-      btn.querySelector('strong').textContent=T('modeNames')[i];
-      btn.querySelector('small').textContent=T('modeSub')[i];
+    soloModes.forEach((mode,i)=>{
+      $('soloName_'+mode).textContent=T('modeNames')[i];
+      $('soloSub_'+mode).textContent=T('modeSub')[i];
+      $('soloStart_'+mode).textContent=T('soloNew');
+      $('soloContinue_'+mode).textContent=T('soloContinue');
     });
+    $('soloRefresh').textContent=T('soloRefresh');
+    renderSoloModes();
     $('lang').textContent=lang==='cs'?'EN':'CZ';
     // History is optional UI; never let it abort bootstrap/authentication.
     // Previously this ran before getSession() had even finished.
