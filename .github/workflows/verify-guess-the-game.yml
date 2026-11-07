@@ -8,12 +8,14 @@ on:
       - 'account-test.js'
       - 'preview-3.6.html'
       - 'tests/guess-game-content.cjs'
+      - 'tests/server-quiz-launch.cjs'
       - '.github/workflows/verify-guess-the-game.yml'
   pull_request:
     paths:
       - 'preview-auth-test.html'
       - 'preview-3.6.html'
       - 'tests/guess-game-content.cjs'
+      - 'tests/server-quiz-launch.cjs'
       - '.github/workflows/verify-guess-the-game.yml'
   workflow_dispatch:
 
@@ -31,3 +33,5 @@ jobs:
           node-version: '24'
       - name: Check Guess the Game question bank and modes
         run: node tests/guess-game-content.cjs
+      - name: Check server-issued quiz start and fallbacks
+        run: node tests/server-quiz-launch.cjs
