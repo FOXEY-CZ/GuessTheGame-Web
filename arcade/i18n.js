@@ -280,7 +280,20 @@
   "⚠️ Heslo se nepodařilo změnit. Zkontroluj odkaz a zkus to znovu.": "⚠️ Couldn't change your password. Check the link and try again.",
   "Liška": "Fox",
   "Mimozemšťan": "Alien",
-  "Koruna": "Crown"
+  "Koruna": "Crown",
+  "Poznávej hry v zabezpečeném kvízu, pokračuj v rozehraných partiích a vyzývej kamarády. Odpovědi i skóre ověřuje server.": "Guess games in a secure quiz, resume unfinished runs, and challenge friends. The server verifies answers and scores.",
+  "🛡️ Hlavní verzí je teď zabezpečená Guess the Game. Přihlas se ke svému účtu. Skóre nové hry se bezpečně ukládá, ale XP a měny se zatím nepřipisují do skutečné peněženky. Starý postup zůstává zachovaný odděleně.": "🛡️ The secure Guess the Game is now the primary version. Sign in with your account. New-game scores are saved securely, but XP and currencies are not yet credited to your live wallet. Your previous progress is preserved separately.",
+  "🕹️ Původní Guess the Game a staré výzvy ↗": "🕹️ Original Guess the Game and old challenges ↗",
+  "Archivní stabilní verze ↗": "Archived stable version ↗",
+  "Zabezpečená serverová verze · průběh u účtu": "Secure server-first version · account-based progress",
+  "🛡️ Tohle je nová zabezpečená Guess the Game: šest režimů s uloženým postupem, soukromé výzvy a historie výsledků. Vyžaduje přihlášení. Nově získané herní body jsou zatím testové a nemění skutečné XP, korunky ani krystaly.": "🛡️ This is the new secure Guess the Game: six modes with saved progress, private challenges and match history. Sign-in required. In-game points are currently test-only and do not change real XP, crowns or crystals.",
+  "Vytvoř zabezpečenou výzvu a pošli ji kamarádovi. Oba hrajete stejné serverové otázky, skóre se zobrazí až po dokončení obou hráčů. Pro nové výzvy je potřeba účet.": "Create a secure challenge and share it with a friend. Both players answer the same server-issued questions; scores unlock after both finish. New challenges require an account.",
+  "Nové výzvy jsou uložené na účtu a dohledáš je ve zvonečku. Staré výzvy zůstávají v původní verzi hry.": "New challenges are stored on your account and are available through the bell. Old challenges remain in the original game.",
+  "Původní výzvy a odkazy ↗": "Original challenges and links ↗",
+  "Historii serverových výzev a nové výsledky už najdeš ve 🔔 zvonečku nahoře i přímo ve hře. Rozšířené statistiky a přátelé přijdou později.": "Server challenge history and new results are available through the 🔔 bell above and inside the game. Detailed statistics and friends are coming later.",
+  "Aktivní": "Active",
+  "🔐 Pro nové serverové výzvy se přihlas ke svému FOXEY Arcade účtu.": "🔐 Sign in to your FOXEY Arcade account to play new server-verified challenges.",
+  "⚔️ Otevírám zabezpečené výzvy…": "⚔️ Opening secure challenges…"
 });
   const supported=new Set(['cs','en']);
   const readPreferred=()=>{
