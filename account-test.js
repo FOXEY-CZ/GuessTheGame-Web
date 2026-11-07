@@ -256,6 +256,50 @@
       ? msg('☁️ Na tomto prohlížeči je dostupné dřívější propojení. Kód nemusíš vkládat.', '☁️ Existing link detected in this browser. No need to paste the code.')
       : msg('Pokud máš propojovací kód z jiného zařízení, můžeš ho vložit níže.', 'Paste a linking code from another device if you have one.');
   }
+  // Read-only export to the player's computer. Never include Supabase JWT,
+  // password, refresh token, API credentials or localStorage account tokens.
+  function exportProgressBackup(){
+    if(!user)return;
+    try{
+      const current=game.getProfile();
+      if(!isProfile(current))throw Error('bad_profile');
+      const payload={
+        format:'foxey-arcade-gtg-save-backup',
+        version:1,
+        exportedAt:new Date().toISOString(),
+        cloudRevision:state?.revision??null,
+        lastSyncedAt:state?.lastSyncedAt||null,
+        profile:clone(current)
+      };
+      // A currently unresolved two-device conflict has two independent saves.
+      if(conflict){
+        if(!isProfile(conflict.profile))throw Error('bad_cloud_profile');
+        payload.conflictingCloud={
+          revision:conflict.revision,
+          profile:clone(conflict.profile)
+        };
+      }
+      const file=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(file);
+      try{
+        const anchor=document.createElement('a');
+        anchor.href=url;
+        anchor.download='foxey-gtg-save-'+new Date().toISOString().slice(0,10)+'.json';
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }finally{
+        setTimeout(()=>URL.revokeObjectURL(url),10000);
+      }
+      el('authExportBackupStatus').textContent=msg(
+        '✅ Záloha byla nabídnuta ke stažení. Uchovej ji v bezpečí; sama nic nepřepisuje.',
+        '✅ Backup download started. Store it safely; it does not overwrite anything.');
+    }catch(_){
+      el('authExportBackupStatus').textContent=msg(
+        '⚠️ Zálohu se nepodařilo stáhnout. Nic jsme v účtu neměnili.',
+        '⚠️ Could not download backup. Your account was not changed.');
+    }
+  }
   function captureGuest(){
     const existing=load(guestKey);
     if(!isProfile(existing))store(guestKey,game.getProfile());
@@ -795,6 +839,7 @@
   el('authRecoverySave').addEventListener('click',saveRecoveredPassword);
   el('authRecoveryCancel').addEventListener('click',cancelRecovery);
   el('authSyncNow').addEventListener('click',()=>syncNow());
+  el('authExportBackup').addEventListener('click',exportProgressBackup);
   el('authImportGuest').addEventListener('click',()=>createAccountSave('guest'));
   el('authStartFresh').addEventListener('click',()=>createAccountSave('fresh'));
   el('authImportLegacy').addEventListener('click',importLegacy);
