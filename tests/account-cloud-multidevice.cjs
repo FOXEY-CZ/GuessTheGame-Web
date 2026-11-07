@@ -121,6 +121,23 @@ async function main(){
     'A backup failure should be explained to the player');
   assert.equal(unbacked.backups.length,0);
 
+  // Explicitly choosing the local save must also keep a copy of cloud.
+  const localDB={
+    row:{profile:{...base,xp:200},revision:2},
+    writes:[],read:shared.read,write:shared.write
+  };
+  const keepLocal=factory({db:localDB,base,local:{...base,xp:215}},clone);
+  await keepLocal.syncNow();
+  assert.ok(keepLocal.conflict,'Divergent cloud and local data requires choice');
+  await keepLocal.resolveConflict('local');
+  await keepLocal.resolveConflict('local');
+  assert.equal(localDB.row.revision,3,'Local choice uses CAS on current cloud revision');
+  assert.equal(localDB.row.profile.xp,215,'Local choice writes only the chosen save');
+  assert.equal(keepLocal.backups.length,1,'Local choice must back up cloud too');
+  assert.equal(keepLocal.backups[0].value.cloud.xp,200);
+  assert.equal(keepLocal.backups[0].value.local.xp,215);
+  assert.equal(keepLocal.conflict,null);
+
   // A clean second device simply adopts the newer cloud save.
   const clean=factory({db:shared,base,local:clone(base)},clone);
   await clean.syncNow();
