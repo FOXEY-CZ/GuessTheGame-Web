@@ -840,8 +840,9 @@
         entry.status==='creator_playing'||entry.status==='challenger_playing'?
           T('historyPlayingHelp'):historyLabel(entry);
       const controls=document.createElement('div');controls.className='history-actions';
-      const mayResume=(entry.role==='creator'&&!entry.creator_done
-        ||entry.role==='challenger'&&!entry.challenger_done)
+      const mayResume=!entry.both_done&&
+        (entry.role==='creator'&&entry.creator_done===false
+          ||entry.role==='challenger'&&entry.challenger_done===false)
         && entry.status!=='expired';
       if(mayResume){
         const resume=document.createElement('button');resume.type='button';
