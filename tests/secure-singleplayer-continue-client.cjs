@@ -174,14 +174,23 @@ async function main(){
      'No resume button before a run exists');
    assert.equal(b.get('soloStart_'+m).textContent,'🆕 Nová hra');
  }
- await b.app.start('classic');
+ const onModes=b.get('modes').listeners.click;
+ assert.equal(typeof onModes,'function');
+ // Real delegated click on the visible New Game control.
+ onModes({target:{closest:selector=>
+   selector==='button[data-mode]'?{dataset:{mode:'classic'}}:null}});
+ await settle();
  const initial=b.app.getState().game.id;
  await b.app.hint();
  const fresh=browser(owner);await settle();
  assert.equal(fresh.get('soloContinue_classic').hidden,false);
  assert.equal(fresh.get('soloContinue_mystery').hidden,true);
  assert.ok(fresh.get('soloProgress_classic').textContent.includes('Otázka 1/10'));
- await fresh.app.resumeSolo('classic');
+ // Real delegated click on the visible Continue control.
+ fresh.get('modes').listeners.click({target:{closest:selector=>
+   selector==='button[data-solo-continue]'?
+     {dataset:{soloContinue:'classic'}}:null}});
+ await settle();
  assert.equal(fresh.app.getState().game.id,initial);
  assert.equal(fresh.app.getState().current.hint.cs,'Uložená nápověda');
  await fresh.app.answer('Right 0');
