@@ -118,6 +118,9 @@
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
     </p>
+    <p class="lead" style="font-size:.88rem;margin:12px 0 0">
+      <a id="challengeLink" href="./arcade/">⚔️ Multiplayer a výzvy → původní FOXEY Arcade</a>
+    </p>
   </section>
 
   <section id="gamePanel" class="panel hidden">
@@ -201,7 +204,8 @@
       again:'HRÁT ZNOVU',back:'← ZPĚT DO ARCADE',
       footer:'FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat',
       hearts:'Životy',
-      caveat:'🧪 Oddělená beta. Starý offline kvíz stále zveřejňuje původní klíč odpovědí. Ostré výplaty jsou vypnuté.'
+      caveat:'🧪 Oddělená beta. Starý offline kvíz stále zveřejňuje původní klíč odpovědí. Ostré výplaty jsou vypnuté.',
+      challenges:'⚔️ Multiplayer a výzvy → původní FOXEY Arcade'
     },
     en:{
       eyebrow:'SERVER BETA · NO PAYOUTS',
@@ -226,7 +230,8 @@
       again:'PLAY AGAIN',back:'← BACK TO ARCADE',
       footer:'FOXEY Arcade · Server-first beta · Answers disclosed only after the submitted choice · No payouts',
       hearts:'Lives',
-      caveat:'🧪 Isolated beta. The legacy offline quiz still exposes its original answer key. Real payouts remain disabled.'
+      caveat:'🧪 Isolated beta. The legacy offline quiz still exposes its original answer key. Real payouts remain disabled.',
+      challenges:'⚔️ Multiplayer & challenges → original FOXEY Arcade'
     }
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
@@ -252,6 +257,7 @@
       $(id).textContent=T(key);
     });
     $('legacyCaveat').textContent=T('caveat');
+    $('challengeLink').textContent=T('challenges');
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
