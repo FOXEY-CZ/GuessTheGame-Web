@@ -352,7 +352,7 @@ body:is(.theme-retro,.theme-royal,.theme-ocean) .glow-card{
     </main>
 
     <main id="result" class="screen hidden">
-      <section class="result glow-card"><div id="resultIcon" class="result-art">🏆</div><span class="tag neon" data-i18n="finished">VÝSLEDEK</span><h1 id="resultHeading"></h1><p id="resultSubtitle" class="subtext"></p><div class="finalscore"><strong id="resultScore">0</strong><span>XP</span></div><div class="result-stats"><div><b id="resultCorrect">0/10</b><span data-i18n="correct">SPRÁVNĚ</span></div><div><b id="resultStreak">0</b><span data-i18n="bestStreak">NEJDELŠÍ SÉRIE</span></div><div><b id="resultLives">0</b><span data-i18n="lives">ŽIVOTY</span></div></div><div id="resultEarned" class="earned"></div><div class="result-rewards"><div class="reward-card"><strong id="rewardShards">0</strong><span data-i18n="shards">KRYSTALY</span><small id="rewardShardsNote">+0</small></div><div class="reward-card"><strong id="rewardCrowns">0</strong><span data-i18n="crowns">KORUNY</span><small id="rewardCrownsNote">+0</small></div></div><div class="streak-meter-wrap"><div class="label"><span data-i18n="streakReward">ODMĚNA ZA SÉRII</span><b id="streakRewardLabel">0%</b></div><div class="streak-meter"><div id="streakRewardFill" class="streak-meter-fill"></div></div></div><div id="resultRibbon" class="result-ribbon"></div><p id="serverVerificationStatus" class="challenge-result-hint hidden" role="status" aria-live="polite"></p><div id="resultChallenge" class="challenge-result hidden">
+      <section class="result glow-card"><div id="resultIcon" class="result-art">🏆</div><span class="tag neon" data-i18n="finished">VÝSLEDEK</span><h1 id="resultHeading"></h1><p id="resultSubtitle" class="subtext"></p><div class="finalscore"><strong id="resultScore">0</strong><span>XP</span></div><div class="result-stats"><div><b id="resultCorrect">0/10</b><span data-i18n="correct">SPRÁVNĚ</span></div><div><b id="resultStreak">0</b><span data-i18n="bestStreak">NEJDELŠÍ SÉRIE</span></div><div><b id="resultLives">0</b><span data-i18n="lives">ŽIVOTY</span></div></div><div id="resultEarned" class="earned"></div><div class="result-rewards"><div class="reward-card"><strong id="rewardShards">0</strong><span data-i18n="shards">KRYSTALY</span><small id="rewardShardsNote">+0</small></div><div class="reward-card"><strong id="rewardCrowns">0</strong><span data-i18n="crowns">KORUNY</span><small id="rewardCrownsNote">+0</small></div></div><div class="streak-meter-wrap"><div class="label"><span data-i18n="streakReward">ODMĚNA ZA SÉRII</span><b id="streakRewardLabel">0%</b></div><div class="streak-meter"><div id="streakRewardFill" class="streak-meter-fill"></div></div></div><div id="resultRibbon" class="result-ribbon"></div><p id="serverVerificationStatus" class="challenge-result-hint hidden" role="status" aria-live="polite"></p><p id="serverProgressionStatus" class="challenge-result-hint hidden" role="status" aria-live="polite"></p><div id="resultChallenge" class="challenge-result hidden">
         <div class="challenge-result-title" data-i18n="challengeDuel">⚔ VÝSLEDEK VÝZVY</div>
         <div class="challenge-score-columns"><div><small data-i18n="challengeYou">TY</small><strong id="resultChallengeOwn">—</strong><small id="resultChallengeOwnInfo"></small></div><span class="challenge-versus">VS</span><div><small id="resultChallengeOppName">KAMARÁD</small><strong id="resultChallengeOpp">—</strong><small id="resultChallengeOppInfo"></small></div></div>
         <p id="resultChallengeOutcome" class="challenge-comparison-text"></p>
@@ -1144,7 +1144,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   function achievementPopup(def){
     const layer=element('achievementLayer');
     const pop=document.createElement('div');pop.className='achievement-pop';
-    pop.innerHTML=`<div class="achievement-row"><div class="icon">${def.icon}</div><div><b>${T('achievementsNew')}</b><small>${T(def.name)} · ${T(def.desc)}</small></div></div><div class="bonus">+2 ${T('crowns')}</div>`;
+    pop.innerHTML=`<div class="achievement-row"><div class="icon">${def.icon}</div><div><b>${T('achievementsNew')}</b><small>${T(def.name)} · ${T(def.desc)}</small></div></div><div class="bonus">+1 ${T('crowns')}</div>`;
     layer.append(pop);
     setTimeout(()=>pop.remove(),3200);
     burst();
@@ -1159,7 +1159,10 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(!valid){session=null;saveSession();}element('resume').classList.toggle('hidden',!valid);if(valid)updateText('resumeDesc',fmt(T('session'),{round:session.idx+1,total:session.ids.length}));
     show('home');window.dispatchEvent(new Event('gtg-home-screen'));
   }
-  function dailyReward(){if(profile.dailyClaimed===date()){toast(T('alreadyClaimed'));return;}playFeedback(true);profile.dailyClaimed=date();profile.xp+=20;saveProfile();burst();home();toast(T('rewardToast'));}
+  function dailyReward(){if(profile.dailyClaimed===date()){toast(T('alreadyClaimed'));return;}playFeedback(true);profile.dailyClaimed=date();profile.xp+=20;saveProfile();burst();home();toast(T('rewardToast'));
+    // Shadow-only preview, not additional XP or a wallet payout.
+    window.dispatchEvent(new CustomEvent('gtg-daily-reward-claimed',{detail:{day:profile.dailyClaimed}}));
+  }
   function makeIds(seed,mode){
     const config=(mode==='classic'||mode==='mystery'||mode==='challenge')?{easy:4,medium:4,hard:2}:mode==='daily'?{easy:2,medium:2,hard:1}:{[mode]:10};
     const recent=Array.isArray(profile.recentIds)?profile.recentIds:[];
@@ -1327,12 +1330,14 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     const levelRaised=rewardable&&level()>prevLevel;
     const dailyEarned=markDailyStreak(s);
     const newBadges=rewardable?updateBadgeState():[];
-    const premium=premiumReward(rewardable,perfect,prevLevel,level(),newBadges.length);
+    const eligiblePerfect=perfect&&profile.perfectPaidDay!==s.day;
+    const premium=premiumReward(rewardable,eligiblePerfect,prevLevel,level(),newBadges.length);
+    if(rewardable&&eligiblePerfect)profile.perfectPaidDay=s.day;
     profile.crowns=(profile.crowns||0)+premium.total;
     saveProfile();
     result={...s,newRecord:!challengeReplay&&newRecord,levelUp:levelRaised,perfect,newBadges,dailyEarned,dailyReplay,challengeReplay,rewardable,
       rewards:{shards:baseShards+bonusShards+(dailyEarned?.shards||0),crowns:premium.total,
-        streakBonus:bonusShards,recordBonus:0,levelBonus:premium.milestone,badgeBonus:premium.badges}};
+        streakBonus:bonusShards,recordBonus:0,perfectBonus:premium.perfect,levelBonus:premium.milestone,badgeBonus:premium.badges}};
     lastMode=s.mode;renderResult();
     if(s.verifyOperation&&Array.isArray(s.verifyAnswers) && s.mode!=='challenge')
       window.dispatchEvent(new CustomEvent('gtg-quiz-finished',{detail:{
@@ -1351,7 +1356,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     updateText('rewardShardsNote','+'+(r.rewards?.shards||0)); updateText('rewardCrownsNote','+'+(r.rewards?.crowns||0));
     const streakPct=Math.min(100,Math.max(10,r.maxStreak*10)); element('streakRewardFill').style.width=streakPct+'%'; updateText('streakRewardLabel',streakPct+'%');
     const ribbonKey=label==='Top'?'ribbonTop':label==='Mid'?'ribbonMid':label==='Dead'?'ribbonDead':'ribbonLow';
-    const extras=[];if(r.challengeReplay)extras.push(T('challengePractice'));if(r.dailyReplay)extras.push(T('dailyReplayDesc'));else if(!r.rewardable)extras.push(T('emptyRewardDesc')); if(r.rewards?.streakBonus) extras.push(fmt(T('rewardStreak'),{streak:r.maxStreak,bonus:r.rewards.streakBonus})); if(r.perfect&&r.rewardable) extras.push(T('rewardPerfect')); if(r.rewards?.recordBonus) extras.push(T('rewardRecord')); if(r.rewards?.levelBonus) extras.push(T('rewardLevel')); if(r.newBadges?.length) extras.push(T('rewardBadge'));if(r.dailyEarned)extras.push(fmt(T('dailyStreakResult'),{days:r.dailyEarned.days,gift:r.dailyEarned.gift}));
+    const extras=[];if(r.challengeReplay)extras.push(T('challengePractice'));if(r.dailyReplay)extras.push(T('dailyReplayDesc'));else if(!r.rewardable)extras.push(T('emptyRewardDesc')); if(r.rewards?.streakBonus) extras.push(fmt(T('rewardStreak'),{streak:r.maxStreak,bonus:r.rewards.streakBonus})); if(r.rewards?.perfectBonus) extras.push(T('rewardPerfect')); if(r.rewards?.recordBonus) extras.push(T('rewardRecord')); if(r.rewards?.levelBonus) extras.push(T('rewardLevel')); if(r.newBadges?.length) extras.push(T('rewardBadge'));if(r.dailyEarned)extras.push(fmt(T('dailyStreakResult'),{days:r.dailyEarned.days,gift:r.dailyEarned.gift}));
     element('resultRibbon').innerHTML='<b>'+T(ribbonKey)+'</b><br>'+fmt(T('rewardsSummary'),{summary:extras.length?extras.join(' · '):'—'});
     const scoreNode=element('resultScore'); scoreNode.classList.remove('score-bump'); void scoreNode.offsetWidth; scoreNode.classList.add('score-bump');
     const challengeOn=r.mode==='challenge'&&r.challenge;
