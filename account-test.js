@@ -172,16 +172,36 @@
       shadowRuns.delete(d.operation);
     }
   }
+  // This is a SECOND, non-financial verification. The existing local daily
+  // claim stays unchanged until real wallet cutover is independently approved.
+  function shadowDailyClaimStatus(csMessage,enMessage){
+    const node=el('serverDailyClaimStatus');
+    if(!node)return;
+    const value=msg(csMessage,enMessage);
+    node.textContent=value;
+    node.classList.toggle('hidden',!value);
+  }
   async function onShadowDailyClaim(){
     if(!user||!state||firstChoice||conflict||deletionInProgress
-      ||navigator.onLine===false)return;
+      ||navigator.onLine===false){
+      shadowDailyClaimStatus(
+        '🧪 Serverové potvrzení dnes není dostupné. Původní denní odměna zůstává.',
+        '🧪 Server verification unavailable today. Your original daily reward is unaffected.');
+      return;
+    }
     const uid=user.id;
     try{
       const {data,error}=await client.rpc('arcade_verify_daily_claim_shadow');
-      if(error||user?.id!==uid||data?.shadow!==true||data?.credited!==false)
+      if(error||user?.id!==uid||data?.shadow!==true||data?.credited!==false
+        ||data?.would_earn_xp!==20)
         throw Error('shadow_daily_claim_failed');
+      shadowDailyClaimStatus(
+        '🧪 Server eviduje denní bonus 20 XP (test, bez další výplaty).',
+        '🧪 Server recorded the daily 20 XP bonus (test only, no extra payout).');
     }catch(_){
-      // Shadow-only: an offline/error condition may not block the live local claim.
+      if(user?.id===uid)shadowDailyClaimStatus(
+        '⚠️ Test serverového denního bonusu selhal. Původní odměna zůstává.',
+        '⚠️ Server daily bonus test failed. Your original reward is unaffected.');
     }
   }
   const setFeedback = (cz,en) => {feedback=msg(cz,en);render();};
