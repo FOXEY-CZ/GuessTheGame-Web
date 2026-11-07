@@ -265,8 +265,17 @@
       await loadQuestion();
     }catch(err){
       status(T('statusNetwork')+' ('+errorText(err)+')','error');
-      if(!current){game=null;modeScreen();}
+      if(game&&!current)showQuestionLoadError();
+      else if(!game){visible('modePanel',true);visible('gamePanel',false);}
     }finally{lock(false);}
+  }
+  function showQuestionLoadError(){
+    $('question').textContent=T('statusQuestion');
+    $('options').replaceChildren();
+    visible('feedback',false);visible('hint',false);
+    visible('clues',false);visible('nextButton',false);
+    visible('hintButton',false);visible('revealButton',false);
+    visible('retryButton',true);
   }
   async function loadQuestion(){
     if(!game)return;
@@ -391,13 +400,18 @@
     status(T('statusReady'),'ok');renderQuestion();
   }
   async function next(){
-    if(!game||!current?.answered||busy)return;
+    if(!game||busy)return;
     if(game.finished){await finish();return;}
-    game.idx++;
+    // Preserve the requested next index on network failure so "Retry"
+    // reloads that same question instead of skipping server chronology.
+    if(current?.answered){game.idx++;current=null;}
+    else if(current)return;
     lock(true);
     try{await loadQuestion();}
-    catch(err){game.idx--;status(T('statusNetwork')+' ('+errorText(err)+')','error');}
-    finally{lock(false);}
+    catch(err){
+      status(T('statusNetwork')+' ('+errorText(err)+')','error');
+      showQuestionLoadError();
+    }finally{lock(false);}
   }
   async function finish(){
     if(!game||busy)return;
@@ -436,7 +450,7 @@
   $('revealButton').addEventListener('click',()=>void reveal());
   $('nextButton').addEventListener('click',()=>void next());
   $('retryButton').addEventListener('click',()=>{
-    if(!pending)return;
+    if(!pending){if(game&&!current)void next();return;}
     if(pending.type==='hint')void hint();
     else if(pending.type==='reveal')void reveal();
     else if(pending.type==='answer')void answer(pending.choice);
