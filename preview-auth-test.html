@@ -528,7 +528,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       badgeFive:'Vytrvalec',badgeFiveDesc:'Odehraj 5 kvízů',badgeCorrect:'Znalec her',badgeCorrectDesc:'Odpověz 30× správně',
       badgeXp1000:'Tisícovka',badgeXp1000Desc:'Nasbírej 1 000 XP',badgeTen:'Maratonec',badgeTenDesc:'Odehraj 10 kvízů',badge100:'Stovka',badge100Desc:'Odpověz 100× správně',badgeStreak:'Nezastavitelný',badgeStreakDesc:'Dej 10 správně za sebou',badgeRecord:'Lovec rekordů',badgeRecordDesc:'Získej v jednom kole 80 XP',badgeDaily:'Hvězda dne',badgeDailyDesc:'V denní výzvě získej aspoň 40 XP',badgeVeteran:'Veterán',badgeVeteranDesc:'Odehraj 25 kvízů',badgePerfect:'Bez chyby',badgePerfectDesc:'Dokonči kolo bez jediné chyby',
       rewardToast:'🎁 Denní odměna: +20 XP!',alreadyClaimed:'Dnešní odměnu už máš.',lockToast:'🔒 Odemkne se na levelu {level}',session:'Otázka {round} / {total}',
-      dailyBest:'Dnešní rekord: {score} XP', noStorage:'Ukládání není dostupné.', shards:'KRYSTALY', crowns:'KORUNY', streakReward:'ODMĚNA ZA SÉRII', rewardsSummary:'Bonusy: {summary}', rewardPerfect:'Perfektní hra +5 korun', rewardStreak:'Série {streak} +{bonus} krystalů', rewardRecord:'Nový rekord +2 koruny', rewardLevel:'Level up +3 koruny', rewardBadge:'Nový odznak +2 koruny', ribbonTop:'Legendární výkon. Odměna je maximální!', ribbonMid:'Pěkná hra. Příště zkus delší sérii.', ribbonLow:'Sbíráš XP i odměny. Jen tak dál!', ribbonDead:'I tak sis něco odnesl. Další pokus bude lepší!', achievementsNew:'NOVÉ ODZNAKY',
+      dailyBest:'Dnešní rekord: {score} XP', noStorage:'Ukládání není dostupné.', shards:'KRYSTALY', crowns:'KORUNY', streakReward:'ODMĚNA ZA SÉRII', rewardsSummary:'Bonusy: {summary}', rewardPerfect:'Perfektní hra +1 korunka', rewardStreak:'Série {streak} +{bonus} krystalů', rewardRecord:'Nový rekord (bez korunek)', rewardLevel:'Milník 10 úrovní +1 korunka', rewardBadge:'Nový odznak +1 korunka za každý', ribbonTop:'Legendární výkon. Odměna je maximální!', ribbonMid:'Pěkná hra. Příště zkus delší sérii.', ribbonLow:'Sbíráš XP i odměny. Jen tak dál!', ribbonDead:'I tak sis něco odnesl. Další pokus bude lepší!', achievementsNew:'NOVÉ ODZNAKY',
       shopCta:'OBCHOD S ODMĚNAMI',shopCtaDesc:'Utrácej krystaly a korunky za motivy',shopTitle:'OBCHOD S ODMĚNAMI',shopHero:'Motivy pro tvou hru',arcadeAvatarShopHelp:'👤 Avatara změníš v profilu FOXEY Arcade. Tady nakupuješ jen herní motivy',shopSubtitle:'Jen vzhledové odměny. Žádné výhody ve hře.',
       chestTitle:'TRUHLA S ODMĚNAMI',chestDescription:'Vyhraj korunky. Za 7 denních výzev v řadě získáš truhlu zdarma.',freeChests:'Truhly zdarma: {count}',openFreeChest:'OTEVŘÍT TRUHLU ZDARMA',openPaidChest:'OTEVŘÍT ZA 25 💎',insufficientShards:'Nemáš dost krystalů.',insufficientCrowns:'Nemáš dost korun.',chestCrowns:'🎁 Našel jsi {count} korun!',chestExclusive:'🎁 Exkluzivní avatar Glitch odemčen!',chestDuplicate:'🎁 Za opakovanou odměnu získáváš {count} korun!',
       dailyStreakTitle:'DENNÍ SÉRIE',dailyStreakDesc:'Dokonči denní výzvu 7 dní po sobě. Sedmý den získáš truhlu zdarma.',dailyStreakHome:'Denní série: {days} / 7',dailyStreakDone:'Dnešní výzva je splněná!',dailyStreakPrompt:'Dokonči dnešní denní výzvu.',dailyStreakResult:'🔥 Denní série: {days} dní. {gift}',dailyStreakChest:'🎁 Truhla zdarma!',dailyStreakBonus:'Bonus: +{count} krystalů',
@@ -1214,6 +1214,18 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
   function hint(){if(!session||session.selected!==null||session.hint||session.mode==='mystery')return;session.hint=true;saveSession();game();}
   function reveal(){if(!session||session.mode!=='mystery'||session.selected!==null||session.reveal>=2)return;session.reveal=(session.reveal||0)+1;saveSession();game();}
   function next(){if(!session||session.selected===null)return;if(session.idx+1>=session.ids.length||session.lives===0){finish();return;}session.idx++;session.hint=false;session.selected=null;session.gained=0;session.reveal=0;saveSession();game();}
+  // FOXEY Arcade premium currency: deliberately slow progression.
+  // Note: this is balancing logic, NOT a security boundary. The server must
+  // validate game results before accepting wallet earnings for public launch.
+  function premiumReward(rewardable,perfect,previousLevel,currentLevel,badgeCount){
+    if(!rewardable)return {perfect:0,milestone:0,badges:0,total:0};
+    const perfectCrowns=perfect?1:0;
+    const milestone=Math.max(0,
+      Math.floor((currentLevel-1)/10)-Math.floor((previousLevel-1)/10));
+    const badges=badgeCount;
+    return {perfect:perfectCrowns,milestone,badges,
+      total:perfectCrowns+milestone+badges};
+  }
   function finish(){if(!session)return;
     const s=session;session=null;saveSession();
     const prevLevel=level(),newRecord=s.score>profile.bestScore;
@@ -1229,8 +1241,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     // More deliberate economy: no coins for three wrong taps and slower chest farming.
     const baseShards=rewardable?Math.max(1,Math.ceil(s.score/15)):0;
     const bonusShards=rewardable&&s.maxStreak>=5?Math.min(4,Math.floor(s.maxStreak/3)):0;
-    const baseCrowns=rewardable?Math.floor(s.correct/4):0;
-    const bonusCrowns=rewardable?((perfect?5:0)+(newRecord?2:0)):0;
+
     if(!dailyReplay&&!challengeReplay){
       profile.played++;profile.totalCorrect+=s.correct;
       profile.bestStreak=Math.max(profile.bestStreak,s.maxStreak);
@@ -1238,7 +1249,6 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     if(!dailyReplay&&!challengeReplay)profile.bestScore=Math.max(profile.bestScore,s.score);
     if(rewardable){
       profile.xp+=s.score;profile.shards=(profile.shards||0)+baseShards+bonusShards;
-      profile.crowns=(profile.crowns||0)+baseCrowns+bonusCrowns;
       if(perfect)profile.perfectRuns=(profile.perfectRuns||0)+1;
       if(s.mode==='daily')profile.dailyPaidDay=s.day;
     }
@@ -1251,14 +1261,14 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
       if(!old||old.date!==s.day||old.score<s.score)profile.dailyBest={date:s.day,score:s.score};
     }
     const levelRaised=rewardable&&level()>prevLevel;
-    if(levelRaised)profile.crowns+=3;
     const dailyEarned=markDailyStreak(s);
     const newBadges=rewardable?updateBadgeState():[];
-    if(newBadges.length)profile.crowns+=newBadges.length*2;
+    const premium=premiumReward(rewardable,perfect,prevLevel,level(),newBadges.length);
+    profile.crowns=(profile.crowns||0)+premium.total;
     saveProfile();
     result={...s,newRecord:!challengeReplay&&newRecord,levelUp:levelRaised,perfect,newBadges,dailyEarned,dailyReplay,challengeReplay,rewardable,
-      rewards:{shards:baseShards+bonusShards+(dailyEarned?.shards||0),crowns:baseCrowns+bonusCrowns+(levelRaised?3:0)+newBadges.length*2,
-        streakBonus:bonusShards,recordBonus:rewardable&&newRecord?2:0,levelBonus:levelRaised?3:0,badgeBonus:newBadges.length*2}};
+      rewards:{shards:baseShards+bonusShards+(dailyEarned?.shards||0),crowns:premium.total,
+        streakBonus:bonusShards,recordBonus:0,levelBonus:premium.milestone,badgeBonus:premium.badges}};
     lastMode=s.mode;renderResult();
     if(challengeValid&&s.challenge.online)submitOnlineResult(s.challenge,s);
     if(levelRaised||rewardable&&perfect||newBadges.length)burst();
@@ -1292,7 +1302,7 @@ window.GTG_QUESTIONS = [{"id":"q001","difficulty":"easy","answer":"Super Mario B
     updateText('profileXp',String(profile.xp));updateText('profilePlayed',String(profile.played));updateText('profileBest',String(profile.bestScore));updateText('profileCorrect',String(profile.totalCorrect));updateText('profileShards',String(shownCurrency('shards')));updateText('profileCrowns',String(shownCurrency('crowns')));
     const unlockedMap=profile.badgeState||{};
     element('soundsToggle').checked=prefs.sound;element('hapticsToggle').checked=prefs.haptics;
-    const list=element('badges');list.replaceChildren();badgeDefs.forEach(def=>{const unlocked=!!unlockedMap[def.id];const tile=document.createElement('div');tile.className='badge-tile'+(unlocked?'':' locked');const art=document.createElement('span');art.className='badge-icon';art.textContent=unlocked?def.icon:'🔒';const label=document.createElement('span');const bold=document.createElement('b');bold.textContent=T(def.name);const small=document.createElement('small');small.textContent=T(def.desc);label.append(bold,small);if(unlocked){const note=document.createElement('span');note.className='badge-note';note.textContent='+'+'2 '+T('crowns');label.append(note);}tile.append(art,label);list.append(tile);});show('profile');
+    const list=element('badges');list.replaceChildren();badgeDefs.forEach(def=>{const unlocked=!!unlockedMap[def.id];const tile=document.createElement('div');tile.className='badge-tile'+(unlocked?'':' locked');const art=document.createElement('span');art.className='badge-icon';art.textContent=unlocked?def.icon:'🔒';const label=document.createElement('span');const bold=document.createElement('b');bold.textContent=T(def.name);const small=document.createElement('small');small.textContent=T(def.desc);label.append(bold,small);if(unlocked){const note=document.createElement('span');note.className='badge-note';note.textContent='+'+'1 '+T('crowns');label.append(note);}tile.append(art,label);list.append(tile);});show('profile');
   }
   window.GTGSync={
     // Shared wallet snapshot is read-only for the game UI. Cannot spend it here.
