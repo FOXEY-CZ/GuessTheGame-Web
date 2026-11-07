@@ -47,6 +47,18 @@
   .message{border-radius:15px;border:1px solid #4c6588;background:#213450;padding:17px 18px;margin:12px 0;line-height:1.5}
   .message.good{border-color:#49caaa;background:#173c3a}.message.bad{border-color:#de7895;background:#44283e}
   .footer{text-align:center;color:#8c9ab9;font-size:.78rem;line-height:1.6;margin-top:34px}
+  .async-box{margin-top:24px;border:1px solid #55709f;border-radius:20px;padding:20px;background:linear-gradient(155deg,#1c3559,#142240)}
+  .async-box h3,.async-result h3{margin:0 0 10px;font-size:1.15rem}
+  .async-help{font-size:.86rem;line-height:1.5;color:var(--sub)}
+  .async-box button,.async-result button{padding:11px 16px}
+  .async-box #createAsyncChallenge{width:100%;margin:9px 0 18px}
+  .async-box label,.async-result label{display:block;color:#c9ddff;margin:6px 0;font-size:.79rem;font-weight:850}
+  .async-box input,.async-result input{width:100%;min-height:46px;padding:12px;border:1px solid #5876a4;border-radius:12px;background:#0b1831;color:var(--text);font:inherit;min-width:0}
+  .async-box input:focus,.async-result input:focus{outline:2px solid var(--aqua)}
+  .async-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .async-buttons button{flex:1 1 170px}
+  .async-result{border:1px solid #4c7f82;background:#123139;border-radius:18px;padding:18px;margin:16px 0}
+  .async-result p{line-height:1.55}
   .hidden{display:none!important}
   .bottom{display:grid;gap:12px;margin-top:23px}
   @media(min-width:680px){.bottom{grid-template-columns:1fr 1fr}}
@@ -118,9 +130,19 @@
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
     </p>
-    <p class="lead" style="font-size:.88rem;margin:12px 0 0">
-      <a id="challengeLink" href="./arcade/">⚔️ Multiplayer a výzvy → původní FOXEY Arcade</a>
-    </p>
+    <section class="async-box" aria-labelledby="asyncTitle">
+      <h3 id="asyncTitle">⚔️ Soukromé výzvy mezi hráči</h3>
+      <p class="async-help" id="asyncHelp">Vytvoř výzvu, odehraj 10 stejných otázek a pošli odkaz kamarádovi. Skóre se odhalí až po obou dohraných partiích. Zatím bez výplat.</p>
+      <button id="createAsyncChallenge" class="primary" type="button">⚔️ Vytvořit serverovou výzvu</button>
+      <label id="asyncInviteLabel" for="asyncInvite">Odkaz nebo ID výzvy</label>
+      <input id="asyncInvite" type="text" autocomplete="off" spellcheck="false" placeholder="https://…?challenge=…" maxlength="300" aria-describedby="asyncLobbyStatus">
+      <div class="async-buttons">
+        <button id="joinAsyncChallenge" type="button">🎮 Přijmout výzvu</button>
+        <button id="checkAsyncChallenge" type="button">🏆 Zkontrolovat výsledek</button>
+      </div>
+      <p class="async-help" id="asyncLobbyStatus" role="status" aria-live="polite"></p>
+      <p class="async-help"><a id="challengeLink" href="./arcade/">↩ Starší offline výzvy v původní FOXEY Arcade</a></p>
+    </section>
   </section>
 
   <section id="gamePanel" class="panel hidden">
@@ -163,6 +185,16 @@
       <div class="stat"><span class="stat-icon" aria-hidden="true">❤️</span><b id="finalLives">0</b><span id="finalLivesLabel">ŽIVOTY</span></div>
     </div>
     <div class="message" id="auditMessage"></div>
+    <section class="async-result hidden" id="asyncResult" aria-labelledby="asyncResultTitle">
+      <h3 id="asyncResultTitle">⚔️ Serverová výzva</h3>
+      <p id="asyncResultMessage" role="status" aria-live="polite"></p>
+      <label id="asyncShareLabel" for="asyncShare">Odkaz pro soupeře</label>
+      <input id="asyncShare" type="text" readonly>
+      <div class="async-buttons">
+        <button type="button" id="asyncCopy">📋 Kopírovat odkaz</button>
+        <button type="button" id="asyncRefresh">🔄 Obnovit výsledek</button>
+      </div>
+    </section>
     <p class="lead" id="noReward">Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.</p>
     <div class="bottom">
       <button id="againButton" class="primary" type="button">HRÁT ZNOVU</button>
@@ -205,7 +237,23 @@
       footer:'FOXEY Arcade · Server-first beta · Odpověď se zveřejní až po potvrzené volbě · Bez ostrých výplat',
       hearts:'Životy',
       caveat:'🧪 Oddělená beta. Starý offline kvíz stále zveřejňuje původní klíč odpovědí. Ostré výplaty jsou vypnuté.',
-      challenges:'⚔️ Multiplayer a výzvy → původní FOXEY Arcade'
+      challenges:'↩ Starší offline výzvy v původní FOXEY Arcade',
+      asyncTitle:'⚔️ Soukromé výzvy mezi hráči',
+      asyncHelp:'Vytvoř výzvu, odehraj stejných 10 otázek a pošli odkaz kamarádovi. Skóre se odhalí až po obou dohraných partiích. Zatím bez výplat.',
+      asyncCreate:'⚔️ Vytvořit serverovou výzvu',asyncLabel:'Odkaz nebo ID výzvy',
+      asyncJoin:'🎮 Přijmout výzvu',asyncCheck:'🏆 Zkontrolovat výsledek',
+      asyncResultTitle:'⚔️ Serverová výzva',asyncShareLabel:'Odkaz pro soupeře',
+      asyncCopy:'📋 Kopírovat odkaz',asyncRefresh:'🔄 Obnovit výsledek',
+      asyncPending:'✅ Výzva je připravená! Zkopíruj odkaz a pošli ho kamarádovi. Na výsledek čekáme.',
+      asyncPlaying:'⚔️ Hraješ soupeřovu výzvu. Dokonči ji pro porovnání výsledků.',
+      asyncInviteReady:'⚔️ Pozvánka na výzvu. Přihlas se a zvol Přijmout výzvu.',
+      asyncWin:'🏆 Vyhráváš! Ty {you} XP, soupeř {other} XP.',
+      asyncLose:'🎮 Soupeř vyhrál. Ty {you} XP, soupeř {other} XP.',
+      asyncTie:'🤝 Remíza! Oba máte {you} XP.',
+      asyncWaiting:'⏳ Výsledek zatím není k dispozici. Pro porovnání musí oba hráči dokončit.',
+      asyncError:'⚠️ Výzvu se nepodařilo ověřit: {error}',
+      asyncCopied:'✅ Odkaz zkopírován.',
+      asyncInvalid:'⚠️ Zadej platný odkaz nebo ID výzvy.'
     },
     en:{
       eyebrow:'SERVER BETA · NO PAYOUTS',
@@ -231,11 +279,28 @@
       footer:'FOXEY Arcade · Server-first beta · Answers disclosed only after the submitted choice · No payouts',
       hearts:'Lives',
       caveat:'🧪 Isolated beta. The legacy offline quiz still exposes its original answer key. Real payouts remain disabled.',
-      challenges:'⚔️ Multiplayer & challenges → original FOXEY Arcade'
+      challenges:'↩ Legacy offline challenges in the original FOXEY Arcade',
+      asyncTitle:'⚔️ Private player challenges',
+      asyncHelp:'Create a challenge, play the same 10 questions and send the link to a friend. Scores unlock only after both finish. No payouts yet.',
+      asyncCreate:'⚔️ Create secure challenge',asyncLabel:'Challenge link or ID',
+      asyncJoin:'🎮 Accept challenge',asyncCheck:'🏆 Check result',
+      asyncResultTitle:'⚔️ Server challenge',asyncShareLabel:'Link for opponent',
+      asyncCopy:'📋 Copy link',asyncRefresh:'🔄 Refresh result',
+      asyncPending:'✅ Challenge ready! Copy the link and send it to a friend. Waiting for their score.',
+      asyncPlaying:'⚔️ Playing the invited challenge. Finish to compare scores.',
+      asyncInviteReady:'⚔️ Challenge invitation. Sign in and choose Accept challenge.',
+      asyncWin:'🏆 You win! You {you} XP, opponent {other} XP.',
+      asyncLose:'🎮 Opponent wins. You {you} XP, opponent {other} XP.',
+      asyncTie:'🤝 Tie! Both earned {you} XP.',
+      asyncWaiting:'⏳ Result not ready. Both players must finish for a comparison.',
+      asyncError:'⚠️ Could not verify challenge: {error}',
+      asyncCopied:'✅ Link copied.',
+      asyncInvalid:'⚠️ Enter a valid challenge link or ID.'
     }
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
   let busy=false,pending=null;
+  let createOperation=null;
   try {lang=localStorage.getItem(langKey)==='en'?'en':'cs';}catch(_){}
   const T=k=>tr[lang][k];
   function visible(id,on){$(id).classList.toggle('hidden',!on);}
@@ -258,6 +323,12 @@
     });
     $('legacyCaveat').textContent=T('caveat');
     $('challengeLink').textContent=T('challenges');
+    for(const [key,id] of Object.entries({
+      asyncTitle:'asyncTitle',asyncHelp:'asyncHelp',asyncCreate:'createAsyncChallenge',
+      asyncLabel:'asyncInviteLabel',asyncJoin:'joinAsyncChallenge',
+      asyncCheck:'checkAsyncChallenge',asyncResultTitle:'asyncResultTitle',
+      asyncShareLabel:'asyncShareLabel',asyncCopy:'asyncCopy',asyncRefresh:'asyncRefresh'
+    }))$(id).textContent=T(key);
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
@@ -284,6 +355,13 @@
     const {data,error}=await api.auth.getSession();
     me=!error&&data?.session?.user||null;
     language();modeScreen();
+    try{
+      const value=new URL(window.location.href).searchParams.get('challenge');
+      if(value&&/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value)){
+        $('asyncInvite').value=value;
+        $('asyncLobbyStatus').textContent=T('asyncInviteReady');
+      }
+    }catch(_){}
   }
   function lock(on){
     busy=on;
@@ -305,16 +383,118 @@
          typeof data.run_id!=='string'||!Array.isArray(data.question_ids)||
          data.question_ids.length!==expected)
         throw Error('server_start_failed');
-      game={id:data.run_id,ids:data.question_ids.slice(),idx:0,mode,
-        score:0,correct:0,lives:3,answers:[],finished:false};
-      visible('modePanel',false);visible('signIn',false);
-      visible('resultPanel',false);visible('gamePanel',true);
-      await loadQuestion();
+      await enterQuiz(data,mode,null);
     }catch(err){
       status(T('statusNetwork')+' ('+errorText(err)+')','error');
       if(game&&!current)showQuestionLoadError();
       else if(!game){visible('modePanel',true);visible('gamePanel',false);}
     }finally{lock(false);}
+  }
+  async function enterQuiz(data,mode,challenge){
+    const expected=mode==='daily'?5:10;
+    if(!data?.ok||typeof data.run_id!=='string'||!Array.isArray(data.question_ids)
+      ||data.question_ids.length!==expected)
+      throw Error('invalid_run_payload');
+    game={id:data.run_id,ids:data.question_ids.slice(),idx:0,mode,
+      score:0,correct:0,lives:3,answers:[],finished:false,challenge};
+    current=null;pending=null;
+    visible('modePanel',false);visible('signIn',false);
+    visible('resultPanel',false);visible('gamePanel',true);
+    await loadQuestion();
+  }
+  const uuidPattern=/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+  function parseChallenge(input){
+    const text=String(input||'').trim();
+    if(uuidPattern.test(text))return text;
+    try{
+      const url=new URL(text);
+      const id=url.searchParams.get('challenge');
+      return url.protocol==='https:'&&id&&uuidPattern.test(id)?id:null;
+    }catch(_){return null;}
+  }
+  function challengeUrl(id){
+    const url=new URL(window.location.href);
+    url.search='';url.hash='';
+    url.searchParams.set('challenge',id);
+    return url.toString();
+  }
+  function asyncSummary(data){
+    if(!data||data.both_done!==true)return T('asyncWaiting');
+    const vals={you:data.your_score,other:data.opponent_score};
+    return template(data.winner==='you'?T('asyncWin'):
+      data.winner==='opponent'?T('asyncLose'):T('asyncTie'),vals);
+  }
+  function showAsyncResult(message,challenge){
+    visible('asyncResult',true);
+    $('asyncResultMessage').textContent=message;
+    visible('asyncShareLabel',challenge?.role==='creator');
+    visible('asyncShare',challenge?.role==='creator');
+    visible('asyncCopy',challenge?.role==='creator');
+    if(challenge?.role==='creator')$('asyncShare').value=challengeUrl(challenge.id);
+  }
+  async function createAsyncChallenge(){
+    if(busy||!me||!api)return;
+    if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
+    lock(true);status(T('statusLoading'));
+    createOperation ||= crypto.randomUUID();
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_create',{
+        p_operation:createOperation,p_mode:'classic'
+      });
+      if(error||data?.ok!==true||data.role!=='creator'
+         ||!uuidPattern.test(data.challenge_id))
+        throw Error(error?.message||'challenge_start_failed');
+      await enterQuiz(data,data.mode,{id:data.challenge_id,role:'creator'});
+      createOperation=null;
+      status(T('statusReady'),'ok');
+    }catch(err){
+      status(template(T('asyncError'),{error:errorText(err)}),'error');
+      if(game&&!current)showQuestionLoadError();
+    }finally{lock(false);}
+  }
+  async function joinAsyncChallenge(){
+    if(busy||!me||!api)return;
+    const id=parseChallenge($('asyncInvite').value);
+    if(!id){$('asyncLobbyStatus').textContent=T('asyncInvalid');return;}
+    if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
+    // Stable operation across network retry, scoped to the signed-in player.
+    const opKey='foxey.arcade.challenge.op.'+me.id+'.'+id;
+    let operation;
+    try{operation=localStorage.getItem(opKey);}catch(_){}
+    if(!operation||!uuidPattern.test(operation)){
+      operation=crypto.randomUUID();
+      try{localStorage.setItem(opKey,operation);}catch(_){}
+    }
+    lock(true);status(T('statusLoading'));
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_join',{
+        p_challenge_id:id,p_operation:operation
+      });
+      if(error||data?.ok!==true||data.role!=='challenger'||data.challenge_id!==id)
+        throw Error(error?.message||'join_failed');
+      await enterQuiz(data,data.mode,{id,role:'challenger'});
+      status(T('statusReady'),'ok');
+    }catch(err){
+      $('asyncLobbyStatus').textContent=template(T('asyncError'),{error:errorText(err)});
+      status(T('statusNetwork')+' ('+errorText(err)+')','error');
+      if(game&&!current)showQuestionLoadError();
+    }finally{lock(false);}
+  }
+  async function checkAsyncChallenge(){
+    if(busy||!me||!api)return;
+    const id=parseChallenge($('asyncInvite').value);
+    if(!id){$('asyncLobbyStatus').textContent=T('asyncInvalid');return;}
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_status',{
+        p_challenge_id:id
+      });
+      if(error||data?.ok!==true)throw Error(error?.message||'challenge_status_failed');
+      $('asyncLobbyStatus').textContent=asyncSummary(data);
+      if(game?.challenge?.id===id&&data.role!=='invitee')
+        showAsyncResult(asyncSummary(data),game.challenge);
+    }catch(err){
+      $('asyncLobbyStatus').textContent=template(T('asyncError'),{error:errorText(err)});
+    }
   }
   function showQuestionLoadError(){
     $('question').textContent=T('statusQuestion');
@@ -466,7 +646,7 @@
   async function finish(){
     if(!game||busy)return;
     lock(true);status(T('statusQuestion'));
-    let confirmed=false;
+    let confirmed=false, challengeState=null;
     try{
       const completed=await api.rpc('arcade_verify_complete',{
         p_run_id:game.id,p_answers:game.answers
@@ -481,6 +661,14 @@
         completed.data.score===game.score&&
         completed.data.correct===game.correct&&
         completed.data.lives===game.lives;
+      if(confirmed&&game.challenge){
+        const verified=await api.rpc('arcade_async_challenge_finalize',{
+          p_challenge_id:game.challenge.id,p_run_id:game.id
+        });
+        if(verified.error||verified.data?.ok!==true)
+          throw Error(verified.error?.message||'challenge_finalize_failed');
+        challengeState=verified.data;
+      }
       status(confirmed?T('auditOk'):T('auditFail'),confirmed?'ok':'error');
     }catch(err){
       status(T('auditError')+' ('+errorText(err)+')','error');
@@ -490,9 +678,31 @@
     $('finalCorrect').textContent=String(game.correct)+' / '+game.ids.length;
     $('finalLives').textContent=String(game.lives);
     $('auditMessage').textContent=confirmed?T('auditOk'):T('auditFail');
+    visible('asyncResult',Boolean(game.challenge));
+    if(game.challenge){
+      showAsyncResult(challengeState?
+        (challengeState.both_done?asyncSummary(challengeState):
+          game.challenge.role==='creator'?T('asyncPending'):T('asyncPlaying')):
+        T('auditError'),game.challenge);
+      $('asyncInvite').value=game.challenge.id;
+    }
     visible('gamePanel',false);visible('resultPanel',true);
     lock(false);
   }
+  $('createAsyncChallenge').addEventListener('click',()=>void createAsyncChallenge());
+  $('joinAsyncChallenge').addEventListener('click',()=>void joinAsyncChallenge());
+  $('checkAsyncChallenge').addEventListener('click',()=>void checkAsyncChallenge());
+  $('asyncRefresh').addEventListener('click',()=>void checkAsyncChallenge());
+  $('asyncCopy').addEventListener('click',async()=>{
+    const text=$('asyncShare').value;
+    try{
+      await navigator.clipboard.writeText(text);
+      $('asyncResultMessage').textContent=T('asyncCopied');
+    }catch(_){
+      $('asyncShare').focus();$('asyncShare').select();
+      $('asyncResultMessage').textContent=text;
+    }
+  });
   $('modes').addEventListener('click',event=>{
     const btn=event.target.closest('button[data-mode]');
     if(btn)void start(btn.dataset.mode);
