@@ -144,7 +144,7 @@ assert.ok(current.html.includes("new CustomEvent('gtg-quiz-finished'"),
   'Game should submit a separate audit trace on finish');
 assert.ok(current.html.includes('verifyAnswers.push('),
   'Answer choices and hint usage must be recorded in the pending run');
-assert.ok(current.html.includes('account-test.js?v=shadow-progress-20261107'),
+assert.ok(current.html.includes('account-test.js?v=daily-proof-20261107'),
   'Versioned account bridge must avoid stale cached code');
 const shadowStart=accountSource.indexOf('const shadowRuns=new Map()');
 const shadowEnd=accountSource.indexOf('const setFeedback =',shadowStart);
@@ -154,6 +154,10 @@ assert.ok(accountSource.includes('Server vybral otázky a ověřil výsledek'),
   'Show a separate success message only for fully server-selected quizzes');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_progress_shadow'"),
   'Server must calculate a separate receipt for badges and daily streaks');
+assert.ok(current.html.includes('id="serverDailyClaimStatus"'),
+  'Daily reward QA must have accessible separate status');
+assert.ok(accountSource.includes('Server eviduje denní bonus 20 XP'),
+  'Daily shadow status must clearly explain this is non-financial verification');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_daily_claim_shadow'"),
   'Daily claim must be checked once on the server');
 assert.ok(accountSource.includes("preview?.credited===false"),
