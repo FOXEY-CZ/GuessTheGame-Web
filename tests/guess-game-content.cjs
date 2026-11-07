@@ -129,12 +129,14 @@ assert.ok(current.html.includes("new CustomEvent('gtg-quiz-finished'"),
   'Game should submit a separate audit trace on finish');
 assert.ok(current.html.includes('verifyAnswers.push('),
   'Answer choices and hint usage must be recorded in the pending run');
-assert.ok(current.html.includes('account-test.js?v=server-ids-20261107'),
+assert.ok(current.html.includes('account-test.js?v=server-ids-qa-20261107'),
   'Versioned account bridge must avoid stale cached code');
 const shadowStart=accountSource.indexOf('const shadowRuns=new Map()');
 const shadowEnd=accountSource.indexOf('const setFeedback =',shadowStart);
 assert.ok(shadowStart>0 && shadowEnd>shadowStart,'No standalone shadow bridge found');
 const shadow=accountSource.slice(shadowStart,shadowEnd);
+assert.ok(accountSource.includes('Server vybral otázky a ověřil výsledek'),
+  'Show a separate success message only for fully server-selected quizzes');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_begin_server'"),
   'The signed-in bridge must call the new server-selection RPC');
 assert.ok(accountSource.includes('window.GTGServerVerification=Object.freeze('),
