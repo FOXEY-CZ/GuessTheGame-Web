@@ -104,7 +104,9 @@
     const uid=user.id;
     // Reuse the backend-issued receipt rather than creating another run.
     if(typeof d.run_id==='string' && d.user_id===uid){
-      shadowRuns.set(d.operation,{uid,request:Promise.resolve({run_id:d.run_id})});
+      shadowRuns.set(d.operation,{uid,serverIssued:true,
+        request:Promise.resolve({run_id:d.run_id}),actionQueue:Promise.resolve(),
+        actionFailed:false});
       return;
     }
     const request=client.rpc('arcade_verify_begin',{
@@ -115,8 +117,35 @@
       return data;
     });
     // Catch immediately: a disconnected client must never break gameplay.
-    shadowRuns.set(d.operation,{uid,request:request.catch(()=>null)});
+    shadowRuns.set(d.operation,{uid,serverIssued:false,
+      request:request.catch(()=>null),actionQueue:Promise.resolve(),actionFailed:false});
     if(shadowRuns.size>12)shadowRuns.delete(shadowRuns.keys().next().value);
+  }
+  function onShadowAction(event){
+    const d=event.detail;
+    if(!d||typeof d.operation!=='string')return;
+    const record=shadowRuns.get(d.operation);
+    if(!record||!record.serverIssued||record.uid!==user?.id
+       ||d.user_id!==record.uid||!Number.isInteger(d.index)
+       ||d.index<0||d.index>9
+       ||!['hint','reveal','answer'].includes(d.action)
+       ||typeof d.event_id!=='string'
+       ||!/^[0-9a-f-]{36}$/i.test(d.event_id)){
+      if(record?.serverIssued)record.actionFailed=true;
+      return;
+    }
+    record.actionQueue=(record.actionQueue||Promise.resolve())
+      .then(async()=>{
+        const started=await record.request;
+        if(!started?.run_id||record.uid!==user?.id
+           ||d.run_id!==started.run_id)throw Error('action_session_changed');
+        const {data,error}=await client.rpc('arcade_verify_action_shadow',{
+          p_run_id:started.run_id,p_event_id:d.event_id,
+          p_question_index:d.index,p_action:d.action,p_choice:d.choice??null
+        });
+        if(error||data?.ok!==true||data.shadow!==true||data.credited!==false)
+          throw Error('action_not_logged');
+      }).catch(()=>{record.actionFailed=true;});
   }
   // Only describe trusted, non-financial simulation data returned by the
   // server after a verified run. Never display this as an actual wallet grant.
@@ -149,6 +178,8 @@
     try{
       const start=await record.request;
       if(!start||record.uid!==user?.id)throw Error('verification_start_failed');
+      // Finish only after ordered per-question shadow events have settled.
+      if(record.serverIssued)await record.actionQueue;
       const {data,error}=await client.rpc('arcade_verify_complete',{
         p_run_id:start.run_id,p_answers:d.answers
       });
@@ -156,16 +187,30 @@
         throw Error('verification_failed');
       if(record.uid!==user?.id)return;
       const match=data.score===d.score&&data.correct===d.correct;
-      const serverChosen=typeof d.run_id==='string'&&d.user_id===record.uid;
+      const serverChosen=record.serverIssued===true
+        &&typeof d.run_id==='string'&&d.user_id===record.uid;
+      let actionTraceMatches=false;
+      if(serverChosen){
+        try{
+          const {data:audit,error:auditError}=await client.rpc(
+            'arcade_verify_action_summary_shadow',{p_run_id:start.run_id});
+          actionTraceMatches=!record.actionFailed&&!auditError&&audit?.ok===true
+            &&audit?.shadow===true&&audit?.credited===false&&audit?.consistent===true;
+        }catch(_){actionTraceMatches=false;}
+      }
       shadowStatus(match
         ?(serverChosen
-          ?'✅ Server vybral otázky a ověřil výsledek. Test bez další výplaty.'
-          :'✅ Server ověřil výsledek. Testovací potvrzení, bez další výplaty.')
+          ?(actionTraceMatches
+            ?'✅ Server ověřil odpovědi, pořadí akcí i nápovědy. Test bez výplaty.'
+            :'⚠️ Server přepočítal odeslaný výsledek, ale deník akcí se neshoduje nebo není kompletní. Test bez výplaty.')
+          :'✅ Server přepočítal odeslané odpovědi. Test bez další výplaty.')
         :'⚠️ Server našel rozdíl mezi výsledkem hry a svým výpočtem. Odměny zůstávají podle původních pravidel.',
         match
         ?(serverChosen
-          ?'✅ Server chose the questions and verified the result. No extra payout.'
-          :'✅ Server verified the result. Test receipt only, no extra payout.')
+          ?(actionTraceMatches
+            ?'✅ Server verified answers, action order and hints. Test only, no payout.'
+            :'⚠️ Server recalculated the submitted result, but the action trace differs or is incomplete. No payout.')
+          :'✅ Server recalculated submitted answers. Test only, no payout.')
         :'⚠️ The server calculated a different result. Existing reward rules still apply.');
       if(match&&serverChosen&&record.uid===user?.id){
         // Projection is SIMULATION ONLY, with unverified baseline for old saves.
@@ -904,6 +949,7 @@
       void refreshArcadeBenefits();
   });
   window.addEventListener('gtg-quiz-started',onShadowStart);
+  window.addEventListener('gtg-quiz-action',onShadowAction);
   window.addEventListener('gtg-quiz-finished',event=>{void onShadowFinish(event);});
   window.addEventListener('gtg-daily-reward-claimed',()=>{void onShadowDailyClaim();});
   window.addEventListener('gtg-profile-saved',profileChanged);
