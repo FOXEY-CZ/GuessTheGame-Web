@@ -10,6 +10,7 @@ on:
       - 'tests/guess-game-content.cjs'
       - 'tests/server-quiz-launch.cjs'
       - 'tests/account-cloud-multidevice.cjs'
+      - 'tests/account-backup-export.cjs'
       - '.github/workflows/verify-guess-the-game.yml'
   pull_request:
     paths:
@@ -20,6 +21,7 @@ on:
       - 'tests/guess-game-content.cjs'
       - 'tests/server-quiz-launch.cjs'
       - 'tests/account-cloud-multidevice.cjs'
+      - 'tests/account-backup-export.cjs'
       - '.github/workflows/verify-guess-the-game.yml'
   workflow_dispatch:
 
@@ -41,3 +43,5 @@ jobs:
         run: node tests/server-quiz-launch.cjs
       - name: Check two-device cloud save revision conflicts
         run: node tests/account-cloud-multidevice.cjs
+      - name: Check read-only account save backup export
+        run: node tests/account-backup-export.cjs
