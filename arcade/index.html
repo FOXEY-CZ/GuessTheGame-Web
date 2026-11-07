@@ -32,6 +32,7 @@
         <span class="resource" title="Společné krystaly">💎 <b id="headerShards">—</b></span>
         <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
       </div>
+      <button id="arcadeBell" class="arcade-bell" type="button" title="Upozornění a výzvy" aria-label="Upozornění FOXEY Arcade">🔔 <span id="arcadeBellCount" class="arcade-bell-count hidden">0</span></button>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div>
   </header>
 
@@ -282,10 +283,25 @@
   </main>
   <footer>© FOXEY Arcade · Testovací základ · Současné Guess the Game zůstává samostatně funkční</footer>
 </div>
+<div id="arcadeNoticeOverlay" class="arcade-notice-overlay hidden" role="presentation">
+  <div id="arcadeNoticeShade" class="arcade-notice-shade"></div>
+  <section class="arcade-notice-drawer" role="dialog" aria-modal="true" aria-labelledby="arcadeNoticeTitle">
+    <div class="arcade-notice-head">
+      <h2 id="arcadeNoticeTitle">🔔 Oznámení FOXEY Arcade</h2>
+      <button type="button" class="secondary" id="arcadeNoticeClose" aria-label="Zavřít oznámení">✕</button>
+    </div>
+    <p class="small" id="arcadeNoticeStatus" role="status" aria-live="polite"></p>
+    <button class="secondary" id="arcadeNoticeRefresh" type="button">🔄 Obnovit</button>
+    <div id="arcadeNoticeList" class="arcade-notice-list"></div>
+    <p id="arcadeNoticeDetail" class="arcade-notice-detail" role="status" aria-live="polite"></p>
+    <input type="text" readonly id="arcadeNoticeCopyField" class="arcade-notice-copy hidden" aria-label="Odkaz na výzvu">
+  </section>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script src="./config.js?v=google-oauth-on-20261106"></script>
 <script src="./i18n.js?v=arcade-i18n-fix-20261107b"></script>
 <script src="./avatars.js"></script>
-<script src="./app.js?v=arcade-i18n-fix-20261107b"></script>
+<script src="./notifications.js?v=global-bell-20261107a"></script>
+<script src="./app.js?v=global-bell-20261107a"></script>
 </body>
 </html>
