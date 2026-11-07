@@ -18,6 +18,7 @@ assert.ok(!code.includes('service_role'));
 const uu=['22222222-2222-4222-8222-222222222222',
           '33333333-3333-4333-8333-333333333333'];
 const cid='11111111-1111-4111-8111-111111111111';
+const activeId='44444444-4444-4444-8444-444444444444';
 class E{
   constructor(id=''){this.id=id;this.textContent='';this.value='';this.children=[];
     this.className='';this.listeners={};this.attrs={};this.hidden=id==='arcadeNoticeOverlay';
@@ -55,7 +56,11 @@ function apiFor(uid){
           items:[{challenge_id:cid,role:uid===uu[0]?'creator':'challenger',
             mode:'classic',status:'finished',both_done:true,unread:!reads.get(cid),
             your_score:uid===uu[0]?20:13,opponent_score:uid===uu[0]?13:20,
-            winner:uid===uu[0]?'you':'opponent'}]},error:null};
+            winner:uid===uu[0]?'you':'opponent'},
+            {challenge_id:activeId,role:uid===uu[0]?'creator':'challenger',
+             mode:'mystery',status:uid===uu[0]?'creator_playing':'challenger_playing',
+             creator_done:uid===uu[1],challenger_done:false,
+             both_done:false,unread:false}]},error:null};
       }
       if(name==='arcade_async_challenge_status'){
         assert.equal(args.p_challenge_id,cid);
@@ -89,8 +94,16 @@ async function main(){
   await settle();
   assert.equal($('arcadeBellCount').textContent,'1');
   assert.equal($('arcadeBellCount').hidden,false);
-  assert.equal($('arcadeNoticeList').children.length,1);
+  assert.equal($('arcadeNoticeList').children.length,2);
   assert.ok($('arcadeNoticeList').children[0].children[2].textContent.includes('Vyhrál'));
+  const activeCard=$('arcadeNoticeList').children[1];
+  const resume=activeCard.children[3].children[0];
+  assert.ok(resume.textContent.includes('Pokračovat'));
+  assert.ok(resume.href.includes('secure-quiz-beta.html'));
+  assert.ok(resume.href.includes('resume='+activeId));
+  assert.equal(resume.target,'_blank');
+  assert.equal(resume.rel,'noopener noreferrer');
+  assert.ok(!activeCard.children[2].textContent.includes('XP'));
   const count=first.calls.length;
   interval();await settle();
   assert.ok(first.calls.length>count,'account-wide poll must run in any embedded game');
