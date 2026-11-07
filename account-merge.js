@@ -36,6 +36,7 @@
     // Daily awards cannot be claimed again simply by importing a profile.
     result.dailyClaimed=maxDate(cloud.dailyClaimed,guest.dailyClaimed);
     result.dailyPaidDay=maxDate(cloud.dailyPaidDay,guest.dailyPaidDay);
+    result.perfectPaidDay=maxDate(cloud.perfectPaidDay,guest.perfectPaidDay);
     const db=object(cloud.dailyBest),gb=object(guest.dailyBest);
     if(date(db.date)===date(gb.date) && db.date)
       result.dailyBest={date:db.date,score:Math.max(db.score||0,gb.score||0)};
