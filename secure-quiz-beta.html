@@ -2155,6 +2155,10 @@
   async function respondGameSocial(entry,accept){
     if(!me||!api||gameSocialResponding||!uuidPattern.test(entry.subject_id))return;
     if(!['friend_request','live_invite'].includes(entry.kind))return;
+    if(entry.kind==='live_invite'&&game&&!game.resultShown){
+      $('historyOverlayNotice').textContent=T('historyFinishFirst');
+      return;
+    }
     const owner=me.id;gameSocialResponding=true;
     try{
       const name=entry.kind==='friend_request'?'arcade_friend_respond':'arcade_live_respond';
