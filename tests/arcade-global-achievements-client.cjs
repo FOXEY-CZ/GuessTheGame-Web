@@ -16,6 +16,16 @@ const extracted=js.slice(start,end);
 assert.ok(extracted.includes("supa.rpc('arcade_global_achievements')"));
 assert.ok(!extracted.includes("from('arcade_wallets').update"));
 assert.ok(!extracted.includes("from('arcade_achievement_unlocks').update"));
+// Privacy regression: no stale achievements from a previous account should be
+// shown after explicit sign-out, even with an in-flight server response.
+const logoutStart=js.indexOf('  async function signOut(){');
+const logoutEnd=js.indexOf('  // Explicitly connect existing SPA router',logoutStart);
+assert.ok(logoutStart>=0&&logoutEnd>logoutStart,'sign-out handler missing');
+const logout=js.slice(logoutStart,logoutEnd);
+assert.ok(logout.includes("++achievementSeq;achievements=null;achievementStatus='guest'"),
+  'logout must invalidate pending achievement reads and clear cached account rewards');
+assert.ok(logout.includes("el('arcadeAchievementToast')?.classList.add('hidden')"),
+  'logout must clear previous-account achievement popup');
 const nodes=new Map();
 function domElement(tag='div'){
  return {
@@ -98,5 +108,7 @@ const scope=vm.runInNewContext(`(function(){
  assert.equal(rpcCount,3);
  scope.setUser(null);scope.renderAchievements();
  assert.match(el('homeAchievementStatus').textContent,/Sign in/);
+ assert.equal(el('homeAchievementGrid').children.length,0,'guest must never see previous player achievements');
+ assert.equal(el('accountAchievementGrid').children.length,0,'guest must not inherit a previous account cache');
  console.log('PASS: global achievements status, XP level meter, bilingual cards, one-time server unlock and guest state');
 })().catch(err=>{console.error(err);process.exitCode=1;});
