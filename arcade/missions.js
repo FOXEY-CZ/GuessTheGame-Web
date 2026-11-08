@@ -57,13 +57,14 @@
   function renderStreak(){
     const signed=!!uid,streak=missions?.streak||null;
     const days=streak?nValue(streak.current):0;
+    const unit=n=>n===1?'den':n>=2&&n<=4?'dny':'dní';
     const active=streak?.active_today===true;
     const next=streak?.next_milestone==null?null:nValue(streak.next_milestone);
     text('homeStreakCount',signed&&streak?
-      tr('🔥 '+days+' dní v řadě','🔥 '+days+'-day streak'):
+      tr('🔥 '+days+' '+unit(days)+' v řadě','🔥 '+days+'-day streak'):
       tr('🔥 Série aktivních dní','🔥 Daily play streak'));
     text('streakCurrentCount',signed&&streak?
-      tr(days+' dní',''+days+' days'):'—');
+      tr(days+' '+unit(days),''+days+' days'):'—');
     const info=!signed?
       tr('Přihlas se a zjisti svou sérii.','Sign in to see your streak.'):
       !streak?tr('Načítám ověřené aktivní dny…','Loading verified active days…'):
@@ -74,7 +75,7 @@
          'Start your streak with one rewarded game.');
     text('homeStreakHint',info);
     text('streakStatus',info+' '+
-      (next!==null?tr('Další bonus za '+next+' dní.','Next bonus at '+next+' days.'):
+      (next!==null?tr('Další bonus za '+next+' '+unit(next)+'.','Next bonus at '+next+' days.'):
         tr('Všechny milníky této série splněny!','All streak milestones completed!')));
     const track=$('streakProgressFill');
     if(track?.style)track.style.width=
@@ -86,7 +87,7 @@
         const reached=days>=nValue(m.days);
         const item=make('div','mission-streak-milestone'+(reached?' complete':''));
         const title=make('strong','',
-          (reached?'✓ ':'🔥 ')+m.days+' '+tr('dní','days'));
+          (reached?'✓ ':'🔥 ')+m.days+' '+tr(unit(Number(m.days)),'days'));
         const rewards=make('span','',streakReward(m));
         item.append(title,rewards);
         return item;
