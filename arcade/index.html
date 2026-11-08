@@ -86,7 +86,7 @@
       </section>
       <section class="progresscard achievement-panel" aria-label="Globální achievementy">
         <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
-          <button class="secondary" type="button" data-page="account">Všechny achievementy</button>
+          <button class="secondary" type="button" data-page="account" data-account-tab="achievements">Všechny achievementy</button>
         </div>
         <p class="small" id="homeAchievementStatus" aria-live="polite">Načítám achievementy…</p>
         <div class="achievement-grid" id="homeAchievementGrid"></div>
@@ -123,7 +123,7 @@
 
     <section class="page hidden" id="page-shop">
       <span class="eyebrow">JEDEN OBCHOD PRO VŠECHNY HRY</span><h1>🛍️ Obchod FOXEY Arcade</h1>
-      <p>Spravuj motivy, utrácej společné krystaly a korunky a otevírej truhly. Všechny odměny patří tvému účtu.</p>
+      <p>Všechny odměny, motivy i avatary patří jednomu společnému účtu. Vyber, co tě zajímá.</p>
       <p id="shopStatus" class="small" role="status" aria-live="polite">Přihlas se pro načtení peněženky.</p>
       <div class="shared-shop-wallet">
         <div><span>💎 Krystaly</span><strong id="shopShards">—</strong></div>
@@ -131,6 +131,12 @@
         <div><span>🎁 Truhly zdarma</span><strong id="shopFreeChests">—</strong></div>
         <button class="secondary" type="button" id="shopRefresh">↻ Aktualizovat</button>
       </div>
+      <nav class="arcade-subtabs" id="shopTabs" role="tablist" aria-label="Kategorie obchodu">
+        <button id="shopTabChests" class="arcade-subtab is-active" role="tab" aria-selected="true" aria-controls="shopPanelChests" tabindex="0" data-shop-tab="chests" type="button">🎁 Truhly</button>
+        <button id="shopTabThemes" class="arcade-subtab" role="tab" aria-selected="false" aria-controls="shopPanelThemes" tabindex="-1" data-shop-tab="themes" type="button">🎨 Motivy</button>
+        <button id="shopTabAvatars" class="arcade-subtab" role="tab" aria-selected="false" aria-controls="shopPanelAvatars" tabindex="-1" data-shop-tab="avatars" type="button">🦊 Avatary</button>
+      </nav>
+      <section id="shopPanelThemes" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="shopTabThemes" tabindex="0">
       <div class="sectionline"><h2>🎨 Motivy Guess the Game</h2><span class="small">Platí pro tvůj účet</span></div>
       <div id="shopThemes" class="shopitems">
         <article class="tile"><div class="tileicon">🌙</div><h3>Classic</h3><p>Výchozí motiv.</p><button data-theme="classic" class="secondary" type="button">Načítání…</button></article>
@@ -139,7 +145,9 @@
         <article class="tile"><div class="tileicon">🌊</div><h3>Ocean</h3><p>50 krystalů 💎</p><button data-theme="ocean" class="secondary" type="button">Načítání…</button></article>
       </div>
 
-      <div class="sectionline"><h2>🎁 Truhly 2.0</h2><span class="small">Nové avatary, bez duplicit</span></div>
+      </section>
+      <section id="shopPanelChests" class="arcade-subpanel" role="tabpanel" aria-labelledby="shopTabChests" tabindex="0">
+      <div class="sectionline"><h2>🎁 Truhly</h2><span class="small">Nové avatary, bez duplicit</span></div>
       <div class="reward-chest-grid">
         <article class="reward-chest basic">
           <div class="chestshop-icon" id="shopChestVisual" aria-hidden="true">🎁</div>
@@ -166,6 +174,8 @@
       </div>
       <p class="small" id="shopChestResult" role="status" aria-live="polite"></p>
       <p class="note">Truhly dávají pouze kosmetické předměty, nikoliv prémiové korunky. V každé truhle se losuje rovnoměrně jen z dosud neodemčených avatarů. Kompletní sbírku už znovu neplatíš. Skutečné peníze za náhodné odměny nepřijímáme.</p>
+      </section>
+      <section id="shopPanelAvatars" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="shopTabAvatars" tabindex="0">
       <div class="sectionline"><h2>🦊 Sbírka avatarů</h2><span class="small" id="shopOwnedCount">Načítám inventář…</span></div>
       <div class="avatar-catalog">
         <article class="avatar-item" data-avatar-card="pixel-fox"><div class="avatar-art" id="avatarArtPixelFox"></div><span class="rarity-label basic-label">BĚŽNÝ</span><h3>Pixel Fox</h3><p>Pixelová liška z herní arkády.</p><button class="secondary" data-avatar="pixel-fox" type="button">Zamčeno</button></article>
@@ -183,7 +193,8 @@
           <button class="primary" id="claimPrestige" type="button">Vyzvednout legendárního avatara</button>
         </div>
       </article>
-      <p class="note">Odměny jsou ve vývojové betě. Nákupy se provádějí na serveru a všechny předměty zůstávají v jednom inventáři FOXEY Arcade. Ochranu herních milníků proti podvádění ještě před veřejným spuštěním posílíme.</p>
+      <p class="note">Nákupy probíhají na serveru a předměty se ukládají do jediného inventáře. Ochranu herních milníků dále posilujeme.</p>
+      </section>
     </section>
 
     <section class="page hidden" id="page-challenges">
@@ -256,6 +267,14 @@
             <div class="global-level-fill" id="accountLevelFill"></div>
           </div>
         </div>
+        <nav class="arcade-subtabs account-tabs" id="accountTabs" role="tablist" aria-label="Sekce hráčského profilu">
+          <button id="accountTabOverview" class="arcade-subtab is-active" role="tab" aria-selected="true" aria-controls="accountPanelOverview" tabindex="0" data-account-tab="overview" type="button">👤 Přehled</button>
+          <button id="accountTabAchievements" class="arcade-subtab" role="tab" aria-selected="false" aria-controls="accountPanelAchievements" tabindex="-1" data-account-tab="achievements" type="button">🏆 Úspěchy</button>
+          <button id="accountTabInventory" class="arcade-subtab" role="tab" aria-selected="false" aria-controls="accountPanelInventory" tabindex="-1" data-account-tab="inventory" type="button">🎒 Inventář</button>
+          <button id="accountTabStats" class="arcade-subtab" role="tab" aria-selected="false" aria-controls="accountPanelStats" tabindex="-1" data-account-tab="stats" type="button">📊 Statistiky</button>
+        </nav>
+        <section id="accountPanelOverview" class="arcade-subpanel" role="tabpanel" aria-labelledby="accountTabOverview" tabindex="0">
+          <div class="account-panel-intro"><h3>⚙️ Nastavení profilu</h3><p class="small">Přezdívka a avatar platí pro celou Arcade i všechny hry.</p></div>
         <form id="profileForm">
           <label for="nickname">Hráčská přezdívka</label>
           <input id="nickname" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="off" placeholder="Například FOXEY_CZ">
@@ -264,16 +283,22 @@
           <select id="avatar"><option value="fox">🦊 Liška</option><option value="robot">🤖 Robot</option><option value="alien">👽 Mimozemšťan</option><option value="crown">👑 Koruna</option></select>
           <button class="primary" id="profileSave" type="submit">Uložit profil</button>
         </form>
+        </section>
+        <section id="accountPanelAchievements" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="accountTabAchievements" tabindex="0">
         <section class="inventory-panel achievement-panel" aria-label="Achievementy FOXEY Arcade">
           <div class="sectionline"><h2>🏆 Moje achievementy</h2><span class="small" id="accountAchievementCount">—</span></div>
           <p class="small" id="accountAchievementStatus" aria-live="polite">Načítám achievementy…</p>
           <div class="achievement-grid" id="accountAchievementGrid"></div>
         </section>
+        </section>
+        <section id="accountPanelInventory" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="accountTabInventory" tabindex="0">
         <section class="inventory-panel" aria-label="Inventář odměn">
           <div class="sectionline"><h2>🎒 Můj inventář</h2><span class="small" id="inventoryCount">Načítání…</span></div>
           <p class="small">Tvoje vlastněné avatary. Kliknutím je nastavíš pro celý účet i Guess the Game.</p>
           <div class="inventory-grid" id="inventoryGrid"></div>
         </section>
+        </section>
+        <section id="accountPanelStats" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="accountTabStats" tabindex="0">
         <section class="gameprofile-summary">
           <div class="progresscard-title"><div><h3>🎮 Vlastní postup Guess the Game</h3><p class="small" id="accountProgressStatus" aria-live="polite">Načítám postup…</p></div>
             <button class="secondary progressRefresh" type="button" data-action="refreshProgress">↻ Obnovit</button></div>
@@ -282,7 +307,8 @@
           <p class="note">XP a level patří jen Guess the Game. Společná peněženka: 💎 <b id="accountSharedShards">—</b> · 👑 <b id="accountSharedCrowns">—</b>.</p>
           <h3>Další minihry</h3><p class="small">😂 Guess the Meme · 🎨 Draw &amp; Guess · ⛳ Mini Golf — každá bude mít své vlastní XP, level a rekordy.</p>
         </section>
-        <button class="secondary" id="signOut" type="button">Odhlásit se</button>
+        </section>
+        <button class="secondary account-sign-out" id="signOut" type="button">Odhlásit se</button>
       </div>
     </section>
 
