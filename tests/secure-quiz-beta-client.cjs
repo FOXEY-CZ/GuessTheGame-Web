@@ -13,7 +13,7 @@ const js=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(match=>match[1]).filter(Boolean).at(-1);
 assert.ok(js&&js.includes('arcade_quiz_current_question_shadow'),'Expected server card API');
 const exposed=js.replace(/^\s*\(\(\) => \{/,'return (() => {')
- .replace(/\}\)\(\);\s*$/,'return {start,hint,reveal,answer,next,getState:()=>({game,current,me})};\n})();');
+ .replace(/\}\)\(\);\s*$/,'return {start,hint,reveal,answer,next,selectGameHub,getState:()=>({game,current,me})};\n})();');
 assert.ok(exposed.includes('return {start,hint'),'Could not build isolated game harness');
 const elements=new Map();
 class Element {
@@ -109,6 +109,21 @@ async function main(){
    mockWindow,doc,mockStorage,{onLine:true},{randomUUID:()=>rid});
  await Promise.resolve();await Promise.resolve();
  assert.ok(game.getState().me,'Same-origin sign-in must be discovered');
+ // Shared-game UX: one active section at a time; changing sections never
+ // changes the authenticated player, answers, saves or run state.
+ const sole=elements.get('gameHubSolo'),chall=elements.get('gameHubChallenges'),
+   hist=elements.get('gameHubHistory');
+ assert.equal(sole.classList.contains('hidden'),false,'Solo tab must be the default');
+ assert.equal(chall.classList.contains('hidden'),true);
+ game.selectGameHub('challenges');
+ assert.equal(sole.classList.contains('hidden'),true);
+ assert.equal(chall.classList.contains('hidden'),false);
+ assert.equal(game.getState().game,null,'choosing a tab cannot start or reset a game');
+ game.selectGameHub('history');
+ assert.equal(hist.classList.contains('hidden'),false);
+ assert.equal(chall.classList.contains('hidden'),true);
+ game.selectGameHub('solo');
+ assert.equal(sole.classList.contains('hidden'),false);
  await game.start('classic');
  assert.equal(game.getState().current.cs,'Otázka 0');
  const firstButtons=elements.get('options').children;
