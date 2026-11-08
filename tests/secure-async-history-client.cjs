@@ -14,7 +14,7 @@ const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
    `return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},
   setTestCurrent:c=>{current=c;},
-  sendQuestionReport,toggleReport,refreshLiveRewards,activateLiveRewards,showLiveRewardReceipt,
+  sendQuestionReport,toggleReport,refreshLiveRewards,activateLiveRewards,showLiveRewardReceipt,finish,
   getState:()=>({historyUnread,historyItems,me,game,current})};\n})();`);
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
@@ -67,6 +67,23 @@ function instance(uid, initiallyFinished=true){
     auth:{getSession:async()=>({data:{session:{user:{id:uid}}},error:null})},
     rpc:async(name,args)=>{
       rpcCalls.push(name);
+      if(name==='arcade_verify_complete'){
+        assert.equal(args.p_run_id,challenge);
+        return {data:{ok:true,score:90,correct:9,lives:2},error:null};
+      }
+      if(name==='arcade_verify_action_summary_shadow'){
+        assert.equal(args.p_run_id,challenge);
+        return {data:{ok:true,consistent:true},error:null};
+      }
+      if(name==='arcade_verified_rewards_claim'){
+        assert.equal(args.p_run_id,challenge);
+        rewards.xp+=90;rewards.level=1;rewards.shards+=6;rewards.crowns+=1;
+        return {data:{ok:true,credited:true,run_id:challenge,
+          xp:90,shards:6,crowns:1,level:1,xp_total:rewards.xp},error:null};
+      }
+      if(name==='arcade_secure_singleplayer_in_progress'){
+        return {data:{ok:true,credited:false,items:[]},error:null};
+      }
       if(name==='arcade_verified_rewards_status'){
         return {data:{...rewards},error:null};
       }
@@ -250,6 +267,21 @@ async function main(){
   assert.equal(second.get('historyBell').attributes['aria-label'],'My challenges; unread results: 0');
   assert.ok(!first.rpcCalls.includes('arcade_verify_progress_shadow'));
   assert.ok(!second.rpcCalls.includes('arcade_sync_legacy'));
+  // End-to-end mock flow: a finished server-verified game claims live
+  // rewards and keeps visible score separate from the actual XP earned.
+  const paid=instance(owner);await settle();
+  await paid.app.activateLiveRewards();await settle();
+  paid.app.setTestGame({id:challenge,mode:'easy',ids:Array(10).fill('s001'),
+    idx:9,score:90,correct:9,lives:2,answers:[{choice:'A'}],
+    finished:true,resultShown:false,challenge:null});
+  await paid.app.finish();await settle();
+  assert.equal(paid.app.getState().game.resultShown,true);
+  assert.ok(paid.rpcCalls.includes('arcade_verify_complete'));
+  assert.ok(paid.rpcCalls.includes('arcade_verify_action_summary_shadow'));
+  assert.ok(paid.rpcCalls.includes('arcade_verified_rewards_claim'));
+  assert.equal(paid.get('finalScore').textContent,'90');
+  assert.ok(paid.get('liveRewardSummary').textContent.includes('+90 XP'));
+  assert.equal(paid.get('noReward').hidden,true);
   console.log('PASS: secure quiz notifications + real reward opt-in UI, isolated history and account balances');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
