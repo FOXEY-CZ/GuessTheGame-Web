@@ -281,7 +281,7 @@
       // Same-tab navigation is reliable on mobile (no popup blocker).
       // The existing secure quiz resumes this server-created creator run.
       const url=new URL('../secure-quiz-beta.html',location.href);
-      url.searchParams.set('v','friends-20261108c');
+      url.searchParams.set('v','live-duels-20261108b');
       url.searchParams.set('resume',data.challenge_id);
       location.assign(url.toString());
     }catch(err){
@@ -321,7 +321,7 @@
         if(entry.kind==='friend_challenge'){
           if(entry.challenge_ready!==true)return;
           const url=new URL('../secure-quiz-beta.html',location.href);
-          url.searchParams.set('v','friends-20261108c');
+          url.searchParams.set('v','live-duels-20261108b');
           url.searchParams.set('friend_challenge',entry.subject_id);
           location.assign(url.toString());
           return;
