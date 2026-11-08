@@ -497,6 +497,8 @@
       liveRewardTitle:'🎁 Skutečné odměny',
       liveRewardGranted:'✅ Připsáno +{xp} XP · +{shards} 💎 · +{crowns} 👑. Aktuálně Level {level}, {total} XP.',
       liveRewardCap:'ℹ️ Limit je vyčerpán (3/hod, 8/UTC den). Hrát můžeš dál, ale bez odměny.',
+      liveRewardDailyReplay:'ℹ️ Dnešní denní výzva už dostala svou odměnu. Druhá výplata se nepřipisuje.',
+      liveRewardNoPoints:'ℹ️ Odměna je 0: pro získání XP musíš mít alespoň jednu správnou odpověď.',
       liveRewardNotActive:'🧪 Tahle partie je testovací. Ověřené odměny zapni PŘED novou hrou.',
       liveRewardOldRun:'ℹ️ Tato partie začala před aktivací. Odměny získáš z nových her.',
       liveRewardDisabled:'⚠️ Vyplácení je momentálně pozastavené, skóre zůstává uložené.',
@@ -622,6 +624,8 @@
       liveRewardTitle:'🎁 Real rewards',
       liveRewardGranted:'✅ Credited +{xp} XP · +{shards} 💎 · +{crowns} 👑. Now Level {level}, {total} XP.',
       liveRewardCap:'ℹ️ Reward limit reached (3/hour or 8/UTC day). You can keep playing without earnings.',
+      liveRewardDailyReplay:'ℹ️ Today’s daily quiz has already been rewarded. No duplicate payout.',
+      liveRewardNoPoints:'ℹ️ No rewards: you need at least one correct answer to earn XP.',
       liveRewardNotActive:'🧪 This was a test run. Activate verified rewards BEFORE starting a new game.',
       liveRewardOldRun:'ℹ️ This run began before activation. New runs can earn rewards.',
       liveRewardDisabled:'⚠️ Payouts are temporarily paused. Your score is saved.',
@@ -768,7 +772,7 @@
     if(error)message=template(T('liveRewardError'),{error});
     else if(receipt?.credited===true){
       message=receipt.cap_reached?T('liveRewardCap'):
-        receipt.duplicate_daily?T('liveRewardOldRun'):
+        receipt.duplicate_daily?T('liveRewardDailyReplay'):
         (Number(receipt.xp)>0||Number(receipt.shards)>0||Number(receipt.crowns)>0)?
           template(T('liveRewardGranted'),{
             xp:receipt.xp,shards:receipt.shards,crowns:receipt.crowns,
@@ -1724,6 +1728,7 @@
     lock(true);status(T('statusQuestion'));
     $('auditRetryButton').disabled=true;
     let confirmed=false, challengeState=null,finishError='';
+    let liveReceipt=null,liveRewardError='';
     try{
       const completed=await api.rpc('arcade_verify_complete',{
         p_run_id:game.id,p_answers:game.answers
@@ -1748,6 +1753,26 @@
         clearActiveChallenge(game.challenge.id);
       }
       status(confirmed?T('auditOk'):T('auditFail'),confirmed?'ok':'error');
+      if(confirmed){
+        try{
+          const {data,error}=await api.rpc('arcade_verified_rewards_claim',{
+            p_run_id:game.id
+          });
+          if(error||data?.ok!==true)throw Error(error?.message||'reward_claim_failed');
+          liveReceipt=data;
+          if(data.credited===true){
+            void refreshLiveRewards();
+            // The same-origin Arcade parent can refresh shared wallet/progress.
+            try{
+              if(window.parent&&window.parent!==window)
+                window.parent.postMessage({type:'foxey-arcade:rewards-credited'},
+                  window.location.origin);
+            }catch(_){}
+          }
+        }catch(err){
+          liveRewardError=errorText(err);
+        }
+      }
     }catch(err){
       finishError=errorText(err);
       status(T('auditError')+' ('+finishError+')','error');
@@ -1758,7 +1783,10 @@
     $('finalLives').textContent=String(game.lives);
     $('auditMessage').textContent=confirmed?T('auditOk'):
       T('auditFail')+(finishError?' ('+finishError+')':'');
-    visible('auditRetryButton',!confirmed);
+    game.liveReceipt=liveReceipt;
+    game.rewardError=liveRewardError;
+    showLiveRewardReceipt(liveReceipt,liveRewardError);
+    visible('auditRetryButton',!confirmed||!!liveRewardError);
     $('auditRetryButton').disabled=false;
     visible('asyncResult',Boolean(game.challenge));
     if(game.challenge){
