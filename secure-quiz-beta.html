@@ -374,6 +374,14 @@
   .history-overlay-toolbar #gameBellHelp{flex:1 1 220px;margin:0}
   .game-social-bell .history-actions button:last-child{flex:0 0 42px;
     font-size:1.2rem;padding:7px;min-width:42px}
+
+  .game-shop-shortcut{min-width:43px;padding:8px 11px;
+    background:linear-gradient(135deg,#62408f,#32295c);
+    border-color:#aa85df;font-size:1.05rem}
+  .game-shop-shortcut:hover,.game-shop-shortcut:focus-visible{
+    background:#7655af;border-color:#dac4fa}
+  @media(max-width:420px){.game-shop-shortcut{
+    min-width:37px;padding:7px 8px;font-size:1rem}}
 </style>
 </head>
 <body>
@@ -385,6 +393,7 @@
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
       <button id="achievementsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="achievementsOverlay" aria-label="Achievementy" title="Achievementy">🏆 <span id="achievementHeaderCount" class="achievements-small-count">—</span></button>
       <button id="missionsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="missionsOverlay" aria-label="Mise" title="Mise">🎯 <span id="missionHeaderCount" class="achievements-small-count">—</span></button>
+      <button id="gameShopButton" class="lang game-shop-shortcut" type="button" aria-label="Otevřít společný obchod" title="Otevřít společný obchod">🛍️</button>
       <button id="lang" class="lang" type="button">CZ / EN</button>
     </div>
   </div>
@@ -732,6 +741,7 @@
       hubChallengesHint:'⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.',
       hubHistoryHint:'📜 Rozehrané i dokončené výzvy. Starší najdeš v archivu; otevřenou výzvu můžeš obnovit.',
       hubHelp:'ℹ️ Jak funguje obnovení výzvy?',
+      shopOpen:'Otevřít společný obchod',
       friendsTitle:'👥 Vyzvi svého kamaráda',
       friendsHint:'Vyber přítele ze svého FOXEY Arcade účtu. Odkaz nemusíš kopírovat.',
       friendsRefresh:'↻ Obnovit',friendsLoading:'☁️ Načítám přátele…',
@@ -912,6 +922,7 @@
       hubChallengesHint:'⚔️ Share private challenges with a link. Live 1v1 and BO3/BO5 series are in Arcade → Friends.',
       hubHistoryHint:'📜 Your ongoing and finished challenges. Older entries are archived; unfinished games can be resumed.',
       hubHelp:'ℹ️ How does challenge recovery work?',
+      shopOpen:'Open shared shop',
       friendsTitle:'👥 Challenge a friend',
       friendsHint:'Choose a friend from your FOXEY Arcade account. No copy-paste link needed.',
       friendsRefresh:'↻ Refresh',friendsLoading:'☁️ Loading friends…',
@@ -1619,6 +1630,8 @@
     $('gameHubChallengeHint').textContent=T('hubChallengesHint');
     $('gameHubHistoryHint').textContent=T('hubHistoryHint');
     $('resumeHelpTitle').textContent=T('hubHelp');
+    $('gameShopButton').setAttribute('aria-label',T('shopOpen'));
+    $('gameShopButton').setAttribute('title',T('shopOpen'));
     $('quizKeyboardHelp').textContent=T('keyboardHelp');
     renderGameFriends();
     selectGameHub(gameHubSection);
@@ -3101,6 +3114,18 @@
   });
   $('auditRetryButton').addEventListener('click',()=>void finish());
   $('againButton').addEventListener('click',modeScreen);
+  $('gameShopButton')?.addEventListener('click',()=>{
+    // The parent Arcade retains the mounted iframe and saved quiz session.
+    try{
+      if(window.parent&&window.parent!==window){
+        window.parent.postMessage({type:'foxey-arcade:open-shop'},
+          window.location.origin);
+        return;
+      }
+    }catch(_){}
+    const url=new URL('./arcade/#shop',window.location.href);
+    window.location.assign(url.toString());
+  });
   $('lang').addEventListener('click',()=>{
     lang=lang==='cs'?'en':'cs';
     try{localStorage.setItem(langKey,lang);}catch(_){}
