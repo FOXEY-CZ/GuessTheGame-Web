@@ -395,8 +395,23 @@
       if(error||data?.ok!==true||!Array.isArray(data.achievements))
         throw error||Error('achievements_unavailable');
       if(user?.id!==uid||seq!==achievementSeq)return;
+      const oldCodes=new Set(
+        Array.isArray(achievements?.achievements)?
+          achievements.achievements.filter(x=>x.unlocked).map(x=>x.code):[]
+      );
+      const hadSnapshot=Array.isArray(achievements?.achievements);
       achievements=data;achievementStatus='ready';
-      const fresh=Array.isArray(data.new_achievements)?data.new_achievements:[];
+      const fresh=Array.isArray(data.new_achievements)?[...data.new_achievements]:[];
+      // Newly credited achievements are already committed by the payment RPC;
+      // compare with the previous server readout rather than trusting an
+      // iframe message to tell us what was awarded.
+      if(hadSnapshot){
+        for(const a of data.achievements){
+          if(a.unlocked&&!oldCodes.has(a.code)&&!fresh.some(x=>x.code===a.code)){
+            fresh.push(a);
+          }
+        }
+      }
       if(fresh.length){
         celebrate(achievementsEnglish()?
           `🏆 ${fresh.length} achievement(s) unlocked! Rewards added.`:
@@ -851,7 +866,14 @@
       // authenticated server tables under user-scoped RLS.
       void getProfile(uid).then(fresh=>{
         if(user?.id!==uid)return;
+        const previousLevel=profile?1+Math.floor(safeNum(profile.arcade_xp)/100):null;
+        const currentLevel=1+Math.floor(safeNum(fresh.arcade_xp)/100);
         profile=fresh;render();
+        if(previousLevel!==null&&currentLevel>previousLevel){
+          celebrate(achievementsEnglish()?
+            '🎖️ Level up! You reached level '+currentLevel+'!':
+            '🎖️ Nový level! Dosáhl jsi úrovně '+currentLevel+'!');
+        }
       }).catch(()=>{});
       void loadSharedWallet();
       void loadAchievements();
