@@ -287,6 +287,11 @@
           p_notification_id:entry.notification_id
         });
         if(owner!==uid||stamp!==revision)return;
+        if(entry.unread===true){
+          entry.unread=false;
+          socialUnread=Math.max(0,socialUnread-1);
+          renderInbox();
+        }
         if(entry.kind==='friend_challenge'){
           if(entry.challenge_ready!==true)return;
           const url=new URL('../secure-quiz-beta.html',location.href);
