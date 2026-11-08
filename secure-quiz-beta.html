@@ -1397,6 +1397,7 @@
     renderResumePrompt();
     if(me){
       void refreshHistory();
+      void refreshGameSocial();
       void refreshSoloModes();
       void refreshLiveRewards();
       void refreshGameAchievements();
@@ -1560,6 +1561,9 @@
     me=!error&&data?.session?.user||null;
     if(priorUser!==me?.id){
       soloProgressByMode=Object.create(null);
+      ++gameSocialSeq;gameSocialItems=[];gameSocialUnread=0;
+      gameSocialArchived=false;gameSocialOffset=0;
+      gameSocialHasMore=false;gameSocialLoading=false;
       ++achievementSeq;
       achievementState=null;
       achievementLoading=false;
@@ -1857,8 +1861,136 @@
     };
     return T(states[entry.status]||'historyStatusWaiting');
   }
+
+  // Friends share this bell with game results, but use separate owner-scoped
+  // server notifications and finite 10-item pages. All links open in a NEW tab
+  // so checking a request never clears the current quiz run.
+  function renderGameSocial(){
+    const valid=Array.isArray(gameSocialItems)?gameSocialItems:[];
+    const box=$('gameSocialList');
+    if(box?.replaceChildren){
+      box.replaceChildren();
+      if(!valid.length){
+        const empty=document.createElement('p');empty.className='history-empty';
+        empty.textContent=lang==='en'?
+          (gameSocialArchived?'No archived friend notifications.':'No friend requests or invitations yet.'):
+          (gameSocialArchived?'Žádná archivovaná upozornění přátel.':'Zatím žádné žádosti ani pozvánky od přátel.');
+        box.append(empty);
+      }
+      for(const entry of valid){
+        if(!uuidPattern.test(entry?.notification_id))continue;
+        const card=document.createElement('article');
+        card.className='history-entry'+(entry.unread?' is-unread':'');
+        const heading=document.createElement('strong');
+        const actor=entry.actor?.nickname||(lang==='en'?'Player':'Hráč');
+        const title=entry.kind==='friend_request'?
+          (lang==='en'?'📩 Friend request':'📩 Žádost o přátelství'):
+          entry.kind==='friend_accepted'?
+            (lang==='en'?'🤝 New friend':'🤝 Nový přítel'):
+            (lang==='en'?'⚔️ Direct challenge':'⚔️ Přímá výzva');
+        heading.textContent=title+' · '+actor;
+        const message=document.createElement('p');
+        message.className='history-entry-sub';
+        message.textContent=entry.kind==='friend_challenge'?
+          entry.challenge_ready?(lang==='en'?'Your friend finished. Ready to play.':'Kamarád dohrál. Můžeš hrát.'):
+            (lang==='en'?'Waiting for the challenger to finish.':'Čeká se na dohrání vyzyvatele.'):
+          (lang==='en'?'Open Friends to respond.':'Vyřiď v sekci Přátelé.');
+        const actions=document.createElement('div');actions.className='history-actions';
+        const link=document.createElement('a');
+        const url=entry.kind==='friend_challenge'&&entry.challenge_ready&&
+          uuidPattern.test(entry.subject_id)?
+          new URL('./secure-quiz-beta.html',location.href):
+          new URL('./arcade/',location.href);
+        if(entry.kind==='friend_challenge'&&entry.challenge_ready&&
+           uuidPattern.test(entry.subject_id)){
+          url.searchParams.set('friend_challenge',entry.subject_id);
+          link.textContent=lang==='en'?'▶️ Play':'▶️ Hrát';
+        }else{
+          url.hash='community';
+          link.textContent=lang==='en'?'👥 Friends':'👥 Přátelé';
+        }
+        link.href=url.toString();link.target='_blank';link.rel='noopener noreferrer';
+        link.addEventListener('click',()=>{void markGameSocialSeen(entry.notification_id);});
+        if(entry.kind!=='friend_challenge'||entry.challenge_ready)actions.append(link);
+        const archive=document.createElement('button');archive.type='button';
+        archive.textContent=gameSocialArchived?'↩':'📦';
+        archive.setAttribute('aria-label',gameSocialArchived?
+          (lang==='en'?'Restore notification':'Obnovit upozornění'):
+          (lang==='en'?'Archive notification':'Archivovat upozornění'));
+        archive.addEventListener('click',()=>void archiveGameSocial(entry.notification_id,!gameSocialArchived));
+        actions.append(archive);
+        card.append(heading,message,actions);
+        box.append(card);
+      }
+    }
+    for(const [id,enabled] of [['gameSocialPrev',gameSocialOffset>0],
+      ['gameSocialNext',gameSocialHasMore]]){
+      const button=$(id);
+      if(button){
+        visible(id,enabled);button.disabled=gameSocialLoading;
+        button.textContent=id==='gameSocialPrev'?
+          (lang==='en'?'← Previous':'← Předchozí'):
+          (lang==='en'?'Next page →':'Další stránka →');
+      }
+    }
+    $('gameSocialTitle').textContent=lang==='en'?'👥 Friends and invites':'👥 Přátelé a pozvánky';
+    $('gameHistoryTitle').textContent=lang==='en'?'⚔️ Matches and results':'⚔️ Zápasy a výsledky';
+  }
+  async function markGameSocialSeen(id){
+    if(!me||!api||!uuidPattern.test(id))return;
+    const owner=me.id;
+    try{
+      const {data,error}=await api.rpc('arcade_social_notification_seen',{
+        p_notification_id:id
+      });
+      if(error||data?.ok!==true||data.seen!==true||me?.id!==owner)return;
+      const entry=gameSocialItems.find(x=>x.notification_id===id);
+      if(entry?.unread){
+        entry.unread=false;gameSocialUnread=Math.max(0,gameSocialUnread-1);
+        renderGameSocial();renderHistory();
+      }
+    }catch(_){}
+  }
+  async function archiveGameSocial(id,toArchive){
+    if(!me||!api||!uuidPattern.test(id))return;
+    const owner=me.id;
+    try{
+      const {data,error}=await api.rpc('arcade_social_notification_archive',{
+        p_notification_id:id,p_archived:toArchive
+      });
+      if(error||data?.ok!==true||data.archived!==toArchive||me?.id!==owner)return;
+      gameSocialOffset=0;void refreshGameSocial();
+    }catch(_){}
+  }
+  async function refreshGameSocial(next=false){
+    if(!me||!api||gameSocialLoading||navigator.onLine===false)return;
+    if(next&&!gameSocialHasMore)return;
+    const owner=me.id,seq=++gameSocialSeq,archived=gameSocialArchived;
+    const requestedOffset=next?gameSocialOffset+10:gameSocialOffset;
+    gameSocialLoading=true;
+    try{
+      const {data,error}=await api.rpc('arcade_social_inbox',{
+        p_archived:archived,p_limit:10,p_offset:requestedOffset
+      });
+      if(error||data?.ok!==true||!Array.isArray(data.items)
+         ||!Number.isInteger(data.unread)||data.unread<0
+         ||data.archived!==archived
+         ||me?.id!==owner||seq!==gameSocialSeq||archived!==gameSocialArchived)
+        return;
+      gameSocialItems=data.items;
+      gameSocialUnread=data.unread;gameSocialHasMore=data.has_more===true;
+      gameSocialOffset=requestedOffset;
+      renderHistory();renderGameSocial();
+    }catch(_){}
+    finally{
+      if(me?.id===owner&&seq===gameSocialSeq){
+        gameSocialLoading=false;renderGameSocial();
+      }
+    }
+  }
   function renderHistory(){
-    const count=Number.isFinite(historyUnread)?historyUnread:0;
+    const count=(Number.isFinite(historyUnread)?historyUnread:0)+
+      (Number.isFinite(gameSocialUnread)?gameSocialUnread:0);
     const badgeText=count>99?'99+':String(count);
     const bellCount=$('historyBellCount'),sectionBadge=$('historyBadge'),bell=$('historyBell');
     if(bellCount)bellCount.textContent=badgeText;
@@ -2006,8 +2138,11 @@
   function switchHistoryView(){
     historyArchived=!historyArchived;
     historyItems=[];historyHasMore=false;historyPageOffset=0;
-    renderHistory();
+    gameSocialArchived=historyArchived;
+    gameSocialItems=[];gameSocialHasMore=false;gameSocialOffset=0;
+    renderHistory();renderGameSocial();
     void refreshHistory();
+    void refreshGameSocial();
   }
   async function archiveHistory(id,toArchive){
     if(!me||!api||!uuidPattern.test(id))return;
@@ -2074,6 +2209,7 @@
     visible('historyOverlay',true);
     $('historyOverlayClose').focus?.();
     void refreshHistory();
+    void refreshGameSocial();
   }
   function closeHistoryOverlay(){
     visible('historyOverlay',false);
@@ -2414,6 +2550,11 @@
   $('backToPlatform').addEventListener('click',confirmPlatformReturn);
   $('brandLink').addEventListener('click',confirmPlatformReturn);
   $('historyBell').addEventListener('click',goToHistory);
+  $('gameSocialPrev').addEventListener('click',()=>{
+    if(gameSocialLoading||gameSocialOffset<10)return;
+    gameSocialOffset-=10;void refreshGameSocial();
+  });
+  $('gameSocialNext').addEventListener('click',()=>void refreshGameSocial(true));
   $('achievementsButton').addEventListener('click',openGameAchievements);
   $('missionsButton').addEventListener('click',openGameMissions);
   $('resultMissionsButton').addEventListener('click',openGameMissions);
