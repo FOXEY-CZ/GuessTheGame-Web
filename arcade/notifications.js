@@ -6,7 +6,8 @@
   const $=id=>document.getElementById(id);
   const choose=(cs,en)=>window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
   let api=null,userId=null,items=[],unread=0,loading=false,seq=0,opened=false;
-  let archived=false,hasMore=false;
+  let archived=false,hasMore=false,pageOffset=0;
+  const PAGE_SIZE=10;
   const text=(id,value)=>{const node=$(id);if(node)node.textContent=value};
   const show=(id,yes)=>{const node=$(id);if(node)node.classList.toggle('hidden',!yes)};
   const challengeUrl=id=>{
@@ -51,7 +52,10 @@
       choose('📦 Archiv','📦 Archive'));
     const archiveToggle=$('arcadeNoticeArchiveToggle');
     if(archiveToggle)archiveToggle.setAttribute('aria-pressed',archived?'true':'false');
-    text('arcadeNoticeMore',choose('⬇️ Načíst další','⬇️ Load more'));
+    text('arcadeNoticeMore',choose('Další stránka →','Next page →'));
+    text('arcadeNoticePrev',choose('← Předchozí','← Previous'));
+    show('arcadeNoticePrev',pageOffset>0);
+    const prev=$('arcadeNoticePrev');if(prev)prev.disabled=loading;
     show('arcadeNoticeMore',hasMore);
     const more=$('arcadeNoticeMore');if(more)more.disabled=loading;
     const box=$('arcadeNoticeList');if(!box)return;
@@ -133,10 +137,12 @@
     if(!api||!userId||loading||navigator.onLine===false)return;
     loading=true;
     const id=userId,stamp=seq,view=archived;
-    const offset=loadMore?items.length:0;
+    if(loadMore&&!hasMore)return;
+    if(loadMore)pageOffset+=PAGE_SIZE;
+    const offset=pageOffset;
     try{
       const {data,error}=await api.rpc('arcade_async_challenge_history',{
-        p_limit:40,p_offset:offset,p_archived:view
+        p_limit:PAGE_SIZE,p_offset:offset,p_archived:view
       });
       if(error||data?.ok!==true||!Array.isArray(data.items)||
         !Number.isInteger(data.unread)||data.unread<0||
@@ -145,12 +151,14 @@
       if(id!==userId||stamp!==seq||view!==archived)return;
       const next=data.items.filter(v=>typeof v?.challenge_id==='string'&&
         (v.role==='creator'||v.role==='challenger'));
-      items=loadMore?[...items,...next]:next;
+      // A fixed-size page, never an ever-growing DOM/scrolling feed.
+      items=next;
       unread=data.unread;
       hasMore=data.has_more;
       render();
     }catch(err){
       if(id===userId&&stamp===seq&&view===archived){
+        if(loadMore)pageOffset=Math.max(0,pageOffset-PAGE_SIZE);
         text('arcadeNoticeStatus',choose('⚠️ Historie se nenačetla: ','⚠️ Could not load history: ')+
           String(err?.message||'network_error').slice(0,160));
       }
@@ -160,7 +168,7 @@
     }
   }
   function toggleArchive(){
-    archived=!archived;items=[];hasMore=false;
+    archived=!archived;items=[];hasMore=false;pageOffset=0;
     render();void refresh();
   }
   async function archiveChallenge(challengeId,toArchive){
@@ -237,7 +245,7 @@
   function connect(client,user){
     const nextId=user?.id||null;
     if(nextId!==userId){
-      seq++;items=[];unread=0;archived=false;hasMore=false;
+      seq++;items=[];unread=0;archived=false;hasMore=false;pageOffset=0;
       text('arcadeNoticeDetail','');
       show('arcadeNoticeCopyField',false);
     }
@@ -251,6 +259,11 @@
   $('arcadeNoticeRefresh')?.addEventListener('click',()=>void refresh());
   $('arcadeNoticeArchiveToggle')?.addEventListener('click',toggleArchive);
   $('arcadeNoticeMore')?.addEventListener('click',()=>void refresh(true));
+  $('arcadeNoticePrev')?.addEventListener('click',()=>{
+    if(loading||pageOffset===0)return;
+    pageOffset=Math.max(0,pageOffset-PAGE_SIZE);
+    void refresh();
+  });
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&opened)close();
   });
