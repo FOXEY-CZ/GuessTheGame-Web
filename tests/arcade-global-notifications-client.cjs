@@ -45,22 +45,31 @@ const navigator={onLine:true,clipboard:{writeText:async()=>{}}};
 const location={href:'https://foxey-cz.github.io/GuessTheGame-Web/arcade/'};
 function apiFor(uid){
   const reads=new Map();
+  const hidden=new Map();
   const calls=[];
   return {
-    reads,calls,
+    reads,hidden,calls,
     rpc:async(name,args)=>{
       calls.push(name);
-      if(name==='arcade_async_challenge_inbox'){
-        assert.deepEqual(args,{p_limit:40});
-        return {data:{ok:true,unread:reads.get(cid)?0:1,
-          items:[{challenge_id:cid,role:uid===uu[0]?'creator':'challenger',
+      if(name==='arcade_async_challenge_history'){
+        assert.deepEqual(args,{p_limit:40,p_offset:0,p_archived:args.p_archived});
+        const all=[{challenge_id:cid,role:uid===uu[0]?'creator':'challenger',
             mode:'classic',status:'finished',both_done:true,unread:!reads.get(cid),
             your_score:uid===uu[0]?20:13,opponent_score:uid===uu[0]?13:20,
             winner:uid===uu[0]?'you':'opponent'},
             {challenge_id:activeId,role:uid===uu[0]?'creator':'challenger',
              mode:'mystery',status:uid===uu[0]?'creator_playing':'challenger_playing',
              creator_done:uid===uu[1],challenger_done:false,
-             both_done:false,unread:false}]},error:null};
+             both_done:false,unread:false}];
+        const items=all.filter(e=>!!hidden.get(e.challenge_id)===args.p_archived);
+        return {data:{ok:true,unread:reads.get(cid)||hidden.get(cid)?0:1,
+          items,has_more:false,archived:args.p_archived,total:items.length},error:null};
+      }
+      if(name==='arcade_async_challenge_archive'){
+        assert.equal(args.p_challenge_id,cid);
+        hidden.set(cid,args.p_archived);
+        if(args.p_archived)reads.set(cid,true);
+        return {data:{ok:true,archived:args.p_archived,challenge_id:cid},error:null};
       }
       if(name==='arcade_async_challenge_status'){
         assert.equal(args.p_challenge_id,cid);
@@ -117,6 +126,20 @@ async function main(){
   assert.equal($('arcadeBellCount').textContent,'0');
   assert.ok($('arcadeNoticeDetail').textContent.includes('Vyhrál'));
   assert.equal(first.reads.get(cid),true);
+  // Hiding a terminal notification moves it into a private, restorable archive.
+  const dismiss=$('arcadeNoticeList').children[0].children[0].children[1];
+  assert.equal(dismiss.textContent,'✕');
+  await dismiss.listeners.click();await settle();
+  assert.equal($('arcadeNoticeList').children.length,1);
+  assert.equal(first.hidden.get(cid),true);
+  $('arcadeNoticeArchiveToggle').listeners.click();await settle();
+  assert.equal($('arcadeNoticeList').children.length,1);
+  const restore=$('arcadeNoticeList').children[0].children[0].children[1];
+  assert.equal(restore.textContent,'↩');
+  await restore.listeners.click();await settle();
+  assert.equal(first.hidden.get(cid),false);
+  $('arcadeNoticeArchiveToggle').listeners.click();await settle();
+  assert.equal($('arcadeNoticeList').children.length,2);
   assert.ok(!first.calls.includes('arcade_sync_legacy'));
   assert.ok(!first.calls.includes('arcade_verify_progress_shadow'));
   notifications.close();
@@ -133,6 +156,6 @@ async function main(){
   assert.ok($('arcadeNoticeStatus').textContent.includes('Sign in'));
   assert.equal($('arcadeNoticeList').children.length,0,
     'logout must clear other account history without affecting game');
-  console.log('PASS: Arcade-wide bell, two accounts, unread polling, own read receipts, logout, no wallet writes');
+  console.log('PASS: Arcade-wide bell, private archive/restore, two accounts, unread polling, no wallet writes');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
