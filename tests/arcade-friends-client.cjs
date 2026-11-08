@@ -139,8 +139,10 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(nodes.get('friendsCount').textContent,'1');
  // Challenge friend, receive a server-bound receipt, then open the creator run.
  const friendCard=nodes.get('friendsList').children[0];
- await friendCard.children[1].children[1].events.click();
- assert.ok(assigned.includes('resume='+challenge));
+ friendCard.children[1].children[1].events.click();
+ await settle();await settle();
+ assert.ok(assigned.includes('resume='+challenge),
+   'targeted challenge should open creator run: '+nodes.get('friendsStatus').textContent);
  assert.ok(rpcCalls.some(x=>x.name==='arcade_friend_challenge_create'));
  // Bell opens only participant-authorized challenge link, marks notification read.
  assigned='';
