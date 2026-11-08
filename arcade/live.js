@@ -612,14 +612,18 @@ async function openMatch(id,doNav=true){
   await refreshState();
   return active?.match_id===id;
 }
-async function invite(friendId){
+async function invite(friendId,options=null){
   if(!uid||!UUID.test(friendId)||busy)return;
   const owner=uid,stamp=epoch;busy=true;renderList();
   status(tr('⚡ Posílám pozvánku…','⚡ Sending invite…'));
-  const mode=['classic','speed','mystery'].includes($('liveModeSelect')?.value)?
-    $('liveModeSelect').value:'classic';
-  const target=[2,3].includes(Number($('liveSeriesSelect')?.value))?
-    Number($('liveSeriesSelect').value):1;
+  // In-game one-tap invites explicitly start a single Classic duel. The
+  // multiplayer lobby keeps its saved mode/BO3/BO5 choice unchanged.
+  const requestedMode=options?.mode||$('liveModeSelect')?.value;
+  const requestedTarget=options?.target??Number($('liveSeriesSelect')?.value);
+  const mode=['classic','speed','mystery'].includes(requestedMode)?
+    requestedMode:'classic';
+  const target=[2,3].includes(Number(requestedTarget))?
+    Number(requestedTarget):1;
   const key='foxey.live.operation.'+owner+'.'+friendId+'.'+mode+'.'+target;
   let operation;
   try{
