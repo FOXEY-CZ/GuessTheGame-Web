@@ -1518,7 +1518,7 @@
       operation=crypto.randomUUID();
       try{localStorage.setItem(key,operation);}catch(_){}
     }
-    friendInviteBusy=true;renderGameFriends();
+    friendInviteBusy=true;lock(true);renderGameFriends();
     status(T('statusLoading'));
     try{
       const {data,error}=await api.rpc('arcade_friend_challenge_create',{
@@ -1528,14 +1528,17 @@
          !uuidPattern.test(data.challenge_id)||!uuidPattern.test(data.run_id))
         throw Error(error?.message||'friend_invite_failed');
       if(me?.id!==owner)return;
-      if(data.retry===true)await resumeAsyncChallenge(data.challenge_id);
-      else await enterQuiz(data,'classic',{id:data.challenge_id,role:'creator'});
+      if(data.retry===true){
+        lock(false); // Resume helper owns its own request lock.
+        await resumeAsyncChallenge(data.challenge_id);
+      }else await enterQuiz(data,'classic',{id:data.challenge_id,role:'creator'});
       try{localStorage.removeItem(key);}catch(_){}
       status(T('friendsSent'),'ok');
     }catch(err){
       if(me?.id===owner)
         status(template(T('friendsError'),{error:errorText(err)}),'error');
     }finally{
+      lock(false);
       friendInviteBusy=false;
       renderGameFriends();
     }
