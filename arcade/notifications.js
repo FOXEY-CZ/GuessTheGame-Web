@@ -6,6 +6,7 @@
   const $=id=>document.getElementById(id);
   const choose=(cs,en)=>window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
   let api=null,userId=null,items=[],unread=0,loading=false,seq=0,opened=false;
+  let archived=false,hasMore=false;
   const text=(id,value)=>{const node=$(id);if(node)node.textContent=value};
   const show=(id,yes)=>{const node=$(id);if(node)node.classList.toggle('hidden',!yes)};
   const challengeUrl=id=>{
@@ -45,6 +46,14 @@
     text('arcadeNoticeTitle',choose('🔔 Oznámení FOXEY Arcade','🔔 FOXEY Arcade notifications'));
     text('arcadeNoticeClose','✕');
     text('arcadeNoticeRefresh',choose('🔄 Obnovit','🔄 Refresh'));
+    text('arcadeNoticeArchiveToggle',archived?
+      choose('🔔 Aktivní výzvy','🔔 Active challenges'):
+      choose('📦 Archiv','📦 Archive'));
+    const archiveToggle=$('arcadeNoticeArchiveToggle');
+    if(archiveToggle)archiveToggle.setAttribute('aria-pressed',archived?'true':'false');
+    text('arcadeNoticeMore',choose('⬇️ Načíst další','⬇️ Load more'));
+    show('arcadeNoticeMore',hasMore);
+    const more=$('arcadeNoticeMore');if(more)more.disabled=loading;
     const box=$('arcadeNoticeList');if(!box)return;
     box.replaceChildren();
     if(!userId){
@@ -56,7 +65,9 @@
       choose('Zatím žádný nový výsledek.','No unread results.'));
     if(!items.length){
       const p=document.createElement('p');p.className='arcade-notice-empty';
-      p.textContent=choose('Zatím nemáš žádné serverové výzvy.','No server challenges yet.');
+      p.textContent=archived?
+        choose('V archivu zatím nic není.','Nothing is archived yet.'):
+        choose('Zatím nemáš žádné serverové výzvy.','No server challenges yet.');
       box.append(p);return;
     }
     for(const entry of items){
@@ -68,6 +79,19 @@
         choose('🎮 Přijatá','🎮 Received'))+
         ' · '+(entry.mode==='mystery'?'Mystery':'Classic')+
         (entry.unread?' · '+choose('NOVÝ VÝSLEDEK','NEW RESULT'):'');
+      const head=document.createElement('div');head.className='arcade-notice-card-head';
+      head.append(title);
+      if(entry.both_done||entry.status==='expired'){
+        const x=document.createElement('button');x.type='button';
+        x.className='arcade-notice-dismiss';
+        x.textContent=archived?'↩':'✕';
+        const action=archived?
+          choose('Vrátit z archivu','Restore from archive'):
+          choose('Skrýt do archivu','Move to archive');
+        x.setAttribute('aria-label',action);x.title=action;
+        x.addEventListener('click',()=>void archiveChallenge(entry.challenge_id,!archived));
+        head.append(x);
+      }
       const sub=document.createElement('span');
       sub.className='arcade-notice-sub';
       sub.textContent=label(entry);
@@ -102,29 +126,65 @@
         copy.addEventListener('click',()=>void copyInvite(entry.challenge_id));
         actions.append(copy);
       }
-      card.append(title,sub,score,actions);box.append(card);
+      card.append(head,sub,score,actions);box.append(card);
     }
   }
-  async function refresh(){
+  async function refresh(loadMore=false){
     if(!api||!userId||loading||navigator.onLine===false)return;
     loading=true;
-    const id=userId,stamp=seq;
+    const id=userId,stamp=seq,view=archived;
+    const offset=loadMore?items.length:0;
     try{
-      const {data,error}=await api.rpc('arcade_async_challenge_inbox',{p_limit:40});
+      const {data,error}=await api.rpc('arcade_async_challenge_history',{
+        p_limit:40,p_offset:offset,p_archived:view
+      });
       if(error||data?.ok!==true||!Array.isArray(data.items)||
-        !Number.isInteger(data.unread)||data.unread<0)
+        !Number.isInteger(data.unread)||data.unread<0||
+        typeof data.has_more!=='boolean'||data.archived!==view)
         throw Error(error?.message||'history_request_failed');
-      if(id!==userId||stamp!==seq)return;
-      items=data.items.filter(v=>typeof v?.challenge_id==='string'&&
+      if(id!==userId||stamp!==seq||view!==archived)return;
+      const next=data.items.filter(v=>typeof v?.challenge_id==='string'&&
         (v.role==='creator'||v.role==='challenger'));
+      items=loadMore?[...items,...next]:next;
       unread=data.unread;
+      hasMore=data.has_more;
       render();
     }catch(err){
-      if(id===userId&&stamp===seq){
+      if(id===userId&&stamp===seq&&view===archived){
         text('arcadeNoticeStatus',choose('⚠️ Historie se nenačetla: ','⚠️ Could not load history: ')+
           String(err?.message||'network_error').slice(0,160));
       }
-    }finally{loading=false;}
+    }finally{
+      loading=false;
+      if(id===userId&&stamp===seq&&view!==archived)void refresh();
+    }
+  }
+  function toggleArchive(){
+    archived=!archived;items=[];hasMore=false;
+    render();void refresh();
+  }
+  async function archiveChallenge(challengeId,toArchive){
+    if(!api||!userId||typeof challengeId!=='string')return;
+    const id=userId,stamp=seq;
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_archive',{
+        p_challenge_id:challengeId,p_archived:toArchive
+      });
+      if(error||data?.ok!==true||data.archived!==toArchive)
+        throw Error(error?.message||'archive_request_failed');
+      if(id!==userId||stamp!==seq)return;
+      items=items.filter(v=>v.challenge_id!==challengeId);
+      text('arcadeNoticeDetail',toArchive?
+        choose('✅ Výzva přesunuta do archivu.','✅ Challenge moved to archive.'):
+        choose('✅ Výzva vrácena mezi aktivní.','✅ Challenge restored.'));
+      render();
+      void refresh();
+    }catch(err){
+      if(id===userId&&stamp===seq)
+        text('arcadeNoticeDetail',
+          choose('⚠️ Archiv se nepodařilo změnit: ','⚠️ Could not change archive: ')+
+          String(err?.message||'network_error').slice(0,160));
+    }
   }
   async function openResult(challengeId){
     if(!api||!userId||typeof challengeId!=='string')return;
@@ -177,7 +237,7 @@
   function connect(client,user){
     const nextId=user?.id||null;
     if(nextId!==userId){
-      seq++;items=[];unread=0;
+      seq++;items=[];unread=0;archived=false;hasMore=false;
       text('arcadeNoticeDetail','');
       show('arcadeNoticeCopyField',false);
     }
@@ -189,6 +249,8 @@
   $('arcadeNoticeClose')?.addEventListener('click',close);
   $('arcadeNoticeShade')?.addEventListener('click',close);
   $('arcadeNoticeRefresh')?.addEventListener('click',()=>void refresh());
+  $('arcadeNoticeArchiveToggle')?.addEventListener('click',toggleArchive);
+  $('arcadeNoticeMore')?.addEventListener('click',()=>void refresh(true));
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&opened)close();
   });
