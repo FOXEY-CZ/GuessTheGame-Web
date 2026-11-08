@@ -1,0 +1,91 @@
+name: Verify FOXEY Arcade platform stability
+
+# The launcher is multi-game. Changes to ANY game, account, platform module or
+# contract test must run the cross-game regression suite, not only quiz tests.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'arcade/**'
+      - 'account-*.js'
+      - 'secure-quiz-beta.html'
+      - 'preview-auth-test.html'
+      - 'preview-3.6.html'
+      - 'preview-sync-test.html'
+      - 'index.html'
+      - 'site.webmanifest'
+      - 'tests/**'
+      - '.github/workflows/verify-arcade-platform.yml'
+  pull_request:
+    paths:
+      - 'arcade/**'
+      - 'account-*.js'
+      - 'secure-quiz-beta.html'
+      - 'preview-auth-test.html'
+      - 'preview-3.6.html'
+      - 'preview-sync-test.html'
+      - 'index.html'
+      - 'site.webmanifest'
+      - 'tests/**'
+      - '.github/workflows/verify-arcade-platform.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arcade-platform-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  platform-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Syntax and static platform invariants
+        run: |
+          set -euo pipefail
+          for f in arcade/*.js account-*.js tests/*.cjs; do
+            node --check "$f"
+          done
+          node tests/arcade-platform-stability.cjs
+          node tests/verify-arcade-integration.cjs
+      - name: Cross-game and platform regression suite
+        run: |
+          set -euo pipefail
+          tests=(
+            tests/account-flow.cjs
+            tests/account-cloud-multidevice.cjs
+            tests/account-backup-export.cjs
+            tests/guess-game-content.cjs
+            tests/server-quiz-launch.cjs
+            tests/arcade-global-notifications-client.cjs
+            tests/arcade-global-achievements-client.cjs
+            tests/arcade-global-missions-client.cjs
+            tests/arcade-ui-subtabs-client.cjs
+            tests/arcade-ui2-navigation-client.cjs
+            tests/arcade-friends-client.cjs
+            tests/arcade-live-client.cjs
+            tests/arcade-rematch-two-players-client.cjs
+            tests/arcade-series-two-player-client.cjs
+            tests/arcade-head-to-head-race.cjs
+            tests/arcade-secure-game-cutover-client.cjs
+            tests/shadow-action-client.cjs
+            tests/secure-quiz-beta-client.cjs
+            tests/secure-quiz-startup-fallback-client.cjs
+            tests/secure-quiz-platform-navigation-client.cjs
+            tests/secure-singleplayer-continue-client.cjs
+            tests/secure-async-challenge-client.cjs
+            tests/secure-async-resume-client.cjs
+            tests/secure-async-history-client.cjs
+          )
+          for t in "${tests[@]}"; do
+            echo "::group::$t"
+            node "$t"
+            echo "::endgroup::"
+          done
+          echo "Platform stability: all source and behavior checks passed."
