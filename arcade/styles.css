@@ -780,3 +780,10 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .live-mode-picker select { width:100%; }
  .live-leaderboard-row { gap:.3rem; padding:.65rem .4rem; font-size:.84rem; }
 }
+
+
+/* Reciprocal rematch consent — keep pending requests visible on mobile. */
+.live-rematch-prompt { margin:.85rem 0; padding:.85rem 1rem;
+ border:1px solid rgba(200,171,255,.45); border-radius:13px;
+ background:rgba(94,70,147,.22); font-weight:700; line-height:1.55; }
+.live-arena .friends-actions button { min-height:44px; }
