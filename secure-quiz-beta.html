@@ -1263,6 +1263,10 @@
     me=!error&&data?.session?.user||null;
     if(priorUser!==me?.id){
       soloProgressByMode=Object.create(null);
+      ++achievementSeq;
+      achievementState=null;
+      achievementLoading=false;
+      visible('achievementsOverlay',false);
       liveRewardState=null;
       liveRewardReconcileAttempted=false;
       $('liveRewardsStatus').textContent='';
