@@ -230,8 +230,7 @@
     <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
       <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
       <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
-      <p id="liveRewardsLegacy" class="live-rewards-note">Aktivace je dobrovolná. Staré savy i zůstatky zůstanou.</p>
-      <button id="liveRewardsEnable" type="button" class="primary hidden">✅ Aktivovat ověřené odměny</button>
+      <p id="liveRewardsLegacy" class="live-rewards-note">Postup a odměny se synchronizují automaticky.</p>
       <p id="liveRewardsStatus" role="status" aria-live="polite"></p>
     </section>
     <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
@@ -679,7 +678,7 @@
   let lang = 'cs', api = null, me = null, game = null, current = null;
   let busy=false,pending=null;
   let reportPending=false,reportSentKey=null;
-  let liveRewardState=null,liveRewardLoading=false,liveRewardActivating=false;
+  let liveRewardState=null,liveRewardLoading=false;
   let liveRewardReconcileAttempted=false;
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
@@ -699,30 +698,25 @@
   // Account-controlled, one-way transition from editable legacy rewards to
   // real server-confirmed XP and shared wallet payouts.
   function renderLiveRewards(){
-    const card=$('liveRewardsCard');
-    if(!card)return;
+    if(!$('liveRewardsCard'))return;
     $('liveRewardsTitle').textContent=T('liveRewardsTitle');
-    $('liveRewardsEnable').textContent=T('liveRewardsEnable');
-    const enabled=liveRewardState?.enabled===true;
-    const available=liveRewardState?.available===true;
-    $('liveRewardsLegacy').textContent=T(enabled?'liveRewardsEnabledNote':'liveRewardsLegacy');
+    $('liveRewardsLegacy').textContent=T('liveRewardsEnabledNote');
     let msg=T('liveRewardsLoading');
     if(liveRewardState){
-      msg=enabled?template(T('liveRewardsActive'),{
+      msg=liveRewardState.enabled===true?template(T('liveRewardsActive'),{
         level:liveRewardState.level,xp:liveRewardState.xp,
         shards:liveRewardState.shards,crowns:liveRewardState.crowns,
         paid:liveRewardState.paid_today,limit:liveRewardState.daily_limit
-      }):T(available?'liveRewardsNotActive':'liveRewardsUnavailable');
+      }):T('liveRewardsUnavailable');
     }
     $('liveRewardsSummary').textContent=msg;
-    visible('liveRewardsEnable',!!me&&available&&!enabled);
-    $('liveRewardsEnable').disabled=liveRewardActivating||liveRewardLoading;
   }
   async function refreshLiveRewards(){
     if(!me||!api||liveRewardLoading||navigator.onLine===false)return;
     const uid=me.id;liveRewardLoading=true;
     try{
-      const {data,error}=await api.rpc('arcade_verified_rewards_status');
+      // Automatic authenticated cutover. Run creation has the same server guard.
+      const {data,error}=await api.rpc('arcade_verified_rewards_auto_activate');
       if(error||data?.ok!==true||typeof data.enabled!=='boolean')
         throw Error(error?.message||'invalid_reward_status');
       if(me?.id!==uid)return;
@@ -761,35 +755,6 @@
       }
     }finally{
       liveRewardLoading=false;
-      if(me?.id===uid)renderLiveRewards();
-    }
-  }
-  async function activateLiveRewards(){
-    if(!me||!api||liveRewardActivating||liveRewardState?.enabled||
-       liveRewardState?.available!==true)return;
-    if(typeof window.confirm!=='function'||!window.confirm(T('liveRewardsConfirm')))return;
-    const uid=me.id;liveRewardActivating=true;
-    $('liveRewardsStatus').textContent=T('liveRewardsEnabling');
-    renderLiveRewards();
-    try{
-      const {data,error}=await api.rpc('arcade_verified_rewards_enroll',{
-        p_ack_legacy_freeze:true
-      });
-      if(error||data?.ok!==true||data.enabled!==true)
-        throw Error(error?.message||'enrollment_failed');
-      if(me?.id!==uid)return;
-      liveRewardState=data;
-      liveRewardReconcileAttempted=true;
-      $('liveRewardsStatus').textContent=T('liveRewardsActivated');
-    }catch(err){
-      if(me?.id===uid){
-        const message=errorText(err);
-        $('liveRewardsStatus').textContent=message.includes('legacy_sync_required')?
-          T('liveRewardsSyncRequired'):
-          template(T('liveRewardsError'),{error:message});
-      }
-    }finally{
-      liveRewardActivating=false;
       if(me?.id===uid)renderLiveRewards();
     }
   }
@@ -1920,7 +1885,6 @@
     else if(pending.type==='reveal')void reveal();
     else if(pending.type==='answer')void answer(pending.choice);
   });
-  $('liveRewardsEnable').addEventListener('click',()=>void activateLiveRewards());
   $('auditRetryButton').addEventListener('click',()=>void finish());
   $('againButton').addEventListener('click',modeScreen);
   $('lang').addEventListener('click',()=>{
