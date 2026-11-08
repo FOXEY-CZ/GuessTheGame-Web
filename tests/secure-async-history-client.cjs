@@ -15,6 +15,7 @@ const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
    `return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},
   setTestCurrent:c=>{current=c;},
   sendQuestionReport,toggleReport,refreshLiveRewards,showLiveRewardReceipt,finish,
+  openGameAchievements,closeGameAchievements,refreshGameAchievements,
   getState:()=>({historyUnread,historyItems,me,game,current})};\n})();`);
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
@@ -24,6 +25,7 @@ const friend='33333333-3333-4333-8333-333333333333';
 class E {
   constructor(id=''){this.id=id;this.textContent='';this.value='';this.className='';
     this.dataset={};this.disabled=false;this.children=[];this.listeners={};this.attributes={};
+    this.style={};
     this.hidden=false;
     this.classList={toggle:(name,turn)=>{if(name==='hidden')this.hidden=!!turn;},
       add:(name)=>{if(name==='hidden')this.hidden=true;},
@@ -95,6 +97,17 @@ function instance(uid, initiallyFinished=true){
       if(name==='arcade_verified_rewards_reconcile'){
         assert.deepEqual(args,{p_limit:10});
         return {data:{ok:true,recovered:0,failed:0},error:null};
+      }
+      if(name==='arcade_global_achievements'){
+        return {data:{ok:true,xp:390,level:4,achievements:[{
+          code:'first_game',icon:'🎮',name_cs:'První krok',name_en:'First Steps',
+          description_cs:'Dohraj první partii.',description_en:'Finish first run.',
+          progress:0,target:1,reward_shards:5,reward_chests:0,unlocked:false
+        },{
+          code:'level_5',icon:'🥉',name_cs:'Bronzová liška',name_en:'Bronze Fox',
+          description_cs:'Dosáhni levelu 5.',description_en:'Reach level 5.',
+          progress:4,target:5,reward_shards:15,reward_chests:1,unlocked:false
+        }],new_achievements:[]},error:null};
       }
       if(name==='arcade_async_challenge_history'){
         assert.equal(args.p_limit,10);
@@ -178,6 +191,24 @@ async function main(){
   },'');
   assert.ok(first.get('liveRewardSummary').textContent.includes('+80 XP'));
   assert.equal(first.get('noReward').hidden,true);
+  // Achievement drawer is available in the middle of a game and leaves
+  // the current round and options untouched.
+  assert.ok(html.includes('id="achievementsButton"'));
+  assert.ok(first.rpcCalls.includes('arcade_global_achievements'));
+  first.app.openGameAchievements();await settle();
+  assert.equal(first.get('achievementsOverlay').hidden,false);
+  assert.equal(first.get('achievementsList').children.length,2);
+  assert.equal(first.get('achievementsLevel').textContent,'🎖️ Level 4');
+  assert.equal(first.get('achievementHeaderCount').textContent,'0/2');
+  first.app.closeGameAchievements();
+  assert.equal(first.get('achievementsOverlay').hidden,true);
+  first.app.showLiveRewardReceipt({
+    ok:true,credited:true,xp:90,shards:5,crowns:0,level:5,xp_total:480,
+    new_achievements:[{code:'level_5',icon:'🥉',name_cs:'Bronzová liška',
+      name_en:'Bronze Fox',shards:15,free_chests:1}]
+  },'');
+  assert.equal(first.get('achievementUnlockBanner').hidden,false);
+  assert.ok(first.get('achievementUnlockDescription').textContent.includes('Bronzová liška'));
   assert.ok(!first.rpcCalls.includes('arcade_sync_legacy'));
   // The bell is ALWAYS clickable during the active quiz. Viewing the shared
   // inbox must not discard the round, answer choices or pending RPC state.
