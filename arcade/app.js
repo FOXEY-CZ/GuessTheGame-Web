@@ -970,6 +970,7 @@
   window.addEventListener('foxey-arcade:locale-changed',event=>{
     if(!['cs','en'].includes(event.detail?.locale))return;
     render(); // Re-render locale-sensitive numbers and statuses, never user data.
+    updateImmersive(arcadeImmersive);
     const frame=el('gameFrame');
     if(frame.getAttribute('src')&&frame.contentWindow?.postMessage){
       frame.contentWindow.postMessage({
