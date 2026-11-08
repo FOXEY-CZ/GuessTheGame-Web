@@ -787,3 +787,40 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  border:1px solid rgba(200,171,255,.45); border-radius:13px;
  background:rgba(94,70,147,.22); font-weight:700; line-height:1.55; }
 .live-arena .friends-actions button { min-height:44px; }
+
+
+/* FOXEY Arcade Multiplayer 1.2: BO3/BO5 scoreboards and head-to-head history. */
+.live-series-summary { display:grid; gap:.45rem; margin:1rem 0; padding:1rem;
+ background:rgba(46,51,93,.63); border:1px solid rgba(184,166,250,.48);
+ border-radius:16px; }
+.live-series-summary.hidden { display:none!important; }
+.live-series-score { display:flex; align-items:center; flex-wrap:wrap;
+ justify-content:center; gap:.65rem; text-align:center; }
+.live-series-score strong { font-size:clamp(1.2rem,3.5vw,1.8rem);
+ color:#dcc7ff; font-variant-numeric:tabular-nums; }
+.live-series-meta { font-size:.88rem; color:#bed2ef; line-height:1.45; }
+.live-series-games { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; }
+.live-series-game { display:inline-flex; gap:.25rem; align-items:center; padding:.3rem .6rem;
+ font-size:.83rem; border:1px solid rgba(165,185,231,.35);
+ border-radius:999px; color:#dfebff; background:rgba(16,30,59,.7); }
+.live-series-game.current { border-color:#bda2ff; background:rgba(115,81,171,.35); }
+.live-history-list { display:grid; gap:.55rem; }
+.live-history-row { display:grid; grid-template-columns:minmax(0,1fr) auto;
+ gap:.45rem 1rem; align-items:center; padding:.75rem;
+ border:1px solid rgba(155,177,219,.24); border-radius:13px;
+ background:rgba(24,42,73,.65); }
+.live-history-main { display:flex; flex-direction:column; gap:.25rem; min-width:0; }
+.live-history-main strong { overflow-wrap:anywhere; }
+.live-history-note { font-size:.78rem; color:#b8cbed; }
+.live-history-result { font-size:1.07rem; font-weight:750; font-variant-numeric:tabular-nums; }
+.live-history-result.win { color:#a9e8ba; }
+.live-history-result.loss { color:#f4b7bf; }
+.live-history-result.draw { color:#f1e2ab; }
+.live-item .live-item-actions { display:flex; flex-wrap:wrap; gap:.4rem;
+ align-items:center; justify-content:flex-end; }
+.live-item .live-item-actions button { max-width:none; flex:0 1 auto; }
+@media(max-width:650px) {
+ .live-history-row { grid-template-columns:minmax(0,1fr) auto; }
+ .live-item .live-item-actions { width:100%; justify-content:stretch; }
+ .live-item .live-item-actions button { flex:1 1 auto; }
+}
