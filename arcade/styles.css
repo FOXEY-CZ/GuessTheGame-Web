@@ -824,3 +824,46 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .live-item .live-item-actions { width:100%; justify-content:stretch; }
  .live-item .live-item-actions button { flex:1 1 auto; }
 }
+
+
+/* FOXEY Arcade 2.0 groundwork — fast navigation and distinct game catalog. */
+.arcade-hub{margin:25px 0 11px}
+.arcade-hub-heading{display:flex;justify-content:space-between;align-items:end;
+  flex-wrap:wrap;gap:10px;margin:0 0 14px}
+.arcade-hub-heading h2{margin:6px 0 0;font-size:clamp(19px,2.7vw,26px)}
+.arcade-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.arcade-hub-link{min-height:101px;width:100%;display:flex;align-items:center;
+  gap:12px;text-align:left;color:var(--text);padding:17px;
+  background:linear-gradient(140deg,#202b4b,#131f37);
+  border:1px solid #3e4c73;border-radius:16px;cursor:pointer;
+  font:inherit;box-shadow:0 5px 16px rgba(2,5,18,.12)}
+.arcade-hub-link:hover{border-color:#8b7ce2;background:linear-gradient(140deg,#293458,#1b2a46)}
+.arcade-hub-link:focus-visible{outline:2px solid var(--accent2);outline-offset:3px}
+.arcade-hub-icon{display:grid;place-items:center;flex:none;width:48px;height:48px;
+  border-radius:13px;background:#343365;font-size:25px}
+.arcade-hub-copy{display:grid;gap:5px;flex:1;min-width:0}
+.arcade-hub-copy strong{font-size:clamp(13px,1.7vw,15px);line-height:1.4}
+.arcade-hub-copy small{display:block;color:#b9c8df;font-size:12px;
+  line-height:1.4;overflow-wrap:anywhere}
+.arcade-hub-chevron{font-size:30px;color:#bcb2ed;line-height:1}
+.arcade-library-heading{margin:26px 0 14px}
+.arcade-library-heading h2{margin:0 0 6px}
+.arcade-library-heading p{margin:0}
+.arcade-library-live{margin-top:0}
+.arcade-library-live .gamecard{max-width:650px}
+.arcade-upcoming-heading{margin-top:36px}
+.arcade-upcoming-grid{margin-top:0}
+.arcade-upcoming-grid .gamecard{opacity:.87}
+.arcade-upcoming-grid .gamecard .gameart{filter:saturate(.8)}
+@media(max-width:720px){
+ .arcade-hub-grid{grid-template-columns:1fr 1fr;gap:8px}
+ .arcade-hub-link{flex-wrap:wrap;align-content:flex-start;gap:9px;padding:13px;min-height:116px}
+ .arcade-hub-icon{width:39px;height:39px;font-size:22px}
+ .arcade-hub-copy{flex:1 1 calc(100% - 60px)}
+ .arcade-hub-chevron{display:none}
+ .arcade-hub-copy small{font-size:11px}
+}
+@media(max-width:400px){.arcade-hub-grid{grid-template-columns:1fr}
+ .arcade-hub-link{min-height:76px;flex-wrap:nowrap}
+ .arcade-hub-copy{flex:1}.arcade-hub-chevron{display:inline;font-size:24px}
+}
