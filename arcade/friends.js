@@ -365,11 +365,16 @@
       kind==='friend_accepted'?
       tr('🤝 Žádost přijata','🤝 Friend request accepted'):
       kind==='live_invite'?
-      tr('⚡ Pozvánka do živého 1v1','⚡ Live 1v1 invitation'):
+        (entry.live_rematch===true?
+          tr('🔄 Žádost o odvetu','🔄 Rematch request'):
+          tr('⚡ Pozvánka do živého 1v1','⚡ Live 1v1 invitation')):
       tr('⚔️ Přímá výzva','⚔️ Direct challenge');
     root.append(node('strong','',title+' · '+playerName(p)));
     const description=kind==='live_invite'?
-      tr('Kamarád tě zve na souboj v reálném čase.','Your friend invited you to a live duel.'):
+      (entry.live_rematch===true?
+        tr('Soupeř tě žádá o odvetu. Chceš ji přijmout, nebo odmítnout?',
+          'Your opponent requests a rematch. Accept or decline?'):
+        tr('Kamarád tě zve na souboj v reálném čase.','Your friend invited you to a live duel.')):
       kind==='friend_challenge'?
       (entry.challenge_ready?tr('Můžeš zahájit zápas proti příteli.',
                                   'Ready to play your friend.'):
@@ -381,7 +386,10 @@
       tr('Teď se můžete navzájem vyzývat.','You can now challenge each other.');
     root.append(node('p','small',description));
     const actions=node('div','friends-actions');
-    const button=action(kind==='live_invite'?tr('⚡ Otevřít lobby','⚡ Open lobby'):
+    const button=action(kind==='live_invite'?
+      (entry.live_rematch===true?
+        tr('🔄 Přijmout / odmítnout','🔄 Accept / decline'):
+        tr('⚡ Otevřít lobby','⚡ Open lobby')):
       kind==='friend_challenge'?
       entry.challenge_ready?tr('▶️ Hrát','▶️ Play'):tr('⏳ Čeká se','⏳ Waiting'):
       tr('👥 Otevřít přátele','👥 Open Friends'),
