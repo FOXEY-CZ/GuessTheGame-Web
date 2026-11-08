@@ -14,7 +14,7 @@ const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
    `return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},
   setTestCurrent:c=>{current=c;},
-  sendQuestionReport,toggleReport,refreshLiveRewards,activateLiveRewards,showLiveRewardReceipt,finish,
+  sendQuestionReport,toggleReport,refreshLiveRewards,showLiveRewardReceipt,finish,
   getState:()=>({historyUnread,historyItems,me,game,current})};\n})();`);
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
@@ -87,10 +87,14 @@ function instance(uid, initiallyFinished=true){
       if(name==='arcade_verified_rewards_status'){
         return {data:{...rewards},error:null};
       }
-      if(name==='arcade_verified_rewards_enroll'){
-        assert.deepEqual(args,{p_ack_legacy_freeze:true});
+      if(name==='arcade_verified_rewards_auto_activate'){
+        assert.equal(args,undefined);
         rewards.enabled=true;
         return {data:{...rewards,legacy_import_frozen:true},error:null};
+      }
+      if(name==='arcade_verified_rewards_reconcile'){
+        assert.deepEqual(args,{p_limit:10});
+        return {data:{ok:true,recovered:0,failed:0},error:null};
       }
       if(name==='arcade_async_challenge_history'){
         assert.equal(args.p_limit,40);
@@ -163,12 +167,12 @@ async function main(){
   assert.ok(first.doc.title.startsWith('(1)'));
   assert.equal(first.app.getState().historyItems.length,2);
   assert.equal(first.get('historyList').children.length,2);
-  assert.ok(first.get('liveRewardsSummary').textContent.includes('Testovací'));
-  assert.equal(first.get('liveRewardsEnable').hidden,false);
-  await first.app.activateLiveRewards();await settle();
   assert.equal(first.rewards.enabled,true);
   assert.ok(first.get('liveRewardsSummary').textContent.includes('Aktivní'));
-  assert.equal(first.get('liveRewardsEnable').hidden,true);
+  assert.ok(first.rpcCalls.includes('arcade_verified_rewards_auto_activate'));
+  assert.ok(first.rpcCalls.includes('arcade_verified_rewards_reconcile'));
+  assert.ok(!html.includes('id="liveRewardsEnable"'));
+  assert.ok(!first.rpcCalls.includes('arcade_verified_rewards_enroll'));
   first.app.showLiveRewardReceipt({
     ok:true,credited:true,xp:80,shards:6,crowns:1,level:1,xp_total:80
   },'');
@@ -270,7 +274,7 @@ async function main(){
   // End-to-end mock flow: a finished server-verified game claims live
   // rewards and keeps visible score separate from the actual XP earned.
   const paid=instance(owner);await settle();
-  await paid.app.activateLiveRewards();await settle();
+  assert.ok(paid.rpcCalls.includes('arcade_verified_rewards_auto_activate'));
   paid.app.setTestGame({id:challenge,mode:'easy',ids:Array(10).fill('s001'),
     idx:9,score:90,correct:9,lives:2,answers:[{choice:'A'}],
     finished:true,resultShown:false,challenge:null});
@@ -282,6 +286,6 @@ async function main(){
   assert.equal(paid.get('finalScore').textContent,'90');
   assert.ok(paid.get('liveRewardSummary').textContent.includes('+90 XP'));
   assert.equal(paid.get('noReward').hidden,true);
-  console.log('PASS: secure quiz notifications + real reward opt-in UI, isolated history and account balances');
+  console.log('PASS: secure quiz notifications + no-click auto-migration and real reward claim, isolated history');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
