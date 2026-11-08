@@ -69,6 +69,7 @@ jobs:
             tests/arcade-ui-subtabs-client.cjs
             tests/arcade-ui2-navigation-client.cjs
             tests/arcade-friends-client.cjs
+            tests/arcade-chat-client.cjs
             tests/arcade-live-client.cjs
             tests/arcade-rematch-two-players-client.cjs
             tests/arcade-series-two-player-client.cjs
