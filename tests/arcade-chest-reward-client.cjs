@@ -53,12 +53,21 @@ const contextSource='(()=>{'+
  "const renderWallet=()=>{};const loadSharedWallet=async()=>{__walletLoaded();};"+
  "const notifyThemeUpdate=()=>{};"+
  app.slice(start,end)+
- 'return {performShop,closeChestReward,getBusy:()=>walletBusy};})()';
+ 'return {performShop,previewChestReward,closeChestReward,getBusy:()=>walletBusy};})()';
 const VM=vm.runInNewContext(contextSource,{
  __supa:supa,__document:document,__store:sessionStorage,__el:el,
  __walletLoaded:()=>{walletLoads++},Promise
 });
 (async()=>{
+ VM.previewChestReward();
+ assert.equal(calls,0,'preview must not call purchase RPC');
+ assert.equal(walletLoads,0,'preview must not touch wallet');
+ assert.equal(store.size,0,'preview cannot create a charge operation');
+ assert.equal(el('shopRewardTitle').textContent,'👀 Ukázka odměny');
+ assert.equal(el('shopRewardRarity').textContent,'DEMO · NEZÍSKÁNO');
+ assert.equal(el('shopRewardOverlay').classList.contains('hidden'),false);
+ assert.equal(el('shopRewardInventory').classList.contains('hidden'),true);
+ VM.closeChestReward();
  await VM.performShop('chest');
  assert.equal(calls,1,'one authorized server chest request');
  assert.equal(walletLoads,1,'reload wallet after server reward');
@@ -77,5 +86,5 @@ const VM=vm.runInNewContext(contextSource,{
  assert.equal(el('shopRewardOverlay').classList.contains('hidden'),true);
  assert.ok(el('shopChestResult').textContent.includes('Nemáš dost krystalů'));
  assert.equal(store.size,1,'failed operation must retain the id for retry');
- console.log('PASS: centered reward dialog, server-picked avatar, visible nearby errors and replay-safe operations.');
+ console.log('PASS: 0-RPC chest demo, real centered reward, server avatar, visible error and safe retries.');
 })().catch(e=>{console.error(e);process.exitCode=1});
