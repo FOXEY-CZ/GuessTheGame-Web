@@ -58,7 +58,7 @@ const profileA={user_id:a,nickname:'FOXEY',avatar_id:'fox',level:5,
 const profileB={user_id:b,nickname:'Buddy',avatar_id:'robot',level:2,
  arcade_xp:130,achievements:1,verified_games:2};
 let state='pending',nUnread=1,archiveCount=0,assigned='',bellUnread=[];
-let noticeKind='friend_challenge',noticeRematch=false,lobbyOpened='',modalClosed=0,navigatedPage='';
+let noticeKind='friend_challenge',noticeRematch=false,seriesTarget=null,lobbyOpened='',modalClosed=0,navigatedPage='';
 let copied='',seen=false,requestSent=false;
 const rpcCalls=[];
 const api={rpc:async(name,args)=>{
@@ -74,7 +74,7 @@ const api={rpc:async(name,args)=>{
   return {data:{ok:true,items:[{notification_id:notif,
     kind:noticeKind,subject_id:noticeKind==='live_invite'?challenge:challenge,
     actor:profileB,unread:true,challenge_ready:true,
-    live_rematch:noticeRematch}],unread:nUnread,
+    live_rematch:noticeRematch,live_series_target:seriesTarget}],unread:nUnread,
     archived:false,has_more:false,total:1}};
  }
  if(name==='arcade_friends_search'){
@@ -189,6 +189,13 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(lobbyOpened,challenge,'refusal must open the corresponding match');
  assert.equal(modalClosed,3);
  await settle();
+ // A BO3/BO5 invitation is labeled distinctly from a one-off live duel.
+ noticeKind='live_invite';noticeRematch=false;seriesTarget=3;
+ await ui.refreshInbox();await settle();
+ const seriesCard=nodes.get('arcadeSocialBellList').children[0];
+ assert.ok(seriesCard.children[0].textContent.includes('série na 3 vítězství'));
+ assert.ok(seriesCard.children[1].textContent.includes('série na 3 vítězství'));
+ assert.ok(seriesCard.children[2].children[0].textContent.includes('Otevřít sérii'));
  // No cross-account stale state after switching to anonymous mode.
  ui.connect(null,null);
  assert.equal(nodes.get('myFriendCode').textContent,'—');
