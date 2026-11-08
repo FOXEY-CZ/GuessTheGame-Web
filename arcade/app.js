@@ -521,6 +521,51 @@
     });
     selectSubtab(group,group==='account'?accountTab:shopTab);
   }
+  let arcadeImmersive=false,arcadeNativeFullscreen=false;
+  function updateImmersive(on){
+    arcadeImmersive=!!on;
+    document.body?.classList?.toggle('arcade-game-immersive',arcadeImmersive);
+    const exit=el('gameExitFullscreen');
+    if(exit){
+      exit.textContent=arcadeImmersive?'↙ '+(window.FOXEY_I18N?.getLocale?.()==='en'?
+        'Windowed mode':'Režim okna'):'⛶ '+(window.FOXEY_I18N?.getLocale?.()==='en'?
+        'Full screen':'Celá obrazovka');
+      exit.setAttribute('aria-label',exit.textContent);
+    }
+  }
+  function enterGameFullscreen(){
+    // CSS covers the viewport immediately, including Safari/iOS where the
+    // Fullscreen API may be unavailable. Game iframe is never reloaded.
+    updateImmersive(true);
+    const page=el('page-play');
+    if(typeof page?.requestFullscreen==='function'&&
+       !document.fullscreenElement){
+      try{
+        const response=page.requestFullscreen({navigationUI:'hide'});
+        if(response&&typeof response.then==='function')
+          void response.then(()=>{
+            arcadeNativeFullscreen=true;
+          }).catch(()=>{arcadeNativeFullscreen=false;});
+        else arcadeNativeFullscreen=true;
+      }catch(_){arcadeNativeFullscreen=false;}
+    }
+  }
+  function leaveGameFullscreen(){
+    updateImmersive(false);
+    if(document.fullscreenElement===el('page-play')&&
+       typeof document.exitFullscreen==='function'){
+      try{void Promise.resolve(document.exitFullscreen()).catch(()=>{});}
+      catch(_){}
+    }
+    arcadeNativeFullscreen=false;
+  }
+  document.addEventListener?.('fullscreenchange',()=>{
+    if(arcadeNativeFullscreen&&!document.fullscreenElement){
+      arcadeNativeFullscreen=false;
+      updateImmersive(false);
+    }else if(document.fullscreenElement===el('page-play'))
+      arcadeNativeFullscreen=true;
+  });
   function go(page){
     if(!PAGES.has(page))page='home';
     if(page==='play'){
@@ -534,6 +579,9 @@
       }
     }
     for(const name of PAGES)show('page-'+name,name===page);
+    if(page==='play')enterGameFullscreen();
+    else if(arcadeImmersive||document.fullscreenElement===el('page-play'))
+      leaveGameFullscreen();
     if(page==='shop'){
       selectSubtab('shop',shopTab);
       if(user&&supa)void loadSharedWallet();
@@ -887,6 +935,11 @@
   window.FOXEY_ARCADE_UI2?.setNavigation(go);
   window.FOXEY_ARCADE_SOCIAL?.setNavigation(go);
   window.FOXEY_ARCADE_LIVE?.setNavigation(go);
+  el('gameExitFullscreen')?.addEventListener('click',()=>{
+    if(arcadeImmersive||document.fullscreenElement===el('page-play'))
+      leaveGameFullscreen();
+    else enterGameFullscreen();
+  });
   document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',event=>{
     event.preventDefault();
     go(button.dataset.page);
