@@ -44,7 +44,7 @@
   // The legacy quiz stays addressable for old local progress/invite links.
   // Secure quiz keeps its private answer bank; real rewards are opt-in,
   // paid only after server-confirmed action traces and shared wallet locks.
-  const GAME_URL = '../secure-quiz-beta.html?v=multiplayer-1-2-20261108f';
+  const GAME_URL = '../secure-quiz-beta.html?v=platform-game-polish-20261108g';
   const GOOGLE_OAUTH_READY = cfg?.googleOAuthEnabled === true;
   // Remember only whether this page was opened by an OAuth callback, never
   // read, store or log the returned access/refresh token values.
