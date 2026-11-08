@@ -1888,13 +1888,18 @@
           entry.kind==='friend_accepted'?
             (lang==='en'?'🤝 New friend':'🤝 Nový přítel'):
             entry.kind==='live_invite'?
-            (lang==='en'?'⚡ Live 1v1 invite':'⚡ Pozvánka na živý souboj'):
+            (entry.live_rematch===true?
+              (lang==='en'?'🔄 Rematch request':'🔄 Žádost o odvetu'):
+              (lang==='en'?'⚡ Live 1v1 invite':'⚡ Pozvánka na živý souboj')):
             (lang==='en'?'⚔️ Direct challenge':'⚔️ Přímá výzva');
         heading.textContent=title+' · '+actor;
         const message=document.createElement('p');
         message.className='history-entry-sub';
         message.textContent=entry.kind==='live_invite'?
-          (lang==='en'?'Open the Arcade live lobby to accept.':'Přijmi pozvánku v živé lobby Arcade.'):
+          (entry.live_rematch===true?
+            (lang==='en'?'Your opponent requests a rematch. Accept or decline in Arcade.':
+              'Soupeř tě žádá o odvetu. Přijmi ji nebo odmítni v Arcade.'):
+            (lang==='en'?'Open the Arcade live lobby to accept.':'Přijmi pozvánku v živé lobby Arcade.')):
           entry.kind==='friend_challenge'?
           entry.challenge_ready?(lang==='en'?'Your friend finished. Ready to play.':'Kamarád dohrál. Můžeš hrát.'):
             (lang==='en'?'Waiting for the challenger to finish.':'Čeká se na dohrání vyzyvatele.'):
@@ -1915,7 +1920,9 @@
           if(entry.kind==='live_invite'&&uuidPattern.test(entry.subject_id))
             url.searchParams.set('live',entry.subject_id);
           link.textContent=entry.kind==='live_invite'?
-            (lang==='en'?'⚡ Open live lobby':'⚡ Otevřít live lobby'):
+            (entry.live_rematch===true?
+              (lang==='en'?'🔄 Respond to rematch':'🔄 Odpovědět na odvetu'):
+              (lang==='en'?'⚡ Open live lobby':'⚡ Otevřít live lobby')):
             (lang==='en'?'👥 Friends':'👥 Přátelé');
         }
         link.href=url.toString();link.target='_blank';link.rel='noopener noreferrer';
