@@ -974,6 +974,16 @@
       }[receipt?.reason]||'liveRewardNotActive';
       message=T(key);
     }
+    const newMissions=Array.isArray(receipt?.new_missions)?
+      receipt.new_missions.filter(x=>x&&typeof x.code==='string'):[];
+    visible('missionUnlockBanner',newMissions.length>0);
+    if(newMissions.length){
+      $('missionUnlockTitle').textContent=template(T('missionsNew'),
+        {count:newMissions.length});
+      $('missionUnlockDescription').textContent=newMissions.map(m=>
+        (m.icon||'🎯')+' '+((lang==='en'?m.name_en:m.name_cs)||m.code)
+      ).join(' · ');
+    }
     const newBadges=Array.isArray(receipt?.new_achievements)?
       receipt.new_achievements.filter(x=>x&&typeof x.code==='string'):[];
     visible('achievementUnlockBanner',newBadges.length>0);
@@ -1094,6 +1104,89 @@
     visible('achievementsOverlay',false);
     $('achievementsButton').focus?.();
   }
+
+  function renderGameMissions(){
+    $('missionsTitle').textContent=T('missionsTitle');
+    $('missionsEyebrow').textContent=T('missionsEyebrow');
+    $('missionsClose').setAttribute('aria-label',T('missionsClose'));
+    $('missionsButton').setAttribute('aria-label',T('missionsButton'));
+    $('missionsButton').setAttribute('title',T('missionsButton'));
+    $('resultMissionsButton').textContent=T('missionsShow');
+    $('missionsDailyTitle').textContent=T('missionsDaily');
+    $('missionsWeeklyTitle').textContent=T('missionsWeekly');
+    $('missionsDailyReset').textContent=T('missionsDailyReset');
+    $('missionsWeeklyReset').textContent=T('missionsWeeklyReset');
+    const entries=Array.isArray(missionState?.missions)?missionState.missions:[];
+    const done=entries.filter(m=>m.completed===true).length;
+    $('missionHeaderCount').textContent=entries.length?done+'/'+entries.length:'—';
+    $('missionsSummary').textContent=missionLoading?T('missionsLoading'):
+      entries.length?template(T('missionsSummary'),{done,total:entries.length}):
+      T('missionsUnavailable');
+    const create=(m)=>{
+      const card=document.createElement('article');card.className='game-mission-card'+(m.completed?' complete':'');
+      const icon=document.createElement('span');icon.className='game-mission-icon';
+      icon.textContent=m.icon||'🎯';icon.setAttribute('aria-hidden','true');
+      const box=document.createElement('div');box.className='game-mission-body';
+      const name=document.createElement('strong');
+      name.textContent=(lang==='en'?m.name_en:m.name_cs)||m.code;
+      const description=document.createElement('p');
+      description.textContent=(lang==='en'?m.description_en:m.description_cs)||'';
+      const progress=document.createElement('span');
+      progress.textContent=m.completed?T('missionsCompleted'):
+        Math.max(0,Number(m.progress)||0)+' / '+m.target;
+      const track=document.createElement('div');track.className='game-mission-track';
+      const fill=document.createElement('span');
+      if(fill.style)fill.style.width=(m.completed?100:Math.max(0,Math.min(100,
+        100*(Number(m.progress)||0)/Math.max(1,Number(m.target)||1))))+'%';
+      track.append(fill);
+      const reward=document.createElement('div');reward.className='game-mission-reward';
+      reward.textContent=[
+        Number(m.reward_shards)>0?'💎 +'+m.reward_shards:'',
+        Number(m.reward_crowns)>0?'👑 +'+m.reward_crowns:'',
+        Number(m.reward_chests)>0?'🎁 +'+m.reward_chests:''
+      ].filter(Boolean).join(' · ');
+      box.append(name,description,progress,track,reward);
+      card.append(icon,box);return card;
+    };
+    for(const [period,id] of [['daily','gameDailyMissions'],['weekly','gameWeeklyMissions']])
+      $(id).replaceChildren(...entries.filter(m=>m.period===period).map(create));
+  }
+  async function refreshGameMissions(){
+    if(!api||!me||missionLoading||navigator.onLine===false)return;
+    const uid=me.id,request=++missionSeq;
+    missionLoading=true;renderGameMissions();
+    try{
+      const {data,error}=await api.rpc('arcade_global_missions');
+      if(error||data?.ok!==true||!Array.isArray(data.missions))
+        throw Error(error?.message||'mission_status_invalid');
+      if(me?.id!==uid||request!==missionSeq)return;
+      missionState=data;
+      if(Array.isArray(data.new_rewards)&&data.new_rewards.length){
+        try{
+          if(window.parent&&window.parent!==window)
+            window.parent.postMessage({type:'foxey-arcade:rewards-credited'},
+              window.location.origin);
+        }catch(_){}
+      }
+    }catch(err){
+      if(me?.id===uid&&request===missionSeq)missionState=null;
+    }finally{
+      if(me?.id===uid&&request===missionSeq){
+        missionLoading=false;renderGameMissions();
+      }
+    }
+  }
+  function openGameMissions(){
+    if(!me)return;
+    visible('missionsOverlay',true);
+    $('missionsClose').focus?.();
+    renderGameMissions();
+    void refreshGameMissions();
+  }
+  function closeGameMissions(){
+    visible('missionsOverlay',false);
+    $('missionsButton').focus?.();
+  }
   function language(){
     document.documentElement.lang=lang;
     const ids={
@@ -1138,6 +1231,7 @@
     $('finalScoreLabel').textContent=T('scorePoints');
     $('inGameScoreLabel').textContent=T('scorePoints');
     renderGameAchievements();
+    renderGameMissions();
     renderLiveRewards();
     if(game?.resultShown)showLiveRewardReceipt(game.liveReceipt,game.rewardError);
     $('finalCorrectLabel').textContent=T('correct');
@@ -1165,6 +1259,8 @@
     game=null;current=null;pending=null;busy=false;
     document.body?.classList?.remove('quiz-playing','quiz-finished');
     visible('achievementsButton',!!me);
+    visible('missionsButton',!!me);
+    visible('missionUnlockBanner',false);
     resetReportUI();
     visible('bootPanel',false);
     visible('modePanel',!!me);visible('signIn',!me);
@@ -1178,6 +1274,7 @@
       void refreshSoloModes();
       void refreshLiveRewards();
       void refreshGameAchievements();
+      void refreshGameMissions();
     }
   }
   function renderSoloModes(){
@@ -1340,6 +1437,10 @@
       ++achievementSeq;
       achievementState=null;
       achievementLoading=false;
+      ++missionSeq;
+      missionState=null;
+      missionLoading=false;
+      visible('missionsOverlay',false);
       visible('achievementsOverlay',false);
       liveRewardState=null;
       liveRewardReconcileAttempted=false;
@@ -2131,6 +2232,7 @@
     document.body?.classList?.add('quiz-finished');
     game.resultShown=true;
     void refreshGameAchievements();
+    void refreshGameMissions();
     lock(false);
     if(challengeState?.both_done&&game.challenge){
       try{
@@ -2173,6 +2275,10 @@
   $('brandLink').addEventListener('click',confirmPlatformReturn);
   $('historyBell').addEventListener('click',goToHistory);
   $('achievementsButton').addEventListener('click',openGameAchievements);
+  $('missionsButton').addEventListener('click',openGameMissions);
+  $('resultMissionsButton').addEventListener('click',openGameMissions);
+  $('missionsClose').addEventListener('click',closeGameMissions);
+  $('missionsShade').addEventListener('click',closeGameMissions);
   $('resultAchievementsButton').addEventListener('click',openGameAchievements);
   $('achievementsClose').addEventListener('click',closeGameAchievements);
   $('achievementsShade').addEventListener('click',closeGameAchievements);
@@ -2195,6 +2301,8 @@
       closeHistoryOverlay();
     if(event.key==='Escape'&&!$('achievementsOverlay').classList.contains('hidden'))
       closeGameAchievements();
+    if(event.key==='Escape'&&!$('missionsOverlay').classList.contains('hidden'))
+      closeGameMissions();
   });
   $('historyRefresh').addEventListener('click',()=>void refreshHistory());
   $('createAsyncChallenge').addEventListener('click',()=>void createAsyncChallenge());
