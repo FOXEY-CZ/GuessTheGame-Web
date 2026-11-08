@@ -14,7 +14,7 @@
   let dashboard=null,searchResults=[],searchStatus='',selected=null;
   let socialItems=[],socialUnread=0,socialHasMore=false,
       socialArchived=false,socialOffset=0,socialLoading=false;
-  let navigate=null,currentPage='home',socialResponding=false;
+  let navigate=null,currentPage='home',socialResponding=false,friendsPane='people';
   const safeList=value=>Array.isArray(value)?value:[];
   function node(tag,cls,content){
     const el=document.createElement(tag);
@@ -43,6 +43,26 @@
     return btn;
   }
   function status(message){setText('friendsStatus',message);}
+  function openPane(which){
+    if(!['people','live'].includes(which))return;
+    friendsPane=which;
+    $('friendsPanePeople')?.classList.toggle('hidden',which!=='people');
+    $('friendsPaneLive')?.classList.toggle('hidden',which!=='live');
+    for(const btn of document.querySelectorAll?.('.arcade-social-tabs [data-social-live]')||[]){
+      const active=which==='live'&&currentPage==='community';
+      btn.classList.toggle('is-active',active);
+      btn.setAttribute('aria-current',active?'page':'false');
+    }
+    for(const btn of document.querySelectorAll?.('.arcade-social-tabs [data-friends-view]')||[]){
+      const active=which==='people'&&currentPage==='community';
+      btn.classList.toggle('is-active',active);
+      btn.setAttribute('aria-current',active?'page':'false');
+    }
+  }
+  function showLive(){
+    if(currentPage!=='community')navigate?.('community');
+    openPane('live');
+  }
   function onChange(){window.FOXEY_ARCADE_NOTIFICATIONS?.refresh?.();}
   async function call(name,args){
     if(!api||!uid)throw Error('not_authenticated');
@@ -147,6 +167,11 @@
     setText('friendsCount',logged?String(friends.length):'—');
     setText('friendsIncomingCount',logged?String(incoming.length):'—');
     setText('friendsOutgoingCount',logged?String(outgoing.length):'—');
+    setText('friendsRequestSummaryCount',logged?
+      String(incoming.length+outgoing.length):'—');
+    // Never bury incoming requests, but keep empty/handled requests collapsed.
+    if(incoming.length&&$('friendsRequestsDetails'))
+      $('friendsRequestsDetails').open=true;
     for(const [id,list,type,empty] of [
       ['friendsList',friends,'friend',tr('Ještě nemáš žádné přátele.','No friends yet.')],
       ['friendsIncomingList',incoming,'incoming',tr('Žádná nová žádost.','No new requests.')],
@@ -155,7 +180,8 @@
       drawList(id,list,type,logged?empty:tr('Přihlas se.','Sign in.'));
     }
     drawList('friendsSearchResults',searchResults,'search',searchStatus||
-      tr('Zadej přezdívku nebo kód přátel.','Search by nickname or friend code.'));
+      tr('Zadej nick kamaráda. Vyber hráče a klikni na Přidat.',
+         'Enter a friend nickname. Select the player and tap Add friend.'));
     for(const id of ['friendsRefresh','friendsSearchButton','copyFriendCode']){
       const e=$(id);if(e)e.disabled=!logged||busy||loading;
     }
@@ -190,8 +216,8 @@
       if(owner!==uid||stamp!==revision)return;
       searchResults=safeList(data.results).filter(x=>validId.test(x.user_id));
       searchStatus=searchResults.length?'':
-        tr('Nikdo nenalezen. Zkontroluj přezdívku nebo FX-kód.',
-           'Nobody found. Check their nickname or FX code.');
+        tr('Hráč nenalezen. Zkontroluj jeho nick.',
+           'Nobody found. Check their nickname.');
       setText('friendsSearchStatus',searchResults.length?
         tr('Nalezeno hráčů: ','Players found: ')+searchResults.length:searchStatus);
       render();
@@ -552,9 +578,18 @@
   }
   function onPage(page){
     currentPage=page;
-    if(page==='community'&&uid)void refresh();
+    if(page==='community'){
+      openPane(friendsPane);
+      if(uid)void refresh();
+    }
   }
   function setNavigation(cb){if(typeof cb==='function')navigate=cb;}
+  for(const btn of document.querySelectorAll?.('[data-social-live]')||[]){
+    btn.addEventListener('click',()=>showLive());
+  }
+  for(const btn of document.querySelectorAll?.('[data-friends-view]')||[]){
+    btn.addEventListener('click',()=>openPane('people'));
+  }
   $('friendsSearchForm')?.addEventListener('submit',event=>void search(event));
   $('friendsRefresh')?.addEventListener('click',()=>void refresh());
   $('friendProfileClose')?.addEventListener('click',()=>{
@@ -586,7 +621,7 @@
   },45000);
   window.FOXEY_ARCADE_SOCIAL=Object.freeze({
     connect,onPage,setNavigation,refresh,refreshInbox,renderInbox,
-    setBellArchived,getUnread:()=>socialUnread
+    setBellArchived,openPane,showLive,getUnread:()=>socialUnread
   });
   render();renderInbox();
 })();
