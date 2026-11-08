@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'arcade/**'
+      - 'secure-quiz-beta.html'
+      - 'tests/arcade-global-notifications-client.cjs'
+      - 'tests/secure-async-history-client.cjs'
       - '.github/workflows/verify-arcade-public.yml'
   workflow_dispatch:
 
@@ -23,6 +26,11 @@ jobs:
         run: |
           set -euo pipefail
           node --check arcade/app.js
+          node --check arcade/notifications.js
+          node --check tests/arcade-global-notifications-client.cjs
+          node --check tests/secure-async-history-client.cjs
+          node tests/arcade-global-notifications-client.cjs
+          node tests/secure-async-history-client.cjs
           node --check arcade/config.js
           node - <<'NODE'
           const fs=require('node:fs');
