@@ -10,7 +10,8 @@ const game=fs.readFileSync('secure-quiz-beta.html','utf8');
 const css=fs.readFileSync('arcade/styles.css','utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(ids.length,new Set(ids).size,'duplicate HTML IDs');
-for(const id of ['page-community','friendsRefresh','myFriendCode','copyFriendCode',
+for(const id of ['page-community','friendsRefresh','friendRequestsShortcut',
+ 'friendRequestsShortcutCount','friendRequestsSummary','friendsRequestsDetails',
  'friendsSearchForm','friendsSearchInput','friendsSearchButton','friendsSearchResults',
  'friendsIncomingList','friendsOutgoingList','friendsList','friendsBlockedList',
  'friendProfilePanel','friendProfileActions','arcadeSocialBellList','arcadeSocialNext',
@@ -25,7 +26,13 @@ assert.ok(notices.includes('foxey-arcade:social-unread'));
 assert.ok(game.includes("urlParams.get('friend_challenge')"));
 assert.ok(game.includes('void joinAsyncChallenge()'));
 assert.ok(game.includes('if(data.retry===true)'));
-assert.ok(css.includes('.friends-code-card'));
+assert.ok(css.includes('.arcade-friend-request-shortcut'));
+assert.ok(html.indexOf('id="friendsRequestsDetails"')>html.indexOf('id="arcadeNoticeOverlay"'),
+ 'request list belongs inside shared notification drawer');
+assert.ok(!html.includes('id="myFriendCode"')&&!html.includes('id="copyFriendCode"'),
+ 'friend codes must be removed from public UI');
+assert.ok(!html.includes('FX-')&&!code.includes("dashboard?.my_code"),
+ 'friend code must not appear or be used by current client UI');
 assert.ok(html.includes('id="friendsPanePeople"')&&html.includes('id="friendsPaneLive"'),
  'Friends and Live have separate compact panes');
 const socialTabs=[...html.matchAll(/<nav class="arcade-social-tabs"[\s\S]*?<\/nav>/g)];
@@ -39,8 +46,8 @@ assert.ok(html.includes('id="shopPreviewChest"'),
  'Players with a completed avatar collection need a free UI demo');
 assert.ok(html.includes('➕ Přidat přítele podle nicku'),
  'Nickname should be the default friend discovery method');
-assert.ok(html.includes('class="friends-code-card friends-advanced"'),
- 'Legacy friend codes should be behind a collapsed Advanced disclosure');
+assert.ok(html.includes('id="friendRequestsShortcut"'),
+ 'Request icon is the entrypoint instead of old advanced code panel');
 assert.ok(!html.includes('class="shop-header-link"'),
  'Shop icon must not duplicate the persistent bottom Shop button');
 assert.ok(game.includes('id="gameShopButton"'),
@@ -80,7 +87,7 @@ const profileB={user_id:b,nickname:'Buddy',avatar_id:'robot',level:2,
  arcade_xp:130,achievements:1,verified_games:2};
 let state='pending',nUnread=1,archiveCount=0,assigned='',bellUnread=[];
 let noticeKind='friend_challenge',noticeRematch=false,seriesTarget=null,lobbyOpened='',modalClosed=0,navigatedPage='';
-let copied='',seen=false,requestSent=false;
+let requestsOpened=0,seen=false,requestSent=false;
 const rpcCalls=[];
 const api={rpc:async(name,args)=>{
  rpcCalls.push({name,args});
@@ -131,7 +138,8 @@ const api={rpc:async(name,args)=>{
 }};
 const window={
  FOXEY_I18N:{getLocale:()=> 'cs'},
- FOXEY_ARCADE_NOTIFICATIONS:{refresh:()=>{},close:()=>{modalClosed++;}},
+ FOXEY_ARCADE_NOTIFICATIONS:{refresh:()=>{},close:()=>{modalClosed++;},
+  open:()=>{requestsOpened++;}},
  FOXEY_ARCADE_LIVE:{openMatch:async(id,doNav)=>{
    assert.equal(doNav,false);lobbyOpened=id;return true;
  }},
@@ -152,7 +160,12 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  ui.setNavigation(page=>{navigatedPage=page;});
  ui.connect(api,{id:a});
  await settle();await settle();
- assert.equal(nodes.get('myFriendCode').textContent,'FX-ABCDEF123456');
+ assert.equal(nodes.get('friendRequestsShortcutCount').textContent,'1');
+ assert.equal(nodes.get('friendRequestsShortcut').classList.contains('hidden'),false);
+ nodes.get('friendRequestsShortcut').events.click();
+ assert.equal(requestsOpened,1,'icon opens the existing notifications UI');
+ assert.equal(nodes.get('friendsRequestsDetails').open,true,
+   'icon immediately expands incoming/outgoing request controls');
  assert.equal(nodes.get('friendsIncomingList').children.length,1);
  assert.equal(nodes.get('friendsCount').textContent,'0');
  ui.onPage('community');
@@ -165,11 +178,9 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(nodes.get('friendsPaneLive').classList.contains('hidden'),true);
  assert.equal(nodes.get('friendsPanePeople').classList.contains('hidden'),false);
  assert.equal(nodes.get('friendsRequestSummaryCount').textContent,'1');
- assert.equal(nodes.get('friendsRequestsDetails').open,true,
-   'Incoming requests must not be hidden inside a collapsed menu');
+ assert.ok(ids.includes('friendsIncomingList')&&ids.includes('friendsOutgoingList'),
+   'both directions of request remain manageable');
  assert.ok(bellUnread.includes(1));
- nodes.get('copyFriendCode').events.click();await settle();
- assert.equal(copied,'FX-ABCDEF123456');
  nodes.get('friendsSearchInput').value='Buddy';
  await nodes.get('friendsSearchForm').events.submit({preventDefault(){}});
  assert.equal(nodes.get('friendsSearchResults').children.length,1);
@@ -180,6 +191,9 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  await settle();await settle();await settle();
  assert.equal(state,'accepted');
  assert.equal(nodes.get('friendsCount').textContent,'1');
+ assert.equal(nodes.get('friendRequestsShortcutCount').textContent,'0');
+ assert.equal(nodes.get('friendRequestsShortcutCount').classList.contains('hidden'),true,
+   'badge clears after accepted request');
  // Challenge friend, receive a server-bound receipt, then open the creator run.
  const friendCard=nodes.get('friendsList').children[0];
  friendCard.children[1].children[1].events.click();
@@ -258,7 +272,8 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.ok(archiveCount>0,'X must call the existing owner-scoped archive endpoint');
  // No cross-account stale state after switching to anonymous mode.
  ui.connect(null,null);
- assert.equal(nodes.get('myFriendCode').textContent,'—');
+ assert.equal(nodes.get('friendRequestsShortcut').classList.contains('hidden'),true,
+   'request shortcut is hidden after sign-out');
  assert.equal(nodes.get('friendsCount').textContent,'—');
  assert.equal(bellUnread[bellUnread.length-1],0);
  assert.ok(rpcCalls.every(x=>[
@@ -267,5 +282,5 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   'arcade_friend_challenge_create','arcade_live_respond',
   'arcade_social_notification_archive','arcade_social_notification_seen'
  ].includes(x.name)),'unexpected privileged RPC');
- console.log('PASS: owner-scoped friends, requests, public profiles, challenge deep links, social bell and logout');
+ console.log('PASS: nickname-only Friends UI, bell-side request badge and acceptance, public profiles, challenges and sign-out');
 })().catch(e=>{console.error(e);process.exitCode=1});
