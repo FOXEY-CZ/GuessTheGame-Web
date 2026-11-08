@@ -110,8 +110,8 @@ const live=read('arcade/live.js');
 const source=read('arcade/missions.js');
 assert.ok(live.includes("call('arcade_live_series_create'"));
 assert.ok(live.includes("call('arcade_live_head_to_head'"));
-assert.ok(source.includes("rpc('arcade_missions")||
-          source.includes("call('arcade_missions"),
+assert.ok(source.includes("rpc('arcade_global_missions")||
+          source.includes("call('arcade_global_missions"),
  'server-verified missions must remain available');
 assert.ok(!/\.from\(['"]arcade_live_(?:answers|matches|series)['"]\)/.test(live),
  'live scores/answers must not be written directly by client');
