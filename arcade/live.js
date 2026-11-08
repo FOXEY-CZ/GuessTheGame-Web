@@ -1,4 +1,4 @@
-/* FOXEY Arcade Live Duels 1.1 — secure, no wallet or save mutations.
+/* FOXEY Arcade Live Duels 1.2 — secure, no wallet or save mutations.
  * Server RPCs exclusively own questions, time windows, answers and scores. */
 (()=>{
 'use strict';
@@ -19,10 +19,177 @@ let snapshot=null,loadingDashboard=false,loadingState=false,loadingStateId=null,
 let navigate=null,previousInvites=-1;
 let stats=null,statsLoading=false,lastStats=0;
 let realtimeChannel=null,realtimeClient=null,realtimeConnected=false,lastState=0;
+let seriesData=null,seriesBusy=false,seriesBusyId=null,lastSeries=0;
+let headFriendId=null,headData=null,headBusy=false,lastHead=0;
 const modeName=m=>m==='speed'?tr('⚡ Rychlostní','⚡ Speed'):
   m==='mystery'?tr('🧩 Mystery','🧩 Mystery'):tr('⚔️ Klasika','⚔️ Classic');
 const storageKey=owner=>'foxey.arcade.live.last.'+owner;
 function networkStatus(message){text('liveRealtimeStatus',message);}
+function renderHeadToHead(){
+  const rows=$('liveHeadToHeadRows'),details=$('liveHeadToHeadStats');
+  if(!rows?.replaceChildren||!details?.replaceChildren)return;
+  rows.replaceChildren();details.replaceChildren();
+  if(!uid){text('liveHeadToHeadStatus',
+    tr('Přihlas se pro historii zápasů.','Sign in for match history.'));return;}
+  if(!headFriendId){
+    text('liveHeadToHeadStatus',tr(
+      'Vyber kamaráda tlačítkem „Vzájemné zápasy“.',
+      'Select a friend using the Head-to-head button.'));
+    return;
+  }
+  if(!headData){
+    text('liveHeadToHeadStatus',tr('☁️ Načítám historii…','☁️ Loading history…'));
+    return;
+  }
+  text('liveHeadToHeadStatus',tr('🎮 Vzájemné zápasy s ','🎮 Matches against ')+
+    label(headData.friend));
+  const d=headData.summary||{};
+  for(const [name,value] of [
+    [tr('Zápasy','Matches'),d.played],
+    [tr('Výhry','Wins'),d.wins],[tr('Prohry','Losses'),d.losses],
+    [tr('Remízy','Draws'),d.draws],
+    [tr('Body','Points'),String(d.points_scored??0)+' : '+String(d.points_conceded??0)]]){
+    const n=elem('span','',name+': ');n.append(elem('strong','',String(value??0)));
+    details.append(n);
+  }
+  const list=Array.isArray(headData.history)?headData.history:[];
+  if(!list.length){
+    rows.append(elem('p','small',tr(
+      'Zatím nemáte dokončený žádný vzájemný živý zápas.',
+      'You have not completed any live head-to-head match yet.')));
+  }
+  for(const item of list){
+    if(!UUID.test(item.match_id))continue;
+    const r=elem('div','live-history-row');
+    const left=elem('div','live-history-main');
+    const date=item.finished_at?
+      new Date(item.finished_at).toLocaleDateString(
+        window.FOXEY_I18N?.getLocale?.()==='en'?'en-US':'cs-CZ'):'—';
+    left.append(elem('strong','',modeName(item.mode)+
+      (item.series_id?tr(' · série #',' · series #')+item.series_game_no:'')));
+    left.append(elem('span','live-history-note',date+' · '+
+      (item.result==='win'?tr('Výhra','Win'):item.result==='loss'?
+        tr('Prohra','Loss'):tr('Remíza','Draw'))));
+    r.append(left,elem('span','live-history-result '+(item.result||'draw'),
+      String(item.my_score)+' : '+String(item.opponent_score)));
+    rows.append(r);
+  }
+}
+async function refreshHeadToHead(force=false){
+  if(!uid||!headFriendId||headBusy)return;
+  if(!force&&Date.now()-lastHead<20000)return;
+  headBusy=true;const owner=uid,stamp=epoch,friendId=headFriendId;
+  try{
+    const data=await call('arcade_live_head_to_head',{
+      p_friend_id:friendId,p_limit:20
+    });
+    if(isCurrent(owner,stamp)&&headFriendId===friendId){
+      headData=data;lastHead=Date.now();renderHeadToHead();
+    }
+  }catch(e){
+    if(isCurrent(owner,stamp)&&headFriendId===friendId)
+      text('liveHeadToHeadStatus',
+        tr('⚠️ Historie se nenačetla: ','⚠️ History unavailable: ')+safeError(e));
+  }finally{headBusy=false;}
+}
+function viewHeadToHead(friendId){
+  if(!uid||!UUID.test(friendId))return;
+  if(friendId!==headFriendId){headData=null;lastHead=0;}
+  headFriendId=friendId;renderHeadToHead();
+  navigate?.('community');
+  $('liveHeadToHeadPanel')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+  void refreshHeadToHead(true);
+}
+function renderSeries(){
+  const root=$('liveSeriesSummary');if(!root?.replaceChildren)return;
+  root.replaceChildren();
+  const m=active;
+  root.classList.toggle('hidden',!m?.series_id);
+  if(!m?.series_id)return;
+  if(!seriesData||seriesData.series_id!==m.series_id){
+    root.append(elem('p','live-series-meta',tr(
+      '🏆 Načítám stav série…','🏆 Loading series score…')));
+    return;
+  }
+  const d=seriesData;
+  const top=elem('div','live-series-score');
+  const first=label(d.first_player),second=label(d.second_player);
+  top.append(elem('span','',first),
+    elem('strong','',d.first_wins+' : '+d.second_wins),
+    elem('span','',second));
+  root.append(top);
+  const target=Number(d.target_wins)||2;
+  const meta=tr('Série na ','First to ')+target+
+    tr(' vítězství · ',' wins · ')+modeName(d.mode)+
+    tr(' · remízy: ',' · draws: ')+String(d.draws||0);
+  root.append(elem('div','live-series-meta',meta));
+  if(d.state==='finished'){
+    const mine=d.winner_id&&d.winner_id===uid;
+    root.append(elem('strong','',d.winner_id?
+      (mine?tr('🏆 Vyhrál jsi celou sérii!','🏆 You won the series!'):
+        tr('🏅 Sérii vyhrál soupeř.','🏅 Your opponent won the series.')):
+      tr('🤝 Série skončila remízou.','🤝 The series ended in a draw.')));
+  }else if(d.state==='active'){
+    root.append(elem('strong','',tr('🎮 Série právě probíhá','🎮 Series in progress')));
+  }else{
+    root.append(elem('strong','',tr('Série byla ukončena.','Series ended.')));
+  }
+  const games=elem('div','live-series-games');
+  for(const g of (Array.isArray(d.games)?d.games:[])){
+    if(!UUID.test(g.match_id))continue;
+    const el=elem('span','live-series-game'+
+      (g.match_id===m.match_id?' current':''),
+      '#'+g.game_no+' · '+(g.state==='finished'?
+        g.first_score+':'+g.second_score:
+        g.state==='running'?tr('Hraje se','Playing'):
+        g.state==='lobby'?tr('Lobby','Lobby'):
+        g.state==='invited'?tr('Pozvánka','Invite'):g.state));
+    games.append(el);
+  }
+  root.append(games);
+}
+async function refreshSeries(force=false){
+  const id=active?.series_id;
+  if(!uid||!api||!UUID.test(id))return;
+  if(seriesBusy&&seriesBusyId===id)return;
+  if(!force&&seriesData?.series_id===id&&Date.now()-lastSeries<4000)return;
+  const owner=uid,stamp=epoch;seriesBusy=true;seriesBusyId=id;
+  try{
+    const data=await call('arcade_live_series_state',{p_series_id:id});
+    if(isCurrent(owner,stamp)&&active?.series_id===id){
+      const previous=seriesData?.state;
+      seriesData=data;lastSeries=Date.now();renderArena();
+      if(previous!==data.state&&data.state==='finished')
+        void refreshHeadToHead(true);
+    }
+  }catch(e){
+    if(isCurrent(owner,stamp)&&active?.series_id===id)
+      text('liveStatus',tr('⚠️ Stav série: ','⚠️ Series status: ')+safeError(e));
+  }finally{
+    if(seriesBusyId===id){seriesBusy=false;seriesBusyId=null;}
+  }
+}
+async function nextSeriesRound(){
+  const id=active?.series_id;
+  if(!uid||!UUID.test(id)||busy)return;
+  busy=true;const owner=uid,stamp=epoch;renderArena();
+  try{
+    const result=await call('arcade_live_series_next',{p_series_id:id});
+    if(!isCurrent(owner,stamp))return;
+    if(result.state==='finished'){
+      await refreshSeries(true);
+      status(tr('🏆 Série už má vítěze.','🏆 The series has a winner.'));
+    }else if(UUID.test(result.match_id)){
+      status(tr('✅ Další zápas série je připraven!',
+        '✅ The next series match is ready!'));
+      await refreshDashboard(true);
+      await openMatch(result.match_id);
+    }
+  }catch(e){
+    if(isCurrent(owner,stamp))
+      status(tr('⚠️ Další zápas: ','⚠️ Next game: ')+safeError(e));
+  }finally{if(isCurrent(owner,stamp)){busy=false;renderArena();}}
+}
 function disconnectRealtime(){
   const old=realtimeChannel,client=realtimeClient;
   realtimeChannel=null;realtimeClient=null;realtimeConnected=false;
@@ -164,8 +331,12 @@ function renderList(){
     const who=elem('div','live-person');
     who.append(elem('strong','',label(p)),elem('span','live-presence',
       f.online?tr('🟢 Online','🟢 Online'):tr('⚪ Offline','⚪ Offline')));
-    row.append(who,btn(tr('⚡ Pozvat 1v1','⚡ Invite 1v1'),
-      ()=>void invite(p.user_id),'primary',busy));
+    const actions=elem('div','live-item-actions');
+    actions.append(btn(tr('⚡ Pozvat 1v1','⚡ Invite 1v1'),
+      ()=>void invite(p.user_id),'primary',busy),
+      btn(tr('📜 Vzájemné zápasy','📜 Head-to-head'),
+      ()=>viewHeadToHead(p.user_id),'secondary',busy));
+    row.append(who,actions);
     root.append(row);
   }
   if(!matches().length)recent.append(elem('p','friends-empty',
@@ -181,6 +352,8 @@ function renderList(){
       expired:tr('⌛ Vypršelo','⌛ Expired')};
     const myPoints=m.role==='host'?m.host_score:m.guest_score;
     const oppPoints=m.role==='host'?m.guest_score:m.host_score;
+    const seriesLabel=m.series_id?
+      tr('🏆 Série · zápas ','🏆 Series · game ')+m.series_game_no+' · ':null;
     const rematchLabel=m.rematch_of&&m.state==='invited'?
       (m.role==='guest'?tr('🔄 Žádost o odvetu','🔄 Rematch requested'):
         tr('🔄 Čeká na odvetu','🔄 Rematch pending')):
@@ -188,7 +361,8 @@ function renderList(){
       (m.role==='host'?tr('❌ Odveta byla odmítnuta','❌ Rematch declined'):
         tr('❌ Odvetu jsi odmítl','❌ You declined the rematch')):null;
     head.append(elem('strong','',label(m.opponent)),
-      elem('span','',(rematchLabel||translation[m.state]||m.state)+' · '+modeName(m.mode)));
+      elem('span','',(seriesLabel||'')+
+        (rematchLabel||translation[m.state]||m.state)+' · '+modeName(m.mode)));
     if(m.state==='finished')head.append(elem('span','',
       tr('Skóre ','Score ')+myPoints+' : '+oppPoints));
     row.append(head,btn(m.state==='invited'&&m.role==='guest'?
@@ -213,6 +387,7 @@ function renderArena(){
   arena.classList.toggle('hidden',!m&&!activeId);
   controls.replaceChildren();question.replaceChildren();options.replaceChildren();
   if(!m){
+    renderSeries();
     if(activeId){
       text('liveArenaMode','');
       text('liveArenaOpponent','');
@@ -222,7 +397,8 @@ function renderArena(){
     return;
   }
   const host=m.role==='host';
-  text('liveArenaMode',modeName(m.mode));
+  text('liveArenaMode',modeName(m.mode)+
+    (m.series_id?tr(' · Série #',' · Series #')+m.series_game_no:''));
   text('liveArenaOpponent',tr('Soupeř: ','Opponent: ')+label(m.opponent));
   text('liveScoreHost',String(host?m.host_score:m.guest_score));
   text('liveScoreGuest',String(host?m.guest_score:m.host_score));
@@ -281,6 +457,28 @@ function renderArena(){
     question.append(elem('h3','',result));
     question.append(elem('p','small',tr('Tvoje skóre ','Your score ')+myScore+
       ' : '+oppScore+tr(' soupeř',' opponent')));
+    // Best-of series is mutually agreed once; a later round uses lobby/Ready,
+    // not a new rematch invitation on every finished round.
+    if(m.series_id){
+      if(!seriesData||seriesData.series_id!==m.series_id){
+        question.append(elem('p','small',tr(
+          '🏆 Počítám stav celé série…','🏆 Calculating the series score…')));
+      }else if(seriesData.state==='active'){
+        const nextId=seriesData.latest_match_id;
+        if(nextId!==m.match_id&&UUID.test(nextId)){
+          controls.append(btn(tr('▶️ Připojit se k další hře série',
+            '▶️ Join next series match'),
+            ()=>void openMatch(nextId),'primary',busy));
+        }else{
+          controls.append(btn(tr('▶️ Další zápas série','▶️ Next series game'),
+            ()=>void nextSeriesRound(),'primary',busy));
+        }
+      }else if(seriesData.state==='finished'){
+        question.append(elem('p','small',tr(
+          '🏆 Série byla dokončena. Výsledek najdeš nad skóre zápasu.',
+          '🏆 Series finished. See the series result above the match score.')));
+      }
+    }else{
     const pending=pendingRematch(m);
     const latest=latestRematch(m);
     if(!pending&&latest?.state==='declined'&&latest.role==='host'){
@@ -309,6 +507,7 @@ function renderArena(){
       controls.append(btn(tr('▶️ Pokračovat v odvetě','▶️ Open rematch'),
         ()=>void openMatch(pending.match_id),'primary',busy));
     }
+    }
   }
   if(['invited','lobby','running'].includes(m.state)){
     controls.append(btn(tr('⛔ Ukončit zápas','⛔ End match'),()=>void cancelMatch(),
@@ -319,6 +518,7 @@ function renderArena(){
     try{window.sessionStorage.removeItem(storageKey(uid));}catch(_){}
     renderArena();
   }));
+  renderSeries();
   updateTimer();
 }
 async function refreshDashboard(force=false){
@@ -341,6 +541,8 @@ async function refreshDashboard(force=false){
     // An opponent's pending request changes the controls on an already-open
     // finished-match result. Re-render without navigating away or losing it.
     if(active?.state==='finished')renderArena();
+    if(active?.series_id)void refreshSeries();
+    if(headFriendId&&Date.now()-lastHead>20000)void refreshHeadToHead();
     const count=matches().filter(m=>m.state==='invited'&&m.role==='guest').length;
     text('liveInviteCount',count?String(count):'');
     if(previousInvites>=0&&count>previousInvites)
@@ -363,7 +565,11 @@ async function refreshState(){
     const m=await call('arcade_live_state',{p_match_id:id});
     if(isCurrent(owner,stamp)&&activeId===id){
       const oldState=active?.state;
+      if(active?.series_id!==m.series_id){
+        seriesData=null;lastSeries=0;
+      }
       active=m;lastState=Date.now();renderArena();
+      if(m.series_id)void refreshSeries(true);
       if(m.state!==oldState&&m.state==='finished')void refreshStats(true);
       if(['finished','declined','expired','cancelled'].includes(m.state)
          &&m.state!==oldState)void refreshDashboard(true);
@@ -400,17 +606,26 @@ async function invite(friendId){
   status(tr('⚡ Posílám pozvánku…','⚡ Sending invite…'));
   const mode=['classic','speed','mystery'].includes($('liveModeSelect')?.value)?
     $('liveModeSelect').value:'classic';
-  const key='foxey.live.operation.'+owner+'.'+friendId+'.'+mode;
+  const target=[2,3].includes(Number($('liveSeriesSelect')?.value))?
+    Number($('liveSeriesSelect').value):1;
+  const key='foxey.live.operation.'+owner+'.'+friendId+'.'+mode+'.'+target;
   let operation;
   try{
     operation=window.sessionStorage.getItem(key);
     if(!UUID.test(operation)){operation=crypto.randomUUID();window.sessionStorage.setItem(key,operation);}
-    const result=await call('arcade_live_invite_mode',{
-      p_friend_id:friendId,p_operation:operation,p_mode:mode
-    });
+    const result=target===1?
+      await call('arcade_live_invite_mode',{
+        p_friend_id:friendId,p_operation:operation,p_mode:mode
+      }):
+      await call('arcade_live_series_create',{
+        p_friend_id:friendId,p_operation:operation,p_mode:mode,
+        p_target_wins:target
+      });
     if(!isCurrent(owner,stamp))return;
     window.sessionStorage.removeItem(key);
-    status(tr('✅ Pozvánka odeslána!','✅ Invite sent!'));
+    status(target===1?tr('✅ Pozvánka odeslána!','✅ Invite sent!'):
+      tr('🏆 Pozvánka do série byla odeslána!',
+        '🏆 Best-of series invitation sent!'));
     await refreshDashboard(true);
     await openMatch(result.match_id);
     window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
@@ -487,7 +702,11 @@ async function mutate(name,args,message){
     if(!isCurrent(owner,stamp))return;
     if(message)status(message);
     await refreshState();await refreshDashboard(true);
-    if(active?.state==='finished')void refreshStats(true);
+    if(active?.series_id)void refreshSeries(true);
+    if(active?.state==='finished'){
+      void refreshStats(true);
+      if(headFriendId)void refreshHeadToHead(true);
+    }
     window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
   }catch(e){if(isCurrent(owner,stamp))status(tr('⚠️ Akce: ','⚠️ Action: ')+safeError(e));}
   finally{if(isCurrent(owner,stamp)){busy=false;renderArena();}}
@@ -511,11 +730,13 @@ function connect(client,user){
     disconnectRealtime();
     if(previous)try{window.sessionStorage.removeItem(storageKey(previous));}catch(_){}
     epoch++;snapshot=null;stats=null;statsLoading=false;lastStats=0;
+    seriesData=null;seriesBusy=false;seriesBusyId=null;lastSeries=0;
+    headFriendId=null;headData=null;headBusy=false;lastHead=0;
     active=null;activeId=null;previousInvites=-1;lastDashboard=0;lastPing=0;lastState=0;
     loadingDashboard=false;loadingState=false;loadingStateId=null;busy=false;
   }
   api=client||null;uid=next;
-  renderList();renderArena();renderStats();
+  renderList();renderArena();renderStats();renderHeadToHead();
   if(uid){
     void ping();void refreshDashboard(true);void refreshStats(true);
     if(!realtimeChannel)void connectRealtime(uid,epoch);
@@ -533,13 +754,19 @@ function onPage(next){
   if(next==='community'&&uid){
     void ping();void refreshDashboard(true);void refreshStats();
     if(activeId)void refreshState();
+    if(active?.series_id)void refreshSeries(true);
+    if(headFriendId)void refreshHeadToHead();
   }
 }
 function setNavigation(cb){navigate=cb;}
 $('liveRefresh')?.addEventListener('click',()=>{
   void ping();void refreshDashboard(true);void refreshStats(true);
   if(activeId)void refreshState();
+  if(active?.series_id)void refreshSeries(true);
+  if(headFriendId)void refreshHeadToHead(true);
 });
+$('liveHeadToHeadRefresh')?.addEventListener('click',
+  ()=>void refreshHeadToHead(true));
 window.setInterval?.(()=>{
   updateTimer();
   if(!uid||document.visibilityState==='hidden'||navigator.onLine===false)return;
@@ -547,6 +774,8 @@ window.setInterval?.(()=>{
   const now=Date.now();
   if(page==='community'){
     if(activeId&&now-lastState>(realtimeConnected?7000:2500))void refreshState();
+    if(active?.series_id&&now-lastSeries>8000)void refreshSeries();
+    if(headFriendId&&now-lastHead>30000)void refreshHeadToHead();
     if(now-lastDashboard>(realtimeConnected?12000:5000))void refreshDashboard(true);
     if(now-lastStats>30000)void refreshStats();
   }else if(now-lastDashboard>20000){
@@ -557,6 +786,8 @@ function resumeConnection(){
   if(!uid||navigator.onLine===false)return;
   void ping();void refreshDashboard(true);void refreshStats(true);
   if(activeId)void refreshState();
+  if(active?.series_id)void refreshSeries(true);
+  if(headFriendId)void refreshHeadToHead(true);
   if(!realtimeChannel)void connectRealtime(uid,epoch);
 }
 window.addEventListener('focus',resumeConnection);
@@ -572,11 +803,11 @@ document.addEventListener?.('visibilitychange',()=>{
   if(document.visibilityState==='visible')resumeConnection();
 });
 window.addEventListener('foxey-arcade:locale-changed',()=>{
-  renderList();renderArena();renderStats();
+  renderList();renderArena();renderStats();renderHeadToHead();
 });
 window.FOXEY_ARCADE_LIVE=Object.freeze({
   connect,onPage,setNavigation,invite,openMatch,refresh:refreshDashboard,
-  refreshStats
+  refreshStats,viewHeadToHead
 });
-renderList();renderArena();renderStats();
+renderList();renderArena();renderStats();renderHeadToHead();
 })();
