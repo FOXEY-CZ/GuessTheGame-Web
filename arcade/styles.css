@@ -1028,3 +1028,41 @@ body.arcade-reward-open{overflow:hidden}
  .shop-header-link{width:33px;height:33px;font-size:17px}
  .headerwallet .resource-spend{padding:5px;font-size:10px}
 }
+
+
+/* Friends 2.0 — one uncomplicated nickname-first view, live duels in own tab. */
+#page-community .arcade-social-tabs,#page-challenges .arcade-social-tabs{
+ grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.friends-view-pane.hidden{display:none!important}
+#friendsPanePeople>.friends-section:first-of-type{margin-top:0}
+#friendsPanePeople>.friends-section,
+#friendsPanePeople>.friends-requests-details{margin-bottom:13px}
+.friends-code-area{margin-top:8px}
+.friends-code-card.friends-advanced{display:block;margin:0 0 13px;
+ padding:0 13px;background:#13213a;border:1px solid #344567;
+ border-radius:13px;box-shadow:none}
+.friends-advanced>summary{cursor:pointer;list-style:revert;
+ min-height:43px;padding:12px 3px;font-size:.79rem;color:#bdc9e4;
+ font-weight:730}
+.friends-code-details{display:flex;align-items:center;gap:13px;
+ flex-wrap:wrap;padding:6px 3px 14px}
+.friends-code-details>div:nth-child(2){flex:1;min-width:140px}
+.friends-requests-details{border:1px solid #445a7a;border-radius:15px;
+ background:#12223c;padding:6px 13px}
+.friends-requests-details>summary{cursor:pointer;
+ min-height:46px;display:list-item;align-content:center;padding:7px 4px;
+ font-size:.91rem;font-weight:780;color:#e3eafe}
+.friends-requests-details[open]{padding-bottom:15px}
+.friends-requests-details .friends-columns{padding-top:9px}
+.friends-request-pill{display:inline-block;min-width:24px;padding:3px 8px;
+ border-radius:999px;background:#453b79;color:#dfe3ff;
+ margin-left:8px;font-size:.79rem}
+.friends-requests-details .friends-section{margin-bottom:0}
+#friendsPanePeople .friends-code-card strong{font-size:1.12rem}
+@media(max-width:700px){
+ #page-community .arcade-social-tabs,#page-challenges .arcade-social-tabs{gap:5px}
+ #page-community .arcade-social-tab,#page-challenges .arcade-social-tab{
+  padding:9px 6px;font-size:.76rem;min-height:52px}
+ .friends-code-details>button{flex:1 1 100%}
+}
