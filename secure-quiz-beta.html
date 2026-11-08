@@ -980,9 +980,15 @@
     if(newMissions.length){
       $('missionUnlockTitle').textContent=template(T('missionsNew'),
         {count:newMissions.length});
-      $('missionUnlockDescription').textContent=newMissions.map(m=>
-        (m.icon||'🎯')+' '+((lang==='en'?m.name_en:m.name_cs)||m.code)
-      ).join(' · ');
+      $('missionUnlockDescription').textContent=newMissions.map(m=>{
+        const reward=[
+          Number(m.shards)>0?'💎 +'+m.shards:'',
+          Number(m.crowns)>0?'👑 +'+m.crowns:'',
+          Number(m.free_chests)>0?'🎁 +'+m.free_chests:''
+        ].filter(Boolean).join(' ');
+        return (m.icon||'🎯')+' '+((lang==='en'?m.name_en:m.name_cs)||m.code)+
+          (reward?' ('+reward+')':'');
+      }).join(' · ');
     }
     const newBadges=Array.isArray(receipt?.new_achievements)?
       receipt.new_achievements.filter(x=>x&&typeof x.code==='string'):[];
