@@ -137,7 +137,7 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  await settle();await settle();
  state='finished';await ui.openMatch(match,false);await settle();
  const rematchBtn=nodes.get('liveArenaControls').children[0];
- assert.ok(rematchBtn.textContent.includes('Odveta'));
+ assert.match(rematchBtn.textContent,/odvetu/i);
  rematchBtn.events.click();await settle();await settle();await settle();
  assert.ok(calls.some(c=>c.name==='arcade_live_rematch'));
  ui.connect(null,null);
