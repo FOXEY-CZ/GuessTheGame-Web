@@ -300,6 +300,26 @@
   function openSocialAction(entry){
     if(!validId.test(entry.notification_id))return;
     const owner=uid,stamp=revision;
+    // Opening a live invite is a navigation action, not a read-receipt action:
+    // always open the lobby immediately even on a slow or failed network.
+    if(entry.kind==='live_invite'){
+      if(!validId.test(entry.subject_id)){
+        setText('arcadeSocialBellStatus',tr('⚠️ Neplatný odkaz na lobby.',
+          '⚠️ Invalid lobby link.'));
+        return;
+      }
+      window.FOXEY_ARCADE_NOTIFICATIONS?.close?.();
+      navigate?.('community');
+      if(typeof window.FOXEY_ARCADE_LIVE?.openMatch==='function'){
+        void window.FOXEY_ARCADE_LIVE.openMatch(entry.subject_id,false)
+          .catch(err=>setText('friendsStatus',
+            tr('⚠️ Lobby se nepodařilo otevřít: ','⚠️ Cannot open lobby: ')+
+            String(err?.message||'network_error').slice(0,105)));
+      }else{
+        setText('friendsStatus',tr('⚠️ Živá lobby se nenačetla. Obnov stránku.',
+          '⚠️ Live lobby did not load. Refresh the page.'));
+      }
+    }
     (async()=>{
       try{
         await call('arcade_social_notification_seen',{
@@ -312,9 +332,7 @@
           renderInbox();
         }
         if(entry.kind==='live_invite'){
-          navigate?.('community');
-          if(validId.test(entry.subject_id))
-            void window.FOXEY_ARCADE_LIVE?.openMatch(entry.subject_id,false);
+          // The modal is already closed and lobby opened above; only refresh badge.
           await refreshInbox();
           return;
         }
