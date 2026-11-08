@@ -150,8 +150,8 @@ const shadowStart=accountSource.indexOf('const shadowRuns=new Map()');
 const shadowEnd=accountSource.indexOf('const setFeedback =',shadowStart);
 assert.ok(shadowStart>0 && shadowEnd>shadowStart,'No standalone shadow bridge found');
 const shadow=accountSource.slice(shadowStart,shadowEnd);
-assert.ok(accountSource.includes('Server vybral otázky a ověřil výsledek'),
-  'Show a separate success message only for fully server-selected quizzes');
+assert.ok(accountSource.includes('Server ověřil odpovědi, pořadí akcí i nápovědy. Test bez výplaty.'),
+  'Only fully server-selected runs with a matching action trace may display verification success');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_progress_shadow'"),
   'Server must calculate a separate receipt for badges and daily streaks');
 assert.ok(current.html.includes('id="serverDailyClaimStatus"'),
