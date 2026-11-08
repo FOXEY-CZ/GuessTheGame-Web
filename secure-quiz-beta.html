@@ -293,6 +293,14 @@
   .game-streak-reward span{font-size:.72rem;color:#d4dcea;line-height:1.4}
   @media(max-width:560px){.game-streak-rewards{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(prefers-reduced-motion:reduce){.game-streak-progress span{transition:none}}
+
+  .game-social-bell{padding:12px;border:1px solid #56749a;
+    border-radius:14px;background:#14253e;margin:10px 0 17px}
+  .game-social-bell h3,.game-history-title{margin:2px 0 11px;font-size:.96rem}
+  .game-social-bell .history-entry{margin:7px 0;padding:11px}
+  .game-social-bell .history-entry-sub{line-height:1.45}
+  .game-social-bell .history-actions a,
+  .game-social-bell .history-actions button{padding:8px 12px;min-height:39px;font-size:.76rem}
 </style>
 </head>
 <body>
@@ -574,6 +582,15 @@
     </div>
     <p id="historyOverlayNotice" class="async-help" role="status" aria-live="polite"></p>
     <div class="history-toolbar history-overlay-toolbar"><button id="historyOverlayArchiveToggle" type="button">📦 Archiv</button><button id="historyOverlayRefresh" type="button">🔄 Obnovit</button></div>
+    <section class="game-social-bell" aria-labelledby="gameSocialTitle">
+      <h3 id="gameSocialTitle">👥 Přátelé a pozvánky</h3>
+      <div id="gameSocialList" class="history-list"></div>
+      <div class="history-pagination">
+        <button type="button" id="gameSocialPrev" class="history-more hidden">← Předchozí</button>
+        <button type="button" id="gameSocialNext" class="history-more hidden">Další stránka →</button>
+      </div>
+    </section>
+    <h3 id="gameHistoryTitle" class="game-history-title">⚔️ Zápasy a výsledky</h3>
     <div id="historyOverlayList" class="history-list"></div>
     <div class="history-pagination">
       <button id="historyOverlayPrev" type="button" class="history-more hidden">← Předchozí</button>
@@ -925,6 +942,8 @@
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
   let historyArchived=false,historyHasMore=false,historyPageOffset=0;
+  let gameSocialItems=[],gameSocialUnread=0,gameSocialArchived=false,
+      gameSocialOffset=0,gameSocialHasMore=false,gameSocialLoading=false,gameSocialSeq=0;
   const HISTORY_PAGE_SIZE=10;
   const soloModes=['classic','mystery','daily','easy','medium','hard'];
   let soloProgressByMode=Object.create(null),soloLoading=false;
