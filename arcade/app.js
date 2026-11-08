@@ -258,6 +258,20 @@
     document.body?.classList?.add('arcade-reward-open');
     el('shopRewardDone')?.focus?.();
   }
+  function previewChestReward(){
+    // Pure client-side visual demo: zero RPCs, zero wallet writes, no saves.
+    // Always labelled preview so no player can mistake it for a prize.
+    closeChestReward();
+    showAvatar('pixel-fox',el('shopRewardArt'));
+    el('shopRewardTitle').textContent='👀 Ukázka odměny';
+    el('shopRewardRarity').textContent='DEMO · NEZÍSKÁNO';
+    el('shopRewardName').textContent=AVATAR_CATALOG['pixel-fox'].name;
+    el('shopRewardCaption').textContent=
+      'Jen ukázka zobrazení. Žádný avatar nebyl připsán a nic se neodečetlo.';
+    el('shopRewardInventory').classList.add('hidden');
+    el('shopRewardDone').textContent='✓ Zavřít ukázku';
+    showChestReward();
+  }
   async function performShop(kind,theme){
     if(!user||walletBusy||!sharedWallet||!sharedCosmetics||!supa)return;
     if(kind==='theme'&&!THEME_IDS.has(theme))return;
@@ -290,6 +304,9 @@
         const avatar=reply.data?.avatar;
         if(!Object.hasOwn(AVATAR_CATALOG,avatar))throw Error('invalid_reward');
         showAvatar(avatar,el('shopRewardArt'));
+        el('shopRewardTitle').textContent='🎉 Získal jsi odměnu!';
+        el('shopRewardInventory').classList.remove('hidden');
+        el('shopRewardDone').textContent='🎉 Super!';
         el('shopRewardName').textContent=AVATAR_CATALOG[avatar].name;
         el('shopRewardRarity').textContent=tier==='epic'?'EPICKÁ ODMĚNA':'NOVÝ AVATAR';
         el('shopRewardCaption').textContent='V inventáři • '+(tier==='epic'?'epická':'běžná')+' sbírka';
@@ -1021,6 +1038,7 @@
   el('resetPasswordForm').addEventListener('submit',applyRecoveredPassword);
   el('profileForm').addEventListener('submit',saveProfile);
   el('signOut').addEventListener('click',signOut);
+  el('shopPreviewChest')?.addEventListener('click',previewChestReward);
   el('shopRewardClose')?.addEventListener('click',closeChestReward);
   el('shopRewardDone')?.addEventListener('click',closeChestReward);
   el('shopRewardInventory')?.addEventListener('click',()=>{
