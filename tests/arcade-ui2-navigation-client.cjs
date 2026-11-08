@@ -21,8 +21,8 @@ assert.ok(css.includes('.arcade-mobile-dock{position:fixed'));
 assert.ok(css.includes('env(safe-area-inset-bottom'));
 assert.ok(!source.includes('innerHTML'));
 assert.ok(!source.includes('service_role'));
-assert.ok(!source.includes('.update(') && !source.includes('.insert(') &&
-  !source.includes('.delete('),'challenge management must never edit client-side tables');
+assert.ok(!source.includes(".from("),
+ 'challenge management must never write or directly query client-side database tables');
 assert.ok(source.includes("api.rpc('arcade_async_challenge_cancel'"),
   'cancel must be performed through authenticated server RPC');
 
