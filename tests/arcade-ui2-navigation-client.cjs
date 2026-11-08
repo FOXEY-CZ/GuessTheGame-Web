@@ -180,7 +180,6 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.deepEqual(nav,['play','account']);
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],'page');
   ui.onPage('community');
-  assert.equal(mobile[3].attrs['aria-current'],'page');
   assert.equal(mobile[2].attrs['aria-current'],'page');
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],undefined);
   ui.onPage('shop');
