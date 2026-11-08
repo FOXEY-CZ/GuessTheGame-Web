@@ -596,9 +596,14 @@
     </div>
     <p class="small" id="arcadeNoticeStatus" role="status" aria-live="polite"></p>
     <div class="arcade-notice-toolbar">
-      <button class="secondary" id="arcadeNoticeArchiveToggle" type="button">📦 Archiv</button>
-      <button class="secondary" id="arcadeNoticeRefresh" type="button">🔄 Obnovit</button>
+      <p class="small arcade-notice-help" id="arcadeNoticeHelp">Otevři nebo přijmi pozvánku. Křížek ✕ pouze skryje oznámení.</p>
+      <button class="secondary" id="arcadeNoticeRefresh" type="button">↻ Obnovit</button>
     </div>
+    <details id="arcadeNoticeHistory" class="arcade-notice-history-disclosure">
+      <summary>🕘 Starší a skrytá oznámení</summary>
+      <p class="small">Skrytá oznámení můžeš obnovit. Skrytím se nepřeruší žádný aktivní zápas ani výzva.</p>
+      <button class="secondary" id="arcadeNoticeArchiveToggle" type="button">Zobrazit skrytá</button>
+    </details>
     <section class="arcade-social-bell" aria-labelledby="arcadeSocialBellTitle">
       <div class="sectionline"><h3 id="arcadeSocialBellTitle">👥 Přátelé a pozvánky</h3><span id="arcadeSocialBellCount"></span></div>
       <div id="arcadeSocialBellList" class="arcade-notice-list"></div>
