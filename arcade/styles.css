@@ -1075,3 +1075,38 @@ body.arcade-reward-open{overflow:hidden}
  #shopPanelChests>.sectionline{flex-direction:column;align-items:stretch;gap:9px}
  #shopPanelChests .shop-chest-preview{width:100%}
 }
+
+
+/* Friends 2.1 — tiny request shortcut beside the bell; details inside the drawer. */
+.arcade-friend-request-shortcut{min-width:44px;min-height:44px;
+  padding:7px 9px;background:linear-gradient(135deg,#364c71,#3b366f);
+  border:1px solid #8493c8;border-radius:14px;transition:background .15s,border-color .15s}
+.arcade-friend-request-shortcut:hover,.arcade-friend-request-shortcut:focus-visible{
+  border-color:#c6adff;background:linear-gradient(135deg,#465e91,#554292)}
+.friend-request-symbol{display:inline-flex;align-items:center;justify-content:center;
+  position:relative;line-height:1;font-size:21px}
+.friend-request-symbol>span{position:absolute;right:-8px;bottom:-7px;display:grid;
+  place-items:center;width:16px;height:16px;border-radius:50%;
+  background:#6751b1;color:#fff;border:1px solid #c7b5ff;
+  font-size:12px;font-weight:900}
+.arcade-friend-request-shortcut .arcade-bell-count{position:absolute;
+ top:-5px;right:-6px;min-width:20px;height:20px;
+ box-shadow:0 2px 10px #080d22bb}
+.arcade-bell-requests{margin:10px 0 15px;padding:6px 14px;
+ border-color:#7865b9;background:linear-gradient(120deg,#202d50,#1a2340)}
+.arcade-bell-requests>summary{font-size:.91rem;line-height:1.4;
+ min-height:47px;color:#f1eaff}
+.arcade-bell-requests>summary:focus-visible{outline:2px solid #b3a1ff;
+ outline-offset:3px;border-radius:6px}
+.arcade-bell-requests .friends-columns{margin-top:5px}
+.arcade-bell-requests .friends-section{background:#182943;
+ border-color:#415987;padding:12px}
+.arcade-bell-requests .friends-grid{grid-template-columns:1fr}
+.arcade-bell-requests .friends-actions button{min-height:43px}
+.arcade-bell-requests .friends-card{padding:11px}
+@media(max-width:600px){
+ .arcade-friend-request-shortcut{min-width:41px;min-height:42px;order:1}
+ .friend-request-symbol{font-size:19px}
+ .arcade-bell-requests{padding:7px 10px}
+ .arcade-bell-requests .friends-columns{display:grid;grid-template-columns:1fr;gap:10px}
+}
