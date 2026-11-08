@@ -1899,8 +1899,8 @@
         const link=document.createElement('a');
         const url=entry.kind==='friend_challenge'&&entry.challenge_ready&&
           uuidPattern.test(entry.subject_id)?
-          new URL('./secure-quiz-beta.html',location.href):
-          new URL('./arcade/',location.href);
+          new URL('./secure-quiz-beta.html',window.location.href):
+          new URL('./arcade/',window.location.href);
         if(entry.kind==='friend_challenge'&&entry.challenge_ready&&
            uuidPattern.test(entry.subject_id)){
           url.searchParams.set('friend_challenge',entry.subject_id);
