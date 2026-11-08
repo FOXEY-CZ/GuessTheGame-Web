@@ -120,13 +120,16 @@ async function main(){
  assert.equal(sole.classList.contains('hidden'),false,'Solo tab must be the default');
  assert.equal(chall.classList.contains('hidden'),true);
  game.selectGameHub('challenges');
+ assert.equal(elements.get('modeTitle').textContent,'Soukromé výzvy');
  assert.equal(sole.classList.contains('hidden'),true);
  assert.equal(chall.classList.contains('hidden'),false);
  assert.equal(game.getState().game,null,'choosing a tab cannot start or reset a game');
  game.selectGameHub('history');
+ assert.equal(elements.get('modeTitle').textContent,'Historie výzev');
  assert.equal(hist.classList.contains('hidden'),false);
  assert.equal(chall.classList.contains('hidden'),true);
  game.selectGameHub('solo');
+ assert.equal(elements.get('modeTitle').textContent,'Vyber režim');
  assert.equal(sole.classList.contains('hidden'),false);
  await game.start('classic');
  assert.equal(game.getState().current.cs,'Otázka 0');
