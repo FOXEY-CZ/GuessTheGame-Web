@@ -749,3 +749,34 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .live-section .friends-columns { grid-template-columns: 1fr; }
  .live-arena .friends-actions button { flex: 1 1 auto; }
 }
+
+
+/* Multiplayer 1.1 — accessible mode picker, Realtime connection, PvP standings. */
+.live-mode-picker { display:flex; flex-wrap:wrap; gap:.65rem 1rem;
+ align-items:center; margin:.85rem 0 1.1rem; }
+.live-mode-picker label { font-weight:650; }
+.live-mode-picker select { min-height:44px; max-width:100%; padding:.65rem .8rem;
+ border:1px solid rgba(176,189,230,.45); border-radius:12px;
+ background:#1d3052; color:#fff; font:inherit; }
+.live-network-status { font-size:.83rem; color:#b7cdef; }
+.live-mode-badge { font-size:.75rem; color:#dec5ff; margin-inline-start:.45rem; white-space:normal; }
+.live-stats-card { margin-top:1.2rem; padding:clamp(.9rem,2vw,1.25rem);
+ background:rgba(12,29,53,.72); border:1px solid rgba(155,177,219,.25);
+ border-radius:16px; }
+.live-stats-summary { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1.2rem;
+ padding:.65rem 0; color:#e9efff; }
+.live-stats-summary strong { color:#c7b8ff; }
+.live-leaderboard { display:grid; gap:.45rem; }
+.live-leaderboard-row { display:grid; grid-template-columns: minmax(0,1.6fr) repeat(3,minmax(0,.5fr));
+ gap:.5rem; align-items:center; border-radius:10px; padding:.7rem .8rem;
+ background:rgba(38,52,86,.67); }
+.live-leaderboard-row .live-player-name { overflow-wrap:anywhere; }
+.live-leaderboard-row>span:not(:first-child){ text-align:center; font-variant-numeric:tabular-nums; }
+.live-leaderboard-row.live-leaderboard-self { box-shadow:inset 3px 0 #a793ff; }
+.live-leaderboard-legend { opacity:.72; font-size:.8rem; background:transparent; }
+.live-reconnect-note { margin:.5rem 0; color:#f4d58a; }
+@media(max-width:560px) {
+ .live-mode-picker { align-items:stretch; flex-direction:column; }
+ .live-mode-picker select { width:100%; }
+ .live-leaderboard-row { gap:.3rem; padding:.65rem .4rem; font-size:.84rem; }
+}
