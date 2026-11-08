@@ -2162,6 +2162,11 @@
       if(error||data?.ok!==true)throw Error(error?.message||'social_response_failed');
       if(me?.id!==owner)return;
       await markGameSocialSeen(entry.notification_id);
+      // A handled invite moves to private history. The original match or
+      // friendship stays server-owned and can always be reopened.
+      try{await api.rpc('arcade_social_notification_archive',{
+        p_notification_id:entry.notification_id,p_archived:true
+      });}catch(_){}
       if(entry.kind==='live_invite'&&accept){
         try{
           if(window.parent&&window.parent!==window){
