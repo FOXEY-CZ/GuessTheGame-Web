@@ -272,3 +272,57 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
 
 .arcade-notice-pagination{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 6px}
 .arcade-notice-pagination .arcade-notice-more{margin:0;min-height:42px}
+
+/* FOXEY Arcade UI rhythm — compact game-first home and one clear global wallet. */
+.topbar{min-height:66px;padding-block:9px;gap:10px}
+.topright{gap:9px}
+.headerwallet{gap:6px}
+.header-xp-resource{display:none}
+.headerwallet .resource{display:inline-flex;align-items:center;gap:3px;
+  border-radius:12px;background:#1b2842;border-color:#3f5277;
+  min-height:36px;padding:7px 10px;font-size:.83rem}
+.headerwallet .resource b{font-size:.95rem;letter-spacing:-.01em}
+#page-home .hero{min-height:0;padding:clamp(19px,3vw,33px);
+  border-radius:20px;margin-bottom:17px;
+  background:radial-gradient(circle at 100% 0%,#694eaf63,transparent 52%),
+  linear-gradient(135deg,#243052,#182440 58%,#14233a)}
+#page-home .hero h1{font-size:clamp(1.55rem,4vw,2.25rem);line-height:1.14;
+  letter-spacing:-.025em;margin:7px 0 9px}
+#page-home .hero p{font-size:clamp(.85rem,1.6vw,.98rem);line-height:1.5;margin:0}
+#page-home .hero .actions{margin-top:16px;gap:9px}
+#page-home .hero .actions button{min-height:46px;font-size:.9rem;padding:10px 17px}
+#page-home .progresscard{border-radius:18px;margin:14px 0;
+  padding:clamp(15px,2.4vw,21px)}
+#page-home .progresscard-title h2{font-size:clamp(1.1rem,2.4vw,1.35rem)}
+#page-home .arcade-progress .statgrid{gap:9px;margin:12px 0 6px}
+#page-home .arcade-progress .stat{padding:12px 8px;border-radius:12px}
+#page-home .arcade-progress .stat strong{font-size:clamp(1.25rem,3.8vw,1.7rem);margin-top:3px}
+#page-home .arcade-progress .note{margin:7px 0 0;font-size:.76rem;line-height:1.45}
+#page-home #homeProgress{background:linear-gradient(130deg,#1b2842,#172338);
+  border-color:#3d526b}
+#page-home #homeProgress .note{font-size:.77rem}
+#page-home .achievement-panel{margin-bottom:10px}
+#page-home .achievement-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px}
+#page-home .achievement-item{padding:11px}
+#page-home .achievement-description{font-size:.76rem}
+#page-home .global-level-meter{margin:10px 0}
+#page-account .achievement-grid{grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}
+:where(.topbar,.mainnav,.progresscard,.tile,.accountpanel,.arcade-notice-drawer)
+  :focus-visible{outline-offset:3px}
+@media(max-width:720px){
+ .topbar{min-height:62px;padding:8px 0}
+ .topright{gap:6px}
+ .headerwallet .resource{min-height:34px;padding:6px 8px;font-size:.78rem}
+ .headerwallet .resource b{font-size:.86rem}
+ #page-home .hero{padding:19px 17px}
+ #page-home .hero .actions button{flex:1 1 145px}
+ #page-home .progresscard{padding:15px;margin:12px 0}
+ #page-home .achievement-grid{grid-template-columns:1fr}
+ #page-home .arcade-progress .statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:390px){
+ .headerwallet{gap:5px}
+ .headerwallet .resource{padding:5px 6px;font-size:.74rem}
+ .headerwallet .resource b{font-size:.82rem}
+ #page-home .hero .actions button{width:100%}
+}
