@@ -235,6 +235,22 @@
         ?'🔒 Je potřeba 10 dokončených kvízů.':'⚠️ Odměnu se nepodařilo vyzvednout.';
     }finally{walletBusy=false;render();}
   }
+  let shopRewardReturnFocus=null;
+  function closeChestReward(){
+    const dialog=el('shopRewardOverlay');
+    if(!dialog||dialog.classList.contains('hidden'))return;
+    dialog.classList.add('hidden');
+    document.body?.classList?.remove('arcade-reward-open');
+    const previous=shopRewardReturnFocus;
+    shopRewardReturnFocus=null;
+    if(previous?.isConnected!==false)previous?.focus?.();
+  }
+  function showChestReward(){
+    shopRewardReturnFocus=document.activeElement;
+    el('shopRewardOverlay').classList.remove('hidden');
+    document.body?.classList?.add('arcade-reward-open');
+    el('shopRewardDone')?.focus?.();
+  }
   async function performShop(kind,theme){
     if(!user||walletBusy||!sharedWallet||!sharedCosmetics||!supa)return;
     if(kind==='theme'&&!THEME_IDS.has(theme))return;
@@ -246,7 +262,7 @@
     const messageBox=el('shopChestResult');
     if(chestKind){
       messageBox.textContent='🎁 Otevírám truhlu…';
-      el('shopRewardReveal').classList.add('hidden');
+      closeChestReward();
     }
     else el('shopStatus').textContent='🔄 Provádím změnu motivu…';
     try{
@@ -263,14 +279,15 @@
         });
         if(reply.error)throw reply.error;
         try{sessionStorage.removeItem(key);}catch(_){}
+        if(user?.id!==id)return; // Never display another account's reward.
         const avatar=reply.data?.avatar;
         if(!Object.hasOwn(AVATAR_CATALOG,avatar))throw Error('invalid_reward');
         showAvatar(avatar,el('shopRewardArt'));
         el('shopRewardName').textContent=AVATAR_CATALOG[avatar].name;
         el('shopRewardRarity').textContent=tier==='epic'?'EPICKÁ ODMĚNA':'NOVÝ AVATAR';
         el('shopRewardCaption').textContent='V inventáři • '+(tier==='epic'?'epická':'běžná')+' sbírka';
-        el('shopRewardReveal').classList.remove('hidden');
         messageBox.textContent='🎉 Odemčen avatar '+AVATAR_CATALOG[avatar].name+'!';
+        showChestReward();
       }else{
         const owned=sharedCosmetics.owned_themes.includes(theme);
         if(!owned){
@@ -284,6 +301,7 @@
       }
       await loadSharedWallet();
     }catch(e){
+      if(user?.id!==id)return;
       const raw=String(e.message||'').toLowerCase();
       const reason=raw.includes('insufficient_funds')?'Nemáš dost krystalů.'
         :raw.includes('collection_complete')?'Tuto sbírku už máš kompletní.'
@@ -582,6 +600,7 @@
     if(page==='play')enterGameFullscreen();
     else if(arcadeImmersive||document.fullscreenElement===el('page-play'))
       leaveGameFullscreen();
+    if(page!=='shop')closeChestReward();
     if(page==='shop'){
       selectSubtab('shop',shopTab);
       if(user&&supa)void loadSharedWallet();
@@ -923,6 +942,7 @@
     try{
       const res=await supa.auth.signOut({scope:'local'});
       if(res.error)throw res.error;
+      closeChestReward();
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
       ++achievementSeq;achievements=null;achievementStatus='guest';
@@ -988,6 +1008,22 @@
   el('resetPasswordForm').addEventListener('submit',applyRecoveredPassword);
   el('profileForm').addEventListener('submit',saveProfile);
   el('signOut').addEventListener('click',signOut);
+  el('shopRewardClose')?.addEventListener('click',closeChestReward);
+  el('shopRewardDone')?.addEventListener('click',closeChestReward);
+  el('shopRewardInventory')?.addEventListener('click',()=>{
+    closeChestReward();
+    selectSubtab('shop','avatars',true);
+  });
+  el('shopRewardOverlay')?.addEventListener('click',event=>{
+    if(event.target===el('shopRewardOverlay')||
+       event.target?.classList?.contains('shop-reward-backdrop'))closeChestReward();
+  });
+  document.addEventListener?.('keydown',event=>{
+    if(event.key==='Escape'&&!el('shopRewardOverlay')?.classList.contains('hidden')){
+      event.preventDefault?.();
+      closeChestReward();
+    }
+  });
   el('shopOpenChest').addEventListener('click',()=>{void performShop('chest');});
   el('shopOpenEpicChest').addEventListener('click',()=>{void performShop('epic-chest');});
   el('claimPrestige').addEventListener('click',()=>{void claimPrestige();});
