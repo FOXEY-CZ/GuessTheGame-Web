@@ -2560,6 +2560,11 @@
         throw Error(error?.message||'challenge_cancel_failed');
       if(me?.id!==owner)return;
       clearActiveChallenge(id);
+      // Cancellation is definitive even if moving the receipt to hidden
+      // history fails over a flaky connection. Never leave cancelled gameplay
+      // running in the foreground.
+      const wasCurrent=game?.challenge?.id===id;
+      if(wasCurrent)modeScreen();
       const archived=await api.rpc('arcade_async_challenge_archive',{
         p_challenge_id:id,p_archived:true
       });
@@ -2567,8 +2572,7 @@
         throw Error(archived.error?.message||'archive_failed');
       if(me?.id!==owner)return;
       historyItems=historyItems.filter(entry=>entry.challenge_id!==id);
-      if(game?.challenge?.id===id){modeScreen();}
-      else{renderResumePrompt();renderHistory();}
+      if(!wasCurrent){renderResumePrompt();renderHistory();}
       setHistoryDetail(T('historyCancelOk'));
       void refreshHistory();
     }catch(err){
