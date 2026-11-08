@@ -1891,6 +1891,8 @@
             (entry.live_rematch===true?
               (lang==='en'?'🔄 Rematch request':'🔄 Žádost o odvetu'):
               (lang==='en'?'⚡ Live 1v1 invite':'⚡ Pozvánka na živý souboj')):
+            entry.kind==='live_rematch_declined'?
+              (lang==='en'?'❌ Rematch declined':'❌ Odveta byla odmítnuta'):
             (lang==='en'?'⚔️ Direct challenge':'⚔️ Přímá výzva');
         heading.textContent=title+' · '+actor;
         const message=document.createElement('p');
@@ -1900,6 +1902,9 @@
             (lang==='en'?'Your opponent requests a rematch. Accept or decline in Arcade.':
               'Soupeř tě žádá o odvetu. Přijmi ji nebo odmítni v Arcade.'):
             (lang==='en'?'Open the Arcade live lobby to accept.':'Přijmi pozvánku v živé lobby Arcade.')):
+          entry.kind==='live_rematch_declined'?
+          (lang==='en'?'Your opponent declined your rematch request.':
+            'Soupeř odmítl tvoji žádost o odvetu.'):
           entry.kind==='friend_challenge'?
           entry.challenge_ready?(lang==='en'?'Your friend finished. Ready to play.':'Kamarád dohrál. Můžeš hrát.'):
             (lang==='en'?'Waiting for the challenger to finish.':'Čeká se na dohrání vyzyvatele.'):
@@ -1917,9 +1922,12 @@
           link.textContent=lang==='en'?'▶️ Play':'▶️ Hrát';
         }else{
           url.hash='community';
-          if(entry.kind==='live_invite'&&uuidPattern.test(entry.subject_id))
+          if((entry.kind==='live_invite'||entry.kind==='live_rematch_declined')
+             &&uuidPattern.test(entry.subject_id))
             url.searchParams.set('live',entry.subject_id);
-          link.textContent=entry.kind==='live_invite'?
+          link.textContent=entry.kind==='live_rematch_declined'?
+            (lang==='en'?'❌ View declined rematch':'❌ Zobrazit odmítnutí'):
+            entry.kind==='live_invite'?
             (entry.live_rematch===true?
               (lang==='en'?'🔄 Respond to rematch':'🔄 Odpovědět na odvetu'):
               (lang==='en'?'⚡ Open live lobby':'⚡ Otevřít live lobby')):
