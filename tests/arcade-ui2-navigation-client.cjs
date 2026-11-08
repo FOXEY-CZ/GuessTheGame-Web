@@ -44,6 +44,15 @@ class Element {
   focus(){this.focused=true;}
   select(){this.selected=true;}
   replaceWith(v){this.replacedWith=v;}
+  querySelector(selector){
+    const cls=selector.startsWith('.')?selector.slice(1):selector;
+    const scan=node=>{
+      if(typeof node.className==='string'&&node.className.split(' ').includes(cls))return node;
+      for(const child of node.children||[]){const match=scan(child);if(match)return match;}
+      return null;
+    };
+    return scan(this);
+  }
   querySelectorAll(selector){
     if(this.id==='mobileMoreMenu' && selector==='button:not([disabled])')
       return [elements.get('mobileMoreClose')];
@@ -68,10 +77,10 @@ const document={
   events:{},
   addEventListener(name,fn){this.events[name]=fn;}
 };
-let locale='cs',openBellCount=0,nav=[];
+let locale='cs',openBellCount=0,bellRefresh=0,nav=[];
 const window={
   FOXEY_I18N:{getLocale:()=>locale},
-  FOXEY_ARCADE_NOTIFICATIONS:{open(){openBellCount++;}},
+  FOXEY_ARCADE_NOTIFICATIONS:{open(){openBellCount++;},refresh(){bellRefresh++;}},
   events:{},
   addEventListener(name,fn){this.events[name]=fn;}
 };
@@ -97,6 +106,15 @@ const records=[
 let reads=0;const rpcNames=[];
 const api={rpc:async(name,args)=>{
   rpcNames.push(name);
+  if(name==='arcade_async_challenge_status'){
+    assert.equal(args.p_challenge_id,records[3].challenge_id);
+    return {data:{ok:true,role:'creator',both_done:true,winner:'you',
+      your_score:95,opponent_score:72},error:null};
+  }
+  if(name==='arcade_async_challenge_mark_seen'){
+    assert.equal(args.p_challenge_id,records[3].challenge_id);
+    return {data:{ok:true,seen:true},error:null};
+  }
   assert.equal(name,'arcade_async_challenge_history');
   assert.equal(args.p_limit,30);
   assert.equal(args.p_offset,0);
@@ -125,11 +143,16 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   const result=elements.get('challengeListResults').children[0];
   const resultAction=result.children[3].children[0];
   resultAction.events.click();
-  assert.equal(openBellCount,1);
+  await settle();
+  assert.equal(resultAction.textContent,'✓ Zobrazeno');
+  assert.equal(bellRefresh,1,'viewing a result must update red unread badge');
+  assert.equal(result.querySelector('.challenge-card-status').textContent,
+    '✓ Výsledek přečten');
+  assert.equal(openBellCount,0,'direct result should not force a second navigation');
   elements.get('challengeInboxButton').events.click();
-  assert.equal(openBellCount,2);
+  assert.equal(openBellCount,1);
   elements.get('settingsOpenBell').events.click();
-  assert.equal(openBellCount,3);
+  assert.equal(openBellCount,2);
   elements.get('settingsOpenGame').events.click();
   elements.get('settingsOpenAccount').events.click();
   assert.deepEqual(nav,['play','account']);
@@ -157,6 +180,9 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   finishLate({data:{ok:true,items:records,archived:false,has_more:false},error:null});
   await settle();
   assert.equal(elements.get('challengeCountResults').textContent,'—');
-  assert.ok(rpcNames.every(name=>name==='arcade_async_challenge_history'));
+  assert.ok(rpcNames.every(name=>[
+    'arcade_async_challenge_history','arcade_async_challenge_status',
+    'arcade_async_challenge_mark_seen'
+  ].includes(name)));
   console.log('PASS: mobile More nav, live categorized challenges, resume links, settings actions, account separation and read-only safety');
 })().catch(err=>{console.error(err);process.exitCode=1;});
