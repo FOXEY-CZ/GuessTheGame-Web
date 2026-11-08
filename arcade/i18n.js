@@ -28,6 +28,8 @@
   "Přezdívka nebo kód FX-…": "Nickname or FX code…",
   "Hledat": "Search",
   "📩 Žádosti o přátelství": "📩 Friend requests",
+  "📥 Přijaté žádosti": "📥 Incoming requests",
+  "Přijmi nebo odmítni nové žádosti, případně zruš své odeslané žádosti.": "Accept or decline new requests, or cancel your outgoing requests.",
   "📤 Odeslané žádosti": "📤 Sent requests",
   "🤝 Moji přátelé": "🤝 My friends",
   "👤 Hráčský profil": "👤 Player profile",
