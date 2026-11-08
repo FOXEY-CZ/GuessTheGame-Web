@@ -50,7 +50,7 @@ assert.ok(css.includes('#playerAccount.accountpanel{width:100%'));
 assert.ok(css.includes('.arcade-subtab.is-active{'));
 
 const from=app.indexOf('  const SUBTAB_GROUPS=Object.freeze(');
-const to=app.indexOf('  function go(page){',from);
+const to=app.indexOf('  let arcadeImmersive=',from);
 assert.ok(from>=0&&to>from,'subtab handlers missing');
 const block=app.slice(from,to);
 assert.ok(!block.includes('supa.rpc('),'tab changes must not call server APIs');
