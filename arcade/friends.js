@@ -302,7 +302,7 @@
     const owner=uid,stamp=revision;
     // Opening a live invite is a navigation action, not a read-receipt action:
     // always open the lobby immediately even on a slow or failed network.
-    if(entry.kind==='live_invite'){
+    if(entry.kind==='live_invite'||entry.kind==='live_rematch_declined'){
       if(!validId.test(entry.subject_id)){
         setText('arcadeSocialBellStatus',tr('⚠️ Neplatný odkaz na lobby.',
           '⚠️ Invalid lobby link.'));
@@ -313,7 +313,8 @@
       if(typeof window.FOXEY_ARCADE_LIVE?.openMatch==='function'){
         void window.FOXEY_ARCADE_LIVE.openMatch(entry.subject_id,false)
           .catch(err=>setText('friendsStatus',
-            tr('⚠️ Lobby se nepodařilo otevřít: ','⚠️ Cannot open lobby: ')+
+            tr('⚠️ Výsledek zápasu se nepodařilo otevřít: ',
+               '⚠️ Could not open the match result: ')+
             String(err?.message||'network_error').slice(0,105)));
       }else{
         setText('friendsStatus',tr('⚠️ Živá lobby se nenačetla. Obnov stránku.',
@@ -331,8 +332,8 @@
           socialUnread=Math.max(0,socialUnread-1);
           renderInbox();
         }
-        if(entry.kind==='live_invite'){
-          // The modal is already closed and lobby opened above; only refresh badge.
+        if(entry.kind==='live_invite'||entry.kind==='live_rematch_declined'){
+          // The modal is already closed and result/lobby opened above; refresh badge.
           await refreshInbox();
           return;
         }
@@ -368,6 +369,8 @@
         (entry.live_rematch===true?
           tr('🔄 Žádost o odvetu','🔄 Rematch request'):
           tr('⚡ Pozvánka do živého 1v1','⚡ Live 1v1 invitation')):
+      kind==='live_rematch_declined'?
+        tr('❌ Odveta byla odmítnuta','❌ Rematch declined'):
       tr('⚔️ Přímá výzva','⚔️ Direct challenge');
     root.append(node('strong','',title+' · '+playerName(p)));
     const description=kind==='live_invite'?
@@ -375,6 +378,9 @@
         tr('Soupeř tě žádá o odvetu. Chceš ji přijmout, nebo odmítnout?',
           'Your opponent requests a rematch. Accept or decline?'):
         tr('Kamarád tě zve na souboj v reálném čase.','Your friend invited you to a live duel.')):
+      kind==='live_rematch_declined'?
+        tr('Soupeř odmítl tvoji žádost o odvetu.',
+           'Your opponent declined your rematch request.'):
       kind==='friend_challenge'?
       (entry.challenge_ready?tr('Můžeš zahájit zápas proti příteli.',
                                   'Ready to play your friend.'):
@@ -386,10 +392,12 @@
       tr('Teď se můžete navzájem vyzývat.','You can now challenge each other.');
     root.append(node('p','small',description));
     const actions=node('div','friends-actions');
-    const button=action(kind==='live_invite'?
-      (entry.live_rematch===true?
-        tr('🔄 Přijmout / odmítnout','🔄 Accept / decline'):
-        tr('⚡ Otevřít lobby','⚡ Open lobby')):
+    const button=action(kind==='live_rematch_declined'?
+      tr('❌ Zobrazit odmítnutí','❌ View declined rematch'):
+      kind==='live_invite'?
+        (entry.live_rematch===true?
+          tr('🔄 Přijmout / odmítnout','🔄 Accept / decline'):
+          tr('⚡ Otevřít lobby','⚡ Open lobby')):
       kind==='friend_challenge'?
       entry.challenge_ready?tr('▶️ Hrát','▶️ Play'):tr('⏳ Čeká se','⏳ Waiting'):
       tr('👥 Otevřít přátele','👥 Open Friends'),
