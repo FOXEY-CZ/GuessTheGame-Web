@@ -322,7 +322,10 @@
       <button class="secondary" id="arcadeNoticeRefresh" type="button">🔄 Obnovit</button>
     </div>
     <div id="arcadeNoticeList" class="arcade-notice-list"></div>
-    <button class="secondary arcade-notice-more hidden" id="arcadeNoticeMore" type="button">⬇️ Načíst další</button>
+    <div class="arcade-notice-pagination">
+      <button class="secondary arcade-notice-more hidden" id="arcadeNoticePrev" type="button">← Předchozí</button>
+      <button class="secondary arcade-notice-more hidden" id="arcadeNoticeMore" type="button">Další stránka →</button>
+    </div>
     <p id="arcadeNoticeDetail" class="arcade-notice-detail" role="status" aria-live="polite"></p>
     <input type="text" readonly id="arcadeNoticeCopyField" class="arcade-notice-copy hidden" aria-label="Odkaz na výzvu">
   </section>
@@ -331,7 +334,7 @@
 <script src="./config.js?v=google-oauth-on-20261106"></script>
 <script src="./i18n.js?v=global-achievements-20261108b"></script>
 <script src="./avatars.js"></script>
-<script src="./notifications.js?v=notifications-archive-20261108a"></script>
+<script src="./notifications.js?v=compact-bell-20261108a"></script>
 <div class="arcade-achievement-toast hidden" id="arcadeAchievementToast" role="status" aria-live="polite"></div>
 <script src="./app.js?v=global-achievements-20261108b"></script>
 </body>
