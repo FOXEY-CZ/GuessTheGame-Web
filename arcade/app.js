@@ -1052,6 +1052,12 @@
   });
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin || event.source!==el('gameFrame').contentWindow)return;
+    if(event.data?.type==='foxey-arcade:open-shop'){
+      // Navigation only: the iframe stays mounted with its verified quiz run.
+      // The shared wallet and Shop are still server-authorized as usual.
+      go('shop');
+      return;
+    }
     if(event.data?.type==='foxey-arcade:open-live-match'){
       const id=event.data.match_id;
       if(user&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)){
