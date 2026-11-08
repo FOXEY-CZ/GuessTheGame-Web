@@ -24,7 +24,7 @@ assert.ok(!/\.from\(['"]arcade_(?:wallet|profile|live)/.test(client),
 class Node{
  constructor(id=''){
   this.id=id;this.children=[];this.events={};this.textContent='';this.className='';
-  this.value='';this.disabled=false;this.style={};
+  this.value='';this.disabled=false;this.style={};this.scrollCalls=0;
   const names=new Set(id==='liveArena'?['hidden']:[]);
   this.classList={add:x=>names.add(x),remove:x=>names.delete(x),
    toggle:(x,v)=>{if(v)names.add(x);else names.delete(x);},
@@ -33,6 +33,8 @@ class Node{
  append(...xs){this.children.push(...xs);}
  replaceChildren(...xs){this.children=[...xs];}
  addEventListener(name,fn){this.events[name]=fn;}
+ scrollIntoView(){this.scrollCalls++;}
+ focus(){}
 }
 const nodes=new Map(ids.map(id=>[id,new Node(id)]));
 const document={getElementById:id=>nodes.get(id),createElement:tag=>new Node(tag),visibilityState:'visible'};
@@ -92,6 +94,8 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.ok(created,'invite not sent');
  assert.ok(calls.some(c=>c.name==='arcade_live_invite'));
  assert.equal(nodes.get('liveArena').classList.contains('hidden'),false);
+ assert.ok(nodes.get('liveArena').scrollCalls>=1,
+   'opening a live match must reveal its arena below the friend list');
  const ready=nodes.get('liveArenaControls').children[0];
  // In the host waiting state there is no ready control yet; simulate guest acceptance.
  state='lobby';await ui.openMatch(match,false);await settle();
