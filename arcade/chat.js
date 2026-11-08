@@ -97,6 +97,7 @@
       'Private conversation · accepted friends only'):
       tr('Zprávy vidíte jen vy dva.','Only the two of you can see your messages.');
     const active=!!uid&&!!selectedId&&!!friend;
+    $('friendsPaneChat')?.classList.toggle('has-conversation',active);
     $('chatComposeForm').classList.toggle('hidden',!active);
     $('chatChallengeFriend').classList.toggle('hidden',!active);
     $('chatBack').classList.toggle('hidden',!active);
@@ -172,6 +173,8 @@
     if(!uid||!api||!selectedId||loadingThread)return;
     const owner=uid,stamp=epoch,friend=selectedId,revision=threadRevision;
     const cursor=older&&messages.length?Number(messages[0].id):null;
+    const oldHeight=$('chatThread')?.scrollHeight||0;
+    const oldTop=$('chatThread')?.scrollTop||0;
     loadingThread=true;
     if(!older&&!messages.length)renderThread();
     try{
@@ -190,6 +193,8 @@
       hasMore=data.has_more===true;
       setStatus('');
       renderThread();
+      if(older&&$('chatThread'))$('chatThread').scrollTop=
+        oldTop+(($('chatThread').scrollHeight||0)-oldHeight);
       void markRead();
     }catch(err){
       if(validOwner(owner,stamp)&&friend===selectedId){
