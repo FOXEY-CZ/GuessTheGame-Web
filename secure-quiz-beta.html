@@ -673,6 +673,7 @@
   let lang = 'cs', api = null, me = null, game = null, current = null;
   let busy=false,pending=null;
   let reportPending=false,reportSentKey=null;
+  let liveRewardState=null,liveRewardLoading=false,liveRewardActivating=false;
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
@@ -687,6 +688,104 @@
   function status(text,type=''){const e=$('status');e.textContent=text;e.className='status '+type;}
   function errorText(err){return err&&typeof err.message==='string'?err.message:'network_error';}
   function template(s,values){return s.replace(/\{(\w+)\}/g,(_,key)=>String(values[key]??''));}
+
+  // Account-controlled, one-way transition from editable legacy rewards to
+  // real server-confirmed XP and shared wallet payouts.
+  function renderLiveRewards(){
+    const card=$('liveRewardsCard');
+    if(!card)return;
+    $('liveRewardsTitle').textContent=T('liveRewardsTitle');
+    $('liveRewardsEnable').textContent=T('liveRewardsEnable');
+    const enabled=liveRewardState?.enabled===true;
+    const available=liveRewardState?.available===true;
+    $('liveRewardsLegacy').textContent=T(enabled?'liveRewardsEnabledNote':'liveRewardsLegacy');
+    let msg=T('liveRewardsLoading');
+    if(liveRewardState){
+      msg=enabled?template(T('liveRewardsActive'),{
+        level:liveRewardState.level,xp:liveRewardState.xp,
+        shards:liveRewardState.shards,crowns:liveRewardState.crowns,
+        paid:liveRewardState.paid_today,limit:liveRewardState.daily_limit
+      }):T(available?'liveRewardsNotActive':'liveRewardsUnavailable');
+    }
+    $('liveRewardsSummary').textContent=msg;
+    visible('liveRewardsEnable',!!me&&available&&!enabled);
+    $('liveRewardsEnable').disabled=liveRewardActivating||liveRewardLoading;
+  }
+  async function refreshLiveRewards(){
+    if(!me||!api||liveRewardLoading||navigator.onLine===false)return;
+    const uid=me.id;liveRewardLoading=true;
+    try{
+      const {data,error}=await api.rpc('arcade_verified_rewards_status');
+      if(error||data?.ok!==true||typeof data.enabled!=='boolean')
+        throw Error(error?.message||'invalid_reward_status');
+      if(me?.id!==uid)return;
+      liveRewardState=data;
+    }catch(err){
+      if(me?.id===uid){
+        $('liveRewardsStatus').textContent=template(T('liveRewardsError'),{error:errorText(err)});
+      }
+    }finally{
+      liveRewardLoading=false;
+      if(me?.id===uid)renderLiveRewards();
+    }
+  }
+  async function activateLiveRewards(){
+    if(!me||!api||liveRewardActivating||liveRewardState?.enabled||
+       liveRewardState?.available!==true)return;
+    if(typeof window.confirm!=='function'||!window.confirm(T('liveRewardsConfirm')))return;
+    const uid=me.id;liveRewardActivating=true;
+    $('liveRewardsStatus').textContent=T('liveRewardsEnabling');
+    renderLiveRewards();
+    try{
+      const {data,error}=await api.rpc('arcade_verified_rewards_enroll',{
+        p_ack_legacy_freeze:true
+      });
+      if(error||data?.ok!==true||data.enabled!==true)
+        throw Error(error?.message||'enrollment_failed');
+      if(me?.id!==uid)return;
+      liveRewardState=data;
+      $('liveRewardsStatus').textContent=T('liveRewardsActivated');
+    }catch(err){
+      if(me?.id===uid){
+        const message=errorText(err);
+        $('liveRewardsStatus').textContent=message.includes('legacy_sync_required')?
+          T('liveRewardsSyncRequired'):
+          template(T('liveRewardsError'),{error:message});
+      }
+    }finally{
+      liveRewardActivating=false;
+      if(me?.id===uid)renderLiveRewards();
+    }
+  }
+  function showLiveRewardReceipt(receipt,error){
+    const box=$('liveRewardReceipt');
+    if(!box)return;
+    const shown=receipt!==null&&receipt!==undefined||!!error;
+    visible('liveRewardReceipt',shown);
+    $('liveRewardTitle').textContent=T('liveRewardTitle');
+    if(!shown)return;
+    let message='';
+    if(error)message=template(T('liveRewardError'),{error});
+    else if(receipt?.credited===true){
+      message=receipt.cap_reached?T('liveRewardCap'):
+        receipt.duplicate_daily?T('liveRewardOldRun'):
+        (Number(receipt.xp)>0||Number(receipt.shards)>0||Number(receipt.crowns)>0)?
+          template(T('liveRewardGranted'),{
+            xp:receipt.xp,shards:receipt.shards,crowns:receipt.crowns,
+            level:receipt.level,total:receipt.xp_total
+          }):T('liveRewardNoPoints');
+    }else{
+      const key={
+        run_predates_activation:'liveRewardOldRun',
+        not_activated:'liveRewardNotActive',
+        temporarily_disabled:'liveRewardDisabled'
+      }[receipt?.reason]||'liveRewardNotActive';
+      message=T(key);
+    }
+    $('liveRewardSummary').textContent=message;
+    visible('noReward',receipt?.credited!==true);
+    if(receipt?.credited!==true)$('noReward').textContent=T('noReward');
+  }
   function language(){
     document.documentElement.lang=lang;
     const ids={
@@ -728,6 +827,9 @@
     }
     localizeReport();
     $('auditRetryButton').textContent=T('auditRetryButton');
+    $('finalScoreLabel').textContent=T('scorePoints');
+    renderLiveRewards();
+    if(game?.resultShown)showLiveRewardReceipt(game.liveReceipt,game.rewardError);
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
@@ -756,11 +858,13 @@
     visible('modePanel',!!me);visible('signIn',!me);
     visible('gamePanel',false);visible('resultPanel',false);
     visible('auditRetryButton',false);
+    visible('liveRewardReceipt',false);
     status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
     renderResumePrompt();
     if(me){
       void refreshHistory();
       void refreshSoloModes();
+      void refreshLiveRewards();
     }
   }
   function renderSoloModes(){
@@ -918,7 +1022,11 @@
     const {data,error}=await api.auth.getSession();
     const priorUser=me?.id||null;
     me=!error&&data?.session?.user||null;
-    if(priorUser!==me?.id)soloProgressByMode=Object.create(null);
+    if(priorUser!==me?.id){
+      soloProgressByMode=Object.create(null);
+      liveRewardState=null;
+      $('liveRewardsStatus').textContent='';
+    }
     language();modeScreen();
     try{
       const urlParams=new URL(window.location.href).searchParams;
@@ -1750,6 +1858,7 @@
     else if(pending.type==='reveal')void reveal();
     else if(pending.type==='answer')void answer(pending.choice);
   });
+  $('liveRewardsEnable').addEventListener('click',()=>void activateLiveRewards());
   $('auditRetryButton').addEventListener('click',()=>void finish());
   $('againButton').addEventListener('click',modeScreen);
   $('lang').addEventListener('click',()=>{
@@ -1764,6 +1873,7 @@
   window.addEventListener('focus',()=>{
     if(me){
       void refreshHistory();
+      void refreshLiveRewards();
       if(!game||game.resultShown)void refreshSoloModes();
     }
   });
