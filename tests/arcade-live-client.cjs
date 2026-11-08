@@ -8,7 +8,7 @@ const game=fs.readFileSync('secure-quiz-beta.html','utf8');
 const css=fs.readFileSync('arcade/styles.css','utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
 assert.equal(ids.length,new Set(ids).size,'duplicate HTML id');
-const required=['liveTitle','liveRefresh','liveStatus','liveFriendList','liveMatchList','liveArena','liveArenaStatus','liveArenaOpponent','liveScoreHost','liveScoreGuest','liveRound','liveCountdown','liveQuestion','liveOptions','liveArenaControls'];
+const required=['liveTitle','liveRefresh','liveStatus','liveFriendList','liveMatchList','liveArena','liveArenaStatus','liveArenaOpponent','liveScoreHost','liveScoreGuest','liveRound','liveCountdown','liveQuestion','liveOptions','liveArenaControls','liveModeSelect','liveRealtimeStatus','liveArenaMode','liveStatsSummary','liveLeaderboard'];
 for(const id of required)assert.ok(ids.includes(id),'Missing '+id);
 assert.ok(html.includes('live.js?v='));
 assert.ok(app.includes('FOXEY_ARCADE_LIVE?.connect(supa,user)'));
@@ -44,19 +44,40 @@ const match='33333333-3333-4333-8333-333333333333';
 const op='44444444-4444-4444-8444-444444444444';
 const p={user_id:friend,nickname:'Buddy'};
 let state='invited',hostReady=false,guestReady=false,answered=false,score=0,created=false;
+let subscribedTopic='',subscriptionPrivate=false,subscribedRefresh=null;
 const calls=[];
-const api={rpc:async(name,args={})=>{
+const channel={on(type,filter,callback){
+  assert.equal(type,'broadcast');assert.equal(filter.event,'refresh');
+  subscribedRefresh=callback;return this;
+ },subscribe(callback){callback('SUBSCRIBED');return this;}};
+const api={
+ realtime:{setAuth:async()=>{}},
+ channel:(topic,options)=>{
+  subscribedTopic=topic;subscriptionPrivate=options.config.private;return channel;
+ },
+ removeChannel:async()=>{},
+ rpc:async(name,args={})=>{
  calls.push({name,args});
  if(name==='arcade_live_ping')return {data:{ok:true}};
  if(name==='arcade_live_dashboard')return {data:{ok:true,
     friends:[{profile:p,online:true}],
     matches:created?[{match_id:match,state,role:'host',opponent:p,
        host_score:score,guest_score:0}]:[]}};
- if(name==='arcade_live_invite'){
+ if(name==='arcade_live_invite_mode'){
+  assert.equal(args.p_mode,'classic');
   assert.equal(args.p_friend_id,friend);assert.match(args.p_operation,/^[0-9a-f-]{36}$/i);
   created=true;return {data:{ok:true,match_id:match,state:'invited',retry:false}};
  }
- if(name==='arcade_live_state')return {data:{ok:true,match_id:match,state,
+ if(name==='arcade_live_stats')return {data:{ok:true,
+   self:{profile:{user_id:self,nickname:'FOXEY'},played:0,wins:0,losses:0,draws:0,
+     answered:0,correct:0,win_rate:0,accuracy:0},
+   leaderboard:[{profile:{user_id:self,nickname:'FOXEY'},played:0,wins:0,
+    losses:0,draws:0,answered:0,correct:0,win_rate:0,accuracy:0}]}};
+ if(name==='arcade_live_rematch'){
+  assert.equal(args.p_finished_match,match);state='invited';
+  return {data:{ok:true,match_id:match,mode:'classic',rematch_of:match}};
+ }
+ if(name==='arcade_live_state')return {data:{ok:true,match_id:match,state,mode:'classic',
   role:'host',opponent:p,host_ready:hostReady,guest_ready:guestReady,
   question_index:0,round_deadline:new Date(Date.now()+25000).toISOString(),
   question:state==='running'?{index:0,id:'test1',cs:'Jaká hra?',en:'Which game?',
@@ -79,7 +100,8 @@ const window={FOXEY_I18N:{getLocale:()=> 'cs'},FOXEY_ARCADE_SOCIAL:{refreshInbox
    getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)}};
 const location={search:'',href:'https://foxey-cz.github.io/GuessTheGame-Web/arcade/'};
 const crypto={randomUUID:()=>op};
-vm.runInNewContext(client,{document,window,location,crypto,URLSearchParams,console,setTimeout});
+const navigator={onLine:true};
+vm.runInNewContext(client,{document,window,location,crypto,navigator,URLSearchParams,console,setTimeout});
 const ui=window.FOXEY_ARCADE_LIVE;
 assert.ok(ui,'missing client public API');
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
@@ -87,12 +109,16 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  ui.setNavigation(()=>{});
  ui.connect(api,{id:self});ui.onPage('community');
  await settle();await settle();
+ assert.equal(subscribedTopic,'arcade-live:user:'+self);
+ assert.equal(subscriptionPrivate,true,'Realtime must be a private channel');
+ assert.ok(nodes.get('liveRealtimeStatus').textContent.includes('Realtime'));
+ assert.ok(nodes.get('liveStatsSummary').children.length>=1);
  assert.equal(nodes.get('liveFriendList').children.length,1);
  assert.ok(nodes.get('liveFriendList').children[0].children[0].children[1].textContent.includes('Online'));
  const button=nodes.get('liveFriendList').children[0].children[1];
  button.events.click();await settle();await settle();await settle();
  assert.ok(created,'invite not sent');
- assert.ok(calls.some(c=>c.name==='arcade_live_invite'));
+ assert.ok(calls.some(c=>c.name==='arcade_live_invite_mode'));
  assert.equal(nodes.get('liveArena').classList.contains('hidden'),false);
  assert.ok(nodes.get('liveArena').scrollCalls>=1,
    'opening a live match must reveal its arena below the friend list');
@@ -106,6 +132,14 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  nodes.get('liveOptions').children[0].events.click();await settle();await settle();
  assert.ok(answered,'answer should go through server RPC');
  assert.equal(nodes.get('liveScoreHost').textContent,'1');
+ assert.ok(typeof subscribedRefresh==='function');
+ subscribedRefresh({payload:{match_id:match}});
+ await settle();await settle();
+ state='finished';await ui.openMatch(match,false);await settle();
+ const rematchBtn=nodes.get('liveArenaControls').children[0];
+ assert.ok(rematchBtn.textContent.includes('Odveta'));
+ rematchBtn.events.click();await settle();await settle();await settle();
+ assert.ok(calls.some(c=>c.name==='arcade_live_rematch'));
  ui.connect(null,null);
  assert.equal(nodes.get('liveArena').classList.contains('hidden'),true);
  assert.ok(calls.every(c=>c.name.startsWith('arcade_live_')),'unexpected API');
