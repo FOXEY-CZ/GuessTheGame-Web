@@ -20,7 +20,14 @@ class Element {
   constructor(id=''){
     this.id=id;this.textContent='';this.disabled=false;this.className='';
     this.style={};this.dataset={};this.children=[];this.listeners={};
-    this.classList={toggle(){},add(){},remove(){}};
+    const classes=new Set();
+    this.classList={
+      toggle:(name,force)=>{const enabled=force===undefined?!classes.has(name):force;
+        if(enabled)classes.add(name);else classes.delete(name);return enabled;},
+      add:(...items)=>items.forEach(x=>classes.add(x)),
+      remove:(...items)=>items.forEach(x=>classes.delete(x)),
+      contains:name=>classes.has(name)
+    };
   }
   setAttribute(){}
   addEventListener(name,callback){this.listeners[name]=callback;}
