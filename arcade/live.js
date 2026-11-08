@@ -600,6 +600,7 @@ async function openMatch(id,doNav=true){
     status(tr('⚠️ Pro otevření lobby se přihlas.','⚠️ Sign in to open the lobby.'));
     return false;
   }
+  window.FOXEY_ARCADE_SOCIAL?.openPane?.('live');
   activeId=id;active=null;
   try{window.sessionStorage.setItem(storageKey(uid),id);}catch(_){}
   if(doNav)navigate?.('community');
@@ -614,6 +615,7 @@ async function openMatch(id,doNav=true){
 }
 async function invite(friendId,options=null){
   if(!uid||!UUID.test(friendId)||busy)return;
+  window.FOXEY_ARCADE_SOCIAL?.openPane?.('live');
   const owner=uid,stamp=epoch;busy=true;renderList();
   status(tr('⚡ Posílám pozvánku…','⚡ Sending invite…'));
   // In-game one-tap invites explicitly start a single Classic duel. The
