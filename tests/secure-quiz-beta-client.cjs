@@ -21,6 +21,7 @@ class Element {
     this.id=id;this.textContent='';this.disabled=false;this.className='';
     this.style={};this.dataset={};this.children=[];this.listeners={};
     const classes=new Set();
+    if(['historyOverlay','achievementsOverlay','missionsOverlay'].includes(id))classes.add('hidden');
     this.classList={
       toggle:(name,force)=>{const enabled=force===undefined?!classes.has(name):force;
         if(enabled)classes.add(name);else classes.delete(name);return enabled;},
@@ -31,6 +32,7 @@ class Element {
   }
   setAttribute(){}
   addEventListener(name,callback){this.listeners[name]=callback;}
+  click(){return this.listeners.click?.();}
   append(...children){this.children.push(...children);}
   replaceChildren(...children){this.children=[...children];}
   querySelectorAll(){
@@ -45,7 +47,9 @@ class Element {
   querySelector(tag){return this[tag]||(this[tag]=new Element());}
 }
 const modeButtons=Array.from({length:6},(_,i)=>new Element('mode'+i));
-const doc={documentElement:{lang:'cs'},getElementById(id){
+const doc={documentElement:{lang:'cs'},listeners:{},
+  addEventListener(name,fn){this.listeners[name]=fn;},
+  getElementById(id){
  if(!elements.has(id))elements.set(id,new Element(id));
  return elements.get(id);
 },createElement(tag){return new Element(tag);}};
@@ -139,7 +143,18 @@ async function main(){
  assert.equal(game.getState().game.lives,2);
  await game.next();
  await game.hint();
- await game.answer('Wrong 1');
+ // Keyboard shortcut must reuse the exact answer button's server action.
+ let prevented=false;
+ doc.listeners.keydown({
+   key:'2',target:{tagName:'INPUT'},preventDefault(){prevented=true;}
+ });
+ assert.equal(acceptedAnswers,1,'typing in a field must not submit an answer');
+ doc.listeners.keydown({
+   key:'2',target:{tagName:'BODY'},preventDefault(){prevented=true;}
+ });
+ for(let i=0;i<10;i++)await Promise.resolve();
+ assert.equal(prevented,true);
+ assert.equal(acceptedAnswers,2,'pressing 2 must select the second server-backed answer');
  await game.next();
  await game.answer('Wrong 2');
  assert.ok(game.getState().game.finished);
