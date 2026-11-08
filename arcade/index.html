@@ -29,8 +29,9 @@
       <div class="headerwallet" id="headerWallet" aria-label="Globální účet FOXEY Arcade">
         <span class="resource header-xp-resource" title="Globální XP FOXEY Arcade">🦊 <b id="headerArcadeXp">—</b> XP</span>
         <span class="resource" title="Globální level FOXEY Arcade">🎖️ <b id="headerArcadeLevel">—</b></span>
-        <span class="resource" title="Společné krystaly">💎 <b id="headerShards">—</b></span>
-        <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
+        <button type="button" class="resource resource-spend" data-page="shop" title="Krystaly – otevřít obchod" aria-label="Krystaly – otevřít obchod">💎 <b id="headerShards">—</b></button>
+        <button type="button" class="resource resource-spend" data-page="shop" title="Korunky – otevřít obchod" aria-label="Korunky – otevřít obchod">👑 <b id="headerCrowns">—</b></button>
+         <button type="button" class="shop-header-link" data-page="shop" title="Prohlédnout kosmetické předměty a truhly">🛍️ <span>Obchod</span></button>
       </div>
       <button id="arcadeBell" class="arcade-bell" type="button" title="Upozornění a výzvy" aria-label="Upozornění FOXEY Arcade">🔔 <span id="arcadeBellCount" class="arcade-bell-count hidden">0</span></button>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div>
@@ -39,9 +40,9 @@
   <nav class="mainnav" aria-label="Hlavní navigace">
     <button data-page="home" class="active" type="button">🏠 <span>Domů</span></button>
     <button data-page="games" type="button">🎮 <span>Hry</span></button><button data-page="shop" type="button">🛍️ <span>Obchod</span></button>
-    <button data-page="challenges" type="button">⚔️ <span>Výzvy</span></button>
+    <button data-page="community" type="button">👥 <span>Přátelé a výzvy</span></button>
     <button data-page="missions" type="button">🎯 <span>Mise</span></button>
-    <button data-page="community" type="button">👥 <span>Přátelé</span></button>
+    
     <button data-page="account" type="button">👤 <span>Profil</span></button>
     <button data-page="settings" type="button">⚙️ <span>Nastavení</span></button>
   </nav>
@@ -49,15 +50,15 @@
   <nav class="arcade-mobile-dock" id="mobileDock" aria-label="Rychlá mobilní navigace">
     <button data-page="home" class="active" aria-current="page" type="button"><span aria-hidden="true">🏠</span><span>Domů</span></button>
     <button data-page="games" type="button"><span aria-hidden="true">🎮</span><span>Hry</span></button>
-    <button data-page="challenges" type="button"><span aria-hidden="true">⚔️</span><span>Výzvy</span></button>
-    <button data-page="community" type="button"><span aria-hidden="true">👥</span><span>Přátelé</span></button>
+    <button data-page="community" type="button" aria-label="Přátelé a výzvy"><span aria-hidden="true">👥</span><span>Přátelé</span></button>
+    <button data-page="shop" type="button"><span aria-hidden="true">🛍️</span><span>Obchod</span></button>
     <button id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu" aria-haspopup="true"><span aria-hidden="true">☰</span><span>Více</span></button>
   </nav>
   <div id="mobileMoreMenu" class="arcade-mobile-more hidden" role="presentation">
     <button type="button" class="arcade-mobile-more-shade" id="mobileMoreShade" aria-label="Zavřít další nabídku"></button>
     <div class="arcade-mobile-more-sheet" role="dialog" aria-modal="true" aria-labelledby="mobileMoreTitle">
       <div class="arcade-mobile-more-head"><h2 id="mobileMoreTitle">Kam dál?</h2><button id="mobileMoreClose" type="button" aria-label="Zavřít">✕</button></div>
-      <button data-page="shop" type="button">🛍️ Obchod <span>Avatary, motivy a společná peněženka</span></button>
+      <button data-page="challenges" type="button">⚔️ Moje výzvy <span>Souboje, rozehrané partie a výsledky</span></button>
       <button data-page="missions" type="button">🎯 Mise <span>Denní a týdenní odměny</span></button>
       <button data-page="account" type="button">👤 Profil <span>Účet, achievementy a inventář</span></button>
       <button data-page="settings" type="button">⚙️ Nastavení <span>Jazyk, hra a oznámení</span></button>
@@ -74,6 +75,16 @@
         <div class="actions"><button class="primary" type="button" data-page="play">▶️ Hrát Guess the Game</button>
           <button class="secondary" type="button" data-page="challenges">⚔️ Moje výzvy</button></div>
       </div>
+      <section class="arcade-shop-spotlight" aria-labelledby="homeShopSpotlightTitle">
+        <div class="arcade-shop-spotlight-icon" aria-hidden="true">🎁</div>
+        <div class="arcade-shop-spotlight-copy">
+          <span class="eyebrow">ODMĚNY PRO TVŮJ ÚČET</span>
+          <h2 id="homeShopSpotlightTitle">🛍️ Obchod a odměny</h2>
+          <p>Truhly, avatary a motivy pro celý FOXEY Arcade účet.</p>
+          <p id="homeShopStatus" class="arcade-shop-spotlight-status" aria-live="polite">🎁 Truhly a kosmetické předměty</p>
+        </div>
+        <button type="button" class="primary arcade-shop-spotlight-action" data-page="shop">Prohlédnout obchod</button>
+      </section>
       <section class="arcade-hub" aria-label="Rychlý rozcestník FOXEY Arcade">
         <div class="arcade-hub-heading">
           <div><span class="eyebrow">TVŮJ ROZCESTNÍK</span><h2>Co chceš dělat?</h2></div>
@@ -304,13 +315,17 @@
     </section>
 
     <section class="page hidden" id="page-challenges">
+      <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
+        <button type="button" data-page="community" class="arcade-social-tab">👥 Přátelé a živé souboje</button>
+        <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy a výsledky</button>
+      </nav>
       <div class="page-intro challenge-page-intro">
         <div><span class="eyebrow">FOXEY ARCADE · SOUBOJE</span><h1>⚔️ Moje výzvy</h1>
           <p>Rychlý přehled, co máš rozehrané, na koho čekáš a jak dopadly poslední zápasy.</p>
         </div>
         <div class="challenge-page-actions">
           <button class="primary" id="launchChallenge" type="button">➕ Vytvořit / přijmout výzvu</button>
-          <button class="secondary" id="challengeInboxButton" type="button">🔔 Zvoneček a archiv</button>
+          <button class="secondary" id="challengeInboxButton" type="button">🔔 Oznámení</button>
         </div>
       </div>
       <div class="challenge-dashboard-stats" aria-label="Přehled výzev">
@@ -340,9 +355,13 @@
     </section>
 
     <section class="page hidden" id="page-community">
+      <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
+        <button type="button" data-page="community" class="arcade-social-tab">👥 Přátelé a živé souboje</button>
+        <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy a výsledky</button>
+      </nav>
       <div class="page-intro">
         <div><span class="eyebrow">FOXEY ARCADE · KOMUNITA</span>
-          <h1>👥 Přátelé</h1>
+          <h1>👥 Přátelé a výzvy</h1>
           <p>Najdi hráče, pošli žádost a vyzvi přátele na stejnou sadu otázek. Všechno je propojené s tvým Arcade účtem.</p>
         </div>
         <button id="friendsRefresh" class="secondary" type="button">↻ Obnovit přátele</button>
