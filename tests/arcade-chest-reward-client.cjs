@@ -14,6 +14,8 @@ for(const id of ['shopRewardOverlay','shopRewardReveal','shopRewardArt','shopRew
  assert.ok(html.includes('id="'+id+'"'),id+' missing');
 assert.ok(css.includes('.shop-reward-overlay{position:fixed'),
  'winning reward must appear immediately in viewport');
+assert.ok(html.indexOf('id="shopRewardOverlay"')>html.indexOf('</main>'),
+ 'winning overlay must live outside transformed/hidden shop page');
 const classes=()=>{const c=new Set(['hidden']);return {
  add:x=>c.add(x),remove:x=>c.delete(x),
  toggle:(x,on)=>on?c.add(x):c.delete(x),contains:x=>c.has(x)
