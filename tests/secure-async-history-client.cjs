@@ -12,7 +12,10 @@ const raw=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(m=>m[1]).filter(Boolean).at(-1);
 const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
-   'return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},getState:()=>({historyUnread,historyItems,me,game})};\n})();');
+   'return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},
+  setTestCurrent:c=>{current=c;},
+  sendQuestionReport,toggleReport,
+  getState:()=>({historyUnread,historyItems,me,game,current})};\n})();');
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
 const other='44444444-4444-4444-8444-444444444444';
@@ -41,7 +44,7 @@ function instance(uid, initiallyFinished=true){
   const get=id=>{if(!elements.has(id))elements.set(id,new E(id));return elements.get(id);};
   const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Guess the Game',
     visibilityState:'visible',getElementById:get,createElement:tag=>new E(tag)};
-  const intervals=[],listeners={};const reads=new Map(),archived=new Map(),rpcCalls=[];
+  const intervals=[],listeners={};const reads=new Map(),archived=new Map(),rpcCalls=[],reportCalls=[];
   function entries(){
     const seen=reads.get(challenge)||false;
     return [{
@@ -69,6 +72,10 @@ function instance(uid, initiallyFinished=true){
         return {data:{ok:true,items,unread:isFinished&&!reads.get(challenge)&&
           !archived.get(challenge)?1:0,archived:args.p_archived,has_more:false,total:items.length},
           error:null};
+      }
+      if(name==='arcade_quiz_report_question'){
+        reportCalls.push(args);
+        return {data:{ok:true,credited:false,already_reported:false,report_id:challenge},error:null};
       }
       if(name==='arcade_async_challenge_archive'){
         if(args.p_challenge_id!==challenge)throw Error('unexpected_archive_target');
@@ -101,7 +108,7 @@ function instance(uid, initiallyFinished=true){
   const navigator={onLine:true,clipboard:{writeText:async()=>{}}};
   const app=new Function('window','document','navigator','localStorage','crypto','URL',script)(
     win,doc,navigator,browserStorage,{randomUUID:()=>challenge},URL);
-  return {app,get,doc,intervals,listeners,rpcCalls,reads,archived,
+  return {app,get,doc,intervals,listeners,rpcCalls,reads,archived,reportCalls,
     finishChallenge:()=>{isFinished=true;}};
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
@@ -130,9 +137,26 @@ async function main(){
   assert.equal(first.get('historyList').children.length,2);
   // The bell is ALWAYS clickable during the active quiz. Viewing the shared
   // inbox must not discard the round, answer choices or pending RPC state.
-  const activeRound={id:'test-active-run',idx:5,finished:false,resultShown:false,
+  const activeRound={id:challenge,idx:5,finished:false,resultShown:false,
     answers:[{choice:'A'}],lives:2};
   first.app.setTestGame(activeRound);
+  first.app.setTestCurrent({id:'s904'});
+  first.app.toggleReport();
+  assert.equal(first.get('reportForm').hidden,false);
+  first.get('reportReason').value='wrong_answer';
+  first.get('reportDetails').value='FS22 and FS25 look too similar';
+  await first.app.sendQuestionReport();
+  await settle();
+  assert.equal(first.reportCalls.length,1);
+  assert.deepEqual(first.reportCalls[0],{
+    p_run_id:challenge,p_question_index:5,
+    p_reason:'wrong_answer',p_details:'FS22 and FS25 look too similar'
+  });
+  assert.ok(first.get('reportStatus').textContent.includes('Děkuju'));
+  assert.equal(first.app.getState().game,activeRound);
+  assert.equal(first.app.getState().game.idx,5);
+  // A report cannot generate another answer event or advance a game.
+  assert.ok(!first.rpcCalls.includes('arcade_verify_action_shadow'));
   first.app.goToHistory();
   assert.equal(first.app.getState().game,activeRound);
   assert.equal(first.get('historyOverlay').hidden,false);
