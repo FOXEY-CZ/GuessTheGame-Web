@@ -55,17 +55,53 @@
   function openHistory(){
     window.FOXEY_ARCADE_NOTIFICATIONS?.open?.();
   }
+  async function showVerifiedResult(row,button,article){
+    if(!api||!userId||!row.both_done||!validUUID.test(row.challenge_id))return;
+    const uid=userId,stamp=revision;
+    button.disabled=true;
+    try{
+      // The server checks ownership. Do not trust any result from the card
+      // itself for marking a read receipt or changing account state.
+      const status=await api.rpc('arcade_async_challenge_status',{
+        p_challenge_id:row.challenge_id
+      });
+      if(status.error||status.data?.ok!==true||!status.data?.both_done||
+         !['creator','challenger'].includes(status.data.role))
+        throw Error(status.error?.message||'result_not_ready');
+      if(uid!==userId||stamp!==revision)return;
+      const seen=await api.rpc('arcade_async_challenge_mark_seen',{
+        p_challenge_id:row.challenge_id
+      });
+      if(seen.error||seen.data?.seen!==true)
+        throw Error(seen.error?.message||'result_not_marked');
+      if(uid!==userId||stamp!==revision)return;
+      row.unread=false;
+      const copy={...row,...status.data};
+      article.querySelector('.challenge-card-status').textContent=
+        locale('✓ Výsledek přečten','✓ Result viewed');
+      article.querySelector('.challenge-card-result').textContent=resultsLine(copy);
+      button.textContent=locale('✓ Zobrazeno','✓ Viewed');
+      void window.FOXEY_ARCADE_NOTIFICATIONS?.refresh?.();
+    }catch(_){
+      if(uid===userId&&stamp===revision){
+        button.textContent=locale('⚠️ Zkusit znovu','⚠️ Retry');
+      }
+    }finally{
+      if(uid===userId&&stamp===revision)button.disabled=false;
+    }
+  }
   function card(row,section){
     const article=make('article','challenge-dashboard-card');
     const heading=make('h3','', (row.role==='creator'?
       locale('⚔️ Odeslaná','⚔️ Sent'):locale('🎮 Přijatá','🎮 Received'))+
-      ' · '+(row.mode==='mystery'?'Mystery':'Classic'));
+      ' · '+(row.mode==='mystery'?'Mystery':'Classic')+
+      (row.unread?locale(' · NOVÉ',' · NEW'):''));
     const message=make('p','challenge-card-status',
       section==='play'?locale('▶️ Můžeš pokračovat','▶️ Ready to resume'):
       section==='waiting'?locale('⏳ Čeká se na soupeře','⏳ Waiting for opponent'):
       row.status==='expired'?locale('⌛ Vypršelo','⌛ Expired'):
       locale('🏁 Dokončeno','🏁 Completed'));
-    const desc=make('p','',section==='results'?resultsLine(row):
+    const desc=make('p',section==='results'?'challenge-card-result':'',section==='results'?resultsLine(row):
       section==='play'?locale('Partie je uložená a můžeš navázat.','Your run is saved and ready.'):
       locale('Tvoje část už je hotová.','Your part is already done.'));
     const controls=make('div','challenge-card-actions');
@@ -82,8 +118,14 @@
       controls.append(share);
     }
     if(section==='results'){
-      const review=make('button','secondary',locale('🏆 Výsledek ve zvonečku','🏆 Result in bell'));
-      review.type='button';review.addEventListener('click',openHistory);
+      const review=make('button','secondary',row.both_done?
+        locale('🏆 Zobrazit výsledek','🏆 View result'):
+        locale('📦 Historie ve zvonečku','📦 History in bell'));
+      review.type='button';
+      review.addEventListener('click',()=>{
+        if(row.both_done)void showVerifiedResult(row,review,article);
+        else openHistory();
+      });
       controls.append(review);
     }else if(section==='waiting'){
       const open=make('button','secondary',locale('🔔 Stav výzvy','🔔 Challenge status'));
