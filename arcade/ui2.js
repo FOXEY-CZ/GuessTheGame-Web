@@ -221,7 +221,7 @@
     currentPage=page;
     setMore(false,false);
     const main=page==='play'?'games':page;
-    const isMore=['account','missions','community','settings'].includes(page);
+    const isMore=['account','missions','shop','settings'].includes(page);
     document.querySelectorAll('.arcade-mobile-dock button[data-page]').forEach(button=>{
       const active=button.dataset.page===main;
       button.classList.toggle('active',active);
