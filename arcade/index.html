@@ -29,9 +29,9 @@
       <div class="headerwallet" id="headerWallet" aria-label="Globální účet FOXEY Arcade">
         <span class="resource header-xp-resource" title="Globální XP FOXEY Arcade">🦊 <b id="headerArcadeXp">—</b> XP</span>
         <span class="resource" title="Globální level FOXEY Arcade">🎖️ <b id="headerArcadeLevel">—</b></span>
-        <button type="button" class="resource resource-spend" data-page="shop" title="Krystaly – otevřít obchod" aria-label="Krystaly – otevřít obchod">💎 <b id="headerShards">—</b></button>
-        <button type="button" class="resource resource-spend" data-page="shop" title="Korunky – otevřít obchod" aria-label="Korunky – otevřít obchod">👑 <b id="headerCrowns">—</b></button>
-         <button type="button" class="shop-header-link" data-page="shop" title="Prohlédnout kosmetické předměty a truhly">🛍️ <span>Obchod</span></button>
+        <span class="resource" title="Společné krystaly">💎 <b id="headerShards">—</b></span>
+        <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
+         
       </div>
       <button id="arcadeBell" class="arcade-bell" type="button" title="Upozornění a výzvy" aria-label="Upozornění FOXEY Arcade">🔔 <span id="arcadeBellCount" class="arcade-bell-count hidden">0</span></button>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div>
@@ -310,8 +310,9 @@
 
     <section class="page hidden" id="page-challenges">
       <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
-        <button type="button" data-page="community" class="arcade-social-tab">👥 Přátelé a živé souboje</button>
-        <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy a výsledky</button>
+        <button type="button" data-page="community" data-friends-view="people" class="arcade-social-tab">👥 Přátelé</button>
+        <button type="button" data-social-live class="arcade-social-tab">⚡ Živé souboje</button>
+        <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy</button>
       </nav>
       <div class="page-intro challenge-page-intro">
         <div><span class="eyebrow">FOXEY ARCADE · SOUBOJE</span><h1>⚔️ Moje výzvy</h1>
@@ -361,24 +362,36 @@
         <button id="friendsRefresh" class="secondary" type="button">↻ Obnovit přátele</button>
       </div>
       <p class="small" id="friendsStatus" role="status" aria-live="polite">Pro přátele se přihlas.</p>
-      <div class="friends-code-card">
+      <div id="friendsPanePeople" class="friends-view-pane">
+      <div class="friends-code-area">
+      <details class="friends-code-card friends-advanced">
+        <summary>🔐 Pokročilé: můj starý kód přítele</summary>
+        <div class="friends-code-details">
         <div class="friends-code-icon" aria-hidden="true">🦊</div>
         <div><span class="eyebrow">TVŮJ KÓD PŘÍTELE</span>
           <strong id="myFriendCode">—</strong>
           <p>Pošli ho kamarádovi. Najde tě podle něj, aniž by znal tvůj e-mail.</p></div>
         <button class="secondary" type="button" id="copyFriendCode">📋 Kopírovat</button>
+        </div>
+      </details>
       </div>
       <section class="friends-section" aria-labelledby="friendsFindTitle">
-        <div class="sectionline"><h2 id="friendsFindTitle">🔎 Najít hráče</h2></div>
+        <div class="sectionline"><h2 id="friendsFindTitle">➕ Přidat přítele podle nicku</h2></div>
         <form id="friendsSearchForm" class="friends-search-form">
-          <label for="friendsSearchInput">Přezdívka nebo kód FX-…</label>
-          <div><input id="friendsSearchInput" required minlength="3" maxlength="30" autocomplete="off" spellcheck="false" placeholder="FOXEY nebo FX-A1B2C3D4E5F6">
-          <button class="primary" type="submit" id="friendsSearchButton">Hledat</button></div>
+          <label for="friendsSearchInput">Zadej přezdívku kamaráda (bez e-mailu a kódu)</label>
+          <div><input id="friendsSearchInput" required minlength="3" maxlength="30" autocomplete="off" spellcheck="false" placeholder="Např. FOXEY">
+          <button class="primary" type="submit" id="friendsSearchButton">🔎 Najít</button></div>
         </form>
         <p class="small" id="friendsSearchStatus" role="status" aria-live="polite"></p>
         <div class="friends-grid" id="friendsSearchResults"></div>
       </section>
-      <div class="friends-columns">
+      <section class="friends-section" aria-labelledby="friendsListTitle">
+        <div class="sectionline"><h2 id="friendsListTitle">🤝 Moji přátelé</h2><span id="friendsCount">0</span></div>
+        <div class="friends-grid" id="friendsList"></div>
+      </section>
+      <details class="friends-requests-details" id="friendsRequestsDetails">
+        <summary>📩 Žádosti o přátelství <span id="friendsRequestSummaryCount" class="friends-request-pill">0</span></summary>
+        <div class="friends-columns">
         <section class="friends-section" aria-labelledby="friendsIncomingTitle">
           <div class="sectionline"><h2 id="friendsIncomingTitle">📩 Žádosti o přátelství</h2><span id="friendsIncomingCount">0</span></div>
           <div class="friends-grid" id="friendsIncomingList"></div>
@@ -387,11 +400,8 @@
           <div class="sectionline"><h2 id="friendsOutgoingTitle">📤 Odeslané žádosti</h2><span id="friendsOutgoingCount">0</span></div>
           <div class="friends-grid" id="friendsOutgoingList"></div>
         </section>
-      </div>
-      <section class="friends-section" aria-labelledby="friendsListTitle">
-        <div class="sectionline"><h2 id="friendsListTitle">🤝 Moji přátelé</h2><span id="friendsCount">0</span></div>
-        <div class="friends-grid" id="friendsList"></div>
-      </section>
+        </div>
+      </details>
       <section id="friendProfilePanel" class="friends-public-profile hidden" aria-labelledby="friendProfileTitle">
         <div class="friends-public-head">
           <h2 id="friendProfileTitle">👤 Hráčský profil</h2>
@@ -400,6 +410,13 @@
         <div class="friends-public-content" id="friendProfileContent"></div>
         <div id="friendProfileActions" class="friends-actions"></div>
       </section>
+      <details class="friends-blocked-area">
+        <summary>🛡️ Blokovaní hráči</summary>
+        <p class="small">Blokovaný hráč ti nemůže poslat novou žádost ani cílenou výzvu.</p>
+        <div class="friends-grid" id="friendsBlockedList"></div>
+      </details>
+      </div>
+      <div id="friendsPaneLive" class="friends-view-pane hidden">
       <section class="friends-section live-section" aria-labelledby="liveTitle">
         <div class="sectionline">
           <h2 id="liveTitle">⚡ Živé souboje 1v1 <span id="liveInviteCount" class="live-invite-count"></span></h2>
@@ -452,11 +469,7 @@
           <div id="liveHeadToHeadRows" class="live-history-list"></div>
         </section>
       </section>
-      <details class="friends-blocked-area">
-        <summary>🛡️ Blokovaní hráči</summary>
-        <p class="small">Blokovaný hráč ti nemůže poslat novou žádost ani cílenou výzvu.</p>
-        <div class="friends-grid" id="friendsBlockedList"></div>
-      </details>
+      </div>
     </section>
 
     <section class="page hidden" id="page-account">
