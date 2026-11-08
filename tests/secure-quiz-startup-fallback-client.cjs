@@ -18,7 +18,8 @@ class E{
     this.classList={
       toggle:(name,turn)=>{if(name==='hidden')this.hidden=!!turn;},
       add:name=>{if(name==='hidden')this.hidden=true;},
-      remove:name=>{if(name==='hidden')this.hidden=false;}
+      remove:name=>{if(name==='hidden')this.hidden=false;},
+      contains:name=>name==='hidden'?this.hidden:false
     };
   }
   addEventListener(event,cb){this.listeners[event]=cb}
