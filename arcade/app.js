@@ -651,6 +651,7 @@
     window.FOXEY_ARCADE_UI2?.onPage(page);
     window.FOXEY_ARCADE_MISSIONS?.onPage(page);
     window.FOXEY_ARCADE_SOCIAL?.onPage(page);
+    window.FOXEY_ARCADE_CHAT?.onPage(page);
     window.FOXEY_ARCADE_LIVE?.onPage(page);
     // Supabase's implicit password-recovery callback carries short-lived
     // tokens in the URL fragment. Never overwrite it before Auth consumes it.
@@ -869,6 +870,8 @@
       catch(err){console.warn('FOXEY mission dashboard unavailable',err);}
       try{window.FOXEY_ARCADE_SOCIAL?.connect(supa,user);}
       catch(err){console.warn('FOXEY social dashboard unavailable',err);}
+      try{window.FOXEY_ARCADE_CHAT?.connect(supa,user);}
+      catch(err){console.warn('FOXEY chat unavailable',err);}
       try{window.FOXEY_ARCADE_LIVE?.connect(supa,user);}
       catch(err){console.warn('FOXEY live duels unavailable',err);}
       // An explicitly selected friend from the standalone secure game may
@@ -983,6 +986,8 @@
       catch(err){console.warn('FOXEY notifications logout cleanup failed',err);}
       try{window.FOXEY_ARCADE_SOCIAL?.connect(supa,null);}
       catch(err){console.warn('FOXEY friends logout cleanup failed',err);}
+      try{window.FOXEY_ARCADE_CHAT?.connect(supa,null);}
+      catch(err){console.warn('FOXEY chat logout cleanup failed',err);}
       try{window.FOXEY_ARCADE_LIVE?.connect(supa,null);}
       catch(err){console.warn('FOXEY live logout cleanup failed',err);}
       try{window.FOXEY_ARCADE_UI2?.connect(supa,null);}
