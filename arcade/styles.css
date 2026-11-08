@@ -532,3 +532,46 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
   .challenge-page-actions button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.arcade-mobile-more-sheet{animation:none}}
+
+
+/* FOXEY Arcade Missions — compact, responsive server-verified progression. */
+.mission-panel{margin:14px 0}
+.mission-periods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.mission-period-card{min-width:0;border:1px solid #405879;border-radius:19px;
+  background:linear-gradient(145deg,#1c2b49,#131f34);padding:clamp(15px,2.6vw,21px)}
+.mission-period-head{display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:8px;margin-bottom:15px}
+.mission-period-head h2{font-size:clamp(1.05rem,2.5vw,1.3rem);margin:5px 0}
+.mission-timer{font-size:.76rem;font-variant-numeric:tabular-nums;
+  color:#c1d7ed;background:#2a3655;border-radius:100px;padding:6px 10px}
+.mission-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.mission-preview{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mission-item{min-width:0;display:flex;gap:11px;align-items:flex-start;
+  background:#1a2945;border:1px solid #3e5270;border-radius:14px;padding:13px}
+.mission-item.mission-completed{background:linear-gradient(120deg,#1d413d,#1b2b44);
+  border-color:#628f83}
+.mission-icon{font-size:1.5rem;line-height:1.35;flex:0 0 32px;text-align:center}
+.mission-details{display:grid;gap:6px;min-width:0;flex:1}
+.mission-name{font-size:.91rem;line-height:1.35}
+.mission-description{font-size:.78rem;line-height:1.4;color:#b9cce3;margin:0}
+.mission-progress-label{font-size:.75rem;color:#c6ddf1;font-variant-numeric:tabular-nums}
+.mission-completed .mission-progress-label{color:#a5ecc8}
+.mission-progress-track{height:6px;border-radius:100px;overflow:hidden;background:#344860}
+.mission-progress-fill{display:block;height:100%;border-radius:100px;
+ background:linear-gradient(90deg,#6bcad2,#b3edaa);transition:width .22s ease}
+.mission-reward{font-size:.84rem;font-weight:760;color:#e9f6e3}
+.mission-empty{padding:12px 15px;margin:0;color:#acc4df;font-size:.84rem}
+#page-missions>.page-intro button{min-height:44px}
+#page-missions>.note{margin-top:12px;font-size:.78rem;line-height:1.5}
+@media(max-width:1010px){
+ .mission-periods{grid-template-columns:1fr}
+ .mission-preview{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+ .mission-preview{grid-template-columns:1fr}
+ .mission-period-card{padding:14px}
+ .mission-period-head{align-items:flex-start}
+ .mission-item{padding:12px}
+ .mission-description{font-size:.79rem}
+}
+@media(prefers-reduced-motion:reduce){.mission-progress-fill{transition:none}}
