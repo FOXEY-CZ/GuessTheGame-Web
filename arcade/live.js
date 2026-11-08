@@ -120,6 +120,10 @@ async function refreshStats(force=false){
 
 const people=()=>Array.isArray(snapshot?.friends)?snapshot.friends:[];
 const matches=()=>Array.isArray(snapshot?.matches)?snapshot.matches:[];
+// One source of truth for both phones: a linked, still-active rematch request.
+const pendingRematch=m=>m?.state==='finished'?
+  matches().find(x=>x.rematch_of===m.match_id &&
+    ['invited','lobby','running'].includes(x.state)):null;
 const label=p=>(p?.nickname||tr('Hráč','Player')).slice(0,40);
 const status=s=>text('liveStatus',s);
 function safeError(e){return String(e?.message||'network_error').slice(0,115);}
@@ -173,12 +177,16 @@ function renderList(){
       expired:tr('⌛ Vypršelo','⌛ Expired')};
     const myPoints=m.role==='host'?m.host_score:m.guest_score;
     const oppPoints=m.role==='host'?m.guest_score:m.host_score;
+    const rematchLabel=m.rematch_of&&m.state==='invited'?
+      (m.role==='guest'?tr('🔄 Žádost o odvetu','🔄 Rematch requested'):
+        tr('🔄 Čeká na odvetu','🔄 Rematch pending')):null;
     head.append(elem('strong','',label(m.opponent)),
-      elem('span','',(translation[m.state]||m.state)+' · '+modeName(m.mode)));
+      elem('span','',(rematchLabel||translation[m.state]||m.state)+' · '+modeName(m.mode)));
     if(m.state==='finished')head.append(elem('span','',
       tr('Skóre ','Score ')+myPoints+' : '+oppPoints));
     row.append(head,btn(m.state==='invited'&&m.role==='guest'?
-      tr('📩 Odpovědět','📩 Respond'):tr('Zobrazit','View'),
+      (m.rematch_of?tr('🔄 Rozhodnout o odvetě','🔄 Respond to rematch'):
+        tr('📩 Odpovědět','📩 Respond')):tr('Zobrazit','View'),
       ()=>openMatch(m.match_id),'secondary',busy));
     recent.append(row);
   }
@@ -214,8 +222,13 @@ function renderArena(){
   text('liveRound',m.state==='running'?
     tr('Otázka ','Question ')+(m.question_index+1)+' / 10':'');
   const states={
-    invited:host?tr('📨 Pozvánka odeslána. Čekáme na přijetí.','📨 Waiting for opponent to accept.'):
-      tr('📨 Kamarád tě zve do živého 1v1!','📨 Your friend invited you to a live 1v1!'),
+    invited:m.rematch_of?
+      (host?tr('🔄 Požádal jsi o odvetu. Čeká se na rozhodnutí soupeře.',
+                 '🔄 You requested a rematch. Waiting for your opponent.'):
+        tr('🔄 Kamarád tě žádá o odvetu. Chceš ji přijmout?',
+           '🔄 Your friend requests a rematch. Do you accept?')):
+      (host?tr('📨 Pozvánka odeslána. Čekáme na přijetí.','📨 Waiting for opponent to accept.'):
+        tr('📨 Kamarád tě zve do živého 1v1!','📨 Your friend invited you to a live 1v1!')),
     lobby:tr('🕹️ Lobby: oba hráči musí potvrdit připravenost.','🕹️ Lobby: both players must get ready.'),
     running:m.my_answered?
       tr('✅ Odpověď uložená. Čekáme na soupeře nebo konec kola.','✅ Answer saved. Waiting for the other player or timer.'):
@@ -226,9 +239,11 @@ function renderArena(){
     expired:tr('Zápas vypršel.','Match expired.')};
   text('liveArenaStatus',states[m.state]||m.state);
   if(m.state==='invited'&&!host){
-    controls.append(btn(tr('✅ Přijmout','✅ Accept'),
+    controls.append(btn(m.rematch_of?tr('✅ Přijmout odvetu','✅ Accept rematch'):
+      tr('✅ Přijmout','✅ Accept'),
       ()=>void respond(true),'primary',busy),
-      btn(tr('✕ Odmítnout','✕ Decline'),()=>void respond(false),'secondary',busy));
+      btn(m.rematch_of?tr('❌ Odmítnout odvetu','❌ Decline rematch'):
+        tr('✕ Odmítnout','✕ Decline'),()=>void respond(false),'secondary',busy));
   }
   if(m.state==='lobby'){
     const ready=host?m.host_ready:m.guest_ready;
@@ -256,7 +271,28 @@ function renderArena(){
     question.append(elem('h3','',result));
     question.append(elem('p','small',tr('Tvoje skóre ','Your score ')+myScore+
       ' : '+oppScore+tr(' soupeř',' opponent')));
-    controls.append(btn(tr('🔄 Odveta','🔄 Rematch'),()=>void rematch(),'primary',busy));
+    const pending=pendingRematch(m);
+    if(!pending){
+      controls.append(btn(tr('🔄 Požádat o odvetu','🔄 Request rematch'),
+        ()=>void rematch(),'primary',busy));
+    }else if(pending.state==='invited'&&pending.role==='guest'){
+      question.append(elem('p','live-rematch-prompt',tr(
+        '🔄 Soupeř žádá o odvetu. Chceš ji přijmout?',
+        '🔄 Your opponent requests a rematch. Do you accept?')));
+      controls.append(btn(tr('✅ Přijmout odvetu','✅ Accept rematch'),
+        ()=>void answerRematchRequest(pending.match_id,true),'primary',busy),
+        btn(tr('❌ Odmítnout odvetu','❌ Decline rematch'),
+        ()=>void answerRematchRequest(pending.match_id,false),'secondary',busy));
+    }else if(pending.state==='invited'){
+      question.append(elem('p','live-rematch-prompt',tr(
+        '⏳ Požádal jsi o odvetu. Čekáme na soupeře.',
+        '⏳ You requested a rematch. Waiting for your opponent.')));
+      controls.append(btn(tr('👀 Zobrazit čekající odvetu','👀 View pending rematch'),
+        ()=>void openMatch(pending.match_id),'secondary',busy));
+    }else{
+      controls.append(btn(tr('▶️ Pokračovat v odvetě','▶️ Open rematch'),
+        ()=>void openMatch(pending.match_id),'primary',busy));
+    }
   }
   if(['invited','lobby','running'].includes(m.state)){
     controls.append(btn(tr('⛔ Ukončit zápas','⛔ End match'),()=>void cancelMatch(),
@@ -278,6 +314,9 @@ async function refreshDashboard(force=false){
     if(!isCurrent(owner,stamp))return;
     snapshot=result;lastDashboard=Date.now();
     renderList();
+    // An opponent's pending request changes the controls on an already-open
+    // finished-match result. Re-render without navigating away or losing it.
+    if(active?.state==='finished')renderArena();
     const count=matches().filter(m=>m.state==='invited'&&m.role==='guest').length;
     text('liveInviteCount',count?String(count):'');
     if(previousInvites>=0&&count>previousInvites)
@@ -354,6 +393,33 @@ async function invite(friendId){
   }catch(e){if(isCurrent(owner,stamp))status(tr('⚠️ Pozvánka: ','⚠️ Invite: ')+safeError(e));}
   finally{if(isCurrent(owner,stamp)){busy=false;renderList();renderArena();}}
 }
+async function answerRematchRequest(matchId,accept){
+  if(!uid||!UUID.test(matchId)||busy)return;
+  const owner=uid,stamp=epoch;busy=true;renderArena();
+  try{
+    const outcome=await call('arcade_live_respond',{
+      p_match_id:matchId,p_accept:accept
+    });
+    if(!isCurrent(owner,stamp))return;
+    await refreshDashboard(true);
+    if(accept){
+      status(tr('✅ Odveta přijata! Oba se připravte.',
+        '✅ Rematch accepted! Both players should ready up.'));
+      await openMatch(matchId);
+    }else{
+      status(tr('❌ Odveta odmítnuta.','❌ Rematch declined.'));
+      renderArena();
+    }
+    window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
+  }catch(e){
+    if(isCurrent(owner,stamp)){
+      const msg=tr('⚠️ Odpověď na odvetu: ','⚠️ Rematch response: ')+safeError(e);
+      status(msg);text('liveArenaStatus',msg);
+    }
+  }finally{
+    if(isCurrent(owner,stamp)){busy=false;renderList();renderArena();}
+  }
+}
 async function rematch(){
   if(!uid||!activeId||active?.state!=='finished'||busy)return;
   const owner=uid,stamp=epoch,finishedId=activeId;
@@ -369,11 +435,21 @@ async function rematch(){
     });
     if(!isCurrent(owner,stamp))return;
     window.sessionStorage.removeItem(key);
-    status(tr('✅ Odveta odeslána!','✅ Rematch invited!'));
+    status(result.needs_acceptance?
+      tr('🔄 Soupeř už tě požádal o odvetu. Vyber Přijmout nebo Odmítnout.',
+        '🔄 Your opponent already requested a rematch. Accept or decline.'):
+      result.existing?
+        tr('⏳ Žádost o odvetu už čeká na odpověď.',
+           '⏳ Rematch request is already pending.'):
+        tr('✅ Žádost o odvetu odeslána!','✅ Rematch request sent!'));
     await refreshDashboard(true);
     await openMatch(result.match_id);
   }catch(e){
-    if(isCurrent(owner,stamp))status(tr('⚠️ Odveta: ','⚠️ Rematch: ')+safeError(e));
+    if(isCurrent(owner,stamp)){
+      const msg=tr('⚠️ Odveta: ','⚠️ Rematch: ')+safeError(e);
+      status(msg);text('liveArenaStatus',msg);
+      await refreshDashboard(true);
+    }
   }finally{
     if(isCurrent(owner,stamp)){busy=false;renderArena();}
   }
