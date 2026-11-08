@@ -58,7 +58,7 @@ const profileA={user_id:a,nickname:'FOXEY',avatar_id:'fox',level:5,
 const profileB={user_id:b,nickname:'Buddy',avatar_id:'robot',level:2,
  arcade_xp:130,achievements:1,verified_games:2};
 let state='pending',nUnread=1,archiveCount=0,assigned='',bellUnread=[];
-let noticeKind='friend_challenge',lobbyOpened='',modalClosed=0,navigatedPage='';
+let noticeKind='friend_challenge',noticeRematch=false,lobbyOpened='',modalClosed=0,navigatedPage='';
 let copied='',seen=false,requestSent=false;
 const rpcCalls=[];
 const api={rpc:async(name,args)=>{
@@ -73,7 +73,8 @@ const api={rpc:async(name,args)=>{
   assert.equal(args.p_limit,10);
   return {data:{ok:true,items:[{notification_id:notif,
     kind:noticeKind,subject_id:noticeKind==='live_invite'?challenge:challenge,
-    actor:profileB,unread:true,challenge_ready:true}],unread:nUnread,
+    actor:profileB,unread:true,challenge_ready:true,
+    live_rematch:noticeRematch}],unread:nUnread,
     archived:false,has_more:false,total:1}};
  }
  if(name==='arcade_friends_search'){
@@ -166,6 +167,17 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(navigatedPage,'community','Open lobby must navigate to Friends');
  assert.equal(lobbyOpened,challenge,'Open lobby must actually open the chosen match');
  await settle();
+ // A rematch must be clearly identified in the bell rather than disguised
+ // as an ordinary duel invitation. Opening it still requires guest consent.
+ noticeRematch=true;
+ await ui.refreshInbox();await settle();
+ const rematchCard=nodes.get('arcadeSocialBellList').children[0];
+ assert.ok(rematchCard.children[0].textContent.includes('Žádost o odvetu'));
+ assert.ok(rematchCard.children[1].textContent.includes('přijmout'));
+ assert.ok(rematchCard.children[2].children[0].textContent.includes('Přijmout / odmítnout'));
+ rematchCard.children[2].children[0].events.click();await settle();
+ assert.equal(lobbyOpened,challenge);
+ assert.equal(modalClosed,2);
  // No cross-account stale state after switching to anonymous mode.
  ui.connect(null,null);
  assert.equal(nodes.get('myFriendCode').textContent,'—');
