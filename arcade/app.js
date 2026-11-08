@@ -39,7 +39,7 @@
     if(markup)target.innerHTML=markup;
     else target.textContent=AVATARS[id]||'🎮';
   }
-  const PAGES = new Set(['home','games','play','shop','challenges','community','account','settings']);
+  const PAGES = new Set(['home','games','play','shop','challenges','missions','community','account','settings']);
   // Secure Quiz Beta is now the DEFAULT Guess the Game experience in Arcade.
   // The legacy quiz stays addressable for old local progress/invite links.
   // Secure quiz keeps its private answer bank; real rewards are opt-in,
@@ -551,6 +551,7 @@
     // Mobile dock and compact challenge dashboard are independent UI only.
     // Switching sections must never reload the active game iframe.
     window.FOXEY_ARCADE_UI2?.onPage(page);
+    window.FOXEY_ARCADE_MISSIONS?.onPage(page);
     // Supabase's implicit password-recovery callback carries short-lived
     // tokens in the URL fragment. Never overwrite it before Auth consumes it.
     const authHash=new URLSearchParams(location.hash.slice(1));
@@ -764,6 +765,8 @@
       catch(err){console.warn('FOXEY shared notifications unavailable',err);}
       try{window.FOXEY_ARCADE_UI2?.connect(supa,user);}
       catch(err){console.warn('FOXEY challenge dashboard unavailable',err);}
+      try{window.FOXEY_ARCADE_MISSIONS?.connect(supa,user);}
+      catch(err){console.warn('FOXEY mission dashboard unavailable',err);}
       // If the user directly opened the playable route, reload the iframe
       // under the authenticated identity instead of leaving it in Guest mode.
       if(location.hash==='#play')go('play');
@@ -936,6 +939,7 @@
       }).catch(()=>{});
       void loadSharedWallet();
       void loadAchievements();
+      void window.FOXEY_ARCADE_MISSIONS?.refresh();
       return;
     }
     if(event.data?.type!=='foxey-arcade:gtg-cloud-synced')return;
@@ -945,6 +949,11 @@
     void loadSharedWallet();
   });
   window.addEventListener('foxey-arcade:locale-changed',()=>renderAchievements());
+  // Mission status may complete a missed, already-earned award after reconnect.
+  // Never trust client-reported amounts: refetch authenticated wallet data.
+  window.addEventListener('foxey-arcade:missions-awarded',()=>{
+    if(user&&supa)void loadSharedWallet();
+  });
   window.addEventListener('hashchange',()=>{
     const target=location.hash.replace(/^#/,'');
     go(target==='domu'?'home':target);
