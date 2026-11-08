@@ -254,12 +254,22 @@
     busy=true;status(tr('⚔️ Vytvářím bezpečnou výzvu…',
                         '⚔️ Creating protected challenge…'));
     try{
+      // Reuse the same operation ID after a network error. The server will
+      // return the original run instead of issuing duplicate friend invites.
+      const opKey='foxey.arcade.friend.invite.'+owner+'.'+friendId;
+      let operation=null;
+      try{operation=window.localStorage?.getItem(opKey)||null;}catch(_){}
+      if(!operation||!validId.test(operation)){
+        operation=crypto.randomUUID();
+        try{window.localStorage?.setItem(opKey,operation);}catch(_){}
+      }
       const data=await call('arcade_friend_challenge_create',{
-        p_friend_id:friendId,p_operation:crypto.randomUUID(),p_mode:'classic'
+        p_friend_id:friendId,p_operation:operation,p_mode:'classic'
       });
       if(owner!==uid||stamp!==revision)return;
       if(!validId.test(data.challenge_id)||!validId.test(data.run_id)||!data.targeted)
         throw Error('invalid_invite_receipt');
+      try{window.localStorage?.removeItem(opKey);}catch(_){}
       // Same-tab navigation is reliable on mobile (no popup blocker).
       // The existing secure quiz resumes this server-created creator run.
       const url=new URL('../secure-quiz-beta.html',location.href);
