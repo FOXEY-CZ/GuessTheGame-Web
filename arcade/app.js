@@ -143,6 +143,13 @@
       :walletStatus==='ready'?'✅ Jedna společná peněženka pro všechny hry.'
       :'☁️ Peněženka zatím není načtená.';
     el('shopStatus').textContent=status;
+    const shopHint=el('homeShopStatus');
+    if(shopHint){
+      const freeCount=ready?walletNumber(sharedWallet.free_chests):0;
+      shopHint.textContent=!ready?'🎁 Truhly, avatary a motivy pro tvůj účet':
+        freeCount>0?'🎁 Máš '+fmt(freeCount)+' '+(freeCount===1?'truhlu zdarma':'truhel zdarma')+' připravených!':
+        '💎 Nakupuj za herní měnu ze společné peněženky.';
+    }
     if(document.body?.classList){
       for(const id of ['retro','royal','ocean'])
         document.body.classList.toggle('arcade-theme-'+id,
@@ -611,8 +618,14 @@
     // also sends a lightweight synced notification for live updates.
     if(page!=='play' && user && supa)void loadGameProgress();
     document.querySelectorAll('.mainnav [data-page]').forEach(button=>{
-      const active=button.dataset.page===page;
+      const active=button.dataset.page===(page==='challenges'?'community':page);
       button.classList.toggle('active',active);
+      if(active)button.setAttribute('aria-current','page');
+      else button.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('.arcade-social-tab').forEach(button=>{
+      const active=button.dataset.page===page;
+      button.classList.toggle('is-active',active);
       if(active)button.setAttribute('aria-current','page');
       else button.removeAttribute('aria-current');
     });
