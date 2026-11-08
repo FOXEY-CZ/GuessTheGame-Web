@@ -83,8 +83,12 @@
       const current=safeList(dashboard?.friends).some(x=>x.profile?.user_id===p.user_id);
       const sent=safeList(dashboard?.outgoing).some(x=>x.profile?.user_id===p.user_id);
       const incoming=safeList(dashboard?.incoming).some(x=>x.profile?.user_id===p.user_id);
-      if(current)buttons.append(action(tr('⚔️ Vyzvat','⚔️ Challenge'),
-        ()=>void invite(p.user_id),'primary'));
+      if(current){
+        buttons.append(action(tr('⚔️ Vyzvat','⚔️ Challenge'),
+          ()=>void invite(p.user_id),'primary'));
+        buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),
+          ()=>void window.FOXEY_ARCADE_LIVE?.invite(p.user_id)));
+      }
       else if(sent)buttons.append(node('span','friends-state',tr('⏳ Žádost odeslána','⏳ Pending')));
       else if(incoming)buttons.append(action(tr('📩 Žádost přijata','📩 View request'),
         ()=>{document.getElementById('friendsIncomingTitle')?.scrollIntoView?.({behavior:'smooth'});}));
@@ -108,6 +112,8 @@
     }else if(kind==='friend'){
       buttons.append(action(tr('⚔️ Vyzvat','⚔️ Challenge'),
         ()=>void invite(p.user_id),'primary'));
+      buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),
+        ()=>void window.FOXEY_ARCADE_LIVE?.invite(p.user_id)));
       buttons.append(action(tr('Odebrat','Remove'),
         ()=>void mutate('arcade_friend_remove',{p_user_id:p.user_id},
           tr('Přítel odebrán.','Friend removed.'))));
@@ -234,6 +240,8 @@
     if(connected){
       buttons.append(action(tr('⚔️ Vyzvat přítele','⚔️ Challenge friend'),
         ()=>void invite(p.user_id),'primary'));
+      buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),
+        ()=>void window.FOXEY_ARCADE_LIVE?.invite(p.user_id)));
     }else if(waiting){
       buttons.append(node('span','friends-state',tr('⏳ Žádost odeslaná','⏳ Request pending')));
     }else if(incoming){
@@ -303,6 +311,13 @@
           socialUnread=Math.max(0,socialUnread-1);
           renderInbox();
         }
+        if(entry.kind==='live_invite'){
+          navigate?.('community');
+          if(validId.test(entry.subject_id))
+            void window.FOXEY_ARCADE_LIVE?.openMatch(entry.subject_id,false);
+          await refreshInbox();
+          return;
+        }
         if(entry.kind==='friend_challenge'){
           if(entry.challenge_ready!==true)return;
           const url=new URL('../secure-quiz-beta.html',location.href);
@@ -331,9 +346,13 @@
       tr('📩 Nová žádost o přátelství','📩 Friend request'):
       kind==='friend_accepted'?
       tr('🤝 Žádost přijata','🤝 Friend request accepted'):
+      kind==='live_invite'?
+      tr('⚡ Pozvánka do živého 1v1','⚡ Live 1v1 invitation'):
       tr('⚔️ Přímá výzva','⚔️ Direct challenge');
     root.append(node('strong','',title+' · '+playerName(p)));
-    const description=kind==='friend_challenge'?
+    const description=kind==='live_invite'?
+      tr('Kamarád tě zve na souboj v reálném čase.','Your friend invited you to a live duel.'):
+      kind==='friend_challenge'?
       (entry.challenge_ready?tr('Můžeš zahájit zápas proti příteli.',
                                   'Ready to play your friend.'):
        tr('Čeká se, až vyzyvatel dohraje svou partii.',
@@ -344,7 +363,8 @@
       tr('Teď se můžete navzájem vyzývat.','You can now challenge each other.');
     root.append(node('p','small',description));
     const actions=node('div','friends-actions');
-    const button=action(kind==='friend_challenge'?
+    const button=action(kind==='live_invite'?tr('⚡ Otevřít lobby','⚡ Open lobby'):
+      kind==='friend_challenge'?
       entry.challenge_ready?tr('▶️ Hrát','▶️ Play'):tr('⏳ Čeká se','⏳ Waiting'):
       tr('👥 Otevřít přátele','👥 Open Friends'),
       ()=>openSocialAction(entry),'primary');
