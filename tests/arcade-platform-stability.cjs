@@ -18,6 +18,7 @@ const modules={
   FOXEY_ARCADE_UI2:'arcade/ui2.js',
   FOXEY_ARCADE_MISSIONS:'arcade/missions.js',
   FOXEY_ARCADE_SOCIAL:'arcade/friends.js',
+  FOXEY_ARCADE_CHAT:'arcade/chat.js',
   FOXEY_ARCADE_LIVE:'arcade/live.js'
 };
 
@@ -78,6 +79,18 @@ for(const [htmlPath,html] of [
  }
 }
 
+// Chat is one shared service: one signed-in identity, friend-only RPC
+// backed messages, unread badges, and no direct table writes in the browser.
+const chat=read('arcade/chat.js');
+assert.ok(arcadeHtml.includes('id="friendsPaneChat"')&&
+  arcadeHtml.includes('id="chatThread"')&&
+  arcadeHtml.includes('id="chatMessageInput"'),'shared Chat UI missing');
+assert.equal((arcadeHtml.match(/data-social-chat/g)||[]).length,2,
+  'Chat must appear between Friends and Live on both social pages');
+assert.ok(chat.includes("rpc('arcade_chat_send'")||
+          chat.includes("api.rpc('arcade_chat_send'"),
+  'Chat send must use authenticated RPC');
+assert.ok(!chat.includes('.from('),'Chat may not read private tables directly');
 // The platform owns accounts, wallets, profiles, friends, notifications and
 // matchmaking. A game owns only its own progress/quiz rules.
 // Do not hardcode a one-game-only route or introduce a second wallet.
