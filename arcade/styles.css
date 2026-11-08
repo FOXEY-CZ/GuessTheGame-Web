@@ -616,3 +616,90 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .mission-streak-preview button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.mission-streak-progress span{transition:none}}
+
+/* FOXEY Arcade Friends 1.0 — accessible contact cards and private invites. */
+.friends-code-card{display:flex;align-items:center;gap:15px;padding:17px;
+  background:linear-gradient(120deg,#27395b,#1b2c44);
+  border:1px solid #617a9b;border-radius:18px;margin:12px 0 18px}
+.friends-code-icon{font-size:2rem;flex:0 0 49px;text-align:center}
+.friends-code-card>div:nth-child(2){min-width:0;flex:1}
+.friends-code-card strong{display:block;font-size:clamp(1.2rem,4vw,1.6rem);
+  margin:5px 0;letter-spacing:.06em;color:#e6fbfa;font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere}
+.friends-code-card p{font-size:.81rem;color:#bfd1e6;line-height:1.5;margin:3px 0}
+.friends-code-card>button{min-height:43px;flex:0 0 auto}
+.friends-section{padding:17px;background:#16243d;
+  border:1px solid #435977;border-radius:18px;margin:12px 0}
+.friends-section .sectionline{margin:2px 0 12px;display:flex;
+  justify-content:space-between;align-items:center;gap:12px}
+.friends-section .sectionline h2{margin:0;font-size:1.1rem}
+.friends-section .sectionline>span{border-radius:30px;background:#2b3d5f;
+  padding:3px 11px;font-size:.8rem;font-variant-numeric:tabular-nums}
+.friends-search-form{display:grid;gap:8px;margin-bottom:10px}
+.friends-search-form label{font-size:.83rem;font-weight:730}
+.friends-search-form>div{display:flex;gap:9px;min-width:0}
+.friends-search-form input{min-width:0;flex:1 1 auto;
+  min-height:46px;background:#0e1b30;border:1px solid #5a7096;border-radius:11px;
+  padding:10px 13px;color:#f0f7ff}
+.friends-search-form button{min-height:46px;flex:0 0 105px}
+.friends-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.friends-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.friends-card{min-width:0;display:flex;flex-direction:column;gap:11px;
+  background:#1d2d49;border:1px solid #4d6685;border-radius:15px;padding:13px}
+.friends-player{display:flex;align-items:center;gap:10px;min-width:0}
+.friends-avatar{height:47px;width:47px;flex:0 0 47px;border-radius:14px;
+  background:#344a70;display:grid;place-items:center;font-size:1.75rem}
+.friends-player-info{display:grid;gap:3px;min-width:0}
+.friends-player-info strong{font-size:.92rem;overflow-wrap:anywhere}
+.friends-player-info span{font-size:.77rem;color:#bfd4e9;line-height:1.3}
+.friends-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.friends-actions button{min-height:41px;font-size:.79rem;padding:8px 11px;flex:1 1 auto}
+.friends-state{font-size:.8rem;color:#bcdeeb;line-height:1.4}
+.friends-empty{margin:0;font-size:.84rem;line-height:1.5;color:#a9c1da;
+  border:1px dashed #4a6282;border-radius:12px;padding:13px}
+.friends-public-profile{margin:15px 0;padding:clamp(14px,3vw,22px);
+  border-radius:19px;border:1px solid #8aa4b8;
+  background:linear-gradient(120deg,#263f59,#17273e)}
+.friends-public-profile.hidden{display:none}
+.friends-public-head{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.friends-public-head h2{font-size:1.25rem;margin:0}
+.friends-public-head button{min-height:40px}
+.friends-public-content{display:grid;gap:15px;margin:15px 0}
+.friends-public-player .friends-avatar{height:67px;width:67px;flex-basis:67px;font-size:2.3rem}
+.friends-public-player .friends-player-info strong{font-size:1.2rem}
+.friends-public-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.friends-public-stats>div{display:grid;gap:6px;background:#1b2b44;
+  border:1px solid #4e6181;border-radius:11px;padding:12px}
+.friends-public-stats span{font-size:.75rem;color:#b5cadd}
+.friends-public-stats strong{font-size:1.2rem;font-variant-numeric:tabular-nums}
+.friends-blocked-area{padding:12px 16px;margin:14px 0;border-radius:13px;
+  background:#141f35;border:1px solid #405270}
+.friends-blocked-area summary{font-size:.87rem;font-weight:750;cursor:pointer;padding:4px}
+.friends-blocked-area .friends-grid{margin:12px 0}
+.arcade-social-bell{border:1px solid #485e82;border-radius:15px;
+  padding:12px;margin:10px 0 15px;background:#1b2a43}
+.arcade-social-bell .sectionline{display:flex;align-items:center;
+  justify-content:space-between;gap:8px;margin:0 0 9px}
+.arcade-social-bell .sectionline h3,
+.arcade-challenge-bell-title h3{margin:0;font-size:.99rem}
+.arcade-social-bell .arcade-notice-list{display:grid;gap:9px}
+.arcade-social-bell .arcade-notice-card{padding:11px;border-radius:11px}
+.arcade-social-bell .arcade-notice-card strong{font-size:.88rem}
+.arcade-social-bell .arcade-notice-card p{font-size:.79rem;line-height:1.45}
+.arcade-challenge-bell-title{margin:13px 0}
+@media(max-width:780px){
+ .friends-columns{grid-template-columns:1fr;gap:0}
+ .friends-public-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+ .friends-code-card{flex-wrap:wrap;padding:14px;gap:9px}
+ .friends-code-card>button{width:100%}
+ .friends-section{padding:13px}
+ .friends-search-form>div{flex-wrap:wrap}
+ .friends-search-form input{flex:1 1 100%}
+ .friends-search-form button{flex:1 1 100%}
+ .friends-grid{grid-template-columns:1fr}
+ .friends-public-stats{gap:6px}
+ .friends-public-stats>div{padding:10px}
+ .friends-public-profile{padding:14px}
+}
