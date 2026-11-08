@@ -14,7 +14,7 @@ const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
    `return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},
   setTestCurrent:c=>{current=c;},
-  sendQuestionReport,toggleReport,
+  sendQuestionReport,toggleReport,refreshLiveRewards,activateLiveRewards,showLiveRewardReceipt,
   getState:()=>({historyUnread,historyItems,me,game,current})};\n})();`);
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
@@ -45,6 +45,8 @@ function instance(uid, initiallyFinished=true){
   const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Guess the Game',
     visibilityState:'visible',getElementById:get,createElement:tag=>new E(tag)};
   const intervals=[],listeners={};const reads=new Map(),archived=new Map(),rpcCalls=[],reportCalls=[];
+  const rewards={ok:true,available:true,enabled:false,xp:0,level:1,
+    shards:71,crowns:52,paid_today:0,daily_limit:8};
   function entries(){
     const seen=reads.get(challenge)||false;
     return [{
@@ -65,6 +67,14 @@ function instance(uid, initiallyFinished=true){
     auth:{getSession:async()=>({data:{session:{user:{id:uid}}},error:null})},
     rpc:async(name,args)=>{
       rpcCalls.push(name);
+      if(name==='arcade_verified_rewards_status'){
+        return {data:{...rewards},error:null};
+      }
+      if(name==='arcade_verified_rewards_enroll'){
+        assert.deepEqual(args,{p_ack_legacy_freeze:true});
+        rewards.enabled=true;
+        return {data:{...rewards,legacy_import_frozen:true},error:null};
+      }
       if(name==='arcade_async_challenge_history'){
         assert.equal(args.p_limit,40);
         assert.equal(args.p_offset,0);
@@ -101,6 +111,7 @@ function instance(uid, initiallyFinished=true){
     publishableKey:'mock_publishable',storageKey:'mock_login'},
     supabase:{createClient:()=>api},
     location:{href:'https://foxey-cz.github.io/GuessTheGame-Web/secure-quiz-beta.html'},
+    confirm:()=>true,
     addEventListener:(name,callback)=>{listeners[name]=callback;},
     setInterval:(callback,ms)=>{intervals.push({callback,ms});return intervals.length;}
   };
@@ -108,7 +119,7 @@ function instance(uid, initiallyFinished=true){
   const navigator={onLine:true,clipboard:{writeText:async()=>{}}};
   const app=new Function('window','document','navigator','localStorage','crypto','URL',script)(
     win,doc,navigator,browserStorage,{randomUUID:()=>challenge},URL);
-  return {app,get,doc,intervals,listeners,rpcCalls,reads,archived,reportCalls,
+  return {app,get,doc,intervals,listeners,rpcCalls,reads,archived,reportCalls,rewards,
     finishChallenge:()=>{isFinished=true;}};
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
@@ -135,6 +146,18 @@ async function main(){
   assert.ok(first.doc.title.startsWith('(1)'));
   assert.equal(first.app.getState().historyItems.length,2);
   assert.equal(first.get('historyList').children.length,2);
+  assert.ok(first.get('liveRewardsSummary').textContent.includes('Testovací'));
+  assert.equal(first.get('liveRewardsEnable').hidden,false);
+  await first.app.activateLiveRewards();await settle();
+  assert.equal(first.rewards.enabled,true);
+  assert.ok(first.get('liveRewardsSummary').textContent.includes('Aktivní'));
+  assert.equal(first.get('liveRewardsEnable').hidden,true);
+  first.app.showLiveRewardReceipt({
+    ok:true,credited:true,xp:80,shards:6,crowns:1,level:1,xp_total:80
+  },'');
+  assert.ok(first.get('liveRewardSummary').textContent.includes('+80 XP'));
+  assert.equal(first.get('noReward').hidden,true);
+  assert.ok(!first.rpcCalls.includes('arcade_sync_legacy'));
   // The bell is ALWAYS clickable during the active quiz. Viewing the shared
   // inbox must not discard the round, answer choices or pending RPC state.
   const activeRound={id:challenge,idx:5,finished:false,resultShown:false,
@@ -227,6 +250,6 @@ async function main(){
   assert.equal(second.get('historyBell').attributes['aria-label'],'My challenges; unread results: 0');
   assert.ok(!first.rpcCalls.includes('arcade_verify_progress_shadow'));
   assert.ok(!second.rpcCalls.includes('arcade_sync_legacy'));
-  console.log('PASS: secure quiz notification archive and restore, no lost game, independent read receipts');
+  console.log('PASS: secure quiz notifications + real reward opt-in UI, isolated history and account balances');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
