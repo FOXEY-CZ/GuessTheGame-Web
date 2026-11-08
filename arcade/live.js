@@ -15,7 +15,7 @@ function btn(label,cb,cls='secondary',disabled=false){
   e.addEventListener('click',cb);return e;
 }
 let api=null,uid=null,epoch=0,page='home',busy=false,activeId=null,active=null;
-let snapshot=null,loadingDashboard=false,loadingState=false,lastDashboard=0,lastPing=0;
+let snapshot=null,loadingDashboard=false,loadingState=false,loadingStateId=null,lastDashboard=0,lastPing=0;
 let navigate=null,previousInvites=-1;
 const people=()=>Array.isArray(snapshot?.friends)?snapshot.friends:[];
 const matches=()=>Array.isArray(snapshot?.matches)?snapshot.matches:[];
@@ -89,9 +89,17 @@ function renderArena(){
   const arena=$('liveArena'),controls=$('liveArenaControls'),question=$('liveQuestion'),options=$('liveOptions');
   if(!arena||!controls||!question||!options)return;
   const m=active;
-  arena.classList.toggle('hidden',!m);
+  // Keep the arena visible while its participant-only state is loading.
+  arena.classList.toggle('hidden',!m&&!activeId);
   controls.replaceChildren();question.replaceChildren();options.replaceChildren();
-  if(!m)return;
+  if(!m){
+    if(activeId){
+      text('liveArenaOpponent','');
+      text('liveArenaStatus',tr('☁️ Načítám lobby…','☁️ Loading lobby…'));
+      text('liveCountdown','');text('liveRound','');
+    }
+    return;
+  }
   const host=m.role==='host';
   text('liveArenaOpponent',tr('Soupeř: ','Opponent: ')+label(m.opponent));
   text('liveScoreHost',String(host?m.host_score:m.guest_score));
@@ -173,8 +181,10 @@ async function refreshDashboard(force=false){
   finally{loadingDashboard=false;}
 }
 async function refreshState(){
-  if(!activeId||!api||!uid||loadingState)return;
-  loadingState=true;
+  if(!activeId||!api||!uid)return;
+  // A pending fetch for another match must not swallow an explicit lobby open.
+  if(loadingState&&loadingStateId===activeId)return;
+  loadingState=true;loadingStateId=activeId;
   const owner=uid,stamp=epoch,id=activeId;
   try{
     const m=await call('arcade_live_state',{p_match_id:id});
@@ -184,14 +194,29 @@ async function refreshState(){
         void refreshDashboard(true);
     }
   }catch(e){
-    if(isCurrent(owner,stamp)&&activeId===id)status(tr('⚠️ Stav souboje: ','⚠️ Match status: ')+safeError(e));
-  }finally{loadingState=false;}
+    if(isCurrent(owner,stamp)&&activeId===id){
+      const error=tr('⚠️ Lobby se nepodařilo načíst: ','⚠️ Could not load lobby: ')+safeError(e);
+      status(error);text('liveArenaStatus',error);
+    }
+  }finally{
+    if(loadingStateId===id){loadingState=false;loadingStateId=null;}
+  }
 }
 async function openMatch(id,doNav=true){
-  if(!UUID.test(id)||!uid)return;
-  activeId=id;active=null;renderArena();
+  if(!UUID.test(id)||!uid){
+    status(tr('⚠️ Pro otevření lobby se přihlas.','⚠️ Sign in to open the lobby.'));
+    return false;
+  }
+  activeId=id;active=null;
   if(doNav)navigate?.('community');
+  renderArena();
+  // The arena is below the friend list. The old bell action opened it off-screen.
+  // Reveal it immediately, not after a possibly slow authenticated RPC.
+  const arena=$('liveArena');
+  arena?.scrollIntoView?.({behavior:'smooth',block:'start'});
+  arena?.focus?.({preventScroll:true});
   await refreshState();
+  return active?.match_id===id;
 }
 async function invite(friendId){
   if(!uid||!UUID.test(friendId)||busy)return;
@@ -234,7 +259,7 @@ function connect(client,user){
   const next=user?.id||null;
   if(next!==uid){
     epoch++;snapshot=null;active=null;activeId=null;previousInvites=-1;lastDashboard=0;lastPing=0;
-    loadingDashboard=false;loadingState=false;busy=false;
+    loadingDashboard=false;loadingState=false;loadingStateId=null;busy=false;
   }
   api=client||null;uid=next;
   renderList();renderArena();
