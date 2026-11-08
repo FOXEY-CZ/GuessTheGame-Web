@@ -16,6 +16,7 @@ const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
   setTestCurrent:c=>{current=c;},
   sendQuestionReport,toggleReport,refreshLiveRewards,showLiveRewardReceipt,finish,
   openGameAchievements,closeGameAchievements,refreshGameAchievements,
+  openGameMissions,closeGameMissions,refreshGameMissions,
   getState:()=>({historyUnread,historyItems,me,game,current})};\n})();`);
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
@@ -97,6 +98,20 @@ function instance(uid, initiallyFinished=true){
       if(name==='arcade_verified_rewards_reconcile'){
         assert.deepEqual(args,{p_limit:10});
         return {data:{ok:true,recovered:0,failed:0},error:null};
+      }
+      if(name==='arcade_global_missions'){
+        return {data:{ok:true,daily_start:'2026-11-08',
+          weekly_start:'2026-11-02',new_rewards:[],
+          missions:[{code:'daily_play',period:'daily',icon:'🎮',
+            name_cs:'První partie',name_en:'First Game',
+            description_cs:'Dohraj jednu hru.',description_en:'Finish one game.',
+            target:1,progress:0,reward_shards:5,reward_crowns:0,
+            reward_chests:0,completed:false},
+          {code:'weekly_marathon',period:'weekly',icon:'🔥',
+            name_cs:'Maratonec',name_en:'Marathon',
+            description_cs:'Dohraj 20 her.',description_en:'Finish 20 games.',
+            target:20,progress:3,reward_shards:0,reward_crowns:0,
+            reward_chests:1,completed:false}]},error:null};
       }
       if(name==='arcade_global_achievements'){
         return {data:{ok:true,xp:390,level:4,achievements:[{
@@ -209,6 +224,21 @@ async function main(){
   },'');
   assert.equal(first.get('achievementUnlockBanner').hidden,false);
   assert.ok(first.get('achievementUnlockDescription').textContent.includes('Bronzová liška'));
+  assert.ok(html.includes('id="missionsButton"'));
+  first.app.openGameMissions();await settle();
+  assert.equal(first.get('missionsOverlay').hidden,false);
+  assert.equal(first.get('gameDailyMissions').children.length,1);
+  assert.equal(first.get('gameWeeklyMissions').children.length,1);
+  assert.equal(first.get('missionHeaderCount').textContent,'0/2');
+  first.app.closeGameMissions();
+  assert.equal(first.get('missionsOverlay').hidden,true);
+  first.app.showLiveRewardReceipt({
+    ok:true,credited:true,xp:90,shards:5,crowns:0,level:5,xp_total:480,
+    new_missions:[{code:'daily_play',icon:'🎮',name_cs:'První partie',
+      name_en:'First Game',shards:5,crowns:0,free_chests:0}]
+  },'');
+  assert.equal(first.get('missionUnlockBanner').hidden,false);
+  assert.ok(first.get('missionUnlockDescription').textContent.includes('První partie'));
   assert.ok(!first.rpcCalls.includes('arcade_sync_legacy'));
   // The bell is ALWAYS clickable during the active quiz. Viewing the shared
   // inbox must not discard the round, answer choices or pending RPC state.
