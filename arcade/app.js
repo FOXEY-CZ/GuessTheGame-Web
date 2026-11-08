@@ -552,6 +552,7 @@
     // Switching sections must never reload the active game iframe.
     window.FOXEY_ARCADE_UI2?.onPage(page);
     window.FOXEY_ARCADE_MISSIONS?.onPage(page);
+    window.FOXEY_ARCADE_SOCIAL?.onPage(page);
     // Supabase's implicit password-recovery callback carries short-lived
     // tokens in the URL fragment. Never overwrite it before Auth consumes it.
     const authHash=new URLSearchParams(location.hash.slice(1));
@@ -767,6 +768,8 @@
       catch(err){console.warn('FOXEY challenge dashboard unavailable',err);}
       try{window.FOXEY_ARCADE_MISSIONS?.connect(supa,user);}
       catch(err){console.warn('FOXEY mission dashboard unavailable',err);}
+      try{window.FOXEY_ARCADE_SOCIAL?.connect(supa,user);}
+      catch(err){console.warn('FOXEY social dashboard unavailable',err);}
       // If the user directly opened the playable route, reload the iframe
       // under the authenticated identity instead of leaving it in Guest mode.
       if(location.hash==='#play')go('play');
@@ -866,6 +869,7 @@
   }
   // Explicitly connect existing SPA router to the safe mobile UI layer.
   window.FOXEY_ARCADE_UI2?.setNavigation(go);
+  window.FOXEY_ARCADE_SOCIAL?.setNavigation(go);
   document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',event=>{
     event.preventDefault();
     go(button.dataset.page);
