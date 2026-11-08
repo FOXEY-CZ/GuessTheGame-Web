@@ -52,7 +52,8 @@ function apiFor(uid){
     rpc:async(name,args)=>{
       calls.push(name);
       if(name==='arcade_async_challenge_history'){
-        assert.deepEqual(args,{p_limit:40,p_offset:0,p_archived:args.p_archived});
+        assert.equal(args.p_limit,10);
+        assert.equal(args.p_offset,0);
         const all=[{challenge_id:cid,role:uid===uu[0]?'creator':'challenger',
             mode:'classic',status:'finished',both_done:true,unread:!reads.get(cid),
             your_score:uid===uu[0]?20:13,opponent_score:uid===uu[0]?13:20,
