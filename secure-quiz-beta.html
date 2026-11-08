@@ -364,6 +364,16 @@
    .game-friend-actions{width:100%}
    .game-friend-actions button{flex:1 1 110px}
   }
+
+  .game-hidden-history{margin:10px 0 13px;padding:7px 13px;
+    border:1px solid #496185;background:#172844;border-radius:12px}
+  .game-hidden-history summary{cursor:pointer;min-height:33px;align-content:center;
+    font-size:.81rem;color:#ccd8f0}
+  .game-hidden-history button{min-height:38px;padding:7px 11px;font-size:.8rem}
+  .game-hidden-history p{margin:6px 0}
+  .history-overlay-toolbar #gameBellHelp{flex:1 1 220px;margin:0}
+  .game-social-bell .history-actions button:last-child{flex:0 0 42px;
+    font-size:1.2rem;padding:7px;min-width:42px}
 </style>
 </head>
 <body>
@@ -674,7 +684,15 @@
       <button id="historyOverlayClose" type="button" aria-label="Zavřít oznámení">✕</button>
     </div>
     <p id="historyOverlayNotice" class="async-help" role="status" aria-live="polite"></p>
-    <div class="history-toolbar history-overlay-toolbar"><button id="historyOverlayArchiveToggle" type="button">📦 Archiv</button><button id="historyOverlayRefresh" type="button">🔄 Obnovit</button></div>
+    <div class="history-toolbar history-overlay-toolbar">
+      <p id="gameBellHelp" class="async-help">✓ Přijmout nebo Zobrazit · ✕ pouze skryje upozornění.</p>
+      <button id="historyOverlayRefresh" type="button">↻ Obnovit</button>
+    </div>
+    <details class="game-hidden-history">
+      <summary id="gameHiddenHistoryTitle">🕘 Starší a skrytá oznámení</summary>
+      <p class="async-help" id="gameHiddenHistoryHint">Skrytá upozornění lze obnovit. Skrytí není odmítnutí výzvy.</p>
+      <button id="historyOverlayArchiveToggle" type="button">Zobrazit skrytá</button>
+    </details>
     <section class="game-social-bell" aria-labelledby="gameSocialTitle">
       <h3 id="gameSocialTitle">👥 Přátelé a pozvánky</h3>
       <div id="gameSocialList" class="history-list"></div>
@@ -1064,7 +1082,8 @@
   let historyItems=[],historyUnread=0,historyLoading=false;
   let historyArchived=false,historyHasMore=false,historyPageOffset=0;
   let gameSocialItems=[],gameSocialUnread=0,gameSocialArchived=false,
-      gameSocialOffset=0,gameSocialHasMore=false,gameSocialLoading=false,gameSocialSeq=0;
+      gameSocialOffset=0,gameSocialHasMore=false,gameSocialLoading=false,gameSocialSeq=0,
+      gameSocialResponding=false;
   const HISTORY_PAGE_SIZE=10;
   const soloModes=['classic','mystery','daily','easy','medium','hard'];
   let soloProgressByMode=Object.create(null),soloLoading=false;
@@ -2130,6 +2149,39 @@
   // Friends share this bell with game results, but use separate owner-scoped
   // server notifications and finite 10-item pages. All links open in a NEW tab
   // so checking a request never clears the current quiz run.
+  async function respondGameSocial(entry,accept){
+    if(!me||!api||gameSocialResponding||!uuidPattern.test(entry.subject_id))return;
+    if(!['friend_request','live_invite'].includes(entry.kind))return;
+    const owner=me.id;gameSocialResponding=true;
+    try{
+      const name=entry.kind==='friend_request'?'arcade_friend_respond':'arcade_live_respond';
+      const args=entry.kind==='friend_request'?
+        {p_request_id:entry.subject_id,p_accept:accept}:
+        {p_match_id:entry.subject_id,p_accept:accept};
+      const {data,error}=await api.rpc(name,args);
+      if(error||data?.ok!==true)throw Error(error?.message||'social_response_failed');
+      if(me?.id!==owner)return;
+      await markGameSocialSeen(entry.notification_id);
+      if(entry.kind==='live_invite'&&accept){
+        try{
+          if(window.parent&&window.parent!==window){
+            window.parent.postMessage({
+              type:'foxey-arcade:open-live-match',match_id:entry.subject_id
+            },window.location.origin);
+          }else{
+            const url=new URL('./arcade/',window.location.href);
+            url.searchParams.set('live',entry.subject_id);url.hash='community';
+            window.location.assign(url.toString());
+          }
+        }catch(_){}
+      }
+      void refreshGameSocial();
+    }catch(err){
+      if(me?.id===owner)
+        $('historyOverlayNotice').textContent=(lang==='en'?'⚠️ Could not respond: ':
+          '⚠️ Odpověď se nepodařila: ')+errorText(err);
+    }finally{gameSocialResponding=false;}
+  }
   function renderGameSocial(){
     const valid=Array.isArray(gameSocialItems)?gameSocialItems:[];
     const box=$('gameSocialList');
@@ -2210,11 +2262,26 @@
         link.href=url.toString();link.target='_blank';link.rel='noopener noreferrer';
         link.addEventListener('click',()=>{void markGameSocialSeen(entry.notification_id);});
         if(entry.kind!=='friend_challenge'||entry.challenge_ready)actions.append(link);
+        if(!gameSocialArchived&&(entry.kind==='friend_request'||entry.kind==='live_invite')){
+          const yes=document.createElement('button');yes.type='button';
+          yes.textContent=lang==='en'?'✓ Accept':'✓ Přijmout';
+          yes.disabled=gameSocialResponding;
+          yes.addEventListener('click',()=>void respondGameSocial(entry,true));
+          actions.append(yes);
+          if(entry.kind==='friend_request'){
+            const no=document.createElement('button');no.type='button';
+            no.textContent=lang==='en'?'Decline':'Odmítnout';
+            no.disabled=gameSocialResponding;
+            no.addEventListener('click',()=>void respondGameSocial(entry,false));
+            actions.append(no);
+          }
+        }
         const archive=document.createElement('button');archive.type='button';
-        archive.textContent=gameSocialArchived?'↩':'📦';
+        archive.textContent=gameSocialArchived?'↩':'✕';
         archive.setAttribute('aria-label',gameSocialArchived?
           (lang==='en'?'Restore notification':'Obnovit upozornění'):
-          (lang==='en'?'Archive notification':'Archivovat upozornění'));
+          (lang==='en'?'Hide notification (does not decline invite)':
+            'Skrýt upozornění (neodmítá pozvánku)'));
         archive.addEventListener('click',()=>void archiveGameSocial(entry.notification_id,!gameSocialArchived));
         actions.append(archive);
         card.append(heading,message,actions);
@@ -2231,6 +2298,14 @@
           (lang==='en'?'Next page →':'Další stránka →');
       }
     }
+    $('gameBellHelp').textContent=lang==='en'?
+      '✓ Accept or View · X only hides a notification.':
+      '✓ Přijmout nebo Zobrazit · ✕ pouze skryje upozornění.';
+    $('gameHiddenHistoryTitle').textContent=lang==='en'?
+      '🕘 Older and hidden notifications':'🕘 Starší a skrytá oznámení';
+    $('gameHiddenHistoryHint').textContent=lang==='en'?
+      'Hidden notices can be restored. Hiding is not declining an invite.':
+      'Skrytá upozornění lze obnovit. Skrytí není odmítnutí výzvy.';
     $('gameSocialTitle').textContent=lang==='en'?'👥 Friends and invites':'👥 Přátelé a pozvánky';
     $('gameHistoryTitle').textContent=lang==='en'?'⚔️ Matches and results':'⚔️ Zápasy a výsledky';
   }
