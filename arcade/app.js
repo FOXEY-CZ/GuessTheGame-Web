@@ -863,6 +863,12 @@
       user=null;profile=null;closeGameOnIdentityChange();go('home');
       try{window.FOXEY_ARCADE_NOTIFICATIONS?.connect(supa,null);}
       catch(err){console.warn('FOXEY notifications logout cleanup failed',err);}
+      try{window.FOXEY_ARCADE_SOCIAL?.connect(supa,null);}
+      catch(err){console.warn('FOXEY friends logout cleanup failed',err);}
+      try{window.FOXEY_ARCADE_UI2?.connect(supa,null);}
+      catch(err){console.warn('FOXEY challenges logout cleanup failed',err);}
+      try{window.FOXEY_ARCADE_MISSIONS?.connect(supa,null);}
+      catch(err){console.warn('FOXEY missions logout cleanup failed',err);}
       message('🎮 Odhlášeno. Můžeš hrát jako host.');
     }catch(_){message('⚠️ Odhlášení se nezdařilo.');}
     finally{busy=false;render();}
