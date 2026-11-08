@@ -56,6 +56,10 @@ jobs:
           node tests/arcade-friends-client.cjs
           node --check tests/arcade-live-client.cjs
           node tests/arcade-live-client.cjs
+          node --check tests/arcade-game-fullscreen-client.cjs
+          node tests/arcade-game-fullscreen-client.cjs
+          node --check tests/secure-game-friend-picker-client.cjs
+          node tests/secure-game-friend-picker-client.cjs
           node --check tests/arcade-rematch-two-players-client.cjs
           node tests/arcade-rematch-two-players-client.cjs
           node --check tests/arcade-series-two-player-client.cjs
