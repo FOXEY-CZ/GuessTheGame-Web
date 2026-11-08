@@ -317,7 +317,8 @@
     <section class="page hidden" id="page-challenges">
       <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
         <button type="button" data-page="community" data-friends-view="people" class="arcade-social-tab">👥 Přátelé</button>
-        <button type="button" data-social-live class="arcade-social-tab">⚡ Živé souboje</button>
+        <button type="button" data-social-chat class="arcade-social-tab">💬 Chat <span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
+        <button type="button" data-social-live class="arcade-social-tab">⚡ Souboje</button>
         <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy</button>
       </nav>
       <div class="page-intro challenge-page-intro">
@@ -358,7 +359,8 @@
     <section class="page hidden" id="page-community">
       <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
         <button type="button" data-page="community" data-friends-view="people" class="arcade-social-tab">👥 Přátelé</button>
-        <button type="button" data-social-live class="arcade-social-tab">⚡ Živé souboje</button>
+        <button type="button" data-social-chat class="arcade-social-tab">💬 Chat <span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
+        <button type="button" data-social-live class="arcade-social-tab">⚡ Souboje</button>
         <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy</button>
       </nav>
       <div class="page-intro">
@@ -397,6 +399,44 @@
         <p class="small">Blokovaný hráč ti nemůže poslat novou žádost ani cílenou výzvu.</p>
         <div class="friends-grid" id="friendsBlockedList"></div>
       </details>
+      </div>
+      <div id="friendsPaneChat" class="friends-view-pane hidden">
+        <section class="arcade-chat-shell" aria-labelledby="chatTitle">
+          <div class="arcade-chat-heading">
+            <div><span class="eyebrow">FOXEY ARCADE · SOUKROMÉ ZPRÁVY</span>
+              <h2 id="chatTitle">💬 Zprávy s přáteli</h2>
+              <p class="small">Soukromý chat mezi přáteli, propojený s tvým Arcade účtem.</p></div>
+            <button type="button" class="secondary" id="chatRefresh">↻ Obnovit</button>
+          </div>
+          <p id="chatStatus" class="small" role="status" aria-live="polite">Přihlas se pro zprávy.</p>
+          <div class="arcade-chat-layout">
+            <aside class="arcade-chat-inbox" aria-labelledby="chatConversationsTitle">
+              <div class="arcade-chat-side-head"><h3 id="chatConversationsTitle">Konverzace</h3>
+                <span id="chatUnreadSummary" class="small"></span></div>
+              <div id="chatConversationList" class="arcade-chat-conversations"></div>
+            </aside>
+            <section class="arcade-chat-conversation" aria-label="Otevřený chat">
+              <div class="arcade-chat-conversation-head">
+                <button id="chatBack" class="secondary arcade-chat-back hidden" type="button">← Zpět</button>
+                <div class="arcade-chat-conversation-title">
+                  <h3 id="chatFriendName">Vyber si kamaráda</h3>
+                  <span id="chatFriendStatus" class="small">Zprávy vidíte jen vy dva.</span>
+                </div>
+                <button id="chatChallengeFriend" class="secondary hidden" type="button">⚔️ Vyzvat</button>
+              </div>
+              <button id="chatLoadOlder" class="secondary arcade-chat-load-older hidden" type="button">↑ Starší zprávy</button>
+              <div id="chatThread" class="arcade-chat-thread" role="log" aria-live="polite" aria-label="Historie konverzace">
+                <p class="arcade-chat-placeholder">Vyber kamaráda ze seznamu. Napsat můžeš jen potvrzeným přátelům.</p>
+              </div>
+              <form id="chatComposeForm" class="arcade-chat-composer hidden">
+                <label for="chatMessageInput" class="sr-only">Napsat zprávu</label>
+                <textarea id="chatMessageInput" rows="2" maxlength="1000" placeholder="Napiš zprávu…" aria-label="Zpráva pro kamaráda"></textarea>
+                <button id="chatSend" class="primary" type="submit">➤ Odeslat</button>
+              </form>
+              <p class="arcade-chat-info">Jen přátelé · max. 1 000 znaků · blokování je v profilu hráče.</p>
+            </section>
+          </div>
+        </section>
       </div>
       <div id="friendsPaneLive" class="friends-view-pane hidden">
       <section class="friends-section live-section" aria-labelledby="liveTitle">
@@ -667,6 +707,7 @@
 <script src="./notifications.js?v=arcade-immersive-friends-bell-20261108i"></script>
 <script src="./live.js?v=nickname-friends-game-shop-demo-20261108n"></script>
 <script src="./friends.js?v=friend-requests-bell-nick-only-20261109a"></script>
+<script src="./chat.js?v=chat-1-0-20261109a"></script>
 <script src="./ui2.js?v=arcade-community-shop-cancel-chest-20261108l"></script>
 <script src="./missions.js?v=rotating-missions-streaks-20261108a"></script>
 <div class="arcade-achievement-toast hidden" id="arcadeAchievementToast" role="status" aria-live="polite"></div>
