@@ -1002,6 +1002,14 @@
   });
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin || event.source!==el('gameFrame').contentWindow)return;
+    if(event.data?.type==='foxey-arcade:open-live-match'){
+      const id=event.data.match_id;
+      if(user&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)){
+        go('community');
+        void window.FOXEY_ARCADE_LIVE?.openMatch?.(id,false);
+      }
+      return;
+    }
     if(event.data?.type==='foxey-arcade:invite-live-friend'){
       // Navigation intent only; the authenticated live RPC still checks
       // friendship and blocks server-side. Never accept IDs from other frames.
