@@ -57,8 +57,8 @@ jobs:
             throw Error('Missing live sync notification integration');
           if(!html.includes('preview-3.6.html'))
             throw Error('No link to stable Guess the Game');
-          if(!js.includes("const GAME_URL = '../preview-auth-test.html'"))
-            throw Error('Arcade game must launch cloud-enabled preview');
+          if(!js.includes("const GAME_URL = '../secure-quiz-beta.html"))
+            throw Error('Arcade game must launch the secure quiz');
           if(!js.includes('closeGameOnIdentityChange'))
             throw Error('Arcade must unload the game after identity changes');
           if(!config.includes("sessionKey:'foxey.arcade.auth.v1'")||
