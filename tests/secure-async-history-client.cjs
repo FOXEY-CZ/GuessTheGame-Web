@@ -12,7 +12,7 @@ const raw=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(m=>m[1]).filter(Boolean).at(-1);
 const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
  .replace(/\}\)\(\);\s*$/,
-   `return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,\n  setTestGame:g=>{game=g;},
+   `return {refreshHistory,openHistoryResult,renderHistory,goToHistory,closeHistoryOverlay,cancelHistory,\n  setTestGame:g=>{game=g;},
   setTestCurrent:c=>{current=c;},
   sendQuestionReport,toggleReport,refreshLiveRewards,showLiveRewardReceipt,finish,
   openGameAchievements,closeGameAchievements,refreshGameAchievements,
@@ -43,7 +43,7 @@ class E {
   focus(){}select(){}scrollIntoView(){}
 }
 function instance(uid, initiallyFinished=true){
-  let isFinished=initiallyFinished,socialVisible=false,socialSeen=false;
+  let isFinished=initiallyFinished,socialVisible=false,socialSeen=false,cancelled=false;
   const elements=new Map();
   const get=id=>{if(!elements.has(id))elements.set(id,new E(id));return elements.get(id);};
   const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Guess the Game',
@@ -57,7 +57,9 @@ function instance(uid, initiallyFinished=true){
       challenge_id:challenge,role:uid===owner?'creator':'challenger',
       mode:'classic',created_at:'2026-11-07T20:00:00.000Z',
       expires_at:'2026-11-14T20:00:00.000Z',
-      both_done:isFinished,unread:isFinished&&!seen,status:isFinished?'finished':'waiting',
+      both_done:isFinished,unread:isFinished&&!seen,
+      status:cancelled?'cancelled':isFinished?'finished':'waiting',
+      cancelled, cancelled_by_me:cancelled,
       ...(isFinished?{your_score:uid===owner?10:7,opponent_score:uid===owner?7:10,
         winner:uid===owner?'you':'opponent'}:{})
     },{
@@ -158,6 +160,12 @@ function instance(uid, initiallyFinished=true){
       if(name==='arcade_quiz_report_question'){
         reportCalls.push(args);
         return {data:{ok:true,credited:false,already_reported:false,report_id:challenge},error:null};
+      }
+      if(name==='arcade_async_challenge_cancel'){
+        assert.equal(args.p_challenge_id,challenge);
+        assert.equal(isFinished,false,'finished challenge cannot be canceled');
+        cancelled=true;
+        return {data:{ok:true,cancelled:true,challenge_id:challenge},error:null};
       }
       if(name==='arcade_async_challenge_archive'){
         if(args.p_challenge_id!==challenge)throw Error('unexpected_archive_target');
@@ -390,6 +398,16 @@ async function main(){
   assert.equal(paid.get('finalScore').textContent,'90');
   assert.ok(paid.get('liveRewardSummary').textContent.includes('+90 XP'));
   assert.equal(paid.get('noReward').hidden,true);
-  console.log('PASS: secure quiz notifications + no-click auto-migration and real reward claim, isolated history');
+  // A genuinely unfinished challenge may be cancelled from in-game History.
+  // It disappears from active cards but its record remains in owner history.
+  const abandon=instance(owner,false);await settle();
+  assert.equal(abandon.app.getState().historyItems[0].status,'waiting');
+  await abandon.app.cancelHistory(challenge);await settle();await settle();
+  assert.ok(abandon.rpcCalls.includes('arcade_async_challenge_cancel'));
+  assert.equal(abandon.archived.get(challenge),true);
+  assert.ok(abandon.app.getState().historyItems.every(x=>x.challenge_id!==challenge));
+  assert.ok(abandon.get('historyDetail').textContent.includes('zrušena'));
+  assert.ok(!abandon.rpcCalls.includes('arcade_verified_rewards_claim'));
+  console.log('PASS: game bell, verified rewards, private history and confirmed non-destructive challenge cancel.');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
