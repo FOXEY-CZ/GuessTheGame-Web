@@ -1,5 +1,5 @@
-/* FOXEY Arcade UI 2.0 — presentation-only challenges, settings and mobile navigation.
- * Uses owner-scoped read-only challenge RPC. Never writes XP, wallet, saves or run state. */
+/* FOXEY Arcade UI 2.1 — shared Friends/Challenges hub and mobile navigation.
+ * Challenge cancel/hide use participant-only server RPC. Never modify XP/wallet or saved scores. */
 (() => {
   'use strict';
   const $=id=>document.getElementById(id);
@@ -8,6 +8,7 @@
   const validUUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   let api=null,userId=null,goPage=null,currentPage='home';
   let records=[],loading=false,revision=0,hasMore=false,ready=false,error='';
+  const pendingActions=new Set();
   let moreOpen=false;
   function setText(id,value){const e=$(id);if(e)e.textContent=value;}
   function make(tag,cls,value){
@@ -17,7 +18,7 @@
     return e;
   }
   function group(entry){
-    if(entry?.both_done||entry?.status==='finished'||entry?.status==='expired')return 'results';
+    if(entry?.both_done||['finished','expired','cancelled'].includes(entry?.status))return 'results';
     const mineDone=entry.role==='creator'?entry.creator_done===true:entry.challenger_done===true;
     return mineDone?'waiting':'play';
   }
@@ -28,6 +29,9 @@
   }
   function resultsLine(row){
     const mine=row.your_score,other=row.opponent_score;
+    if(row.status==='cancelled')return locale(
+      row.cancelled_by_me?'✕ Výzvu jsi zrušil.':'✕ Soupeř výzvu zrušil.',
+      row.cancelled_by_me?'✕ You cancelled this challenge.':'✕ Your opponent cancelled this challenge.');
     if(row.status==='expired'&&!row.both_done)
       return locale('Výzva vypršela. Historie zůstává uložená.','Challenge expired. History is still saved.');
     if(!row.both_done||!Number.isFinite(mine)||!Number.isFinite(other))
@@ -90,6 +94,61 @@
       if(uid===userId&&stamp===revision)button.disabled=false;
     }
   }
+  async function cancelChallenge(row,button){
+    if(!api||!userId||!validUUID.test(row.challenge_id)||
+       ['finished','expired','cancelled'].includes(row.status)||
+       row.both_done||pendingActions.has(row.challenge_id))return;
+    const confirmText=locale(
+      'Opravdu zrušit tuto výzvu? Soupeř uvidí, že skončila. Již získaný postup a odměny zůstanou zachované.',
+      'Cancel this challenge? Your opponent will see it was cancelled. Earned progress and rewards are kept.');
+    if(window.confirm?.(confirmText)!==true)return;
+    const owner=userId,stamp=revision;pendingActions.add(row.challenge_id);
+    button.disabled=true;button.textContent=locale('⏳ Ruším…','⏳ Cancelling…');
+    try{
+      const {data,error:rpcError}=await api.rpc('arcade_async_challenge_cancel',{
+        p_challenge_id:row.challenge_id
+      });
+      if(rpcError||data?.ok!==true||data?.cancelled!==true)
+        throw Error(rpcError?.message||'challenge_cancel_failed');
+      if(owner!==userId||stamp!==revision)return;
+      // Keep the cancelled receipt, but don't leave it in the active list.
+      const archived=await api.rpc('arcade_async_challenge_archive',{
+        p_challenge_id:row.challenge_id,p_archived:true
+      });
+      if(archived.error||archived.data?.archived!==true)
+        throw Error(archived.error?.message||'challenge_archive_failed');
+      if(owner!==userId||stamp!==revision)return;
+      await refreshChallenges();
+      window.FOXEY_ARCADE_NOTIFICATIONS?.refresh?.();
+      setText('challengeLaunchStatus',locale(
+        '✅ Výzva zrušena. Přesunuta do skryté historie; soupeř uvidí zrušení.',
+        '✅ Challenge cancelled and moved to hidden history. Opponent sees it was cancelled.'));
+    }catch(err){
+      if(owner===userId&&stamp===revision){
+        button.textContent=locale('⚠️ Zkusit znovu','⚠️ Retry');
+        setText('challengeLaunchStatus',locale(
+          '⚠️ Výzvu se nepodařilo zrušit nebo skrýt. Zkus obnovit přehled.',
+          '⚠️ Could not cancel or hide challenge. Refresh and try again.'));
+      }
+    }finally{
+      pendingActions.delete(row.challenge_id);
+      if(owner===userId&&stamp===revision){button.disabled=false;}
+    }
+  }
+  async function hideCancelled(row,button){
+    if(!api||!userId||row.status!=='cancelled'||
+       !validUUID.test(row.challenge_id))return;
+    const owner=userId,stamp=revision;button.disabled=true;
+    const result=await api.rpc('arcade_async_challenge_archive',{
+      p_challenge_id:row.challenge_id,p_archived:true
+    });
+    if(owner!==userId||stamp!==revision)return;
+    if(result.error||result.data?.archived!==true){
+      button.textContent=locale('⚠️ Zkusit znovu','⚠️ Retry');
+      button.disabled=false;return;
+    }
+    await refreshChallenges();
+  }
   function card(row,section){
     const article=make('article','challenge-dashboard-card');
     const heading=make('h3','', (row.role==='creator'?
@@ -99,6 +158,7 @@
     const message=make('p','challenge-card-status',
       section==='play'?locale('▶️ Můžeš pokračovat','▶️ Ready to resume'):
       section==='waiting'?locale('⏳ Čeká se na soupeře','⏳ Waiting for opponent'):
+      row.status==='cancelled'?locale('✕ Zrušeno','✕ Cancelled'):
       row.status==='expired'?locale('⌛ Vypršelo','⌛ Expired'):
       locale('🏁 Dokončeno','🏁 Completed'));
     const desc=make('p',section==='results'?'challenge-card-result':'',section==='results'?resultsLine(row):
@@ -131,6 +191,19 @@
       const open=make('button','secondary',locale('🔔 Stav výzvy','🔔 Challenge status'));
       open.type='button';open.addEventListener('click',openHistory);
       controls.append(open);
+    }
+    if((section==='play'||section==='waiting')&&
+       !['cancelled','finished','expired'].includes(row.status)){
+      const cancel=make('button','secondary challenge-cancel',
+        locale('✕ Zrušit výzvu','✕ Cancel challenge'));
+      cancel.type='button';cancel.addEventListener('click',()=>void cancelChallenge(row,cancel));
+      controls.append(cancel);
+    }
+    if(row.status==='cancelled'){
+      const hide=make('button','secondary challenge-cancel',
+        locale('✕ Skrýt do historie','✕ Hide in history'));
+      hide.type='button';hide.addEventListener('click',()=>void hideCancelled(row,hide));
+      controls.append(hide);
     }
     article.append(heading,message,desc,controls);
     return article;
@@ -243,6 +316,7 @@
     const nextId=user?.id||null;
     if(nextId!==userId){
       ++revision;records=[];ready=false;hasMore=false;error='';loading=false;
+      pendingActions.clear();
     }
     api=client||null;userId=nextId;
     renderChallenges();
