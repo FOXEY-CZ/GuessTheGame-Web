@@ -58,6 +58,14 @@
   .option.right{border-color:#49ccaa;background:#163d3f}.option.wrong{border-color:#eb7c91;background:#4a263b}
   .primary{background:linear-gradient(110deg,#8c7cff,#5e5ae0);border-color:#aaa1ff;box-shadow:0 5px 18px #28236966;min-height:55px}
   .primary:hover:not(:disabled){filter:brightness(1.09)}
+  .live-rewards{margin:15px 0 20px;padding:17px;border:1px solid #6386b5;
+    border-radius:17px;background:linear-gradient(140deg,#1a3447,#20284b)}
+  .live-rewards h3{margin:0 0 9px;color:#b5fff0;font-size:1.08rem}
+  .live-rewards p{margin:8px 0;line-height:1.5;overflow-wrap:anywhere}
+  .live-rewards-note{font-size:.86rem;color:#c7d5eb}
+  .live-rewards button{min-height:44px;margin-top:10px;padding:10px 14px}
+  .reward-receipt{text-align:center;background:linear-gradient(130deg,#173e3c,#27335b)}
+  #liveRewardsStatus{font-size:.85rem;color:#e8d4a3}
   .tools{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.tools button{flex:1 1 150px}
   .report-bar{text-align:right;margin:8px 0 12px}
   .report-toggle{font-size:.82rem;min-height:42px;padding:9px 14px;
@@ -219,6 +227,13 @@
   <section id="modePanel" class="panel hidden">
     <div class="label" id="modeEyebrow">SERVEROVÁ VOLBA OTÁZEK</div>
     <h2 id="modeTitle">Vyber režim</h2>
+    <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
+      <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
+      <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
+      <p id="liveRewardsLegacy" class="live-rewards-note">Aktivace je dobrovolná. Staré savy i zůstatky zůstanou.</p>
+      <button id="liveRewardsEnable" type="button" class="primary hidden">✅ Aktivovat ověřené odměny</button>
+      <p id="liveRewardsStatus" role="status" aria-live="polite"></p>
+    </section>
     <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
       <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
       <p id="resumeText" class="async-help">Server si pamatuje odpovědi a nápovědy. Můžeš bezpečně pokračovat.</p>
@@ -352,11 +367,15 @@
     <div class="label" id="resultLabel">OVĚŘENÝ TEST</div>
     <h2 id="resultTitle">Partie dokončena</h2>
     <div class="statgrid">
-      <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="finalScore">0</b><span>XP</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="finalScore">0</b><span id="finalScoreLabel">BODY</span></div>
       <div class="stat"><span class="stat-icon" aria-hidden="true">🎯</span><b id="finalCorrect">0</b><span id="finalCorrectLabel">SPRÁVNĚ</span></div>
       <div class="stat"><span class="stat-icon" aria-hidden="true">❤️</span><b id="finalLives">0</b><span id="finalLivesLabel">ŽIVOTY</span></div>
     </div>
     <div class="message" id="auditMessage"></div>
+    <section class="live-rewards reward-receipt hidden" id="liveRewardReceipt" aria-live="polite">
+      <h3 id="liveRewardTitle">🎁 Ověřené odměny</h3>
+      <p id="liveRewardSummary"></p>
+    </section>
     <section class="async-result hidden" id="asyncResult" aria-labelledby="asyncResultTitle">
       <h3 id="asyncResultTitle">⚔️ Serverová výzva</h3>
       <p id="asyncResultMessage" role="status" aria-live="polite"></p>
