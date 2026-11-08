@@ -13,6 +13,7 @@ on:
       - 'tests/arcade-ui2-navigation-client.cjs'
       - 'tests/arcade-friends-client.cjs'
       - 'tests/arcade-live-client.cjs'
+      - 'tests/arcade-rematch-two-players-client.cjs'
       - '.github/workflows/verify-arcade-public.yml'
   workflow_dispatch:
 
@@ -54,6 +55,8 @@ jobs:
           node tests/arcade-friends-client.cjs
           node --check tests/arcade-live-client.cjs
           node tests/arcade-live-client.cjs
+          node --check tests/arcade-rematch-two-players-client.cjs
+          node tests/arcade-rematch-two-players-client.cjs
           node --check arcade/config.js
           node - <<'NODE'
           const fs=require('node:fs');
