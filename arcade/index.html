@@ -27,7 +27,7 @@
       <span><strong>FOXEY <em>ARCADE</em></strong><small>Jeden účet. Spousta her.</small></span></a>
     <div class="topright"><span class="status" id="connectionStatus">Načítám účet…</span>
       <div class="headerwallet" id="headerWallet" aria-label="Globální účet FOXEY Arcade">
-        <span class="resource" title="Globální XP FOXEY Arcade">🦊 <b id="headerArcadeXp">—</b> XP</span>
+        <span class="resource header-xp-resource" title="Globální XP FOXEY Arcade">🦊 <b id="headerArcadeXp">—</b> XP</span>
         <span class="resource" title="Globální level FOXEY Arcade">🎖️ <b id="headerArcadeLevel">—</b></span>
         <span class="resource" title="Společné krystaly">💎 <b id="headerShards">—</b></span>
         <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
@@ -49,10 +49,10 @@
     <section class="page" id="page-home">
       <div class="hero">
         <span class="eyebrow">VÍTEJ V NOVÉM HERNÍM SVĚTĚ</span>
-        <h1>Hry jsou lepší <span>společně.</span></h1>
-        <p>Jeden profil, společné odměny a postupně stále více miniher. Začínáme Guess the Game!</p>
-        <div class="actions"><button class="primary" type="button" data-page="games">🎮 Prozkoumat hry</button>
-          <button class="secondary" type="button" data-page="account">👤 Můj účet</button></div>
+        <h1>Tvůj <span>herní domov.</span></h1>
+        <p>Pokračuj ve hře, prohlédni výzvy nebo sleduj svůj společný postup. Všechno na jednom místě.</p>
+        <div class="actions"><button class="primary" type="button" data-page="play">▶️ Hrát Guess the Game</button>
+          <button class="secondary" type="button" data-page="challenges">⚔️ Moje výzvy</button></div>
       </div>
       <section class="progresscard arcade-progress" aria-label="Globální profil FOXEY Arcade">
         <div class="progresscard-title"><div><span class="eyebrow">GLOBÁLNÍ PROFIL</span><h2>🦊 FOXEY Arcade</h2></div>
@@ -69,17 +69,10 @@
             <div class="global-level-fill" id="homeLevelFill"></div>
           </div>
         </div>
-        <p class="note">Jedno globální XP a jedna peněženka pro všechny hry. Za ověřené partie a úspěchy se odměny připisují automaticky.</p>
-      </section>
-      <section class="progresscard achievement-panel" aria-label="Globální achievementy">
-        <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
-          <button class="secondary" type="button" data-page="account">Všechny achievementy</button>
-        </div>
-        <p class="small" id="homeAchievementStatus" aria-live="polite">Načítám achievementy…</p>
-        <div class="achievement-grid" id="homeAchievementGrid"></div>
+        <p class="note">Společné XP, level a měny pro celý účet. Odměny se ukládají automaticky.</p>
       </section>
       <section class="progresscard" id="homeProgress" aria-label="Aktuální postup v Guess the Game">
-        <div class="progresscard-title"><div><span class="eyebrow">TVŮJ CLOUDOVÝ POSTUP</span><h2>🎮 Guess the Game</h2></div>
+        <div class="progresscard-title"><div><span class="eyebrow">TVÁ HRA</span><h2>🎮 Guess the Game</h2></div>
           <button class="secondary progressRefresh" type="button" data-action="refreshProgress" title="Znovu načíst z cloudu">↻ Aktualizovat</button></div>
         <p class="small" id="homeProgressStatus" aria-live="polite">Přihlas se, aby se načetly statistiky.</p>
         <div class="statgrid">
@@ -89,14 +82,15 @@
           <div class="stat hidden"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
           <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
         </div>
-        <p class="note">XP, level a rekordy jsou pouze pro Guess the Game. Krystaly a korunky najdeš v jedné společné peněžence nahoře.</p>
+        <p class="note">Historické statistiky Guess the Game. Skutečný globální level a společné měny jsou zobrazené výše.</p>
       </section>
-      <div class="sectionline"><h2>Tvůj herní domov</h2><span class="small">Základ platformy • vývojová verze</span></div>
-      <div class="threegrid">
-        <article class="tile"><div class="tileicon">👤</div><h3>Jeden účet</h3><p>Přihlášení platí pro FOXEY Arcade. Používáme stejné Supabase účty jako v testovací Guess the Game.</p></article>
-        <article class="tile"><div class="tileicon">💎</div><h3>Společná peněženka</h3><p>Krystaly a korunky jsou společné pro všechny minihry. V hlavním obchodě kupuješ motivy a otvíráš truhly.</p></article>
-        <article class="tile"><div class="tileicon">💬</div><h3>Komunita</h3><p>Přátelé, soukromé zprávy a společná lobby přijdou postupně. Zatím je chat vypnutý.</p></article>
-      </div>
+      <section class="progresscard achievement-panel" aria-label="Globální achievementy">
+        <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
+          <button class="secondary" type="button" data-page="account">Všechny achievementy</button>
+        </div>
+        <p class="small" id="homeAchievementStatus" aria-live="polite">Načítám achievementy…</p>
+        <div class="achievement-grid" id="homeAchievementGrid"></div>
+      </section>
     </section>
 
     <section class="page hidden" id="page-games">
