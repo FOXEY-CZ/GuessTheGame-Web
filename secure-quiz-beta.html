@@ -369,6 +369,7 @@
     </section>
     <p class="lead" id="noReward">Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.</p>
     <div class="bottom">
+      <button id="auditRetryButton" class="secondary hidden" type="button">🔄 Znovu ověřit výsledek</button>
       <button id="againButton" class="primary" type="button">HRÁT ZNOVU</button>
       <a href="./arcade/" target="_top" id="backArcade">← ZPĚT DO ARCADE</a>
     </div>
@@ -462,6 +463,7 @@
       reportSend:'📨 Odeslat hlášení',reportCancel:'Zrušit',
       reportChooseReason:'Vyber nejprve typ problému.',
       reportSent:'✅ Děkuju! Hlášení bylo uloženo k této otázce.',
+      auditRetryButton:'🔄 Znovu ověřit výsledek',
       reportAlready:'✅ Tuhle otázku jsi už nahlásil.',
       reportError:'⚠️ Hlášení se nepodařilo odeslat: {error}',
       historyTitle:'🔔 Moje výzvy',historyRefresh:'🔄 Obnovit',
@@ -565,6 +567,7 @@
       reportSend:'📨 Send report',reportCancel:'Cancel',
       reportChooseReason:'Please choose an issue type.',
       reportSent:'✅ Thanks! This question has been reported.',
+      auditRetryButton:'🔄 Retry result verification',
       reportAlready:'✅ You already reported this question.',
       reportError:'⚠️ Could not send report: {error}',
       historyTitle:'🔔 My challenges',historyRefresh:'🔄 Refresh',
@@ -663,6 +666,7 @@
       const element=$(id);if(element)element.textContent=T(key);
     }
     localizeReport();
+    $('auditRetryButton').textContent=T('auditRetryButton');
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
@@ -690,6 +694,7 @@
     visible('bootPanel',false);
     visible('modePanel',!!me);visible('signIn',!me);
     visible('gamePanel',false);visible('resultPanel',false);
+    visible('auditRetryButton',false);
     status(me?T('statusReady'):T('statusLogin'),me?'ok':'');
     renderResumePrompt();
     if(me){
@@ -1548,7 +1553,8 @@
   async function finish(){
     if(!game||busy)return;
     lock(true);status(T('statusQuestion'));
-    let confirmed=false, challengeState=null;
+    $('auditRetryButton').disabled=true;
+    let confirmed=false, challengeState=null,finishError='';
     try{
       const completed=await api.rpc('arcade_verify_complete',{
         p_run_id:game.id,p_answers:game.answers
@@ -1574,13 +1580,17 @@
       }
       status(confirmed?T('auditOk'):T('auditFail'),confirmed?'ok':'error');
     }catch(err){
-      status(T('auditError')+' ('+errorText(err)+')','error');
+      finishError=errorText(err);
+      status(T('auditError')+' ('+finishError+')','error');
     }
     $('resultArt').textContent=game.lives===0?'💔':game.correct>=game.ids.length?'🏆':'🎮';
     $('finalScore').textContent=String(game.score);
     $('finalCorrect').textContent=String(game.correct)+' / '+game.ids.length;
     $('finalLives').textContent=String(game.lives);
-    $('auditMessage').textContent=confirmed?T('auditOk'):T('auditFail');
+    $('auditMessage').textContent=confirmed?T('auditOk'):
+      T('auditFail')+(finishError?' ('+finishError+')':'');
+    visible('auditRetryButton',!confirmed);
+    $('auditRetryButton').disabled=false;
     visible('asyncResult',Boolean(game.challenge));
     if(game.challenge){
       showAsyncResult(challengeState?
@@ -1679,6 +1689,7 @@
     else if(pending.type==='reveal')void reveal();
     else if(pending.type==='answer')void answer(pending.choice);
   });
+  $('auditRetryButton').addEventListener('click',()=>void finish());
   $('againButton').addEventListener('click',modeScreen);
   $('lang').addEventListener('click',()=>{
     lang=lang==='cs'?'en':'cs';
