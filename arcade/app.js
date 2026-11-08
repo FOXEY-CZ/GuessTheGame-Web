@@ -44,7 +44,7 @@
   // The legacy quiz stays addressable for old local progress/invite links.
   // Secure quiz keeps its private answer bank; real rewards are opt-in,
   // paid only after server-confirmed action traces and shared wallet locks.
-  const GAME_URL = '../secure-quiz-beta.html?v=arcade-immersive-friends-bell-20261108j';
+  const GAME_URL = '../secure-quiz-beta.html?v=arcade-community-shop-cancel-chest-20261108l';
   const GOOGLE_OAUTH_READY = cfg?.googleOAuthEnabled === true;
   // Remember only whether this page was opened by an OAuth callback, never
   // read, store or log the returned access/refresh token values.
