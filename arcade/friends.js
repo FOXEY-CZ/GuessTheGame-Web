@@ -44,12 +44,20 @@
   }
   function status(message){setText('friendsStatus',message);}
   function openPane(which){
-    if(!['people','live'].includes(which))return;
+    if(!['people','chat','live'].includes(which))return;
     friendsPane=which;
     $('friendsPanePeople')?.classList.toggle('hidden',which!=='people');
+    $('friendsPaneChat')?.classList.toggle('hidden',which!=='chat');
     $('friendsPaneLive')?.classList.toggle('hidden',which!=='live');
+    window.FOXEY_ARCADE_CHAT?.onPaneActive?.(
+      which==='chat'&&currentPage==='community');
     for(const btn of document.querySelectorAll?.('.arcade-social-tabs [data-social-live]')||[]){
       const active=which==='live'&&currentPage==='community';
+      btn.classList.toggle('is-active',active);
+      btn.setAttribute('aria-current',active?'page':'false');
+    }
+    for(const btn of document.querySelectorAll?.('.arcade-social-tabs [data-social-chat]')||[]){
+      const active=which==='chat'&&currentPage==='community';
       btn.classList.toggle('is-active',active);
       btn.setAttribute('aria-current',active?'page':'false');
     }
@@ -62,6 +70,12 @@
   function showLive(){
     if(currentPage!=='community')navigate?.('community');
     openPane('live');
+  }
+  function showChat(friendId=null){
+    if(currentPage!=='community')navigate?.('community');
+    openPane('chat');
+    if(validId.test(friendId||''))
+      void window.FOXEY_ARCADE_CHAT?.openFriend?.(friendId);
   }
   function onChange(){window.FOXEY_ARCADE_NOTIFICATIONS?.refresh?.();}
   async function call(name,args){
@@ -130,8 +144,8 @@
         ()=>void mutate('arcade_friend_remove',{p_user_id:p.user_id},
           tr('Žádost zrušena.','Request canceled.'))));
     }else if(kind==='friend'){
-      // Keep friend cards focused: live duels have their own tab, and
-      // removal is an advanced action on the public profile.
+      buttons.append(action(tr('💬 Napsat','💬 Message'),
+        ()=>showChat(p.user_id),'primary'));
       buttons.append(action(tr('⚔️ Vyzvat','⚔️ Challenge'),
         ()=>void invite(p.user_id),'primary'));
     }else if(kind==='blocked'){
@@ -271,6 +285,8 @@
     const waiting=safeList(dashboard?.outgoing).some(x=>x.profile?.user_id===p.user_id);
     const incoming=safeList(dashboard?.incoming).some(x=>x.profile?.user_id===p.user_id);
     if(connected){
+      buttons.append(action(tr('💬 Napsat','💬 Message'),
+        ()=>showChat(p.user_id),'primary'));
       buttons.append(action(tr('⚔️ Vyzvat přítele','⚔️ Challenge friend'),
         ()=>void invite(p.user_id),'primary'));
       buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),()=>{
@@ -614,6 +630,9 @@
     }
   }
   function setNavigation(cb){if(typeof cb==='function')navigate=cb;}
+  for(const btn of document.querySelectorAll?.('[data-social-chat]')||[]){
+    btn.addEventListener('click',()=>showChat());
+  }
   for(const btn of document.querySelectorAll?.('[data-social-live]')||[]){
     btn.addEventListener('click',()=>showLive());
   }
@@ -650,7 +669,8 @@
   },45000);
   window.FOXEY_ARCADE_SOCIAL=Object.freeze({
     connect,onPage,setNavigation,refresh,refreshInbox,renderInbox,
-    setBellArchived,openPane,showLive,openRequests,getUnread:()=>socialUnread
+    setBellArchived,openPane,showLive,showChat,openRequests,
+    inviteFriend:invite,getUnread:()=>socialUnread
   });
   render();renderInbox();
 })();
