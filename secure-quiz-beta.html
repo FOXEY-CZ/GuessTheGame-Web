@@ -699,8 +699,8 @@
       missionsCompleted:'✓ Splněno · Odměna připsána',
       missionsNew:'🎉 Splněno {count} misí! Bonusové odměny připsány.',
       missionsShow:'🎯 Zobrazit všechny mise',
-      streakDays:'🔥 {n} dní v řadě',
-      streakNext:'Další bonus za {n} dní',
+      streakDays:'🔥 {n} {unit} v řadě',
+      streakNext:'Další bonus za {n} {unit}',
       streakAll:'Všechny streak milníky splněny!',
       streakPlayed:'✅ Dnes splněno! Série pokračuje.',
       streakPending:'Zahraj si dnes odměněnou partii, aby série pokračovala.',
@@ -1031,7 +1031,8 @@
     if(newStreaks.length){
       $('streakUnlockTitle').textContent=T('streakUnlockTitle');
       $('streakUnlockDescription').textContent=newStreaks.map(x=>
-        '🔥 '+x.days+' '+(lang==='en'?'days':'dní')+' · '+
+        '🔥 '+x.days+' '+(lang==='en'?'days':
+          Number(x.days)>=2&&Number(x.days)<=4?'dny':'dní')+' · '+
           [Number(x.shards)>0?'💎 +'+x.shards:'',
            Number(x.crowns)>0?'👑 +'+x.crowns:'',
            Number(x.free_chests)>0?'🎁 +'+x.free_chests:''].filter(Boolean).join(' ')
@@ -1178,10 +1179,12 @@
   function renderGameStreak(){
     const streak=missionState?.streak||null;
     const days=streak?Math.max(0,Number(streak.current)||0):0;
+    const czUnit=n=>n===1?'den':n>=2&&n<=4?'dny':'dní';
     const next=streak?.next_milestone==null?null:Number(streak.next_milestone);
-    $('gameStreakCount').textContent=template(T('streakDays'),{n:days});
+    $('gameStreakCount').textContent=template(T('streakDays'),
+      {n:days,unit:czUnit(days)});
     $('gameStreakNext').textContent=next===null&&streak?T('streakAll'):
-      template(T('streakNext'),{n:next||3});
+      template(T('streakNext'),{n:next||3,unit:czUnit(next||3)});
     $('gameStreakHint').textContent=streak?.active_today?
       T('streakPlayed'):days>0?T('streakPending'):T('streakResetPending');
     const bar=$('gameStreakFill');
@@ -1195,7 +1198,8 @@
       const item=document.createElement('div');
       item.className='game-streak-reward'+(days>=Number(m.days)?' done':'');
       const label=document.createElement('strong');
-      label.textContent=(days>=Number(m.days)?'✓ ':'🔥 ')+m.days+' '+(lang==='en'?'days':'dní');
+      label.textContent=(days>=Number(m.days)?'✓ ':'🔥 ')+m.days+' '+
+        (lang==='en'?'days':czUnit(Number(m.days)));
       const reward=document.createElement('span');
       reward.textContent=[
         Number(m.shards)>0?'💎 +'+m.shards:'',
