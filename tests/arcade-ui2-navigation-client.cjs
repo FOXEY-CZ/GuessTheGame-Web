@@ -62,7 +62,13 @@ class Element {
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(ids.length,new Set(ids).size,'Duplicate DOM ID');
 const elements=new Map(ids.map(id=>[id,new Element(id)]));
-const mobile=['home','games','challenges','shop'].map(x=>{
+const dock=html.match(/<nav class="arcade-mobile-dock"[\s\S]*?<\/nav>/)?.[0];
+assert.ok(dock,'mobile dock missing');
+assert.ok(dock.includes('data-page="community"'),'Friends must be a primary bottom nav item');
+assert.ok(!dock.includes('data-page="shop"'),'Shop belongs in More, not primary dock');
+assert.ok(html.includes('<button data-page="shop" type="button">🛍️ Obchod'),
+  'Shop must remain reachable in More');
+const mobile=['home','games','challenges','community'].map(x=>{
   const e=new Element('mobile-'+x);e.dataset.page=x;return e;
 });
 const document={
@@ -156,6 +162,11 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   elements.get('settingsOpenGame').events.click();
   elements.get('settingsOpenAccount').events.click();
   assert.deepEqual(nav,['play','account']);
+  assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],'page');
+  ui.onPage('community');
+  assert.equal(mobile[3].attrs['aria-current'],'page');
+  assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],undefined);
+  ui.onPage('shop');
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],'page');
   elements.get('mobileMoreToggle').events.click();
   assert.equal(elements.get('mobileMoreMenu').hidden,false);
