@@ -871,6 +871,11 @@
       historyStatusFinished:'🏁 Dokončeno',historyStatusWaiting:'⏳ Čeká se na soupeře',
       historyStatusCreatorPlaying:'🎮 Rozehraná výzva',historyStatusChallengerPlaying:'🎮 Soupeř právě hraje',
       historyStatusExpired:'⌛ Platnost výzvy skončila',
+      historyStatusCancelled:'✕ Výzva byla zrušena',
+      historyCancel:'✕ Zrušit výzvu',
+      historyCancelConfirm:'Opravdu zrušit tuto výzvu pro oba hráče? Již uložený postup a odměny zůstanou zachovány.',
+      historyCancelOk:'✅ Výzva byla zrušena a přesunuta do skryté historie.',
+      historyCancelError:'⚠️ Výzvu se nepodařilo zrušit: {error}',
       historyOpen:'🏆 Zobrazit výsledek',historyCheck:'👀 Zobrazit stav',
       historyCopy:'📋 Kopírovat odkaz',historyCopied:'✅ Odkaz zkopírován.',
       historyUnread:'NOVÝ VÝSLEDEK',
@@ -1046,6 +1051,11 @@
       historyStatusFinished:'🏁 Completed',historyStatusWaiting:'⏳ Waiting for opponent',
       historyStatusCreatorPlaying:'🎮 Challenge in progress',historyStatusChallengerPlaying:'🎮 Opponent is playing',
       historyStatusExpired:'⌛ Challenge expired',
+      historyStatusCancelled:'✕ Challenge cancelled',
+      historyCancel:'✕ Cancel challenge',
+      historyCancelConfirm:'Cancel this challenge for both players? Existing saved progress and rewards will be kept.',
+      historyCancelOk:'✅ Challenge cancelled and moved to hidden history.',
+      historyCancelError:'⚠️ Could not cancel challenge: {error}',
       historyOpen:'🏆 View result',historyCheck:'👀 View status',
       historyCopy:'📋 Copy challenge link',historyCopied:'✅ Link copied.',
       historyUnread:'NEW RESULT',
@@ -1813,12 +1823,12 @@
     // A freshly signed-in device may have no local marker at all. Recover
     // available matches from the authenticated server-owned history.
     const candidate=historyItems.find(entry=>
-      entry&&entry.both_done===false&&entry.status!=='expired'&&
+      entry&&entry.both_done===false&&!['expired','cancelled'].includes(entry.status)&&
       (entry.role==='creator'&&entry.creator_done===false||
        entry.role==='challenger'&&entry.challenger_done===false));
     const storedEntry=historyItems.find(entry=>entry.challenge_id===stored);
     const storedIsFinished=storedEntry&&(
-      storedEntry.both_done||storedEntry.status==='expired'||
+      storedEntry.both_done||['expired','cancelled'].includes(storedEntry.status)||
       storedEntry.role==='creator'&&storedEntry.creator_done===true||
       storedEntry.role==='challenger'&&storedEntry.challenger_done===true);
     return stored&&!storedIsFinished?stored:candidate?.challenge_id||null;
@@ -2048,7 +2058,7 @@
   function asyncSummary(data){
     if(!data||data.both_done!==true||data.role==='invitee'
       ||!Number.isFinite(data.your_score)||!Number.isFinite(data.opponent_score))
-      return T('asyncWaiting');
+      return data?.cancelled===true?T('historyStatusCancelled'):T('asyncWaiting');
     const vals={you:data.your_score,other:data.opponent_score};
     return template(data.winner==='you'?T('asyncWin'):
       data.winner==='opponent'?T('asyncLose'):T('asyncTie'),vals);
@@ -2141,6 +2151,7 @@
     }
   }
   function historyLabel(entry){
+    if(entry.status==='cancelled')return T('historyStatusCancelled');
     if(entry.both_done)return T('historyStatusFinished');
     const states={
       waiting:'historyStatusWaiting',creator_playing:'historyStatusCreatorPlaying',
@@ -2437,7 +2448,7 @@
         }
         // Active/in-progress challenges cannot be hidden; the user must
         // retain their ability to resume or share them.
-        if(entry.both_done||entry.status==='expired'){
+        if(entry.both_done||['expired','cancelled'].includes(entry.status)){
           const archive=document.createElement('button');
           archive.type='button';archive.className='history-entry-archive';
           archive.textContent=historyArchived?'↩':'✕';
@@ -2460,7 +2471,7 @@
         const mayResume=!entry.both_done&&
           (entry.role==='creator'&&entry.creator_done===false
             ||entry.role==='challenger'&&entry.challenger_done===false)
-          &&entry.status!=='expired';
+          &&!['expired','cancelled'].includes(entry.status);
         if(mayResume){
           const resume=document.createElement('button');resume.type='button';
           resume.textContent=T('resumeButton');
@@ -2471,7 +2482,15 @@
         show.textContent=entry.both_done?T('historyOpen'):T('historyCheck');
         show.addEventListener('click',()=>void openHistoryResult(entry.challenge_id));
         controls.append(show);
-        if(entry.role==='creator'){
+        if(!entry.both_done&&!['expired','cancelled'].includes(entry.status)
+           &&!historyArchived){
+          const cancel=document.createElement('button');cancel.type='button';
+          cancel.className='history-cancel-action';
+          cancel.textContent=T('historyCancel');
+          cancel.addEventListener('click',()=>void cancelHistory(entry.challenge_id));
+          controls.append(cancel);
+        }
+        if(entry.role==='creator'&&entry.status!=='cancelled'){
           const copy=document.createElement('button');copy.type='button';
           copy.textContent=T('historyCopy');
           copy.addEventListener('click',()=>void copyHistoryLink(entry.challenge_id));
@@ -2528,6 +2547,34 @@
     renderHistory();renderGameSocial();
     void refreshHistory();
     void refreshGameSocial();
+  }
+  async function cancelHistory(id){
+    if(!me||!api||!uuidPattern.test(id)||navigator.onLine===false)return;
+    if(window.confirm?.(T('historyCancelConfirm'))!==true)return;
+    const owner=me.id;
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_cancel',{
+        p_challenge_id:id
+      });
+      if(error||data?.ok!==true||data.cancelled!==true)
+        throw Error(error?.message||'challenge_cancel_failed');
+      if(me?.id!==owner)return;
+      clearActiveChallenge(id);
+      const archived=await api.rpc('arcade_async_challenge_archive',{
+        p_challenge_id:id,p_archived:true
+      });
+      if(archived.error||archived.data?.archived!==true)
+        throw Error(archived.error?.message||'archive_failed');
+      if(me?.id!==owner)return;
+      historyItems=historyItems.filter(entry=>entry.challenge_id!==id);
+      if(game?.challenge?.id===id){modeScreen();}
+      else{renderResumePrompt();renderHistory();}
+      setHistoryDetail(T('historyCancelOk'));
+      void refreshHistory();
+    }catch(err){
+      if(me?.id===owner)
+        setHistoryDetail(template(T('historyCancelError'),{error:errorText(err)}));
+    }
   }
   async function archiveHistory(id,toArchive){
     if(!me||!api||!uuidPattern.test(id))return;
