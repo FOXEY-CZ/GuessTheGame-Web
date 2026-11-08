@@ -59,6 +59,21 @@
   .primary{background:linear-gradient(110deg,#8c7cff,#5e5ae0);border-color:#aaa1ff;box-shadow:0 5px 18px #28236966;min-height:55px}
   .primary:hover:not(:disabled){filter:brightness(1.09)}
   .tools{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.tools button{flex:1 1 150px}
+  .report-bar{text-align:right;margin:8px 0 12px}
+  .report-toggle{font-size:.82rem;min-height:42px;padding:9px 14px;
+    background:#293650;border:1px solid #607090;color:#dce5ff;border-radius:12px}
+  .report-form{display:grid;gap:11px;margin:12px 0 18px;padding:16px;
+    background:#1a2b46;border:1px solid #64769d;border-radius:16px}
+  .report-form strong{font-size:1rem}
+  .report-form label{color:#d9e6ff;font-size:.88rem;font-weight:750}
+  .report-form select,.report-form textarea{width:100%;box-sizing:border-box;
+    border-radius:11px;border:1px solid #6279a1;background:#101e37;
+    color:#f1f5ff;font:inherit;padding:12px;min-height:44px}
+  .report-form textarea{resize:vertical;min-height:80px}
+  .report-actions{display:flex;flex-wrap:wrap;gap:9px}
+  .report-actions button{flex:1 1 135px;min-height:43px;padding:10px 12px}
+  #reportStatus{margin:0;color:#b8e7e2;overflow-wrap:anywhere;font-size:.85rem}
+  .report-toggle:focus-visible,.report-form :focus-visible{outline:2px solid #b9b0ff;outline-offset:2px}
   .hint{padding:15px;border:1px solid #507c83;border-radius:14px;color:#b9f2e7;background:#163239;margin:12px 0;line-height:1.5}
   .message{border-radius:15px;border:1px solid #4c6588;background:#213450;padding:17px 18px;margin:12px 0;line-height:1.5}
   .message.good{border-color:#49caaa;background:#173c3a}.message.bad{border-color:#de7895;background:#44283e}
@@ -302,6 +317,30 @@
       <button id="revealButton" type="button">🔎 Další indicie (−5 XP)</button>
     </div>
     <div id="feedback" class="message hidden" aria-live="polite"></div>
+    <div class="report-bar">
+      <button id="reportToggle" class="report-toggle" type="button" aria-expanded="false"
+        aria-controls="reportForm">⚠️ Nahlásit otázku</button>
+    </div>
+    <form id="reportForm" class="report-form hidden">
+      <strong id="reportTitle">⚠️ Nahlášení problému s otázkou</strong>
+      <label id="reportReasonLabel" for="reportReason">Co je špatně?</label>
+      <select id="reportReason" required>
+        <option id="reportReasonDefault" value="">Vyber problém…</option>
+        <option id="reportReasonUnclear" value="unclear">Nejasné zadání</option>
+        <option id="reportReasonWrongAnswer" value="wrong_answer">Nesprávné odpovědi</option>
+        <option id="reportReasonFact" value="incorrect_fact">Chyba v herních faktech</option>
+        <option id="reportReasonTranslation" value="translation">Chyba v překladu</option>
+        <option id="reportReasonOther" value="other">Jiný problém</option>
+      </select>
+      <label id="reportDetailsLabel" for="reportDetails">Upřesnění (nepovinné)</label>
+      <textarea id="reportDetails" rows="3" maxlength="500"
+        placeholder="Co bychom měly opravit?"></textarea>
+      <div class="report-actions">
+        <button id="reportSend" type="submit">📨 Odeslat hlášení</button>
+        <button id="reportCancel" type="button">Zrušit</button>
+      </div>
+      <p id="reportStatus" role="status" aria-live="polite"></p>
+    </form>
     <div class="bottom">
       <button id="retryButton" class="hidden" type="button">🔄 Opakovat poslední požadavek</button>
       <button id="nextButton" class="primary hidden" type="button">DALŠÍ OTÁZKA →</button>
@@ -413,6 +452,18 @@
       asyncError:'⚠️ Výzvu se nepodařilo ověřit: {error}',
       asyncCopied:'✅ Odkaz zkopírován.',
       asyncInvalid:'⚠️ Zadej platný odkaz nebo ID výzvy.',
+      reportToggle:'⚠️ Nahlásit otázku',reportHide:'✕ Zavřít hlášení',
+      reportTitle:'⚠️ Nahlášení problému s otázkou',
+      reportReasonLabel:'Co je špatně?',reportReasonDefault:'Vyber problém…',
+      reportReasonUnclear:'Nejasné zadání',reportReasonWrongAnswer:'Nesprávné možnosti odpovědí',
+      reportReasonFact:'Chyba v herních faktech',reportReasonTranslation:'Chyba v překladu',
+      reportReasonOther:'Jiný problém',reportDetailsLabel:'Upřesnění (nepovinné)',
+      reportDetailsPlaceholder:'Co bychom měly opravit? (max. 500 znaků)',
+      reportSend:'📨 Odeslat hlášení',reportCancel:'Zrušit',
+      reportChooseReason:'Vyber nejprve typ problému.',
+      reportSent:'✅ Děkuju! Hlášení bylo uloženo k této otázce.',
+      reportAlready:'✅ Tuhle otázku jsi už nahlásil.',
+      reportError:'⚠️ Hlášení se nepodařilo odeslat: {error}',
       historyTitle:'🔔 Moje výzvy',historyRefresh:'🔄 Obnovit',
       historyHint:'Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.',
       historyLoading:'Načítám historii výzev…',historyEmpty:'Zatím tu nemáš žádné serverové výzvy.',
@@ -504,6 +555,18 @@
       asyncError:'⚠️ Could not verify challenge: {error}',
       asyncCopied:'✅ Link copied.',
       asyncInvalid:'⚠️ Enter a valid challenge link or ID.',
+      reportToggle:'⚠️ Report question',reportHide:'✕ Close report',
+      reportTitle:'⚠️ Report a problem with this question',
+      reportReasonLabel:'What is wrong?',reportReasonDefault:'Choose an issue…',
+      reportReasonUnclear:'Unclear question',reportReasonWrongAnswer:'Incorrect answer options',
+      reportReasonFact:'Incorrect game facts',reportReasonTranslation:'Translation problem',
+      reportReasonOther:'Other issue',reportDetailsLabel:'Details (optional)',
+      reportDetailsPlaceholder:'What should we fix? (max. 500 characters)',
+      reportSend:'📨 Send report',reportCancel:'Cancel',
+      reportChooseReason:'Please choose an issue type.',
+      reportSent:'✅ Thanks! This question has been reported.',
+      reportAlready:'✅ You already reported this question.',
+      reportError:'⚠️ Could not send report: {error}',
       historyTitle:'🔔 My challenges',historyRefresh:'🔄 Refresh',
       historyHint:'Results update automatically while this page is open. Phone push notifications are not available yet.',
       historyLoading:'Loading challenge history…',historyEmpty:'No secure challenges here yet.',
@@ -545,6 +608,7 @@
   };
   let lang = 'cs', api = null, me = null, game = null, current = null;
   let busy=false,pending=null;
+  let reportPending=false,reportSentKey=null;
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
@@ -598,6 +662,7 @@
     })){
       const element=$(id);if(element)element.textContent=T(key);
     }
+    localizeReport();
     $('finalCorrectLabel').textContent=T('correct');
     $('finalLivesLabel').textContent=T('hearts');
     $('hintButton').textContent=T('hint');$('revealButton').textContent=T('reveal');
@@ -621,6 +686,7 @@
   }
   function modeScreen(){
     game=null;current=null;pending=null;busy=false;
+    resetReportUI();
     visible('bootPanel',false);
     visible('modePanel',!!me);visible('signIn',!me);
     visible('gamePanel',false);visible('resultPanel',false);
@@ -1274,9 +1340,11 @@
     visible('clues',false);visible('nextButton',false);
     visible('hintButton',false);visible('revealButton',false);
     visible('retryButton',true);
+    visible('reportToggle',false);visible('reportForm',false);
   }
   async function loadQuestion(){
     if(!game)return;
+    resetReportUI();
     status(T('statusQuestion'));
     const {data,error}=await api.rpc('arcade_quiz_current_question_shadow',{
       p_run_id:game.id,p_index:game.idx
@@ -1301,6 +1369,7 @@
     $('difficulty').textContent=T('difficulty')[
       ['easy','medium','hard'].indexOf(current.difficulty)]||current.difficulty;
     $('question').textContent=current[lang];
+    visible('reportToggle',true);
     const optionBox=$('options');optionBox.replaceChildren();
     current.options.forEach((choice,i)=>{
       const btn=document.createElement('button');btn.type='button';btn.className='option';
@@ -1337,6 +1406,68 @@
     visible('nextButton',current.answered);
     $('nextButton').textContent=game.finished?T('finish'):T('next');
     visible('retryButton',!!pending);
+  }
+
+  function localizeReport(){
+    for(const id of ['reportTitle','reportReasonLabel','reportReasonDefault',
+      'reportReasonUnclear','reportReasonWrongAnswer','reportReasonFact',
+      'reportReasonTranslation','reportReasonOther','reportDetailsLabel',
+      'reportSend','reportCancel']){
+      $(id).textContent=T(id);
+    }
+    $('reportDetails').setAttribute('placeholder',T('reportDetailsPlaceholder'));
+    const opened=!$('reportForm').classList.contains('hidden');
+    $('reportToggle').textContent=T(opened?'reportHide':'reportToggle');
+  }
+  function resetReportUI(){
+    visible('reportForm',false);
+    $('reportToggle').setAttribute('aria-expanded','false');
+    $('reportReason').value='';
+    $('reportDetails').value='';
+    $('reportStatus').textContent='';
+    reportSentKey=null;
+    $('reportSend').disabled=false;
+    localizeReport();
+  }
+  function toggleReport(){
+    if(!me||!game||!current)return;
+    const open=$('reportForm').classList.contains('hidden');
+    visible('reportForm',open);
+    $('reportToggle').setAttribute('aria-expanded',open?'true':'false');
+    localizeReport();
+    if(open)$('reportReason').focus?.();
+  }
+  async function sendQuestionReport(){
+    if(reportPending||!me||!api||!game||!current)return;
+    const reason=$('reportReason').value;
+    if(!['unclear','wrong_answer','incorrect_fact','translation','other'].includes(reason)){
+      $('reportStatus').textContent=T('reportChooseReason');return;
+    }
+    const owner=me.id,run=game.id,index=game.idx,question=current.id;
+    const key=run+':'+index;
+    if(reportSentKey===key){
+      $('reportStatus').textContent=T('reportAlready');return;
+    }
+    const details=$('reportDetails').value.slice(0,500);
+    reportPending=true;$('reportSend').disabled=true;
+    try{
+      const {data,error}=await api.rpc('arcade_quiz_report_question',{
+        p_run_id:run,p_question_index:index,p_reason:reason,
+        p_details:details||null
+      });
+      if(error||data?.ok!==true)
+        throw Error(error?.message||'report_failed');
+      if(me?.id!==owner||game?.id!==run||game?.idx!==index||current?.id!==question)
+        return;
+      reportSentKey=key;
+      $('reportStatus').textContent=T(data.already_reported?'reportAlready':'reportSent');
+    }catch(err){
+      if(me?.id===owner&&game?.id===run&&game?.idx===index)
+        $('reportStatus').textContent=template(T('reportError'),{error:errorText(err)});
+    }finally{
+      reportPending=false;
+      $('reportSend').disabled=reportSentKey===((game?.id||'')+':'+game?.idx);
+    }
   }
   async function action(type,choice=null){
     if(!game||!current||busy||current.answered&&type==='answer')return null;
@@ -1533,6 +1664,11 @@
     if(resume){void resumeSolo(resume.dataset.soloContinue);return;}
     const btn=event.target.closest('button[data-mode]');
     if(btn)void start(btn.dataset.mode);
+  });
+  $('reportToggle').addEventListener('click',toggleReport);
+  $('reportCancel').addEventListener('click',toggleReport);
+  $('reportForm').addEventListener('submit',event=>{
+    event.preventDefault();void sendQuestionReport();
   });
   $('hintButton').addEventListener('click',()=>void hint());
   $('revealButton').addEventListener('click',()=>void reveal());
