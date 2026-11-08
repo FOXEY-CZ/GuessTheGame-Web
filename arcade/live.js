@@ -461,7 +461,7 @@ window.addEventListener('offline',()=>{
   realtimeConnected=false;
   networkStatus(tr('🔴 Offline · skóre bezpečně na serveru','🔴 Offline · score stays on server'));
 });
-window.addEventListener('visibilitychange',()=>{
+document.addEventListener?.('visibilitychange',()=>{
   if(document.visibilityState==='visible')resumeConnection();
 });
 window.addEventListener('foxey-arcade:locale-changed',()=>{
