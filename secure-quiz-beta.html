@@ -125,7 +125,8 @@
   .history-overlay-toolbar #historyOverlayRefresh{margin:0}
   .history-entry-archive{margin-left:auto;flex:0 0 auto;min-width:36px;min-height:36px;padding:6px 10px;border-radius:10px;background:#293857;border:1px solid #647aa8;color:#f1eaff;font-weight:900}
   .history-entry-archive:hover,.history-entry-archive:focus-visible{border-color:#e9b8ff;background:#3b315b}
-  .history-more{display:block;margin:12px auto 2px;padding:10px 16px;min-height:40px}
+  .history-pagination{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:12px 0 4px}
+  .history-more{display:block;margin:0;padding:10px 16px;min-height:40px}
   .history-entry{padding:15px;border-radius:15px;border:1px solid #435d84;background:#142541;display:grid;gap:8px}
   .history-entry.is-unread{border-color:#c775c9;box-shadow:inset 3px 0 #c775c9}
   .history-entry-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.96rem}
@@ -1870,6 +1871,13 @@
   $('historyOverlayArchiveToggle').addEventListener('click',switchHistoryView);
   $('historyMore').addEventListener('click',()=>void refreshHistory(true));
   $('historyOverlayMore').addEventListener('click',()=>void refreshHistory(true));
+  const previousHistoryPage=()=>{
+    if(historyLoading||historyPageOffset===0)return;
+    historyPageOffset=Math.max(0,historyPageOffset-HISTORY_PAGE_SIZE);
+    void refreshHistory();
+  };
+  $('historyPrev').addEventListener('click',previousHistoryPage);
+  $('historyOverlayPrev').addEventListener('click',previousHistoryPage);
   document.addEventListener?.('keydown',event=>{
     if(event.key==='Escape'&&!$('historyOverlay').classList.contains('hidden'))
       closeHistoryOverlay();
