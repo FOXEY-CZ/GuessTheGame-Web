@@ -42,9 +42,9 @@
   const PAGES = new Set(['home','games','play','shop','challenges','community','account','settings']);
   // Secure Quiz Beta is now the DEFAULT Guess the Game experience in Arcade.
   // The legacy quiz stays addressable for old local progress/invite links.
-  // This server-first mode is still payout-disabled; never sync quiz XP as
-  // real wallet transactions until the separate verified rewards cutover.
-  const GAME_URL = '../secure-quiz-beta.html?v=arcade-primary-20261107c';
+  // Secure quiz keeps its private answer bank; real rewards are opt-in,
+  // paid only after server-confirmed action traces and shared wallet locks.
+  const GAME_URL = '../secure-quiz-beta.html?v=verified-rewards-20261108a';
   const GOOGLE_OAUTH_READY = cfg?.googleOAuthEnabled === true;
   // Remember only whether this page was opened by an OAuth callback, never
   // read, store or log the returned access/refresh token values.
@@ -735,6 +735,18 @@
     if(event.data?.type==='foxey-arcade:locale-changed'){
       if(['cs','en'].includes(event.data.locale))
         window.FOXEY_I18N?.setLocale(event.data.locale);
+      return;
+    }
+    if(event.data?.type==='foxey-arcade:rewards-credited'){
+      if(!user||!supa)return;
+      const uid=user.id;
+      // Never trust currency numbers from frame messages. Refresh from
+      // authenticated server tables under user-scoped RLS.
+      void getProfile(uid).then(fresh=>{
+        if(user?.id!==uid)return;
+        profile=fresh;render();
+      }).catch(()=>{});
+      void loadSharedWallet();
       return;
     }
     if(event.data?.type!=='foxey-arcade:gtg-cloud-synced')return;
