@@ -49,8 +49,11 @@
     text('arcadeNoticeClose','✕');
     text('arcadeNoticeRefresh',choose('🔄 Obnovit','🔄 Refresh'));
     text('arcadeNoticeArchiveToggle',archived?
-      choose('🔔 Aktivní výzvy','🔔 Active challenges'):
-      choose('📦 Archiv','📦 Archive'));
+      choose('↩ Zpět na nová oznámení','↩ Back to recent notifications'):
+      choose('🕘 Zobrazit skrytá','🕘 View hidden'));
+    text('arcadeNoticeHelp',choose(
+      'Otevři nebo přijmi pozvánku. Křížek ✕ pouze skryje oznámení.',
+      'Open or accept an invitation. The X only hides the notification.'));
     const archiveToggle=$('arcadeNoticeArchiveToggle');
     if(archiveToggle)archiveToggle.setAttribute('aria-pressed',archived?'true':'false');
     text('arcadeNoticeMore',choose('Další stránka →','Next page →'));
@@ -92,8 +95,8 @@
         x.className='arcade-notice-dismiss';
         x.textContent=archived?'↩':'✕';
         const action=archived?
-          choose('Vrátit z archivu','Restore from archive'):
-          choose('Skrýt do archivu','Move to archive');
+          choose('Vrátit skryté oznámení','Restore hidden notification'):
+          choose('Skrýt oznámení','Hide notification');
         x.setAttribute('aria-label',action);x.title=action;
         x.addEventListener('click',()=>void archiveChallenge(entry.challenge_id,!archived));
         head.append(x);
@@ -186,8 +189,9 @@
       if(id!==userId||stamp!==seq)return;
       items=items.filter(v=>v.challenge_id!==challengeId);
       text('arcadeNoticeDetail',toArchive?
-        choose('✅ Výzva přesunuta do archivu.','✅ Challenge moved to archive.'):
-        choose('✅ Výzva vrácena mezi aktivní.','✅ Challenge restored.'));
+        choose('✅ Oznámení skryto. Výsledek zůstává uložený.',
+          '✅ Notification hidden. Your result remains saved.'):
+        choose('✅ Oznámení obnoveno.','✅ Notification restored.'));
       render();
       void refresh();
     }catch(err){
