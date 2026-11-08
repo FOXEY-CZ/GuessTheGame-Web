@@ -357,14 +357,23 @@
           <h2 id="liveTitle">⚡ Živé souboje 1v1 <span id="liveInviteCount" class="live-invite-count"></span></h2>
           <button type="button" class="secondary" id="liveRefresh">↻ Obnovit</button>
         </div>
-        <p class="small">Pozvi kamaráda, potvrďte připravenost a odpovídejte na stejné otázky současně. Zápas trvá deset kol, každé má nejvýše 25 sekund. Zatím bez odměn XP a měn.</p>
+        <p class="small">Pozvi kamaráda, potvrďte připravenost a odpovídejte na stejné otázky současně. Nyní s odvetami, statistikami a více herními režimy. PvP zatím nepřipisuje XP ani měny.</p>
+        <div class="live-mode-picker">
+          <label for="liveModeSelect">🎯 Typ souboje</label>
+          <select id="liveModeSelect" aria-label="Režim živého souboje">
+            <option value="classic">⚔️ Klasika · 25 s / otázka</option>
+            <option value="speed">⚡ Rychlostní duel · 12 s / otázka</option>
+            <option value="mystery">🧩 Mystery · 20 s / otázka</option>
+          </select>
+          <span id="liveRealtimeStatus" class="live-network-status" role="status" aria-live="polite">☁️ Připojuji…</span>
+        </div>
         <p id="liveStatus" class="small" role="status" aria-live="polite"></p>
         <div class="friends-columns">
           <div><h3>🟢 Přátelé online</h3><div id="liveFriendList" class="live-list"></div></div>
           <div><h3>📨 Pozvánky a historie</h3><div id="liveMatchList" class="live-list"></div></div>
         </div>
         <div id="liveArena" class="live-arena hidden" tabindex="-1" aria-labelledby="liveArenaTitle">
-          <div class="sectionline"><h3 id="liveArenaTitle">🎮 Živá aréna</h3><strong id="liveRound"></strong></div>
+          <div class="sectionline"><h3 id="liveArenaTitle">🎮 Živá aréna <span id="liveArenaMode" class="live-mode-badge"></span></h3><strong id="liveRound"></strong></div>
           <p id="liveArenaOpponent" class="small"></p>
           <div class="live-score" aria-label="Průběžné skóre"><div>TY <strong id="liveScoreHost">0</strong></div><span>VS</span><div>SOUPĚŘ <strong id="liveScoreGuest">0</strong></div></div>
           <p id="liveArenaStatus" role="status" aria-live="polite"></p>
@@ -373,6 +382,11 @@
           <div id="liveOptions" class="live-options"></div>
           <div id="liveArenaControls" class="friends-actions"></div>
         </div>
+        <section class="live-stats-card" aria-labelledby="liveLeaderboardTitle">
+          <div class="sectionline"><h3 id="liveLeaderboardTitle">🏆 PvP statistiky a žebříček přátel</h3></div>
+          <div id="liveStatsSummary" class="live-stats-summary" role="status" aria-live="polite"></div>
+          <div id="liveLeaderboard" class="live-leaderboard"></div>
+        </section>
       </section>
       <details class="friends-blocked-area">
         <summary>🛡️ Blokovaní hráči</summary>
@@ -557,7 +571,7 @@
 <script src="./i18n.js?v=friends-20261108c"></script>
 <script src="./avatars.js"></script>
 <script src="./notifications.js?v=friends-20261108c"></script>
-<script src="./live.js?v=live-duels-lobbyfix-20261108c"></script>
+<script src="./live.js?v=live-duels-1-1-20261108a"></script>
 <script src="./friends.js?v=live-duels-lobbyfix-20261108c"></script>
 <script src="./ui2.js?v=challenge-navigation-20261108b"></script>
 <script src="./missions.js?v=rotating-missions-streaks-20261108a"></script>
