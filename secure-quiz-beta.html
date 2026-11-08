@@ -1421,6 +1421,7 @@
       $(id).textContent=T(key);
     });
     $('legacyCaveat').textContent=T('caveat');
+    $('gameHubTabs').setAttribute('aria-label',lang==='en'?'Game sections':'Sekce hry');
     $('hubTabSolo').textContent=T('hubSolo');
     $('hubTabChallenges').textContent=T('hubChallenges');
     $('hubTabHistory').textContent=T('hubHistory');
@@ -2734,7 +2735,8 @@
     // PC accessibility: reuse the same trusted button click handlers and
     // server-verified answer path. Never act while typing or in a modal.
     const typing=['INPUT','TEXTAREA','SELECT'].includes(
-      event.target?.tagName?.toUpperCase?.())||event.target?.isContentEditable;
+      event.target?.tagName?.toUpperCase?.())||event.target?.isContentEditable||
+      event.target?.closest?.('button,a,[role="tab"],[contenteditable="true"]');
     const blocked=['historyOverlay','achievementsOverlay','missionsOverlay']
       .some(id=>!$(id)?.classList?.contains('hidden'));
     if(!typing&&!blocked&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&
