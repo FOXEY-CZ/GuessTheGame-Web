@@ -334,6 +334,15 @@
     .game-hub-tab{padding:10px 3px;min-height:54px}
     .game-hub-description{font-size:.8rem}
   }
+
+  /* More room for actual gameplay on phones; leave header/notifications usable. */
+  body.quiz-playing .hero,body.quiz-finished .hero{display:none}
+  body.quiz-playing .status,body.quiz-finished .status{
+    margin:8px auto;min-height:0;font-size:.83rem}
+  body.quiz-playing .panel,body.quiz-finished .panel{margin-top:10px}
+  .quiz-keyboard-help{margin:-10px 0 10px;color:#9eb5d5;
+    font-size:.76rem;line-height:1.35;text-align:right}
+  @media(max-width:650px){.quiz-keyboard-help{display:none}}
 </style>
 </head>
 <body>
@@ -349,7 +358,7 @@
     </div>
   </div>
   <div class="hero">
-    <div class="label" id="eyebrow">SERVEROVÝ KVÍZ · ODMĚNY V TESTU</div>
+    <div class="label" id="eyebrow">SERVEROVÝ KVÍZ · OVĚŘENÉ ODMĚNY</div>
     <div class="hero-art" aria-hidden="true">
       <span class="hero-orbit hero-orbit-a"></span><span class="hero-orbit hero-orbit-b"></span>
       <span class="hero-mark">?</span><span class="hero-spark hero-spark-a">✦</span>
@@ -490,6 +499,7 @@
       <div class="stat"><span class="stat-icon" aria-hidden="true">🎯</span><b id="correct">0</b><span id="correctLabel">SPRÁVNĚ</span></div>
     </div>
     <div class="progress"><div id="fill"></div></div>
+    <p id="quizKeyboardHelp" class="quiz-keyboard-help">⌨️ Klávesy 1–4 = odpověď · Enter = další otázka</p>
     <div class="questionbox">
       <div class="question-decor" aria-hidden="true"><span>✦</span><strong>?</strong><span>✧</span></div>
       <div class="difficulty" id="difficulty"></div>
@@ -535,7 +545,7 @@
 
   <section id="resultPanel" class="panel hidden">
     <div id="resultArt" class="result-art" aria-hidden="true">🏆</div>
-    <div class="label" id="resultLabel">OVĚŘENÝ TEST</div>
+    <div class="label" id="resultLabel">OVĚŘENÝ VÝSLEDEK</div>
     <h2 id="resultTitle">Partie dokončena</h2>
     <div class="statgrid">
       <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="finalScore">0</b><span id="finalScoreLabel">BODY</span></div>
@@ -672,7 +682,7 @@
       hubHistory:'📜 Historie',hubSoloHint:'Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.',
       hubChallengesHint:'⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.',
       hubHistoryHint:'📜 Rozehrané i dokončené výzvy. Starší najdeš v archivu; otevřenou výzvu můžeš obnovit.',
-      hubHelp:'ℹ️ Jak funguje obnovení výzvy?',modeNames:['Rychlá hra','Mystery Mode','Denní výzva','Nováček','Zkušený hráč','Hardcore'],
+      hubHelp:'ℹ️ Jak funguje obnovení výzvy?',keyboardHelp:'⌨️ Klávesy 1–4 = odpověď · Enter = další otázka',modeNames:['Rychlá hra','Mystery Mode','Denní výzva','Nováček','Zkušený hráč','Hardcore'],
       modeSub:['10 otázek · různé obtížnosti','10 otázek · postupné indicie','5 otázek · serverové zadání','10 snadných otázek','10 středních otázek','10 těžkých otázek'],
       soloNew:'🆕 Nová hra',soloContinue:'▶️ Pokračovat',soloLoading:'🛡️ Načítám rozehrané hry…',
       soloRefresh:'🔄 Obnovit',soloReady:'✅ Rozehrané hry jsou synchronizované se serverem.',
@@ -816,8 +826,8 @@
       resumePlaying:'🎮 Dokonči nejprve rozehranou partii, abys o její postup nepřišel.',
       resumeNone:'Žádnou nedokončenou výzvu se nepodařilo najít.',
       resumeRestored:'✅ Průběh partie obnoven ze serveru.',
-      resumeGuideTitle:'🧪 Chceš vyzkoušet obnovení výzvy?',
-      resumeGuideText:'Zatím nemáš rozehranou serverovou výzvu. Vytvoř ji níže, odpověz na jednu otázku a potom obnov stránku. Běžné režimy pod tímto panelem nejsou výzvou pro kamaráda.',
+      resumeGuideTitle:'⏯️ Jak bezpečně pokračovat ve výzvě?',
+      resumeGuideText:'Server ukládá potvrzené odpovědi i nápovědy. Po znovuotevření klikni na „Pokračovat ve výzvě“ nebo ji najdi v Historii. Samostatné sólo partie obnovíš v záložce Sólo režimy.',
       jumpToChallenges:'⚔️ Přejít na serverové výzvy',
       historyBell:'Moje výzvy; nových výsledků: {n}',
       historyOverlayTitle:'🔔 Moje výzvy',historyOverlayClose:'Zavřít oznámení',
@@ -837,7 +847,7 @@
       hubHistory:'📜 History',hubSoloHint:'Pick a solo mode, start a new game or resume an unfinished one.',
       hubChallengesHint:'⚔️ Share private challenges with a link. Live 1v1 and BO3/BO5 series are in Arcade → Friends.',
       hubHistoryHint:'📜 Your ongoing and finished challenges. Older entries are archived; unfinished games can be resumed.',
-      hubHelp:'ℹ️ How does challenge recovery work?',modeNames:['Quick Game','Mystery Mode','Daily Challenge','Beginner','Intermediate','Hardcore'],
+      hubHelp:'ℹ️ How does challenge recovery work?',keyboardHelp:'⌨️ Keys 1–4 = answer · Enter = next question',modeNames:['Quick Game','Mystery Mode','Daily Challenge','Beginner','Intermediate','Hardcore'],
       modeSub:['10 mixed questions','10 questions · reveal clues','5 server-selected questions','10 easy questions','10 medium questions','10 hard questions'],
       soloNew:'🆕 New game',soloContinue:'▶️ Continue',soloLoading:'🛡️ Loading unfinished games…',
       soloRefresh:'🔄 Refresh',soloReady:'✅ Unfinished games are synced with the server.',
@@ -981,8 +991,8 @@
       resumePlaying:'🎮 Finish your current quiz first to keep its progress.',
       resumeNone:'No unfinished challenge found.',
       resumeRestored:'✅ Quiz progress restored from the server.',
-      resumeGuideTitle:'🧪 Want to test challenge recovery?',
-      resumeGuideText:'You have no active server challenge yet. Create one below, answer one question and then refresh this page. The ordinary modes below are not friend challenges.',
+      resumeGuideTitle:'⏯️ How to resume a friend challenge safely',
+      resumeGuideText:'The server saves confirmed answers and hints. After reopening, choose Resume challenge or find it under History. Standalone solo games resume separately from Solo modes.',
       jumpToChallenges:'⚔️ Go to server challenges',
       historyBell:'My challenges; unread results: {n}',
       historyOverlayTitle:'🔔 My challenges',historyOverlayClose:'Close notifications',
@@ -1417,6 +1427,7 @@
     $('gameHubChallengeHint').textContent=T('hubChallengesHint');
     $('gameHubHistoryHint').textContent=T('hubHistoryHint');
     $('resumeHelpTitle').textContent=T('hubHelp');
+    $('quizKeyboardHelp').textContent=T('keyboardHelp');
     selectGameHub(gameHubSection);
     $('challengeLink').textContent=T('challenges');
     for(const [key,id] of Object.entries({
@@ -2720,6 +2731,29 @@
   $('historyPrev').addEventListener('click',previousHistoryPage);
   $('historyOverlayPrev').addEventListener('click',previousHistoryPage);
   document.addEventListener?.('keydown',event=>{
+    // PC accessibility: reuse the same trusted button click handlers and
+    // server-verified answer path. Never act while typing or in a modal.
+    const typing=['INPUT','TEXTAREA','SELECT'].includes(
+      event.target?.tagName?.toUpperCase?.())||event.target?.isContentEditable;
+    const blocked=['historyOverlay','achievementsOverlay','missionsOverlay']
+      .some(id=>!$(id)?.classList?.contains('hidden'));
+    if(!typing&&!blocked&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&
+       !event.altKey&&!busy&&me&&game&&current&&!game.resultShown&&
+       !$('gamePanel').classList.contains('hidden')){
+      if(/^[1-4]$/.test(event.key)&&!current.answered&&!pending){
+        const option=$('options').children[Number(event.key)-1];
+        if(option&&!option.disabled){
+          event.preventDefault?.();option.click?.();return;
+        }
+      }
+      if(event.key==='Enter'&&current.answered&&!pending){
+        const advance=$('nextButton');
+        if(advance&&!advance.disabled&&
+           !advance.classList.contains('hidden')){
+          event.preventDefault?.();advance.click?.();return;
+        }
+      }
+    }
     if(event.key==='Escape'&&!$('historyOverlay').classList.contains('hidden'))
       closeHistoryOverlay();
     if(event.key==='Escape'&&!$('achievementsOverlay').classList.contains('hidden'))
