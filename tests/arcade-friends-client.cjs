@@ -72,7 +72,7 @@ const api={rpc:async(name,args)=>{
  if(name==='arcade_social_inbox'){
   assert.equal(args.p_limit,10);
   return {data:{ok:true,items:[{notification_id:notif,
-    kind:noticeKind,subject_id:noticeKind==='live_invite'?challenge:challenge,
+    kind:noticeKind,subject_id:noticeKind==='friend_request'?request:challenge,
     actor:profileB,unread:true,challenge_ready:true,
     live_rematch:noticeRematch,live_series_target:seriesTarget}],unread:nUnread,
     archived:false,has_more:false,total:1}};
@@ -87,6 +87,11 @@ const api={rpc:async(name,args)=>{
  if(name==='arcade_friend_respond'){
   assert.equal(args.p_request_id,request);assert.equal(args.p_accept,true);
   state='accepted';return {data:{ok:true,state}};
+ }
+ if(name==='arcade_live_respond'){
+  assert.equal(args.p_match_id,challenge);
+  assert.equal(args.p_accept,true);
+  return {data:{ok:true,state:'lobby'}};
  }
  if(name==='arcade_friend_challenge_create'){
   assert.equal(args.p_friend_id,b);assert.equal(args.p_mode,'classic');
@@ -196,6 +201,28 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.ok(seriesCard.children[0].textContent.includes('série na 3 vítězství'));
  assert.ok(seriesCard.children[1].textContent.includes('série na 3 vítězství'));
  assert.ok(seriesCard.children[2].children[0].textContent.includes('Otevřít sérii'));
+ // Respond directly from the bell, without opening an extra lobby first.
+ const directLive=seriesCard.children[2].children.find(x=>x.textContent.includes('✓ Přijmout'));
+ assert.ok(directLive,'live invitation needs an explicit accept button');
+ directLive.events.click();await settle();await settle();await settle();
+ assert.ok(rpcCalls.some(x=>x.name==='arcade_live_respond'&&x.args.p_accept===true));
+ assert.equal(lobbyOpened,challenge,'accepted live invite opens the same match');
+ // A friend request can also be accepted within the shared bell.
+ noticeKind='friend_request';seriesTarget=null;
+ await ui.refreshInbox();await settle();
+ const requestCard=nodes.get('arcadeSocialBellList').children[0];
+ const directFriend=requestCard.children[2].children.find(x=>x.textContent.includes('✓ Přijmout'));
+ assert.ok(directFriend,'friend request must have one-tap acceptance');
+ directFriend.events.click();await settle();await settle();await settle();
+ assert.ok(rpcCalls.some(x=>x.name==='arcade_friend_respond'&&
+   x.args.p_request_id===request));
+ // X is intentionally not a rejection: it only moves the notification
+ // into its own hidden inbox and leaves friendship/game state untouched.
+ const hide=requestCard.children[2].children.at(-1);
+ assert.equal(hide.textContent,'✕');
+ assert.ok(hide.attrs['aria-label'].includes('neodmítá'));
+ hide.events.click();await settle();await settle();
+ assert.ok(archiveCount>0,'X must call the existing owner-scoped archive endpoint');
  // No cross-account stale state after switching to anonymous mode.
  ui.connect(null,null);
  assert.equal(nodes.get('myFriendCode').textContent,'—');
@@ -204,7 +231,8 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.ok(rpcCalls.every(x=>[
   'arcade_friends_dashboard','arcade_social_inbox','arcade_friends_search',
   'arcade_friend_respond','arcade_friend_public_profile',
-  'arcade_friend_challenge_create','arcade_social_notification_seen'
+  'arcade_friend_challenge_create','arcade_live_respond',
+  'arcade_social_notification_archive','arcade_social_notification_seen'
  ].includes(x.name)),'unexpected privileged RPC');
  console.log('PASS: owner-scoped friends, requests, public profiles, challenge deep links, social bell and logout');
 })().catch(e=>{console.error(e);process.exitCode=1});
