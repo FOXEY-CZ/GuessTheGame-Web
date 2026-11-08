@@ -151,7 +151,18 @@ const button=(elements,pattern)=>buttons(elements).find(x=>pattern.test(x.textCo
  await settle();
  assert.equal(declined,1);
  assert.equal(pending.state,'declined');
+ // The requester must learn about the refusal even if their phone was
+ // still displaying the waiting lobby when the other player declined.
+ await host.ui.openMatch(pending.id,false);
+ await settle();
+ assert.ok(host.elements.get('liveArenaStatus').textContent.includes('Odveta byla odmítnuta'),
+   'requester must see the explicit decline in the live arena');
  await host.ui.openMatch(original,false);
+ await host.ui.refresh(true);
+ await settle();
+ assert.ok(host.elements.get('liveQuestion').children.some(x=>
+   x.textContent.includes('Odveta byla odmítnuta')),
+   'old finished-match result must show a rejection notice to requester');
  await guest.ui.openMatch(original,false);
  await host.ui.refresh(true);await guest.ui.refresh(true);
  assert.ok(button(host.elements,/Požádat o odvetu/));
