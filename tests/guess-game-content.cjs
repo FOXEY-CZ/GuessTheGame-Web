@@ -160,8 +160,10 @@ assert.ok(accountSource.includes('Server eviduje denní bonus 20 XP'),
   'Daily shadow status must clearly explain this is non-financial verification');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_daily_claim_shadow'"),
   'Daily claim must be checked once on the server');
-assert.ok(accountSource.includes("preview?.credited===false"),
-  'Badge and daily preview must never turn into a new wallet payout');
+assert.ok(accountSource.includes('preview.credited!==false')&&
+  accountSource.includes('preview.shadow!==true')&&
+  accountSource.includes('function formatShadowRewardPreview(preview)'),
+  'Badge and daily preview must validate the uncredited shadow result before displaying it');
 assert.ok(accountSource.includes("client.rpc('arcade_verify_begin_server'"),
   'The signed-in bridge must call the new server-selection RPC');
 assert.ok(accountSource.includes('window.GTGServerVerification=Object.freeze('),
