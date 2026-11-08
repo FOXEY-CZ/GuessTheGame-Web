@@ -246,22 +246,6 @@
           </div>
         </article>
       </div>
-      <div class="shop-reward-overlay hidden" id="shopRewardOverlay" role="presentation">
-        <div class="shop-reward-backdrop" aria-hidden="true"></div>
-        <section class="reward-reveal shop-reward-modal" id="shopRewardReveal" role="dialog" aria-modal="true" aria-labelledby="shopRewardTitle" tabindex="-1">
-          <button id="shopRewardClose" class="shop-reward-close" type="button" aria-label="Zavřít odměnu">✕</button>
-          <div class="shop-reward-celebration" aria-hidden="true">✨🎁✨</div>
-          <h2 id="shopRewardTitle">🎉 Získal jsi odměnu!</h2>
-          <div class="reward-reveal-art" id="shopRewardArt" aria-hidden="true">🎉</div>
-          <div><span class="rarity-label" id="shopRewardRarity">NOVÁ ODMĚNA</span>
-            <h3 id="shopRewardName">Nový avatar</h3>
-            <p id="shopRewardCaption">Přidáno do inventáře.</p></div>
-          <div class="shop-reward-actions">
-            <button class="primary" type="button" id="shopRewardDone">🎉 Super!</button>
-            <button class="secondary" type="button" id="shopRewardInventory">🎒 Zobrazit sbírku</button>
-          </div>
-        </section>
-      </div>
       <p class="note">Truhly dávají pouze kosmetické předměty, nikoliv prémiové korunky. V každé truhle se losuje rovnoměrně jen z dosud neodemčených avatarů. Kompletní sbírku už znovu neplatíš. Skutečné peníze za náhodné odměny nepřijímáme.</p>
       </section>
       <section id="shopPanelAvatars" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="shopTabAvatars" tabindex="0">
@@ -616,6 +600,22 @@
   </main>
   <footer>© FOXEY Arcade · Beta · Společný účet, hry a odměny</footer>
 </div>
+      <div class="shop-reward-overlay hidden" id="shopRewardOverlay" role="presentation">
+        <div class="shop-reward-backdrop" aria-hidden="true"></div>
+        <section class="reward-reveal shop-reward-modal" id="shopRewardReveal" role="dialog" aria-modal="true" aria-labelledby="shopRewardTitle" tabindex="-1">
+          <button id="shopRewardClose" class="shop-reward-close" type="button" aria-label="Zavřít odměnu">✕</button>
+          <div class="shop-reward-celebration" aria-hidden="true">✨🎁✨</div>
+          <h2 id="shopRewardTitle">🎉 Získal jsi odměnu!</h2>
+          <div class="reward-reveal-art" id="shopRewardArt" aria-hidden="true">🎉</div>
+          <div><span class="rarity-label" id="shopRewardRarity">NOVÁ ODMĚNA</span>
+            <h3 id="shopRewardName">Nový avatar</h3>
+            <p id="shopRewardCaption">Přidáno do inventáře.</p></div>
+          <div class="shop-reward-actions">
+            <button class="primary" type="button" id="shopRewardDone">🎉 Super!</button>
+            <button class="secondary" type="button" id="shopRewardInventory">🎒 Zobrazit sbírku</button>
+          </div>
+        </section>
+      </div>
 <div id="arcadeNoticeOverlay" class="arcade-notice-overlay hidden" role="presentation">
   <div id="arcadeNoticeShade" class="arcade-notice-shade"></div>
   <section class="arcade-notice-drawer" role="dialog" aria-modal="true" aria-labelledby="arcadeNoticeTitle">
