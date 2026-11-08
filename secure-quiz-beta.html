@@ -96,6 +96,13 @@
   .inbox-head h3{margin:0;font-size:1.13rem;display:flex;align-items:center;gap:7px}
   .inbox-head button{padding:9px 12px;font-size:.8rem;min-height:40px}
   .history-list{display:grid;gap:10px}
+  .history-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .history-toolbar button{min-height:40px;padding:9px 12px}
+  .history-overlay-toolbar{margin:10px 0 16px}
+  .history-overlay-toolbar #historyOverlayRefresh{margin:0}
+  .history-entry-archive{margin-left:auto;flex:0 0 auto;min-width:36px;min-height:36px;padding:6px 10px;border-radius:10px;background:#293857;border:1px solid #647aa8;color:#f1eaff;font-weight:900}
+  .history-entry-archive:hover,.history-entry-archive:focus-visible{border-color:#e9b8ff;background:#3b315b}
+  .history-more{display:block;margin:12px auto 2px;padding:10px 16px;min-height:40px}
   .history-entry{padding:15px;border-radius:15px;border:1px solid #435d84;background:#142541;display:grid;gap:8px}
   .history-entry.is-unread{border-color:#c775c9;box-shadow:inset 3px 0 #c775c9}
   .history-entry-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.96rem}
@@ -261,10 +268,11 @@
     <section id="historySection" class="inbox-box" aria-labelledby="historyTitle">
       <div class="inbox-head">
         <h3 id="historyTitle">🔔 Moje výzvy <span id="historyBadge" class="notification-count hidden">0</span></h3>
-        <button id="historyRefresh" type="button">🔄 Obnovit</button>
+        <div class="history-toolbar"><button id="historyArchiveToggle" type="button">📦 Archiv</button><button id="historyRefresh" type="button">🔄 Obnovit</button></div>
       </div>
       <p id="historyNotice" class="async-help" role="status" aria-live="polite">Načítám historii výzev…</p>
       <div id="historyList" class="history-list"></div>
+      <button id="historyMore" type="button" class="history-more hidden">⬇️ Načíst další</button>
       <p id="historyDetail" class="history-detail" role="status" aria-live="polite"></p>
       <p id="historyHint" class="async-help">Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.</p>
     </section>
@@ -337,8 +345,9 @@
       <button id="historyOverlayClose" type="button" aria-label="Zavřít oznámení">✕</button>
     </div>
     <p id="historyOverlayNotice" class="async-help" role="status" aria-live="polite"></p>
-    <button id="historyOverlayRefresh" type="button">🔄 Obnovit</button>
+    <div class="history-toolbar history-overlay-toolbar"><button id="historyOverlayArchiveToggle" type="button">📦 Archiv</button><button id="historyOverlayRefresh" type="button">🔄 Obnovit</button></div>
     <div id="historyOverlayList" class="history-list"></div>
+    <button id="historyOverlayMore" type="button" class="history-more hidden">⬇️ Načíst další</button>
     <p id="historyOverlayDetail" class="history-detail" role="status" aria-live="polite"></p>
   </section>
 </div>
@@ -407,6 +416,12 @@
       historyTitle:'🔔 Moje výzvy',historyRefresh:'🔄 Obnovit',
       historyHint:'Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.',
       historyLoading:'Načítám historii výzev…',historyEmpty:'Zatím tu nemáš žádné serverové výzvy.',
+      historyArchiveEmpty:'V archivu zatím nic není.',
+      historyShowArchive:'📦 Archiv',historyBackInbox:'🔔 Aktivní výzvy',
+      historyArchive:'Skrýt do archivu',historyRestore:'Vrátit z archivu',
+      historyMore:'⬇️ Načíst další',historyArchiveOk:'✅ Výzva byla přesunuta do archivu.',
+      historyRestoreOk:'✅ Výzva byla vrácena mezi aktivní.',
+      historyArchiveError:'⚠️ Změna archivu se nezdařila: {error}',
       historyNew:'🔔 Máš {n} nepřečtených výsledků!',historyClear:'Žádné nové výsledky.',
       historyError:'⚠️ Historii výzev se nepodařilo načíst: {error}',
       historySent:'Odeslaná výzva',historyReceived:'Přijatá výzva',
@@ -492,6 +507,12 @@
       historyTitle:'🔔 My challenges',historyRefresh:'🔄 Refresh',
       historyHint:'Results update automatically while this page is open. Phone push notifications are not available yet.',
       historyLoading:'Loading challenge history…',historyEmpty:'No secure challenges here yet.',
+      historyArchiveEmpty:'Nothing is archived yet.',
+      historyShowArchive:'📦 Archive',historyBackInbox:'🔔 Active challenges',
+      historyArchive:'Move to archive',historyRestore:'Restore from archive',
+      historyMore:'⬇️ Load more',historyArchiveOk:'✅ Challenge moved to archive.',
+      historyRestoreOk:'✅ Challenge restored to the active list.',
+      historyArchiveError:'⚠️ Could not change archive: {error}',
       historyNew:'🔔 You have {n} unread results!',historyClear:'No new results.',
       historyError:'⚠️ Failed to load challenge history: {error}',
       historySent:'Challenge sent',historyReceived:'Challenge received',
@@ -527,6 +548,7 @@
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
+  let historyArchived=false,historyHasMore=false;
   const soloModes=['classic','mystery','daily','easy','medium','hard'];
   let soloProgressByMode=Object.create(null),soloLoading=false;
   // The Arcade launcher may ask for challenges before login restore finishes.
@@ -560,10 +582,14 @@
       asyncLabel:'asyncInviteLabel',asyncJoin:'joinAsyncChallenge',
       asyncCheck:'checkAsyncChallenge',asyncResultTitle:'asyncResultTitle',
       asyncShareLabel:'asyncShareLabel',asyncCopy:'asyncCopy',asyncRefresh:'asyncRefresh',
-      historyTitle:'historyTitle',historyRefresh:'historyRefresh',
+      historyRefresh:'historyRefresh',
       historyHint:'historyHint',historyOverlayTitle:'historyOverlayTitle',
       historyRefresh:'historyOverlayRefresh'
     }))$(id).textContent=T(key);
+    // Preserve the unread-badge span when updating the heading language.
+    const heading=$('historyTitle');
+    if(heading?.firstChild?.nodeType===Node.TEXT_NODE)
+      heading.firstChild.nodeValue=T('historyTitle')+' ';
     $('historyOverlayClose').setAttribute('aria-label',T('historyOverlayClose'));
     for(const [key,id] of Object.entries({
       resumeTitle:'resumeTitle',resumeText:'resumeText',
@@ -1050,83 +1076,145 @@
     for(const id of ['historyNotice','historyOverlayNotice']){
       const target=$(id);if(target)target.textContent=notice;
     }
+    for(const id of ['historyArchiveToggle','historyOverlayArchiveToggle']){
+      const button=$(id);
+      if(button){
+        button.textContent=T(historyArchived?'historyBackInbox':'historyShowArchive');
+        button.setAttribute('aria-pressed',historyArchived?'true':'false');
+      }
+    }
+    for(const id of ['historyMore','historyOverlayMore']){
+      const button=$(id);
+      if(button){
+        button.textContent=T('historyMore');
+        button.disabled=historyLoading;
+        visible(id,historyHasMore);
+      }
+    }
     for(const boxId of ['historyList','historyOverlayList']){
       const box=$(boxId);if(!box)continue;
       box.replaceChildren();
       if(!historyItems.length){
         const empty=document.createElement('p');empty.className='history-empty';
-        empty.textContent=T('historyEmpty');box.append(empty);continue;
+        empty.textContent=T(historyArchived?'historyArchiveEmpty':'historyEmpty');
+        box.append(empty);continue;
       }
       for(const entry of historyItems){
-      const wrap=document.createElement('article');
-      wrap.className='history-entry'+(entry.unread?' is-unread':'');
-      const heading=document.createElement('div');heading.className='history-entry-title';
-      const name=document.createElement('strong');
-      name.textContent=(entry.role==='creator'?T('historySent'):T('historyReceived'))+
-        ' · '+(entry.mode==='mystery'?'🧩 Mystery':'⚡ Classic');
-      heading.append(name);
-      if(entry.unread){
-        const unread=document.createElement('span');unread.className='notification-count';
-        unread.textContent=T('historyUnread');heading.append(unread);
-      }
-      const sub=document.createElement('span');sub.className='history-entry-sub';
-      let dateText='';
-      try{dateText=new Intl.DateTimeFormat(lang==='cs'?'cs-CZ':'en-US',
-        {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
-          .format(new Date(entry.created_at));}catch(_){}
-      sub.textContent=historyLabel(entry)+(dateText?' · '+dateText:'');
-      const outcome=document.createElement('div');outcome.className='history-entry-result';
-      outcome.textContent=entry.both_done?asyncSummary(entry):
-        entry.status==='creator_playing'||entry.status==='challenger_playing'?
-          T('historyPlayingHelp'):historyLabel(entry);
-      const controls=document.createElement('div');controls.className='history-actions';
-      const mayResume=!entry.both_done&&
-        (entry.role==='creator'&&entry.creator_done===false
-          ||entry.role==='challenger'&&entry.challenger_done===false)
-        && entry.status!=='expired';
-      if(mayResume){
-        const resume=document.createElement('button');resume.type='button';
-        resume.textContent=T('resumeButton');
-        resume.addEventListener('click',()=>void resumeAsyncChallenge(entry.challenge_id));
-        controls.append(resume);
-      }
-      const show=document.createElement('button');show.type='button';
-      show.textContent=entry.both_done?T('historyOpen'):T('historyCheck');
-      show.addEventListener('click',()=>void openHistoryResult(entry.challenge_id));
-      controls.append(show);
-      if(entry.role==='creator'){
-        const copy=document.createElement('button');copy.type='button';
-        copy.textContent=T('historyCopy');
-        copy.addEventListener('click',()=>void copyHistoryLink(entry.challenge_id));
-        controls.append(copy);
-      }
-      wrap.append(heading,sub,outcome,controls);box.append(wrap);
+        const wrap=document.createElement('article');
+        wrap.className='history-entry'+(entry.unread?' is-unread':'');
+        const heading=document.createElement('div');heading.className='history-entry-title';
+        const name=document.createElement('strong');
+        name.textContent=(entry.role==='creator'?T('historySent'):T('historyReceived'))+
+          ' · '+(entry.mode==='mystery'?'🧩 Mystery':'⚡ Classic');
+        heading.append(name);
+        if(entry.unread){
+          const unread=document.createElement('span');unread.className='notification-count';
+          unread.textContent=T('historyUnread');heading.append(unread);
+        }
+        // Active/in-progress challenges cannot be hidden; the user must
+        // retain their ability to resume or share them.
+        if(entry.both_done||entry.status==='expired'){
+          const archive=document.createElement('button');
+          archive.type='button';archive.className='history-entry-archive';
+          archive.textContent=historyArchived?'↩':'✕';
+          archive.setAttribute('aria-label',T(historyArchived?'historyRestore':'historyArchive'));
+          archive.setAttribute('title',T(historyArchived?'historyRestore':'historyArchive'));
+          archive.addEventListener('click',()=>void archiveHistory(entry.challenge_id,!historyArchived));
+          heading.append(archive);
+        }
+        const sub=document.createElement('span');sub.className='history-entry-sub';
+        let dateText='';
+        try{dateText=new Intl.DateTimeFormat(lang==='cs'?'cs-CZ':'en-US',
+          {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+            .format(new Date(entry.created_at));}catch(_){}
+        sub.textContent=historyLabel(entry)+(dateText?' · '+dateText:'');
+        const outcome=document.createElement('div');outcome.className='history-entry-result';
+        outcome.textContent=entry.both_done?asyncSummary(entry):
+          entry.status==='creator_playing'||entry.status==='challenger_playing'?
+            T('historyPlayingHelp'):historyLabel(entry);
+        const controls=document.createElement('div');controls.className='history-actions';
+        const mayResume=!entry.both_done&&
+          (entry.role==='creator'&&entry.creator_done===false
+            ||entry.role==='challenger'&&entry.challenger_done===false)
+          &&entry.status!=='expired';
+        if(mayResume){
+          const resume=document.createElement('button');resume.type='button';
+          resume.textContent=T('resumeButton');
+          resume.addEventListener('click',()=>void resumeAsyncChallenge(entry.challenge_id));
+          controls.append(resume);
+        }
+        const show=document.createElement('button');show.type='button';
+        show.textContent=entry.both_done?T('historyOpen'):T('historyCheck');
+        show.addEventListener('click',()=>void openHistoryResult(entry.challenge_id));
+        controls.append(show);
+        if(entry.role==='creator'){
+          const copy=document.createElement('button');copy.type='button';
+          copy.textContent=T('historyCopy');
+          copy.addEventListener('click',()=>void copyHistoryLink(entry.challenge_id));
+          controls.append(copy);
+        }
+        wrap.append(heading,sub,outcome,controls);box.append(wrap);
       }
     }
   }
-  async function refreshHistory(){
+  async function refreshHistory(loadMore=false){
     if(!me||!api||historyLoading||navigator.onLine===false)return;
     historyLoading=true;
-    const uid=me.id;
+    const uid=me.id,view=historyArchived;
+    const offset=loadMore?historyItems.length:0;
     try{
-      const {data,error}=await api.rpc('arcade_async_challenge_inbox',{p_limit:40});
+      const {data,error}=await api.rpc('arcade_async_challenge_history',{
+        p_limit:40,p_offset:offset,p_archived:view
+      });
       if(error||data?.ok!==true||!Array.isArray(data.items)||
-          !Number.isInteger(data.unread)||data.unread<0)
+          !Number.isInteger(data.unread)||data.unread<0||
+          typeof data.has_more!=='boolean'||data.archived!==view)
         throw Error(error?.message||'invalid_history');
-      if(!me||me.id!==uid)return;
-      historyItems=data.items.filter(entry=>uuidPattern.test(entry?.challenge_id)&&
+      if(!me||me.id!==uid||historyArchived!==view)return;
+      const nextItems=data.items.filter(entry=>uuidPattern.test(entry?.challenge_id)&&
         (entry.role==='creator'||entry.role==='challenger'));
+      historyItems=loadMore?[...historyItems,...nextItems]:nextItems;
+      historyHasMore=data.has_more;
       historyUnread=data.unread;
       renderResumePrompt();
       renderHistory();
     }catch(err){
-      if(me?.id===uid){
+      if(me?.id===uid&&historyArchived===view){
         const message=template(T('historyError'),{error:errorText(err)});
         for(const id of ['historyNotice','historyOverlayNotice']){
           const target=$(id);if(target)target.textContent=message;
         }
       }
-    }finally{historyLoading=false;}
+    }finally{
+      historyLoading=false;
+      // A view switch while the preceding request was in flight is not lost.
+      if(me?.id===uid&&historyArchived!==view)void refreshHistory();
+    }
+  }
+  function switchHistoryView(){
+    historyArchived=!historyArchived;
+    historyItems=[];historyHasMore=false;
+    renderHistory();
+    void refreshHistory();
+  }
+  async function archiveHistory(id,toArchive){
+    if(!me||!api||!uuidPattern.test(id))return;
+    const uid=me.id;
+    try{
+      const {data,error}=await api.rpc('arcade_async_challenge_archive',{
+        p_challenge_id:id,p_archived:toArchive
+      });
+      if(error||data?.ok!==true||data.archived!==toArchive)
+        throw Error(error?.message||'archive_failed');
+      if(!me||me.id!==uid)return;
+      historyItems=historyItems.filter(v=>v.challenge_id!==id);
+      setHistoryDetail(T(toArchive?'historyArchiveOk':'historyRestoreOk'));
+      renderHistory();
+      void refreshHistory();
+    }catch(err){
+      if(me?.id===uid)
+        setHistoryDetail(template(T('historyArchiveError'),{error:errorText(err)}));
+    }
   }
   async function openHistoryResult(id){
     if(!me||!api||busy)return;
@@ -1416,6 +1504,10 @@
   $('historyOverlayClose').addEventListener('click',closeHistoryOverlay);
   $('historyOverlayShade').addEventListener('click',closeHistoryOverlay);
   $('historyOverlayRefresh').addEventListener('click',()=>void refreshHistory());
+  $('historyArchiveToggle').addEventListener('click',switchHistoryView);
+  $('historyOverlayArchiveToggle').addEventListener('click',switchHistoryView);
+  $('historyMore').addEventListener('click',()=>void refreshHistory(true));
+  $('historyOverlayMore').addEventListener('click',()=>void refreshHistory(true));
   document.addEventListener?.('keydown',event=>{
     if(event.key==='Escape'&&!$('historyOverlay').classList.contains('hidden'))
       closeHistoryOverlay();
