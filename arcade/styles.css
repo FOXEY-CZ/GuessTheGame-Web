@@ -977,3 +977,54 @@ body.arcade-reward-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
  .shop-reward-overlay .shop-reward-modal{animation:none}
 }
+
+
+/* FOXEY Arcade storefront entry remains visible without fake sales banners. */
+.headerwallet .resource-spend{font:inherit;line-height:1.2;cursor:pointer;
+ display:inline-flex;align-items:center;gap:5px;font-size:12px;
+ background:linear-gradient(115deg,#2b3264,#1b294a);border-color:#6661aa}
+.headerwallet .resource-spend:hover{border-color:#c4adff;background:#38427e}
+.headerwallet .resource-spend b{font-variant-numeric:tabular-nums}
+.shop-header-link{background:linear-gradient(115deg,#7356c9,#493386);
+ border:1px solid #a68bfa;border-radius:999px;white-space:nowrap;
+ color:#fff;min-height:37px;padding:8px 12px;display:inline-flex;align-items:center;
+ gap:4px;font-size:12px;font-weight:800;cursor:pointer}
+.shop-header-link:hover{background:#8667da}
+.arcade-shop-spotlight{display:flex;align-items:center;gap:17px;flex-wrap:wrap;
+ margin:22px 0 15px;padding:21px 23px;border-radius:20px;
+ background:radial-gradient(circle at 5% 0,#875b9b7c,transparent 44%),
+ linear-gradient(118deg,#342541,#27264c 65%,#1e2644);
+ border:1px solid #8b6cba;box-shadow:0 10px 28px #08051933}
+.arcade-shop-spotlight-icon{font-size:clamp(35px,6vw,53px);
+ width:64px;display:grid;place-items:center}
+.arcade-shop-spotlight-copy{flex:1 1 220px;min-width:0}
+.arcade-shop-spotlight-copy h2{margin:4px 0;font-size:clamp(19px,3vw,25px)}
+.arcade-shop-spotlight-copy p{margin:5px 0;line-height:1.4;font-size:.85rem}
+.arcade-shop-spotlight-status{color:#f0d998;font-weight:750}
+.arcade-shop-spotlight-action{flex:0 0 auto;min-height:47px}
+.arcade-social-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;
+ margin:5px 0 23px;padding:6px;border-radius:15px;background:#121e35;
+ border:1px solid #3d5073}
+.arcade-social-tab{min-height:49px;display:flex;align-items:center;
+ justify-content:center;text-align:center;gap:8px;padding:8px 13px;
+ border-radius:11px;border:1px solid transparent;background:transparent;
+ color:#c3d1e9;cursor:pointer;font:inherit;font-size:.91rem;font-weight:750}
+.arcade-social-tab:hover{background:#253755;color:#fff}
+.arcade-social-tab.is-active{background:linear-gradient(120deg,#554a99,#344c8a);
+ border-color:#9486dc;color:white}
+@media(max-width:750px){
+ .shop-header-link{width:37px;height:37px;justify-content:center;
+  padding:6px;font-size:18px}
+ .shop-header-link span{display:none}
+ .headerwallet .resource-spend{padding:6px 8px;font-size:11px}
+ .arcade-shop-spotlight{padding:17px;gap:10px}
+ .arcade-shop-spotlight-icon{width:42px}
+ .arcade-shop-spotlight-action{width:100%}
+ .arcade-social-tabs{gap:4px}
+ .arcade-social-tab{font-size:.75rem;padding:9px 6px}
+}
+@media(max-width:420px){
+ .headerwallet .header-xp-resource{display:none}
+ .shop-header-link{width:33px;height:33px;font-size:17px}
+ .headerwallet .resource-spend{padding:5px;font-size:10px}
+}
