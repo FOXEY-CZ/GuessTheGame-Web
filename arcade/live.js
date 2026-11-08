@@ -328,7 +328,15 @@ async function refreshDashboard(force=false){
   try{
     const result=await call('arcade_live_dashboard');
     if(!isCurrent(owner,stamp))return;
+    const previousMatches=matches();
     snapshot=result;lastDashboard=Date.now();
+    const newlyRejected=matches().some(m=>m.rematch_of&&m.role==='host'&&
+      m.state==='declined'&&previousMatches.some(x=>
+        x.match_id===m.match_id&&x.state==='invited'));
+    if(newlyRejected){
+      status(tr('❌ Odveta byla odmítnuta.','❌ The rematch was declined.'));
+      window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
+    }
     renderList();
     // An opponent's pending request changes the controls on an already-open
     // finished-match result. Re-render without navigating away or losing it.
