@@ -28,6 +28,15 @@ assert.ok(game.includes('if(data.retry===true)'));
 assert.ok(css.includes('.friends-code-card'));
 assert.ok(html.includes('id="friendsPanePeople"')&&html.includes('id="friendsPaneLive"'),
  'Friends and Live have separate compact panes');
+const socialTabs=[...html.matchAll(/<nav class="arcade-social-tabs"[\s\S]*?<\/nav>/g)];
+assert.equal(socialTabs.length,2,'social tabs visible in Friends and Challenges');
+for(const tab of socialTabs){
+ assert.ok(tab[0].includes('data-social-live'),'Live must be reachable from both pages');
+ assert.ok(tab[0].includes('data-friends-view="people"'),'Friends must be reachable');
+ assert.ok(tab[0].includes('data-page="challenges"'),'Challenge history must be reachable');
+}
+assert.ok(html.includes('id="shopPreviewChest"'),
+ 'Players with a completed avatar collection need a free UI demo');
 assert.ok(html.includes('➕ Přidat přítele podle nicku'),
  'Nickname should be the default friend discovery method');
 assert.ok(html.includes('class="friends-code-card friends-advanced"'),
