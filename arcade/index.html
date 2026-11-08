@@ -63,7 +63,20 @@
           <div class="stat"><span>💎 Společné krystaly</span><strong id="homeSharedShards">—</strong></div>
           <div class="stat"><span>👑 Společné korunky</span><strong id="homeSharedCrowns">—</strong></div>
         </div>
-        <p class="note">Globální XP patří celé Arcade. Krystaly a korunky jsou jediné společné zůstatky pro všechny minihry. Připisování globálních XP za hraní připravujeme.</p>
+        <div class="global-level-meter">
+          <div class="global-level-meter-label"><span>Postup do dalšího levelu</span><strong id="homeLevelProgress">—</strong></div>
+          <div class="global-level-track" role="progressbar" id="homeLevelBar" aria-label="Postup k dalšímu levelu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="global-level-fill" id="homeLevelFill"></div>
+          </div>
+        </div>
+        <p class="note">Jedno globální XP a jedna peněženka pro všechny hry. Za ověřené partie a úspěchy se odměny připisují automaticky.</p>
+      </section>
+      <section class="progresscard achievement-panel" aria-label="Globální achievementy">
+        <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
+          <button class="secondary" type="button" data-page="account">Všechny achievementy</button>
+        </div>
+        <p class="small" id="homeAchievementStatus" aria-live="polite">Načítám achievementy…</p>
+        <div class="achievement-grid" id="homeAchievementGrid"></div>
       </section>
       <section class="progresscard" id="homeProgress" aria-label="Aktuální postup v Guess the Game">
         <div class="progresscard-title"><div><span class="eyebrow">TVŮJ CLOUDOVÝ POSTUP</span><h2>🎮 Guess the Game</h2></div>
@@ -243,6 +256,12 @@
       </div>
       <div id="playerAccount" class="accountpanel hidden">
         <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName" data-no-i18n>Hráč FOXEY Arcade</h2><p class="small" id="profileEmail" data-no-i18n></p><p class="small">Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p></div></div>
+        <div class="global-level-meter">
+          <div class="global-level-meter-label"><span>Postup do dalšího levelu</span><strong id="accountLevelProgress">—</strong></div>
+          <div class="global-level-track" role="progressbar" id="accountLevelBar" aria-label="Postup k dalšímu levelu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="global-level-fill" id="accountLevelFill"></div>
+          </div>
+        </div>
         <form id="profileForm">
           <label for="nickname">Hráčská přezdívka</label>
           <input id="nickname" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="off" placeholder="Například FOXEY_CZ">
@@ -251,6 +270,11 @@
           <select id="avatar"><option value="fox">🦊 Liška</option><option value="robot">🤖 Robot</option><option value="alien">👽 Mimozemšťan</option><option value="crown">👑 Koruna</option></select>
           <button class="primary" id="profileSave" type="submit">Uložit profil</button>
         </form>
+        <section class="inventory-panel achievement-panel" aria-label="Achievementy FOXEY Arcade">
+          <div class="sectionline"><h2>🏆 Moje achievementy</h2><span class="small" id="accountAchievementCount">—</span></div>
+          <p class="small" id="accountAchievementStatus" aria-live="polite">Načítám achievementy…</p>
+          <div class="achievement-grid" id="accountAchievementGrid"></div>
+        </section>
         <section class="inventory-panel" aria-label="Inventář odměn">
           <div class="sectionline"><h2>🎒 Můj inventář</h2><span class="small" id="inventoryCount">Načítání…</span></div>
           <p class="small">Tvoje vlastněné avatary. Kliknutím je nastavíš pro celý účet i Guess the Game.</p>
@@ -308,6 +332,7 @@
 <script src="./i18n.js?v=secure-cutover-20261107b"></script>
 <script src="./avatars.js"></script>
 <script src="./notifications.js?v=notifications-archive-20261108a"></script>
-<script src="./app.js?v=automatic-rewards-20261108c"></script>
+<div class="arcade-achievement-toast hidden" id="arcadeAchievementToast" role="status" aria-live="polite"></div>
+<script src="./app.js?v=global-achievements-20261108a"></script>
 </body>
 </html>
