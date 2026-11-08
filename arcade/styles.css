@@ -269,3 +269,6 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .achievement-item{padding:12px}.global-level-meter{margin:12px 0}}
 @media(prefers-reduced-motion:reduce){.global-level-fill{transition:none}
  .arcade-achievement-toast{animation:none}}
+
+.arcade-notice-pagination{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 6px}
+.arcade-notice-pagination .arcade-notice-more{margin:0;min-height:42px}
