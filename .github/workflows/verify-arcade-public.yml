@@ -8,6 +8,7 @@ on:
       - 'tests/arcade-global-notifications-client.cjs'
       - 'tests/secure-async-history-client.cjs'
       - 'tests/arcade-global-achievements-client.cjs'
+      - 'tests/arcade-ui-subtabs-client.cjs'
       - '.github/workflows/verify-arcade-public.yml'
   workflow_dispatch:
 
@@ -34,6 +35,8 @@ jobs:
           node tests/secure-async-history-client.cjs
           node --check tests/arcade-global-achievements-client.cjs
           node tests/arcade-global-achievements-client.cjs
+          node --check tests/arcade-ui-subtabs-client.cjs
+          node tests/arcade-ui-subtabs-client.cjs
           node --check arcade/config.js
           node - <<'NODE'
           const fs=require('node:fs');
