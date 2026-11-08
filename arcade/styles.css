@@ -703,3 +703,49 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .friends-public-stats>div{padding:10px}
  .friends-public-profile{padding:14px}
 }
+
+
+/* Live friends-only 1v1 — mobile-first, same dark Arcade palette. */
+.live-section { margin-top: 1.4rem; }
+.live-section .friends-columns { align-items: start; }
+.live-section .friends-columns > div { min-width: 0; }
+.live-section h3 { margin: .35rem 0 .85rem; }
+.live-invite-count { font-size: .8rem; color: #ffc976; }
+.live-list { display: grid; gap: .75rem; }
+.live-item { display: flex; align-items: center; justify-content: space-between;
+  gap: .65rem; min-width: 0; padding: .85rem;
+  background: rgba(11, 26, 51, .65); border: 1px solid rgba(155,177,219,.25);
+  border-radius: 16px; }
+.live-person { display: flex; flex-direction: column; min-width: 0; gap: .25rem; }
+.live-person strong { overflow-wrap: anywhere; }
+.live-presence { font-size: .85rem; color: #b8caea; }
+.live-item button { flex: 0 0 auto; max-width: 48%; white-space: normal; }
+.live-arena { margin-top: 1.25rem; padding: clamp(.9rem,2.5vw,1.5rem);
+  border: 1px solid rgba(180,145,255,.52);
+  border-radius: 20px; background: linear-gradient(135deg,rgba(43,39,87,.88),rgba(16,34,57,.88)); }
+.live-arena.hidden { display: none !important; }
+.live-score { display: flex; justify-content: center; align-items: center;
+  flex-wrap: wrap; gap: clamp(1rem,6vw,3rem);
+  margin: 1.2rem 0; padding: 1rem;
+  background: rgba(5,14,35,.35); border-radius: 14px; }
+.live-score > div { display: flex; flex-direction: column; align-items: center;
+  font-weight: 700; font-size: .8rem; letter-spacing: .08em; }
+.live-score strong { font-size: 2.5rem; color: #eed0ff; line-height: 1.2; }
+.live-countdown { display: block; margin: .7rem 0;
+  font-variant-numeric: tabular-nums; font-size: 1.2rem; }
+.live-question h3 { margin: 1rem 0; font-size: clamp(1.1rem,2.8vw,1.45rem); }
+.live-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .7rem; }
+.live-option { border: 1px solid #8099d1; border-radius: 14px;
+  background: rgba(39,59,104,.85); color: #fff; cursor: pointer;
+  min-height: 3.6rem; padding: 1rem .8rem; font: inherit;
+  font-weight: 650; overflow-wrap: anywhere; }
+.live-option:hover:not(:disabled),.live-option:focus-visible { background: #524b9c; }
+.live-option:disabled { opacity: .65; cursor: not-allowed; }
+.live-arena .friends-actions { margin-top: 1rem; flex-wrap: wrap; }
+@media (max-width: 660px) {
+ .live-options { grid-template-columns: 1fr; }
+ .live-item { align-items: flex-start; flex-wrap: wrap; }
+ .live-item button { max-width: 100%; }
+ .live-section .friends-columns { grid-template-columns: 1fr; }
+ .live-arena .friends-actions button { flex: 1 1 auto; }
+}
