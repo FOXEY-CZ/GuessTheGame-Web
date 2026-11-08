@@ -368,7 +368,10 @@
       kind==='live_invite'?
         (entry.live_rematch===true?
           tr('🔄 Žádost o odvetu','🔄 Rematch request'):
-          tr('⚡ Pozvánka do živého 1v1','⚡ Live 1v1 invitation')):
+          [2,3].includes(Number(entry.live_series_target))?
+            tr('🏆 Pozvánka do série na ','🏆 Best-of series · first to ')+
+              entry.live_series_target+tr(' vítězství',' wins'):
+            tr('⚡ Pozvánka do živého 1v1','⚡ Live 1v1 invitation')):
       kind==='live_rematch_declined'?
         tr('❌ Odveta byla odmítnuta','❌ Rematch declined'):
       tr('⚔️ Přímá výzva','⚔️ Direct challenge');
@@ -377,7 +380,11 @@
       (entry.live_rematch===true?
         tr('Soupeř tě žádá o odvetu. Chceš ji přijmout, nebo odmítnout?',
           'Your opponent requests a rematch. Accept or decline?'):
-        tr('Kamarád tě zve na souboj v reálném čase.','Your friend invited you to a live duel.')):
+        [2,3].includes(Number(entry.live_series_target))?
+          tr('Soupeř tě zve do série na ','Your friend invited you to a first-to-')+
+          entry.live_series_target+tr(' vítězství. Potvrď účast v lobby.',
+                                     '-wins series. Accept in the lobby.'):
+          tr('Kamarád tě zve na souboj v reálném čase.','Your friend invited you to a live duel.')):
       kind==='live_rematch_declined'?
         tr('Soupeř odmítl tvoji žádost o odvetu.',
            'Your opponent declined your rematch request.'):
@@ -397,7 +404,9 @@
       kind==='live_invite'?
         (entry.live_rematch===true?
           tr('🔄 Přijmout / odmítnout','🔄 Accept / decline'):
-          tr('⚡ Otevřít lobby','⚡ Open lobby')):
+          [2,3].includes(Number(entry.live_series_target))?
+            tr('🏆 Otevřít sérii','🏆 Open series'):
+            tr('⚡ Otevřít lobby','⚡ Open lobby')):
       kind==='friend_challenge'?
       entry.challenge_ready?tr('▶️ Hrát','▶️ Play'):tr('⏳ Čeká se','⏳ Waiting'):
       tr('👥 Otevřít přátele','👥 Open Friends'),
