@@ -352,6 +352,28 @@
         <div class="friends-public-content" id="friendProfileContent"></div>
         <div id="friendProfileActions" class="friends-actions"></div>
       </section>
+      <section class="friends-section live-section" aria-labelledby="liveTitle">
+        <div class="sectionline">
+          <h2 id="liveTitle">⚡ Živé souboje 1v1 <span id="liveInviteCount" class="live-invite-count"></span></h2>
+          <button type="button" class="secondary" id="liveRefresh">↻ Obnovit</button>
+        </div>
+        <p class="small">Pozvi kamaráda, potvrďte připravenost a odpovídejte na stejné otázky současně. Zápas trvá deset kol, každé má nejvýše 25 sekund. Zatím bez odměn XP a měn.</p>
+        <p id="liveStatus" class="small" role="status" aria-live="polite"></p>
+        <div class="friends-columns">
+          <div><h3>🟢 Přátelé online</h3><div id="liveFriendList" class="live-list"></div></div>
+          <div><h3>📨 Pozvánky a historie</h3><div id="liveMatchList" class="live-list"></div></div>
+        </div>
+        <div id="liveArena" class="live-arena hidden" aria-labelledby="liveArenaTitle">
+          <div class="sectionline"><h3 id="liveArenaTitle">🎮 Živá aréna</h3><strong id="liveRound"></strong></div>
+          <p id="liveArenaOpponent" class="small"></p>
+          <div class="live-score" aria-label="Průběžné skóre"><div>TY <strong id="liveScoreHost">0</strong></div><span>VS</span><div>SOUPĚŘ <strong id="liveScoreGuest">0</strong></div></div>
+          <p id="liveArenaStatus" role="status" aria-live="polite"></p>
+          <strong id="liveCountdown" class="live-countdown"></strong>
+          <div id="liveQuestion" class="live-question"></div>
+          <div id="liveOptions" class="live-options"></div>
+          <div id="liveArenaControls" class="friends-actions"></div>
+        </div>
+      </section>
       <details class="friends-blocked-area">
         <summary>🛡️ Blokovaní hráči</summary>
         <p class="small">Blokovaný hráč ti nemůže poslat novou žádost ani cílenou výzvu.</p>
@@ -535,6 +557,7 @@
 <script src="./i18n.js?v=friends-20261108c"></script>
 <script src="./avatars.js"></script>
 <script src="./notifications.js?v=friends-20261108c"></script>
+<script src="./live.js?v=live-20261108a"></script>
 <script src="./friends.js?v=friends-20261108c"></script>
 <script src="./ui2.js?v=challenge-navigation-20261108b"></script>
 <script src="./missions.js?v=rotating-missions-streaks-20261108a"></script>
