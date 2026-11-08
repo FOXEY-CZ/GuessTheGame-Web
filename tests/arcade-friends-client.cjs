@@ -26,6 +26,18 @@ assert.ok(game.includes("urlParams.get('friend_challenge')"));
 assert.ok(game.includes('void joinAsyncChallenge()'));
 assert.ok(game.includes('if(data.retry===true)'));
 assert.ok(css.includes('.friends-code-card'));
+assert.ok(html.includes('id="friendsPanePeople"')&&html.includes('id="friendsPaneLive"'),
+ 'Friends and Live have separate compact panes');
+assert.ok(html.includes('➕ Přidat přítele podle nicku'),
+ 'Nickname should be the default friend discovery method');
+assert.ok(html.includes('class="friends-code-card friends-advanced"'),
+ 'Legacy friend codes should be behind a collapsed Advanced disclosure');
+assert.ok(!html.includes('class="shop-header-link"'),
+ 'Shop icon must not duplicate the persistent bottom Shop button');
+assert.ok(game.includes('id="gameShopButton"'),
+ 'Game must have its own shortcut into shared Arcade Shop');
+assert.ok(app.includes("event.data?.type==='foxey-arcade:open-shop'"),
+ 'Only the shared Arcade Shop handles in-game Shop navigation');
 assert.ok(!code.includes('innerHTML'));
 assert.ok(!code.includes('service_role'));
 assert.ok(!/\.from\(['"]arcade_wallet/.test(code));
@@ -134,6 +146,18 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(nodes.get('myFriendCode').textContent,'FX-ABCDEF123456');
  assert.equal(nodes.get('friendsIncomingList').children.length,1);
  assert.equal(nodes.get('friendsCount').textContent,'0');
+ ui.onPage('community');
+ assert.equal(nodes.get('friendsPanePeople').classList.contains('hidden'),false);
+ assert.equal(nodes.get('friendsPaneLive').classList.contains('hidden'),true);
+ ui.showLive();
+ assert.equal(nodes.get('friendsPanePeople').classList.contains('hidden'),true);
+ assert.equal(nodes.get('friendsPaneLive').classList.contains('hidden'),false);
+ ui.openPane('people');
+ assert.equal(nodes.get('friendsPaneLive').classList.contains('hidden'),true);
+ assert.equal(nodes.get('friendsPanePeople').classList.contains('hidden'),false);
+ assert.equal(nodes.get('friendsRequestSummaryCount').textContent,'1');
+ assert.equal(nodes.get('friendsRequestsDetails').open,true,
+   'Incoming requests must not be hidden inside a collapsed menu');
  assert.ok(bellUnread.includes(1));
  nodes.get('copyFriendCode').events.click();await settle();
  assert.equal(copied,'FX-ABCDEF123456');
