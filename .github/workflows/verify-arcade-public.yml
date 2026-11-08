@@ -58,6 +58,8 @@ jobs:
           node tests/arcade-live-client.cjs
           node --check tests/arcade-game-fullscreen-client.cjs
           node tests/arcade-game-fullscreen-client.cjs
+          node --check tests/arcade-chest-reward-client.cjs
+          node tests/arcade-chest-reward-client.cjs
           node --check tests/secure-game-friend-picker-client.cjs
           node tests/secure-game-friend-picker-client.cjs
           node --check tests/arcade-rematch-two-players-client.cjs
