@@ -60,6 +60,8 @@
       walletBusy=false,walletRequest=0;
   const THEME_IDS=new Set(['classic','retro','royal','ocean']);
   let achievements=null,achievementStatus='guest',achievementSeq=0,achToastTimer=null;
+  // Navigation-only state; never changes a saved game or wallet.
+  let accountTab='overview',shopTab='chests';
   const walletNumber=v=>Number.isSafeInteger(v)&&v>=0?v:0;
   const ownedAvatars=()=>Array.isArray(sharedCosmetics?.owned_avatars)
     ?sharedCosmetics.owned_avatars.filter(id=>Object.hasOwn(AVATAR_CATALOG,id))
@@ -477,6 +479,47 @@
   const message=(text)=>{
     el('accountNotice').textContent=window.FOXEY_I18N?.t(text)||text;
   };
+  const SUBTAB_GROUPS=Object.freeze({
+    account:['overview','achievements','inventory','stats'],
+    shop:['chests','themes','avatars']
+  });
+  function selectSubtab(group,target,focus=false){
+    const groupNames=SUBTAB_GROUPS[group];
+    if(!groupNames||!groupNames.includes(target))return;
+    if(group==='account')accountTab=target;else shopTab=target;
+    const prefix=group==='account'?'account':'shop';
+    const suffix=key=>key.charAt(0).toUpperCase()+key.slice(1);
+    for(const name of groupNames){
+      const active=name===target;
+      const tab=el(prefix+'Tab'+suffix(name));
+      const panel=el(prefix+'Panel'+suffix(name));
+      if(!tab||!panel)continue;
+      panel.classList.toggle('hidden',!active);
+      tab.classList.toggle('is-active',active);
+      tab.setAttribute('aria-selected',String(active));
+      tab.tabIndex=active?0:-1;
+      if(active&&focus)tab.focus?.();
+    }
+  }
+  function bindSubtabs(group){
+    const root=el(group==='account'?'accountTabs':'shopTabs');
+    if(!root)return;
+    const attribute=group==='account'?'accountTab':'shopTab';
+    const names=SUBTAB_GROUPS[group];
+    root.querySelectorAll('button[role="tab"]').forEach(tab=>{
+      tab.addEventListener('click',()=>selectSubtab(group,tab.dataset[attribute]));
+      tab.addEventListener('keydown',event=>{
+        const keys=['ArrowRight','ArrowLeft','Home','End'];
+        if(!keys.includes(event.key))return;
+        event.preventDefault();
+        const current=names.indexOf(tab.dataset[attribute]);
+        const next=event.key==='Home'?0:event.key==='End'?names.length-1:
+          (current+(event.key==='ArrowRight'?1:-1)+names.length)%names.length;
+        selectSubtab(group,names[next],true);
+      });
+    });
+    selectSubtab(group,group==='account'?accountTab:shopTab);
+  }
   function go(page){
     if(!PAGES.has(page))page='home';
     if(page==='play'){
@@ -490,7 +533,11 @@
       }
     }
     for(const name of PAGES)show('page-'+name,name===page);
-    if(page==='shop'&&user&&supa)void loadSharedWallet();
+    if(page==='shop'){
+      selectSubtab('shop',shopTab);
+      if(user&&supa)void loadSharedWallet();
+    }
+    if(page==='account')selectSubtab('account',accountTab);
     if((page==='home'||page==='account')&&user&&supa&&achievementStatus==='guest')void loadAchievements();
     // On return from playing, re-read the authoritative cloud row. The iframe
     // also sends a lightweight synced notification for live updates.
@@ -810,8 +857,13 @@
     finally{busy=false;render();}
   }
   document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',event=>{
-    event.preventDefault();go(button.dataset.page);
+    event.preventDefault();
+    go(button.dataset.page);
+    if(button.dataset.page==='account'&&button.dataset.accountTab)
+      selectSubtab('account',button.dataset.accountTab);
   }));
+  bindSubtabs('account');
+  bindSubtabs('shop');
   el('launchChallenge').addEventListener('click',openChallengeInGame);
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
