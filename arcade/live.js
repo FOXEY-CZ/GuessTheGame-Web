@@ -20,7 +20,7 @@ let navigate=null,previousInvites=-1;
 let stats=null,statsLoading=false,lastStats=0;
 let realtimeChannel=null,realtimeClient=null,realtimeConnected=false,lastState=0;
 let seriesData=null,seriesBusy=false,seriesBusyId=null,lastSeries=0;
-let headFriendId=null,headData=null,headBusy=false,lastHead=0;
+let headFriendId=null,headData=null,headBusy=false,headLoadingFriend=null,lastHead=0;
 const modeName=m=>m==='speed'?tr('⚡ Rychlostní','⚡ Speed'):
   m==='mystery'?tr('🧩 Mystery','🧩 Mystery'):tr('⚔️ Klasika','⚔️ Classic');
 const storageKey=owner=>'foxey.arcade.live.last.'+owner;
@@ -76,9 +76,13 @@ function renderHeadToHead(){
   }
 }
 async function refreshHeadToHead(force=false){
-  if(!uid||!headFriendId||headBusy)return;
+  if(!uid||!headFriendId)return;
+  const friendId=headFriendId;
+  // An in-flight request for friend A must never block opening friend B.
+  if(headBusy&&headLoadingFriend===friendId)return;
   if(!force&&Date.now()-lastHead<20000)return;
-  headBusy=true;const owner=uid,stamp=epoch,friendId=headFriendId;
+  headBusy=true;headLoadingFriend=friendId;
+  const owner=uid,stamp=epoch;
   try{
     const data=await call('arcade_live_head_to_head',{
       p_friend_id:friendId,p_limit:20
@@ -90,7 +94,9 @@ async function refreshHeadToHead(force=false){
     if(isCurrent(owner,stamp)&&headFriendId===friendId)
       text('liveHeadToHeadStatus',
         tr('⚠️ Historie se nenačetla: ','⚠️ History unavailable: ')+safeError(e));
-  }finally{headBusy=false;}
+  }finally{
+    if(headLoadingFriend===friendId){headBusy=false;headLoadingFriend=null;}
+  }
 }
 function viewHeadToHead(friendId){
   if(!uid||!UUID.test(friendId))return;
@@ -737,7 +743,7 @@ function connect(client,user){
     if(previous)try{window.sessionStorage.removeItem(storageKey(previous));}catch(_){}
     epoch++;snapshot=null;stats=null;statsLoading=false;lastStats=0;
     seriesData=null;seriesBusy=false;seriesBusyId=null;lastSeries=0;
-    headFriendId=null;headData=null;headBusy=false;lastHead=0;
+    headFriendId=null;headData=null;headBusy=false;headLoadingFriend=null;lastHead=0;
     active=null;activeId=null;previousInvites=-1;lastDashboard=0;lastPing=0;lastState=0;
     loadingDashboard=false;loadingState=false;loadingStateId=null;busy=false;
   }
