@@ -410,8 +410,14 @@ function renderArena(){
                  '🔄 You requested a rematch. Waiting for your opponent.'):
         tr('🔄 Kamarád tě žádá o odvetu. Chceš ji přijmout?',
            '🔄 Your friend requests a rematch. Do you accept?')):
-      (host?tr('📨 Pozvánka odeslána. Čekáme na přijetí.','📨 Waiting for opponent to accept.'):
-        tr('📨 Kamarád tě zve do živého 1v1!','📨 Your friend invited you to a live 1v1!')),
+      (m.series_id?
+        (host?
+          tr('🏆 Pozvánka do série odeslána. Čeká se na soupeře.',
+             '🏆 Series invitation sent. Waiting for your opponent.'):
+          tr('🏆 Kamarád tě zve do série zápasů. Chceš ji přijmout?',
+             '🏆 Your friend invited you to a match series. Accept?')):
+        (host?tr('📨 Pozvánka odeslána. Čekáme na přijetí.','📨 Waiting for opponent to accept.'):
+          tr('📨 Kamarád tě zve do živého 1v1!','📨 Your friend invited you to a live 1v1!'))),
     lobby:tr('🕹️ Lobby: oba hráči musí potvrdit připravenost.','🕹️ Lobby: both players must get ready.'),
     running:m.my_answered?
       tr('✅ Odpověď uložená. Čekáme na soupeře nebo konec kola.','✅ Answer saved. Waiting for the other player or timer.'):
