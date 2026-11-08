@@ -188,6 +188,67 @@
   #resultPanel .statgrid{text-align:center}
   @media(max-width:380px){.mode-icon{flex-basis:43px;height:43px;font-size:1.35rem}.mode-choice{padding:12px}.mode-choice-head{gap:10px}.mode-choice .mode-copy strong{font-size:.99rem}.mode-choice .mode-copy small{font-size:.76rem}.mode-choice-actions button{font-size:.78rem;padding:9px 6px}.hero-art{width:142px;height:103px;margin:9px auto}.hero-mark{font-size:68px}.questionbox{min-height:175px}}
   @media(prefers-reduced-motion:reduce){.mode,.progress>div{transition:none!important}}
+
+  /* Compact modern gameplay and achievements: never scroll a full-screen feed. */
+  .quiz-playing .hero,.quiz-finished .hero{display:none}
+  .quiz-playing .wrap,.quiz-finished .wrap{padding-top:10px}
+  .quiz-playing .status,.quiz-finished .status{margin:8px auto;font-size:.81rem}
+  .quiz-playing #gamePanel,.quiz-finished #resultPanel{margin-top:10px}
+  .achievement-shortcut{min-width:65px;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 9px}
+  .achievements-small-count{font-size:.7rem;font-variant-numeric:tabular-nums}
+  .achievements-overlay{position:fixed;inset:0;z-index:85;display:grid;place-items:center;padding:12px}
+  .achievements-overlay.hidden{display:none}
+  .achievements-shade{position:absolute;inset:0;background:#030817db;backdrop-filter:blur(6px)}
+  .achievements-panel{position:relative;width:min(740px,100%);max-height:min(88dvh,860px);
+    overflow-y:auto;overscroll-behavior:contain;background:#101f38;
+    border:1px solid #6384ac;border-radius:24px;padding:clamp(16px,3vw,25px);
+    box-shadow:0 25px 80px #000b}
+  .achievements-panel-header{display:flex;align-items:center;justify-content:space-between;gap:15px}
+  .achievements-panel h2{margin:5px 0 10px;font-size:clamp(1.3rem,4vw,1.85rem)}
+  #achievementsClose{flex:0 0 44px;min-width:44px;min-height:44px;font-size:1.2rem}
+  .achievement-account-summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px;
+    color:#dbf3fa;font-size:.86rem;margin:10px 0}
+  .achievement-account-summary strong{font-size:1rem;color:#a2f5e7}
+  .achievements-meter{height:8px;border-radius:99px;overflow:hidden;background:#304364;margin:12px 0}
+  .achievements-meter>span{height:100%;display:block;background:linear-gradient(90deg,#52dec5,#9e94ff);width:0%;transition:width .3s}
+  .achievements-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:10px;margin:14px 0 4px}
+  .achievement-game-card{border:1px solid #405d7b;background:#182945;border-radius:15px;
+    padding:13px;display:grid;grid-template-columns:34px 1fr;gap:11px}
+  .achievement-game-card.is-unlocked{border-color:#629c89;background:#183a37}
+  .achievement-game-icon{font-size:1.6rem;line-height:1.3}
+  .achievement-game-copy{min-width:0;display:grid;gap:5px}
+  .achievement-game-copy strong{font-size:.92rem}
+  .achievement-game-copy small{font-size:.79rem;line-height:1.4;color:#bdcbe1}
+  .achievement-game-reward{color:#e0ead0;font-size:.82rem}
+  .achievement-game-progress{height:5px;overflow:hidden;border-radius:99px;background:#334867}
+  .achievement-game-progress span{display:block;height:100%;background:#9bddc1}
+  .achievement-unlock-banner{border:1px solid #60ab97;border-radius:17px;
+    background:linear-gradient(125deg,#194a40,#243658);padding:14px;margin:14px 0}
+  .achievement-unlock-banner strong{color:#d8ffef}
+  .achievement-unlock-banner p{line-height:1.4;font-size:.89rem;margin:8px 0}
+  .achievement-unlock-banner button{min-height:40px;padding:8px 13px}
+  /* The game should visually prioritize playing, not explanations. */
+  #modePanel .live-rewards{margin:8px 0 14px;padding:11px 14px}
+  #modePanel .live-rewards h3{font-size:.9rem;margin:0 0 5px}
+  #modePanel .live-rewards p{font-size:.82rem;margin:3px 0}
+  #modePanel .resume-guide{display:none}
+  .quiz-playing .statgrid{margin:9px 0}
+  .quiz-playing .stat{padding:8px 6px}
+  .quiz-playing .progress{margin:8px 0 13px}
+  .quiz-playing .questionbox{margin:12px 0;padding:16px;min-height:110px}
+  .quiz-playing .option{min-height:52px;padding:11px 14px}
+  @media(max-width:600px){
+    .header{flex-wrap:nowrap;gap:5px}
+    .brand{flex:1 1 auto;min-width:0;font-size:.78rem;letter-spacing:.03em}
+    .header-actions{display:flex;flex:0 0 auto;gap:5px}
+    .header-actions #historyBell,.header-actions #achievementsButton,.header-actions #lang{
+      order:initial;min-width:42px;min-height:42px;padding:6px;font-size:1rem}
+    #achievementsButton .achievements-small-count{font-size:.64rem}
+    .platform-return{display:none}
+    .achievements-list{grid-template-columns:1fr}
+    .achievements-panel{max-height:92dvh;border-radius:18px}
+  }
+  @media(prefers-reduced-motion:reduce){.achievements-meter>span{transition:none}}
 </style>
 </head>
 <body>
@@ -197,6 +258,7 @@
     <div class="header-actions">
       <a id="backToPlatform" class="platform-return" href="./arcade/" target="_top">← Zpět do Arcade</a>
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
+      <button id="achievementsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="achievementsOverlay" aria-label="Achievementy" title="Achievementy">🏆 <span id="achievementHeaderCount" class="achievements-small-count">—</span></button>
       <button id="lang" class="lang" type="button">CZ / EN</button>
     </div>
   </div>
@@ -318,7 +380,7 @@
     </div>
     <div class="statgrid">
       <div class="stat"><span class="stat-icon" aria-hidden="true">🎮</span><b id="count">1 / 10</b><span id="countLabel">OTÁZKA</span></div>
-      <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="xp">0</b><span>XP</span></div>
+      <div class="stat"><span class="stat-icon" aria-hidden="true">✨</span><b id="xp">0</b><span id="inGameScoreLabel">BODY</span></div>
       <div class="stat"><span class="stat-icon" aria-hidden="true">🎯</span><b id="correct">0</b><span id="correctLabel">SPRÁVNĚ</span></div>
     </div>
     <div class="progress"><div id="fill"></div></div>
@@ -379,6 +441,11 @@
       <h3 id="liveRewardTitle">🎁 Ověřené odměny</h3>
       <p id="liveRewardSummary"></p>
     </section>
+    <div id="achievementUnlockBanner" class="achievement-unlock-banner hidden" role="status" aria-live="polite">
+      <strong id="achievementUnlockTitle">🏆 Nové achievementy</strong>
+      <p id="achievementUnlockDescription"></p>
+      <button id="resultAchievementsButton" class="secondary" type="button">🏆 Zobrazit achievementy</button>
+    </div>
     <section class="async-result hidden" id="asyncResult" aria-labelledby="asyncResultTitle">
       <h3 id="asyncResultTitle">⚔️ Serverová výzva</h3>
       <p id="asyncResultMessage" role="status" aria-live="polite"></p>
@@ -399,6 +466,26 @@
 
   <div class="footer" id="footer">FOXEY Arcade · Zabezpečená Guess the Game · Automaticky synchronizované odměny</div>
 </main>
+<div id="achievementsOverlay" class="achievements-overlay hidden" role="presentation">
+  <div id="achievementsShade" class="achievements-shade"></div>
+  <section class="achievements-panel" role="dialog" aria-modal="true" aria-labelledby="achievementsTitle">
+    <div class="achievements-panel-header">
+      <div>
+        <span class="label" id="achievementsEyebrow">FOXEY ARCADE · ODMĚNY</span>
+        <h2 id="achievementsTitle">🏆 Achievementy</h2>
+      </div>
+      <button id="achievementsClose" type="button" aria-label="Zavřít achievementy">✕</button>
+    </div>
+    <div class="achievement-account-summary">
+      <strong id="achievementsLevel">🎖️ Level —</strong>
+      <span id="achievementsXp">— XP</span>
+      <span id="achievementsCount">— / 16</span>
+    </div>
+    <div class="achievements-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="achievementsLevelMeter"><span id="achievementsLevelFill"></span></div>
+    <p id="achievementsHint" class="async-help" aria-live="polite">Načítám achievementy…</p>
+    <div id="achievementsList" class="achievements-list"></div>
+  </section>
+</div>
 <div id="historyOverlay" class="history-overlay hidden" role="presentation">
   <div id="historyOverlayShade" class="history-overlay-shade"></div>
   <section class="history-overlay-panel" role="dialog" aria-modal="true" aria-labelledby="historyOverlayTitle">
@@ -508,6 +595,18 @@
       liveRewardOldRun:'ℹ️ Partie začala před aktivací, nebo používá starší otázkovou verzi (včetně dnešní denní výzvy). Odměnu může získat nově spuštěná hra s aktualizovanými otázkami.',
       liveRewardDisabled:'⚠️ Vyplácení je momentálně pozastavené, skóre zůstává uložené.',
       liveRewardError:'⚠️ Odměnu se nepodařilo připsat: {error}. Zkus znovu ověřit výsledek.',
+      achievementsTitle:'🏆 Achievementy',
+      achievementsEyebrow:'FOXEY ARCADE · ODZNAKY',
+      achievementsButton:'Zobrazit achievementy',
+      achievementsClose:'Zavřít achievementy',
+      achievementsLoading:'Načítám achievementy ze serveru…',
+      achievementsUnavailable:'⚠️ Achievementy se nepodařilo načíst. Zkus je znovu otevřít.',
+      achievementsSummary:'Odemčeno {unlocked} z {total} úspěchů',
+      achievementsLevel:'🎖️ Level {level}',
+      achievementsXp:'{xp} XP · do další úrovně {remaining} XP',
+      achievementsUnlocked:'✓ Odemčeno',
+      achievementsEarned:'🎉 Nově odemčeno {count} achievementů!',
+      achievementsShow:'🏆 Zobrazit achievementy',
       scorePoints:'BODY',
       reportSent:'✅ Děkuju! Hlášení bylo uloženo k této otázce.',
       auditRetryButton:'🔄 Znovu ověřit výsledek',
@@ -634,6 +733,18 @@
       liveRewardOldRun:'ℹ️ This run began before activation or uses a frozen older question set (including today’s daily). Fresh games using the updated set can earn rewards.',
       liveRewardDisabled:'⚠️ Payouts are temporarily paused. Your score is saved.',
       liveRewardError:'⚠️ Could not credit the reward: {error}. Retry verification.',
+      achievementsTitle:'🏆 Achievements',
+      achievementsEyebrow:'FOXEY ARCADE · BADGES',
+      achievementsButton:'View achievements',
+      achievementsClose:'Close achievements',
+      achievementsLoading:'Loading achievements from server…',
+      achievementsUnavailable:'⚠️ Could not load achievements. Try opening them again.',
+      achievementsSummary:'Unlocked {unlocked} of {total} achievements',
+      achievementsLevel:'🎖️ Level {level}',
+      achievementsXp:'{xp} XP · {remaining} XP to next level',
+      achievementsUnlocked:'✓ Unlocked',
+      achievementsEarned:'🎉 {count} new achievements unlocked!',
+      achievementsShow:'🏆 View achievements',
       scorePoints:'POINTS',
       reportSent:'✅ Thanks! This question has been reported.',
       auditRetryButton:'🔄 Retry result verification',
@@ -683,6 +794,7 @@
   let reportPending=false,reportSentKey=null;
   let liveRewardState=null,liveRewardLoading=false;
   let liveRewardReconcileAttempted=false;
+  let achievementState=null,achievementLoading=false,achievementSeq=0;
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
