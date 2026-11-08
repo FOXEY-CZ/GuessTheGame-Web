@@ -12,6 +12,7 @@ on:
       - 'tests/arcade-ui-subtabs-client.cjs'
       - 'tests/arcade-ui2-navigation-client.cjs'
       - 'tests/arcade-friends-client.cjs'
+      - 'tests/arcade-live-client.cjs'
       - '.github/workflows/verify-arcade-public.yml'
   workflow_dispatch:
 
@@ -33,6 +34,7 @@ jobs:
           node --check arcade/app.js
           node --check arcade/notifications.js
           node --check arcade/friends.js
+          node --check arcade/live.js
           node --check arcade/ui2.js
           node --check arcade/missions.js
           node --check arcade/i18n.js
@@ -50,6 +52,8 @@ jobs:
           node tests/arcade-ui2-navigation-client.cjs
           node --check tests/arcade-friends-client.cjs
           node tests/arcade-friends-client.cjs
+          node --check tests/arcade-live-client.cjs
+          node tests/arcade-live-client.cjs
           node --check arcade/config.js
           node - <<'NODE'
           const fs=require('node:fs');
@@ -62,7 +66,7 @@ jobs:
           for(const id of ['page-home','page-games','page-play','page-community','page-account','page-settings','authForm','nickname','avatar','signOut','gameFrame','headerArcadeXp','headerArcadeLevel','homeArcadeXp','homeArcadeLevel','accountArcadeXp','accountArcadeLevel','homeXp','homeLevel','homeShards','homeCrowns','accountXp','accountLevel','accountShards','accountCrowns'])
             if(!html.includes('id="'+id+'"')) throw Error('Missing UI element '+id);
           if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./ui2.js')||!html.includes('./missions.js')||!html.includes('./friends.js')||!html.includes('./config.js')||
-             !html.includes('./avatars.js')||!avatars.includes('FOXEY_AVATAR_ART'))
+             !html.includes('./live.js')||!html.includes('./avatars.js')||!avatars.includes('FOXEY_AVATAR_ART'))
             throw Error('Missing relative asset links');
           if(!config.includes('sb_publishable_')||/sb_secret_|ghp_[A-Za-z0-9]{20,}|postgres:\/\//.test(config))
             throw Error('Unexpected key or secret in public config');
