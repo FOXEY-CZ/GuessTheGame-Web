@@ -14,7 +14,7 @@
   let dashboard=null,searchResults=[],searchStatus='',selected=null;
   let socialItems=[],socialUnread=0,socialHasMore=false,
       socialArchived=false,socialOffset=0,socialLoading=false;
-  let navigate=null,currentPage='home';
+  let navigate=null,currentPage='home',socialResponding=false;
   const safeList=value=>Array.isArray(value)?value:[];
   function node(tag,cls,content){
     const el=document.createElement(tag);
@@ -357,6 +357,39 @@
       }
     })();
   }
+  async function respondFromBell(entry,accept=true){
+    if(!uid||!api||socialResponding||!validId.test(entry.subject_id))return;
+    const owner=uid,stamp=revision;
+    const isFriend=entry.kind==='friend_request';
+    const isLive=entry.kind==='live_invite';
+    if(!isFriend&&!isLive)return;
+    socialResponding=true;
+    try{
+      const result=await call(isFriend?'arcade_friend_respond':'arcade_live_respond',
+        isFriend?{p_request_id:entry.subject_id,p_accept:accept}:
+                 {p_match_id:entry.subject_id,p_accept:accept});
+      if(owner!==uid||stamp!==revision)return;
+      setText('arcadeSocialBellStatus',accept?
+        tr('✅ Pozvánka přijata.','✅ Invitation accepted.'):
+        tr('✕ Pozvánka odmítnuta.','✕ Invitation declined.'));
+      try{await call('arcade_social_notification_seen',{
+        p_notification_id:entry.notification_id
+      });}catch(_){}
+      if(isLive&&accept){
+        window.FOXEY_ARCADE_NOTIFICATIONS?.close?.();
+        navigate?.('community');
+        void window.FOXEY_ARCADE_LIVE?.openMatch?.(entry.subject_id,false);
+      }
+      await refreshInbox();
+      if(isFriend){await refresh(true);}
+      window.FOXEY_ARCADE_NOTIFICATIONS?.refresh?.();
+      onChange();
+    }catch(err){
+      if(owner===uid&&stamp===revision)setText('arcadeSocialBellStatus',
+        tr('⚠️ Odpověď se nepodařila: ','⚠️ Could not respond: ')+
+        String(err?.message||'network_error').slice(0,100));
+    }finally{socialResponding=false;}
+  }
   function socialCard(entry){
     const root=node('article','arcade-notice-card'+(entry.unread?' unread':''));
     const p=entry.actor||{};
@@ -413,9 +446,26 @@
       ()=>openSocialAction(entry),'primary');
     if(kind==='friend_challenge'&&!entry.challenge_ready)button.disabled=true;
     actions.append(button);
-    actions.append(action(socialArchived?
-      tr('↩ Obnovit','↩ Restore'):tr('📦 Archivovat','📦 Archive'),
-      ()=>void archiveSocial(entry.notification_id,!socialArchived)));
+    if(!socialArchived&&kind==='friend_request'){
+      actions.append(action(tr('✓ Přijmout','✓ Accept'),
+        ()=>void respondFromBell(entry,true),'primary'));
+      actions.append(action(tr('Odmítnout','Decline'),
+        ()=>void respondFromBell(entry,false)));
+    }
+    if(!socialArchived&&kind==='live_invite'){
+      actions.append(action(tr('✓ Přijmout','✓ Accept'),
+        ()=>void respondFromBell(entry,true),'primary'));
+    }
+    const hide=action(socialArchived?'↩':'✕',
+      ()=>void archiveSocial(entry.notification_id,!socialArchived),
+      'arcade-notice-dismiss');
+    hide.setAttribute('aria-label',socialArchived?
+      tr('Obnovit skryté oznámení','Restore hidden notification'):
+      tr('Skrýt oznámení (neodmítá výzvu)','Hide notification (does not decline invitation)'));
+    hide.setAttribute('title',socialArchived?
+      tr('Vrátit mezi oznámení','Restore to notifications'):
+      tr('Skrýt · výzva zůstává aktivní','Hide · invitation remains active'));
+    actions.append(hide);
     root.append(actions);
     return root;
   }
