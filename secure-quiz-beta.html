@@ -1025,6 +1025,18 @@
       }[receipt?.reason]||'liveRewardNotActive';
       message=T(key);
     }
+    const newStreaks=Array.isArray(receipt?.new_streak_rewards)?
+      receipt.new_streak_rewards.filter(x=>Number(x.days)>0):[];
+    visible('streakUnlockBanner',newStreaks.length>0);
+    if(newStreaks.length){
+      $('streakUnlockTitle').textContent=T('streakUnlockTitle');
+      $('streakUnlockDescription').textContent=newStreaks.map(x=>
+        '🔥 '+x.days+' '+(lang==='en'?'days':'dní')+' · '+
+          [Number(x.shards)>0?'💎 +'+x.shards:'',
+           Number(x.crowns)>0?'👑 +'+x.crowns:'',
+           Number(x.free_chests)>0?'🎁 +'+x.free_chests:''].filter(Boolean).join(' ')
+      ).join(' · ');
+    }
     const newMissions=Array.isArray(receipt?.new_missions)?
       receipt.new_missions.filter(x=>x&&typeof x.code==='string'):[];
     visible('missionUnlockBanner',newMissions.length>0);
@@ -1162,6 +1174,37 @@
     $('achievementsButton').focus?.();
   }
 
+
+  function renderGameStreak(){
+    const streak=missionState?.streak||null;
+    const days=streak?Math.max(0,Number(streak.current)||0):0;
+    const next=streak?.next_milestone==null?null:Number(streak.next_milestone);
+    $('gameStreakCount').textContent=template(T('streakDays'),{n:days});
+    $('gameStreakNext').textContent=next===null&&streak?T('streakAll'):
+      template(T('streakNext'),{n:next||3});
+    $('gameStreakHint').textContent=streak?.active_today?
+      T('streakPlayed'):days>0?T('streakPending'):T('streakResetPending');
+    const bar=$('gameStreakFill');
+    if(bar?.style)bar.style.width=(next===null&&streak?100:next?
+      Math.min(100,100*days/next):0)+'%';
+    $('gameMissionRotationHint').textContent=missionState?.rotation_enabled?
+      T('streakRotationActive'):T('streakRotationPending');
+    const root=$('gameStreakRewards');root.replaceChildren();
+    const milestones=Array.isArray(streak?.milestones)?streak.milestones:[];
+    for(const m of milestones){
+      const item=document.createElement('div');
+      item.className='game-streak-reward'+(days>=Number(m.days)?' done':'');
+      const label=document.createElement('strong');
+      label.textContent=(days>=Number(m.days)?'✓ ':'🔥 ')+m.days+' '+(lang==='en'?'days':'dní');
+      const reward=document.createElement('span');
+      reward.textContent=[
+        Number(m.shards)>0?'💎 +'+m.shards:'',
+        Number(m.crowns)>0?'👑 +'+m.crowns:'',
+        Number(m.free_chests)>0?'🎁 +'+m.free_chests:''
+      ].filter(Boolean).join(' · ');
+      item.append(label,reward);root.append(item);
+    }
+  }
   function renderGameMissions(){
     $('missionsTitle').textContent=T('missionsTitle');
     $('missionsEyebrow').textContent=T('missionsEyebrow');
@@ -1179,6 +1222,7 @@
     $('missionsSummary').textContent=missionLoading?T('missionsLoading'):
       entries.length?template(T('missionsSummary'),{done,total:entries.length}):
       T('missionsUnavailable');
+    renderGameStreak();
     const create=(m)=>{
       const card=document.createElement('article');card.className='game-mission-card'+(m.completed?' complete':'');
       const icon=document.createElement('span');icon.className='game-mission-icon';
@@ -1218,7 +1262,8 @@
         throw Error(error?.message||'mission_status_invalid');
       if(me?.id!==uid||request!==missionSeq)return;
       missionState=data;
-      if(Array.isArray(data.new_rewards)&&data.new_rewards.length){
+      if((Array.isArray(data.new_rewards)&&data.new_rewards.length)||
+         (Array.isArray(data.new_streak_rewards)&&data.new_streak_rewards.length)){
         try{
           if(window.parent&&window.parent!==window)
             window.parent.postMessage({type:'foxey-arcade:rewards-credited'},
@@ -1318,6 +1363,7 @@
     visible('achievementsButton',!!me);
     visible('missionsButton',!!me);
     visible('missionUnlockBanner',false);
+    visible('streakUnlockBanner',false);
     resetReportUI();
     visible('bootPanel',false);
     visible('modePanel',!!me);visible('signIn',!me);
@@ -2334,6 +2380,7 @@
   $('achievementsButton').addEventListener('click',openGameAchievements);
   $('missionsButton').addEventListener('click',openGameMissions);
   $('resultMissionsButton').addEventListener('click',openGameMissions);
+  $('streakResultsMissionsButton').addEventListener('click',openGameMissions);
   $('missionsClose').addEventListener('click',closeGameMissions);
   $('missionsShade').addEventListener('click',closeGameMissions);
   $('resultAchievementsButton').addEventListener('click',openGameAchievements);
