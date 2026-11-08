@@ -867,3 +867,47 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .arcade-hub-link{min-height:76px;flex-wrap:nowrap}
  .arcade-hub-copy{flex:1}.arcade-hub-chevron{display:inline;font-size:24px}
 }
+
+
+/* Full-viewport game launch: actual Fullscreen API + Safari/iOS CSS fallback.
+   The iframe is preserved on navigation to keep server-confirmed quiz progress. */
+.arcade-game-toolbar{display:flex;gap:9px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.arcade-game-toolbar #gameExitFullscreen{min-height:42px;padding:8px 13px}
+body.arcade-game-immersive{overflow:hidden;padding-bottom:0!important}
+body.arcade-game-immersive .topbar,
+body.arcade-game-immersive .mainnav,
+body.arcade-game-immersive .arcade-mobile-dock,
+body.arcade-game-immersive .arcade-mobile-more{display:none!important}
+body.arcade-game-immersive #page-play,
+#page-play:fullscreen{position:fixed;inset:0;z-index:10000;display:flex!important;
+ flex-direction:column;gap:8px;width:100%;max-width:none;height:100dvh;
+ min-height:0;margin:0;padding:calc(7px + env(safe-area-inset-top,0px))
+ calc(10px + env(safe-area-inset-right,0px))
+ calc(7px + env(safe-area-inset-bottom,0px))
+ calc(10px + env(safe-area-inset-left,0px));
+ background:var(--bg);overflow:hidden;border:0;border-radius:0}
+body.arcade-game-immersive #page-play .gameplaybar,
+#page-play:fullscreen .gameplaybar{margin:0;flex:0 0 auto;min-height:44px;
+ flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
+body.arcade-game-immersive #page-play .gameplaybar>div,
+#page-play:fullscreen .gameplaybar>div{align-items:flex-start;flex:1 1 auto;min-width:0}
+body.arcade-game-immersive #page-play .gameplaybar>div .small,
+#page-play:fullscreen .gameplaybar>div .small,
+body.arcade-game-immersive #gameHelp,#page-play:fullscreen #gameHelp{display:none!important}
+body.arcade-game-immersive #page-play #gameFrame,
+#page-play:fullscreen #gameFrame{flex:1 1 auto;width:100%;height:100%;min-height:0;
+ border:1px solid #39496f;border-radius:10px;background:#0b1225}
+body.arcade-game-immersive #gameExitFullscreen,
+#page-play:fullscreen #gameExitFullscreen{background:#30405e;color:#fff}
+@media(max-width:700px){
+ body.arcade-game-immersive #page-play .gameplaybar>div,
+ #page-play:fullscreen .gameplaybar>div{display:none}
+ body.arcade-game-immersive #page-play .gameplaybar,
+ #page-play:fullscreen .gameplaybar{min-height:40px}
+ body.arcade-game-immersive #page-play .gameplaybar>button,
+ #page-play:fullscreen .gameplaybar>button{min-height:42px;padding:8px 10px;font-size:.78rem}
+ body.arcade-game-immersive #page-play .arcade-game-toolbar>a,
+ #page-play:fullscreen .arcade-game-toolbar>a{display:none}
+ body.arcade-game-immersive #page-play .arcade-game-toolbar,
+ #page-play:fullscreen .arcade-game-toolbar{margin-left:auto}
+}
