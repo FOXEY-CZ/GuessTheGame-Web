@@ -588,7 +588,7 @@
     }))$(id).textContent=T(key);
     // Preserve the unread-badge span when updating the heading language.
     const heading=$('historyTitle');
-    if(heading?.firstChild?.nodeType===Node.TEXT_NODE)
+    if(heading?.firstChild?.nodeType===3)
       heading.firstChild.nodeValue=T('historyTitle')+' ';
     $('historyOverlayClose').setAttribute('aria-label',T('historyOverlayClose'));
     for(const [key,id] of Object.entries({
