@@ -75,7 +75,7 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.equal(awards,1);
   assert.equal(elements.get('dailyMissionList').children.length,2);
   assert.equal(elements.get('weeklyMissionList').children.length,1);
-  assert.equal(elements.get('homeMissionList').children.length,2);
+  assert.equal(elements.get('homeMissionList').children.length,3);
   assert.ok(elements.get('homeMissionStatus').textContent.includes('1 / 3'));
   const progress=elements.get('dailyMissionList').children[1].children[1].children[3].children[0];
   assert.equal(progress.style.width,'60%');
