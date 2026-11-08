@@ -493,6 +493,7 @@
 
       liveRewardTitle:'🎁 Skutečné odměny',
       liveRewardGranted:'✅ Připsáno +{xp} XP · +{shards} 💎 · +{crowns} 👑. Aktuálně Level {level}, {total} XP.',
+      achievementsGranted:'🏆 Odemčeno {n} achievementů! Bonus: +{shards} 💎 a +{chests} 🎁.',
       liveRewardCap:'ℹ️ Limit je vyčerpán (3/hod, 8/UTC den). Hrát můžeš dál, ale bez odměny.',
       liveRewardDailyReplay:'ℹ️ Dnešní denní výzva už dostala svou odměnu. Druhá výplata se nepřipisuje.',
       liveRewardNoPoints:'ℹ️ Odměna je 0: pro získání XP musíš mít alespoň jednu správnou odpověď.',
@@ -618,6 +619,7 @@
 
       liveRewardTitle:'🎁 Real rewards',
       liveRewardGranted:'✅ Credited +{xp} XP · +{shards} 💎 · +{crowns} 👑. Now Level {level}, {total} XP.',
+      achievementsGranted:'🏆 Unlocked {n} achievements! Bonus: +{shards} 💎 and +{chests} 🎁.',
       liveRewardCap:'ℹ️ Reward limit reached (3/hour or 8/UTC day). You can keep playing without earnings.',
       liveRewardDailyReplay:'ℹ️ Today’s daily quiz has already been rewarded. No duplicate payout.',
       liveRewardNoPoints:'ℹ️ No rewards: you need at least one correct answer to earn XP.',
@@ -776,6 +778,15 @@
         temporarily_disabled:'liveRewardDisabled'
       }[receipt?.reason]||'liveRewardNotActive';
       message=T(key);
+    }
+    const newBadges=Array.isArray(receipt?.new_achievements)?
+      receipt.new_achievements.filter(x=>x&&typeof x.code==='string'):[];
+    if(newBadges.length){
+      const extraShards=newBadges.reduce((a,b)=>a+Math.max(0,Number(b.shards)||0),0);
+      const extraChests=newBadges.reduce((a,b)=>a+Math.max(0,Number(b.free_chests)||0),0);
+      message+=' '+template(T('achievementsGranted'),{
+        n:newBadges.length,shards:extraShards,chests:extraChests
+      });
     }
     $('liveRewardSummary').textContent=message;
     visible('noReward',receipt?.credited!==true);
