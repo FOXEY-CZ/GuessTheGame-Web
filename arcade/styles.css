@@ -326,3 +326,94 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .headerwallet .resource b{font-size:.82rem}
  #page-home .hero .actions button{width:100%}
 }
+
+/* FOXEY Arcade categorized profile and shop — always one clear task per view. */
+#page-shop>h1,#page-account>h1{font-size:clamp(1.6rem,3.6vw,2.25rem);margin:6px 0 8px}
+#page-shop>p:first-of-type{font-size:.92rem;line-height:1.5;color:#c8d6ef;max-width:680px}
+#page-shop .shared-shop-wallet{margin:15px 0 17px;gap:10px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto}
+#page-shop .shared-shop-wallet>div,
+#page-shop .shared-shop-wallet>button{
+  padding:12px 13px;min-height:70px;border-radius:14px}
+#page-shop .shared-shop-wallet>div strong{font-size:clamp(1.25rem,2.8vw,1.65rem);margin-top:4px}
+#page-shop .shared-shop-wallet>button{align-self:stretch;
+  display:flex;align-items:center;justify-content:center;min-height:44px}
+.arcade-subtabs{display:flex;align-items:stretch;gap:6px;padding:6px;
+  width:100%;background:#111d33;border:1px solid #405371;
+  border-radius:16px;margin:17px 0 15px;overflow-x:auto;
+  scrollbar-width:thin;overscroll-behavior-inline:contain}
+.arcade-subtab{flex:1 0 120px;min-width:0;display:flex;align-items:center;
+  justify-content:center;white-space:nowrap;padding:12px 14px;
+  border:1px solid transparent;border-radius:11px;
+  background:transparent;color:#b8cce3;font-weight:750;
+  font-size:.9rem;cursor:pointer;min-height:46px}
+.arcade-subtab:hover:not(.is-active){background:#243452;color:#eefbff}
+.arcade-subtab.is-active{background:linear-gradient(110deg,#6557be,#415a91);
+  color:white;border-color:#929be2;box-shadow:0 3px 10px #090c2580}
+.arcade-subtab:focus-visible{outline:2px solid #b5edfa;outline-offset:2px}
+.arcade-subpanel{animation:arcade-tabs-enter .18s ease}
+@keyframes arcade-tabs-enter{from{opacity:.65;transform:translateY(5px)}
+  to{opacity:1;transform:translateY(0)}}
+.arcade-subpanel>.sectionline:first-child{margin:5px 0 17px}
+#page-shop .shopitems{grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px}
+#page-shop .shopitems .tile{min-height:205px;padding:16px;border-radius:17px}
+#page-shop .shopitems .tile h3{font-size:1.04rem}
+#page-shop .shopitems .tile p{font-size:.86rem;line-height:1.45}
+#page-shop .shopitems .tile button{min-height:45px}
+#page-shop .reward-chest-grid{gap:13px}
+#page-shop .reward-chest{align-items:flex-start;padding:18px;border-radius:17px;gap:14px}
+#page-shop .reward-chest .chestshop-icon{font-size:clamp(2.6rem,5vw,3.6rem);min-width:56px;text-align:center}
+#page-shop .reward-chest h3{font-size:1.13rem;line-height:1.25}
+#page-shop .reward-chest p{font-size:.85rem;line-height:1.5}
+#page-shop .reward-chest button{min-height:48px;font-size:.92rem}
+#page-shop .chest-price{font-size:.96rem}
+#page-shop .avatar-catalog{grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px}
+#page-shop .avatar-item{padding:15px;border-radius:16px}
+#page-shop .avatar-item p{font-size:.81rem}
+#page-shop .avatar-item button{min-height:44px;font-size:.88rem}
+#playerAccount.accountpanel{width:100%;max-width:none;box-sizing:border-box;
+  margin:18px 0 22px;padding:clamp(16px,2.8vw,26px);
+  background:linear-gradient(135deg,#1c2b46,#131e33)}
+#playerAccount .profilehero{margin:0 0 14px;gap:15px}
+#playerAccount .profilehero h2{font-size:clamp(1.25rem,2.8vw,1.65rem)}
+#playerAccount .global-level-meter{margin:8px 0 15px}
+#playerAccount .arcade-subtabs{margin:14px 0 16px}
+#playerAccount .inventory-panel,#playerAccount .gameprofile-summary{
+  margin:0;padding:0;border:0}
+#playerAccount .inventory-panel .sectionline,
+#playerAccount .gameprofile-summary .progresscard-title{margin:7px 0 14px}
+#playerAccount #accountPanelOverview{max-width:660px}
+#playerAccount #profileForm{display:grid;gap:8px;margin:0}
+#playerAccount #profileForm input,#playerAccount #profileForm select{
+  min-height:45px;max-width:570px}
+#playerAccount #profileForm button{justify-self:start;min-height:46px}
+#playerAccount .account-panel-intro h3{margin:4px 0 5px;font-size:1.12rem}
+#playerAccount .account-panel-intro p{margin:0 0 16px;color:#b8cee4}
+#playerAccount .account-sign-out{margin-top:21px;min-height:43px;opacity:.86}
+#playerAccount .achievement-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+#playerAccount .inventory-grid{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+#playerAccount .gameprofile-summary .note{max-width:620px;font-size:.84rem}
+@media(max-width:760px){
+ #page-shop .shared-shop-wallet{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #page-shop .shared-shop-wallet>button{grid-column:1/-1;min-height:42px;padding:8px}
+ #page-shop .shared-shop-wallet>div{padding:10px 9px;min-height:65px}
+ #page-shop .shared-shop-wallet>div span{font-size:.7rem}
+ #page-shop .shared-shop-wallet>div strong{font-size:1.3rem}
+ #playerAccount .arcade-subtabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #playerAccount .arcade-subtab{min-height:44px;padding:10px 6px;font-size:.84rem}
+ #page-shop .arcade-subtab{flex:1 0 90px;font-size:.83rem;padding:10px 6px}
+ #playerAccount #profileForm button{justify-self:stretch}
+ #playerAccount .achievement-grid{grid-template-columns:1fr}
+}
+@media(max-width:420px){
+ #playerAccount.accountpanel{padding:14px;border-radius:17px}
+ #playerAccount .profilehero{gap:10px}
+ #playerAccount .profilehero .bigavatar{max-width:64px}
+ #page-shop .reward-chest{flex-direction:column;gap:5px}
+ #page-shop .reward-chest .chestshop-icon{align-self:center}
+ #page-shop .reward-chest>div:last-child{width:100%}
+ #page-shop .avatar-catalog{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #page-shop .avatar-item{padding:11px}
+ #page-shop .avatar-item h3{font-size:.89rem}
+}
+@media(prefers-reduced-motion:reduce){.arcade-subpanel{animation:none}}
