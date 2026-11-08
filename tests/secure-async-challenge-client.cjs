@@ -115,7 +115,7 @@ function apiFor(uid){
 class E{
  constructor(id=''){this.id=id;this.textContent='';this.value='';this.disabled=false;
   this.className='';this.dataset={};this.style={};this.children=[];this.listeners={};
-  this.classList={toggle(){},add(){},remove(){}};}
+  this.classList={toggle(){},add(){},remove(){},contains(){return false;}};}
  addEventListener(n,cb){this.listeners[n]=cb;}
  setAttribute(){} append(...args){this.children.push(...args);}
  replaceChildren(...args){this.children=[...args];}
