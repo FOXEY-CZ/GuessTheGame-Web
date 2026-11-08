@@ -8,7 +8,9 @@ const game=fs.readFileSync('secure-quiz-beta.html','utf8');
 const css=fs.readFileSync('arcade/styles.css','utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
 assert.equal(ids.length,new Set(ids).size,'duplicate HTML id');
-const required=['liveTitle','liveRefresh','liveStatus','liveFriendList','liveMatchList','liveArena','liveArenaStatus','liveArenaOpponent','liveScoreHost','liveScoreGuest','liveRound','liveCountdown','liveQuestion','liveOptions','liveArenaControls','liveModeSelect','liveRealtimeStatus','liveArenaMode','liveStatsSummary','liveLeaderboard'];
+const required=['liveTitle','liveRefresh','liveStatus','liveFriendList','liveMatchList','liveArena','liveArenaStatus','liveArenaOpponent','liveScoreHost','liveScoreGuest','liveRound','liveCountdown','liveQuestion','liveOptions','liveArenaControls','liveModeSelect','liveRealtimeStatus','liveArenaMode','liveStatsSummary','liveLeaderboard','liveSeriesSelect','liveSeriesSummary',
+ 'liveHeadToHeadPanel','liveHeadToHeadStatus','liveHeadToHeadStats','liveHeadToHeadRows',
+ 'liveHeadToHeadRefresh'];
 for(const id of required)assert.ok(ids.includes(id),'Missing '+id);
 assert.ok(html.includes('live.js?v='));
 assert.ok(app.includes('FOXEY_ARCADE_LIVE?.connect(supa,user)'));
@@ -118,7 +120,7 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.ok(nodes.get('liveStatsSummary').children.length>=1);
  assert.equal(nodes.get('liveFriendList').children.length,1);
  assert.ok(nodes.get('liveFriendList').children[0].children[0].children[1].textContent.includes('Online'));
- const button=nodes.get('liveFriendList').children[0].children[1];
+ const button=nodes.get('liveFriendList').children[0].children[1].children[0];
  button.events.click();await settle();await settle();await settle();
  assert.ok(created,'invite not sent');
  assert.ok(calls.some(c=>c.name==='arcade_live_invite_mode'));
