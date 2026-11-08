@@ -1890,7 +1890,11 @@
             entry.kind==='live_invite'?
             (entry.live_rematch===true?
               (lang==='en'?'🔄 Rematch request':'🔄 Žádost o odvetu'):
-              (lang==='en'?'⚡ Live 1v1 invite':'⚡ Pozvánka na živý souboj')):
+              [2,3].includes(Number(entry.live_series_target))?
+                (lang==='en'?'🏆 Series first to ':'🏆 Série na ')+
+                entry.live_series_target+
+                (lang==='en'?' wins':' vítězství'):
+                (lang==='en'?'⚡ Live 1v1 invite':'⚡ Pozvánka na živý souboj')):
             entry.kind==='live_rematch_declined'?
               (lang==='en'?'❌ Rematch declined':'❌ Odveta byla odmítnuta'):
             (lang==='en'?'⚔️ Direct challenge':'⚔️ Přímá výzva');
@@ -1901,7 +1905,10 @@
           (entry.live_rematch===true?
             (lang==='en'?'Your opponent requests a rematch. Accept or decline in Arcade.':
               'Soupeř tě žádá o odvetu. Přijmi ji nebo odmítni v Arcade.'):
-            (lang==='en'?'Open the Arcade live lobby to accept.':'Přijmi pozvánku v živé lobby Arcade.')):
+            [2,3].includes(Number(entry.live_series_target))?
+              (lang==='en'?'A friend invited you to a match series. Open Arcade to join.':
+                'Kamarád tě zve do série zápasů. Otevři Arcade a přijmi pozvánku.'):
+              (lang==='en'?'Open the Arcade live lobby to accept.':'Přijmi pozvánku v živé lobby Arcade.')):
           entry.kind==='live_rematch_declined'?
           (lang==='en'?'Your opponent declined your rematch request.':
             'Soupeř odmítl tvoji žádost o odvetu.'):
@@ -1930,7 +1937,9 @@
             entry.kind==='live_invite'?
             (entry.live_rematch===true?
               (lang==='en'?'🔄 Respond to rematch':'🔄 Odpovědět na odvetu'):
-              (lang==='en'?'⚡ Open live lobby':'⚡ Otevřít live lobby')):
+              [2,3].includes(Number(entry.live_series_target))?
+                (lang==='en'?'🏆 Open series':'🏆 Otevřít sérii'):
+                (lang==='en'?'⚡ Open live lobby':'⚡ Otevřít live lobby')):
             (lang==='en'?'👥 Friends':'👥 Přátelé');
         }
         link.href=url.toString();link.target='_blank';link.rel='noopener noreferrer';
