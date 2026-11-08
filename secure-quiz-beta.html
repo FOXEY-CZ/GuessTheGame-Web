@@ -492,6 +492,7 @@
       liveRewardsConfirm:'Aktivací zachováš své korunky a krystaly. Stará offline Guess the Game však přestane přidávat další měny do společné peněženky a její historická XP se nepřevedou. Přechod zatím nejde jednoduše vrátit. Chceš pokračovat?',
       liveRewardsEnabling:'🛡️ Přepínám účet…',
       liveRewardsActivated:'✅ Skutečné odměny aktivní! Platí pro nově zahájené partie.',
+      liveRewardsRecovered:'✅ Po výpadku obnoveny odměny z {count} partií: +{xp} XP, +{shards} 💎, +{crowns} 👑.',
       liveRewardsError:'⚠️ Aktivace se nezdařila: {error}',
       liveRewardsSyncRequired:'Nejdřív se vrať na hlavní Arcade, obnov ji a dokonči synchronizaci staré hry.',
       liveRewardTitle:'🎁 Skutečné odměny',
@@ -619,6 +620,7 @@
       liveRewardsConfirm:'Activation keeps your current crowns and gems, but the old offline Guess the Game can no longer add currency to the shared wallet and historical local XP will not be imported. This is not automatically reversible. Continue?',
       liveRewardsEnabling:'🛡️ Activating account…',
       liveRewardsActivated:'✅ Real rewards activated! Newly started games now qualify.',
+      liveRewardsRecovered:'✅ Recovered rewards from {count} interrupted runs: +{xp} XP, +{shards} 💎, +{crowns} 👑.',
       liveRewardsError:'⚠️ Activation failed: {error}',
       liveRewardsSyncRequired:'Return to the main Arcade, refresh it and complete your old game sync first.',
       liveRewardTitle:'🎁 Real rewards',
@@ -678,6 +680,7 @@
   let busy=false,pending=null;
   let reportPending=false,reportSentKey=null;
   let liveRewardState=null,liveRewardLoading=false,liveRewardActivating=false;
+  let liveRewardReconcileAttempted=false;
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
@@ -724,6 +727,34 @@
         throw Error(error?.message||'invalid_reward_status');
       if(me?.id!==uid)return;
       liveRewardState=data;
+      // If the browser closed after server completion but before payout,
+      // recover owner-scoped missing receipts automatically, once per login.
+      if(data.enabled===true&&!liveRewardReconcileAttempted){
+        liveRewardReconcileAttempted=true;
+        const recovered=await api.rpc('arcade_verified_rewards_reconcile',{
+          p_limit:10
+        });
+        if(recovered.error||recovered.data?.ok!==true){
+          liveRewardReconcileAttempted=false;
+          throw Error(recovered.error?.message||'reward_recovery_failed');
+        }
+        if(me?.id!==uid)return;
+        if(Number(recovered.data.recovered)>0){
+          $('liveRewardsStatus').textContent=template(T('liveRewardsRecovered'),{
+            count:recovered.data.recovered,xp:recovered.data.xp,
+            shards:recovered.data.shards,crowns:recovered.data.crowns
+          });
+          const latest=await api.rpc('arcade_verified_rewards_status');
+          if(!latest.error&&latest.data?.ok===true&&me?.id===uid){
+            liveRewardState=latest.data;
+          }
+          try{
+            if(window.parent&&window.parent!==window)
+              window.parent.postMessage({type:'foxey-arcade:rewards-credited'},
+                window.location.origin);
+          }catch(_){}
+        }
+      }
     }catch(err){
       if(me?.id===uid){
         $('liveRewardsStatus').textContent=template(T('liveRewardsError'),{error:errorText(err)});
@@ -748,6 +779,7 @@
         throw Error(error?.message||'enrollment_failed');
       if(me?.id!==uid)return;
       liveRewardState=data;
+      liveRewardReconcileAttempted=true;
       $('liveRewardsStatus').textContent=T('liveRewardsActivated');
     }catch(err){
       if(me?.id===uid){
@@ -1029,6 +1061,7 @@
     if(priorUser!==me?.id){
       soloProgressByMode=Object.create(null);
       liveRewardState=null;
+      liveRewardReconcileAttempted=false;
       $('liveRewardsStatus').textContent='';
     }
     language();modeScreen();
@@ -1771,6 +1804,7 @@
           }
         }catch(err){
           liveRewardError=errorText(err);
+          liveRewardReconcileAttempted=false;
         }
       }
     }catch(err){
