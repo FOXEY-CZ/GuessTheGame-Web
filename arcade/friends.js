@@ -14,8 +14,7 @@
   let dashboard=null,searchResults=[],searchStatus='',selected=null;
   let socialItems=[],socialUnread=0,socialHasMore=false,
       socialArchived=false,socialOffset=0,socialLoading=false;
-  let navigate=null,currentPage='home',socialResponding=false,friendsPane='people',
-      lastIncomingCount=-1;
+  let navigate=null,currentPage='home',socialResponding=false,friendsPane='people';
   const safeList=value=>Array.isArray(value)?value:[];
   function node(tag,cls,content){
     const el=document.createElement(tag);
@@ -112,7 +111,7 @@
       }
       else if(sent)buttons.append(node('span','friends-state',tr('⏳ Žádost odeslána','⏳ Pending')));
       else if(incoming)buttons.append(action(tr('📩 Žádost přijata','📩 View request'),
-        ()=>{document.getElementById('friendsIncomingTitle')?.scrollIntoView?.({behavior:'smooth'});}));
+        ()=>openRequests()));
       else buttons.append(action(tr('➕ Přidat','➕ Add friend'),
         ()=>void mutate('arcade_friend_request',{p_user_id:p.user_id},
           tr('✅ Žádost odeslána!','✅ Friend request sent!')),'primary'));
@@ -152,7 +151,6 @@
   }
   function render(){
     const logged=!!uid;
-    setText('myFriendCode',dashboard?.my_code||'—');
     const signedText=!logged?tr('🔐 Přihlas se pro přátele a přímé výzvy.',
                               '🔐 Sign in for friends and direct challenges.'):
       loading?tr('☁️ Načítám přátele…','☁️ Loading friends…'):
@@ -167,11 +165,20 @@
     setText('friendsOutgoingCount',logged?String(outgoing.length):'—');
     setText('friendsRequestSummaryCount',logged?
       String(incoming.length+outgoing.length):'—');
-    // Never bury incoming requests, but keep empty/handled requests collapsed.
-    if(incoming.length>lastIncomingCount&&incoming.length&&
-       $('friendsRequestsDetails'))
-      $('friendsRequestsDetails').open=true;
-    lastIncomingCount=incoming.length;
+    const quick=$('friendRequestsShortcut');
+    quick?.classList?.toggle('hidden',!logged);
+    if(quick){
+      const count=incoming.length;
+      quick.setAttribute('aria-label',tr('Žádosti o přátelství: ','Friend requests: ')+count);
+      quick.setAttribute('title',count?
+        tr('📩 Čekající žádosti: ','📩 Pending requests: ')+count:
+        tr('📩 Žádosti o přátelství','📩 Friend requests'));
+      const badge=$('friendRequestsShortcutCount');
+      if(badge){
+        badge.textContent=count>99?'99+':String(count);
+        badge.classList.toggle('hidden',count===0);
+      }
+    }
     for(const [id,list,type,empty] of [
       ['friendsList',friends,'friend',tr('Ještě nemáš žádné přátele.','No friends yet.')],
       ['friendsIncomingList',incoming,'incoming',tr('Žádná nová žádost.','No new requests.')],
@@ -182,7 +189,7 @@
     drawList('friendsSearchResults',searchResults,'search',searchStatus||
       tr('Zadej nick kamaráda. Vyber hráče a klikni na Přidat.',
          'Enter a friend nickname. Select the player and tap Add friend.'));
-    for(const id of ['friendsRefresh','friendsSearchButton','copyFriendCode']){
+    for(const id of ['friendsRefresh','friendsSearchButton']){
       const e=$(id);if(e)e.disabled=!logged||busy||loading;
     }
   }
@@ -576,7 +583,8 @@
     const nextId=user?.id||null;
     if(nextId!==uid){
       ++revision;dashboard=null;searchResults=[];searchStatus='';
-      selected=null;loading=false;busy=false;lastIncomingCount=-1;friendsPane='people';
+      selected=null;loading=false;busy=false;friendsPane='people';
+      if($('friendsRequestsDetails'))$('friendsRequestsDetails').open=false;
       socialItems=[];socialUnread=0;socialHasMore=false;socialOffset=0;
       socialArchived=false;socialLoading=false;
       $('friendProfilePanel')?.classList.add('hidden');
@@ -584,6 +592,19 @@
     api=client||null;uid=nextId;
     render();renderInbox();
     if(uid){void refresh();void refreshInbox();}
+  }
+  function openRequests(){
+    if(!uid){
+      navigate?.('account');return;
+    }
+    window.FOXEY_ARCADE_NOTIFICATIONS?.open?.();
+    const panel=$('friendsRequestsDetails');
+    if(panel){
+      panel.open=true;
+      panel.scrollIntoView?.({behavior:'smooth',block:'start'});
+      $('friendRequestsSummary')?.focus?.();
+    }
+    void refresh(true);
   }
   function onPage(page){
     currentPage=page;
@@ -599,18 +620,13 @@
   for(const btn of document.querySelectorAll?.('[data-friends-view]')||[]){
     btn.addEventListener('click',()=>openPane('people'));
   }
+  $('friendRequestsShortcut')?.addEventListener('click',openRequests);
   $('friendsSearchForm')?.addEventListener('submit',event=>void search(event));
   $('friendsRefresh')?.addEventListener('click',()=>void refresh());
   $('friendProfileClose')?.addEventListener('click',()=>{
     $('friendProfilePanel')?.classList.add('hidden');selected=null;
   });
-  $('copyFriendCode')?.addEventListener('click',async()=>{
-    if(!dashboard?.my_code)return;
-    try{await navigator.clipboard.writeText(dashboard.my_code);
-      status(tr('✓ Kód zkopírován.','✓ Code copied.'));}
-    catch(_){status(tr('Kód najdeš nahoře. Označ jej a zkopíruj.',
-      'Your code is shown above. Select it to copy.'));}
-  });
+
   $('arcadeSocialPrev')?.addEventListener('click',()=>{
     if(socialLoading||socialOffset<10)return;
     socialOffset-=10;void refreshInbox();
@@ -626,11 +642,15 @@
     render();renderInbox();if(selected)renderPublicProfile();
   });
   window.setInterval?.(()=>{
-    if(uid&&document.visibilityState!=='hidden')void refreshInbox();
+    if(uid&&document.visibilityState!=='hidden'){
+      void refreshInbox();
+      // Keep the compact request badge fresh even away from Friends.
+      if(!loading)void refresh(true);
+    }
   },45000);
   window.FOXEY_ARCADE_SOCIAL=Object.freeze({
     connect,onPage,setNavigation,refresh,refreshInbox,renderInbox,
-    setBellArchived,openPane,showLive,getUnread:()=>socialUnread
+    setBellArchived,openPane,showLive,openRequests,getUnread:()=>socialUnread
   });
   render();renderInbox();
 })();
