@@ -17,7 +17,7 @@
       location.replace(target.href);
     }
   </script>
-  <link rel="stylesheet" href="./styles.css?v=challenge-resume-20261107b">
+  <link rel="stylesheet" href="./styles.css?v=notifications-archive-20261108a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -293,8 +293,12 @@
       <button type="button" class="secondary" id="arcadeNoticeClose" aria-label="Zavřít oznámení">✕</button>
     </div>
     <p class="small" id="arcadeNoticeStatus" role="status" aria-live="polite"></p>
-    <button class="secondary" id="arcadeNoticeRefresh" type="button">🔄 Obnovit</button>
+    <div class="arcade-notice-toolbar">
+      <button class="secondary" id="arcadeNoticeArchiveToggle" type="button">📦 Archiv</button>
+      <button class="secondary" id="arcadeNoticeRefresh" type="button">🔄 Obnovit</button>
+    </div>
     <div id="arcadeNoticeList" class="arcade-notice-list"></div>
+    <button class="secondary arcade-notice-more hidden" id="arcadeNoticeMore" type="button">⬇️ Načíst další</button>
     <p id="arcadeNoticeDetail" class="arcade-notice-detail" role="status" aria-live="polite"></p>
     <input type="text" readonly id="arcadeNoticeCopyField" class="arcade-notice-copy hidden" aria-label="Odkaz na výzvu">
   </section>
@@ -303,7 +307,7 @@
 <script src="./config.js?v=google-oauth-on-20261106"></script>
 <script src="./i18n.js?v=secure-cutover-20261107b"></script>
 <script src="./avatars.js"></script>
-<script src="./notifications.js?v=challenge-resume-20261107b"></script>
+<script src="./notifications.js?v=notifications-archive-20261108a"></script>
 <script src="./app.js?v=secure-cutover-20261107c"></script>
 </body>
 </html>
