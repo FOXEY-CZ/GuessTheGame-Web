@@ -178,6 +178,17 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
  rematchCard.children[2].children[0].events.click();await settle();
  assert.equal(lobbyOpened,challenge);
  assert.equal(modalClosed,2);
+ // Notification to the requester after their rematch is rejected.
+ noticeKind='live_rematch_declined';noticeRematch=false;
+ await ui.refreshInbox();await settle();
+ const declinedCard=nodes.get('arcadeSocialBellList').children[0];
+ assert.ok(declinedCard.children[0].textContent.includes('Odveta byla odmítnuta'));
+ assert.ok(declinedCard.children[1].textContent.includes('odmítl'));
+ assert.ok(declinedCard.children[2].children[0].textContent.includes('Zobrazit odmítnutí'));
+ declinedCard.children[2].children[0].events.click();
+ assert.equal(lobbyOpened,challenge,'refusal must open the corresponding match');
+ assert.equal(modalClosed,3);
+ await settle();
  // No cross-account stale state after switching to anonymous mode.
  ui.connect(null,null);
  assert.equal(nodes.get('myFriendCode').textContent,'—');
