@@ -6,7 +6,7 @@
   const $=id=>document.getElementById(id);
   const choose=(cs,en)=>window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
   let api=null,userId=null,items=[],unread=0,loading=false,seq=0,opened=false;
-  let archived=false,hasMore=false,pageOffset=0,socialUnread=0;
+  let archived=false,hasMore=false,pageOffset=0,socialUnread=0,chatUnread=0;
   const PAGE_SIZE=10;
   const text=(id,value)=>{const node=$(id);if(node)node.textContent=value};
   const show=(id,yes)=>{const node=$(id);if(node)node.classList.toggle('hidden',!yes)};
@@ -36,7 +36,10 @@
     }
   }
   function render(){
-    const allUnread=unread+socialUnread;
+    const allUnread=unread+socialUnread+chatUnread;
+    show('arcadeNoticeGoChat',chatUnread>0);
+    text('arcadeNoticeGoChat',choose('💬 Nepřečtené zprávy: ','💬 Unread messages: ')+
+      chatUnread);
     const count=allUnread>99?'99+':String(allUnread);
     text('arcadeBellCount',count);
     show('arcadeBellCount',allUnread>0);
@@ -70,7 +73,8 @@
     }
     text('arcadeNoticeStatus',allUnread>0?
       choose('🔔 Nepřečtené výsledky: ','🔔 Unread results: ')+unread+
-        ' · '+choose('Přátelé: ','Friends: ')+socialUnread:
+        ' · '+choose('Přátelé: ','Friends: ')+socialUnread+
+        ' · '+choose('Zprávy: ','Messages: ')+chatUnread:
       choose('Zatím žádná nepřečtená upozornění.','No unread notifications.'));
     if(!items.length){
       const p=document.createElement('p');p.className='arcade-notice-empty';
@@ -262,6 +266,10 @@
     if(userId)void refresh();
   }
   $('arcadeBell')?.addEventListener('click',open);
+  $('arcadeNoticeGoChat')?.addEventListener('click',()=>{
+    close();
+    window.FOXEY_ARCADE_SOCIAL?.showChat?.();
+  });
   $('arcadeNoticeClose')?.addEventListener('click',close);
   $('arcadeNoticeShade')?.addEventListener('click',close);
   $('arcadeNoticeRefresh')?.addEventListener('click',()=>void refresh());
@@ -277,6 +285,11 @@
   });
   window.addEventListener('focus',()=>{if(userId)void refresh();});
   window.addEventListener('foxey-arcade:locale-changed',render);
+  window.addEventListener('foxey-arcade:chat-unread',event=>{
+    const n=Number(event.detail?.unread);
+    chatUnread=Number.isSafeInteger(n)&&n>=0?Math.min(n,9999):0;
+    render();
+  });
   window.addEventListener('foxey-arcade:social-unread',event=>{
     const next=Number(event.detail?.unread);
     socialUnread=Number.isSafeInteger(next)&&next>=0?next:0;
