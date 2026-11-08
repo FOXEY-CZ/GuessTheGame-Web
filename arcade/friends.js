@@ -14,7 +14,8 @@
   let dashboard=null,searchResults=[],searchStatus='',selected=null;
   let socialItems=[],socialUnread=0,socialHasMore=false,
       socialArchived=false,socialOffset=0,socialLoading=false;
-  let navigate=null,currentPage='home',socialResponding=false,friendsPane='people';
+  let navigate=null,currentPage='home',socialResponding=false,friendsPane='people',
+      lastIncomingCount=-1;
   const safeList=value=>Array.isArray(value)?value:[];
   function node(tag,cls,content){
     const el=document.createElement(tag);
@@ -130,13 +131,10 @@
         ()=>void mutate('arcade_friend_remove',{p_user_id:p.user_id},
           tr('Žádost zrušena.','Request canceled.'))));
     }else if(kind==='friend'){
+      // Keep friend cards focused: live duels have their own tab, and
+      // removal is an advanced action on the public profile.
       buttons.append(action(tr('⚔️ Vyzvat','⚔️ Challenge'),
         ()=>void invite(p.user_id),'primary'));
-      buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),
-        ()=>void window.FOXEY_ARCADE_LIVE?.invite(p.user_id)));
-      buttons.append(action(tr('Odebrat','Remove'),
-        ()=>void mutate('arcade_friend_remove',{p_user_id:p.user_id},
-          tr('Přítel odebrán.','Friend removed.'))));
     }else if(kind==='blocked'){
       buttons.append(action(tr('Odblokovat','Unblock'),
         ()=>void mutate('arcade_friend_block',{p_user_id:p.user_id,p_block:false},
@@ -170,8 +168,10 @@
     setText('friendsRequestSummaryCount',logged?
       String(incoming.length+outgoing.length):'—');
     // Never bury incoming requests, but keep empty/handled requests collapsed.
-    if(incoming.length&&$('friendsRequestsDetails'))
+    if(incoming.length>lastIncomingCount&&incoming.length&&
+       $('friendsRequestsDetails'))
       $('friendsRequestsDetails').open=true;
+    lastIncomingCount=incoming.length;
     for(const [id,list,type,empty] of [
       ['friendsList',friends,'friend',tr('Ještě nemáš žádné přátele.','No friends yet.')],
       ['friendsIncomingList',incoming,'incoming',tr('Žádná nová žádost.','No new requests.')],
@@ -266,8 +266,17 @@
     if(connected){
       buttons.append(action(tr('⚔️ Vyzvat přítele','⚔️ Challenge friend'),
         ()=>void invite(p.user_id),'primary'));
-      buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),
-        ()=>void window.FOXEY_ARCADE_LIVE?.invite(p.user_id)));
+      buttons.append(action(tr('⚡ Živý souboj','⚡ Live duel'),()=>{
+        showLive();
+        void window.FOXEY_ARCADE_LIVE?.invite(p.user_id);
+      }));
+      buttons.append(action(tr('Odebrat přítele','Remove friend'),
+        ()=>{
+          if(window.confirm?.(tr('Opravdu odebrat tohoto přítele?',
+                'Are you sure you want to remove this friend?'))!==true)return;
+          void mutate('arcade_friend_remove',{p_user_id:p.user_id},
+            tr('Přítel odebrán.','Friend removed.'));
+        }));
     }else if(waiting){
       buttons.append(node('span','friends-state',tr('⏳ Žádost odeslaná','⏳ Request pending')));
     }else if(incoming){
@@ -567,7 +576,7 @@
     const nextId=user?.id||null;
     if(nextId!==uid){
       ++revision;dashboard=null;searchResults=[];searchStatus='';
-      selected=null;loading=false;busy=false;
+      selected=null;loading=false;busy=false;lastIncomingCount=-1;friendsPane='people';
       socialItems=[];socialUnread=0;socialHasMore=false;socialOffset=0;
       socialArchived=false;socialLoading=false;
       $('friendProfilePanel')?.classList.add('hidden');
