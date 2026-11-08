@@ -15,7 +15,7 @@ assert.ok(start>0 && end>start, 'isolated achievements handlers missing');
 const extracted=js.slice(start,end);
 assert.ok(extracted.includes("supa.rpc('arcade_global_achievements')"));
 assert.ok(!extracted.includes("from('arcade_wallets').update"));
-assert.ok(!extracted.includes('achievement_unlocks').update);
+assert.ok(!extracted.includes("from('arcade_achievement_unlocks').update"));
 const nodes=new Map();
 function domElement(tag='div'){
  return {
@@ -68,7 +68,6 @@ const scope=vm.runInNewContext(`(function(){
   safeNum:n=>Number.isSafeInteger(n)&&n>=0?n:0,
   loadSharedWallet:()=>{walletReloads++;},
   setTimeout:()=>1,clearTimeout:()=>{},
-  globalThis:null
 });
 (async()=>{
  await scope.loadAchievements();
