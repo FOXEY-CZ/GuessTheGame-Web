@@ -375,6 +375,11 @@
       try{await call('arcade_social_notification_seen',{
         p_notification_id:entry.notification_id
       });}catch(_){}
+      // Accepted/explicitly declined invitations leave the main bell, while
+      // their receipts remain restorable in the tucked-away history.
+      try{await call('arcade_social_notification_archive',{
+        p_notification_id:entry.notification_id,p_archived:true
+      });}catch(_){}
       if(isLive&&accept){
         window.FOXEY_ARCADE_NOTIFICATIONS?.close?.();
         navigate?.('community');
