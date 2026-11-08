@@ -136,6 +136,7 @@
   "🎉 Získal jsi odměnu!": "🎉 You received a reward!",
   "🎉 Super!": "🎉 Awesome!",
   "🎒 Zobrazit sbírku": "🎒 View collection",
+  "👀 Ukázka zobrazení odměny (zdarma)": "👀 Preview the reward reveal (free)",
   "↙ Režim okna": "↙ Windowed mode",
   "⛶ Celá obrazovka": "⛶ Full screen",
   "Opustit celou obrazovku": "Exit fullscreen",
