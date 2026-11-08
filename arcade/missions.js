@@ -6,6 +6,7 @@
   const english=()=>window.FOXEY_I18N?.getLocale?.()==='en';
   const tr=(cs,en)=>english()?en:cs;
   let api=null,uid=null,revision=0,pending=false,missions=null,loaded=false;
+  let lastAwardCount=0;
   const text=(id,value)=>{const e=$(id);if(e)e.textContent=value;};
   const make=(tag,className,value)=>{
     const e=document.createElement(tag);
@@ -56,7 +57,9 @@
       tr('Odměny automaticky připsané: ','Automatically credited rewards: ')+
         allCompleted+' / '+entries.length;
     text('homeMissionStatus',summary);
-    text('missionsStatus',summary);
+    text('missionsStatus',lastAwardCount>0&&signed&&!pending?
+      tr('🎁 Nově automaticky připsáno odměn: ',
+         '🎁 Newly credited mission rewards: ')+lastAwardCount+' · '+summary:summary);
     const fill=(id,items)=>{
       const root=$(id);if(!root?.replaceChildren)return;
       root.replaceChildren();
@@ -97,10 +100,8 @@
         throw Error(error?.message||'mission_status_invalid');
       if(id!==uid||stamp!==revision)return;
       missions=data;loaded=true;
-      if(Array.isArray(data.new_rewards)&&data.new_rewards.length){
-        const n=data.new_rewards.length;
-        text('missionsStatus',tr('🎁 Automaticky připsáno odměn: ',
-                                 '🎁 Automatic rewards granted: ')+n);
+      lastAwardCount=Array.isArray(data.new_rewards)?data.new_rewards.length:0;
+      if(lastAwardCount>0){
         // The parent must fetch actual account balances from authenticated
         // Supabase tables; no frontend-supplied currency is authoritative.
         window.dispatchEvent(new Event('foxey-arcade:missions-awarded'));
@@ -114,7 +115,7 @@
   function connect(client,user){
     const next=user?.id||null;
     if(next!==uid){
-      revision++;missions=null;loaded=false;pending=false;
+      revision++;missions=null;loaded=false;pending=false;lastAwardCount=0;
     }
     api=client||null;uid=next;
     render();
