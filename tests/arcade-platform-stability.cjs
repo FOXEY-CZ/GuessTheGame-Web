@@ -33,6 +33,31 @@ for(const page of pages)
 for(const [,page] of arcadeHtml.matchAll(/\bdata-page="([^"]+)"/g))
  assert.ok(pages.includes(page),'dead navigation to unregistered page: '+page);
 
+// The launcher must clearly separate available games from future concepts.
+const homeHub=arcadeHtml.match(/<section class="arcade-hub"[\s\S]*?<\/section>/)?.[0];
+assert.ok(homeHub,'global home action hub must exist');
+for(const route of ['games','community','missions','shop'])
+ assert.ok(homeHub.includes('data-page="'+route+'"'),
+   'home action hub missing valid platform route: '+route);
+assert.ok(arcadeHtml.includes('class="gamegrid arcade-library-live"')&&
+  arcadeHtml.includes('class="gamegrid arcade-upcoming-grid"'),
+  'game catalog should separate playable and announced titles');
+assert.ok(!/arcade-upcoming-grid[\s\S]{0,450}data-page="play"/.test(arcadeHtml),
+ 'planned games must not advertise playable buttons');
+
+// The secure quiz must keep solo play, friend challenges, and history in
+// distinct panes. Public deep links must still reveal the challenge tab.
+for(const id of ['gameHubTabs','hubTabSolo','hubTabChallenges','hubTabHistory',
+  'gameHubSolo','gameHubChallenges','gameHubHistory','quizKeyboardHelp']){
+ assert.ok(game.includes('id="'+id+'"'),'game hub UI missing: '+id);
+}
+assert.ok(game.includes("selectGameHub('challenges');"),
+ 'friend challenge deep links must open the challenge pane');
+assert.ok(game.includes("option.click?.()")&&game.includes("advance.click?.()"),
+ 'keyboard shortcuts must use existing secure UI button handlers');
+assert.ok(read('arcade/i18n.js').includes('"Knihovna her": "Game library"'),
+ 'new Arcade shortcuts need English translations');
+
 // All local script/stylesheet files must exist at the exact published path.
 // These checks catch silent stale bundle refs and accidental deletions.
 for(const [htmlPath,html] of [
