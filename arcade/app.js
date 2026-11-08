@@ -336,7 +336,8 @@
   }
   function renderAchievements(){
     const eng=achievementsEnglish(),valid=!!user&&!!profile;
-    const entries=Array.isArray(achievements?.achievements)?achievements.achievements:[];
+    // Never show a previous player's achievements to a guest or new account.
+    const entries=valid&&Array.isArray(achievements?.achievements)?achievements.achievements:[];
     const unlocked=entries.filter(x=>x.unlocked).length;
     const status=!valid?(eng?'Sign in to see achievements.':'Pro achievementy se přihlas.')
       :achievementStatus==='error'?(eng?'Achievements unavailable.':'Achievementy se nepodařilo načíst.')
@@ -864,6 +865,9 @@
       if(res.error)throw res.error;
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
+      ++achievementSeq;achievements=null;achievementStatus='guest';
+      if(achToastTimer){clearTimeout(achToastTimer);achToastTimer=null;}
+      el('arcadeAchievementToast')?.classList.add('hidden');
       user=null;profile=null;closeGameOnIdentityChange();go('home');
       try{window.FOXEY_ARCADE_NOTIFICATIONS?.connect(supa,null);}
       catch(err){console.warn('FOXEY notifications logout cleanup failed',err);}
