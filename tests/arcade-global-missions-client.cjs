@@ -6,7 +6,9 @@ const html=fs.readFileSync('arcade/index.html','utf8');
 const js=fs.readFileSync('arcade/app.js','utf8');
 const source=fs.readFileSync('arcade/missions.js','utf8');
 for(const id of ['page-missions','homeMissionList','dailyMissionList','weeklyMissionList',
- 'missionsRefresh','homeMissionStatus','missionsStatus','dailyMissionCountdown']){
+ 'missionsRefresh','homeMissionStatus','missionsStatus','dailyMissionCountdown',
+ 'streakPanelTitle','streakCurrentCount','homeStreakCount','homeStreakHint',
+ 'streakStatus','streakMilestones','streakProgressFill','missionRotationInfo']){
  assert.ok(html.includes('id="'+id+'"'),'Missing mission UI '+id);
 }
 assert.ok(html.includes('./missions.js?v='));
@@ -53,12 +55,18 @@ const missions=[
  reward_shards:0,reward_crowns:0,reward_chests:1}
 ];
 let first=true;
+const streak={current:3,best:3,active_today:true,
+ start_date:'2026-11-06',last_played:'2026-11-08',next_milestone:7,
+ milestones:[{days:3,shards:10,crowns:0,free_chests:0},
+ {days:7,shards:0,crowns:0,free_chests:1},
+ {days:14,shards:30,crowns:0,free_chests:0},
+ {days:30,shards:40,crowns:1,free_chests:2}]};
 const api={rpc:async(name)=>{
  rpcCount++;
  assert.equal(name,'arcade_global_missions');
  const earned=first?[{code:'daily_play',shards:5}]:[];
  first=false;
- return {data:{ok:true,missions,new_rewards:earned},error:null};
+ return {data:{ok:true,missions,new_rewards:earned,rotation_enabled:false,streak,new_streak_rewards:[]},error:null};
 }};
 const global={
  window,document,navigator:{onLine:true},Event:class Event{constructor(type){this.type=type;}},
@@ -77,6 +85,12 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.equal(elements.get('weeklyMissionList').children.length,1);
   assert.equal(elements.get('homeMissionList').children.length,3);
   assert.ok(elements.get('homeMissionStatus').textContent.includes('1 / 3'));
+  assert.equal(elements.get('streakCurrentCount').textContent,'3 dny');
+  assert.ok(elements.get('homeStreakCount').textContent.includes('3 dny'));
+  assert.equal(elements.get('streakMilestones').children.length,4);
+  assert.ok(elements.get('streakProgressFill').style.width.startsWith('42.'));
+  assert.ok(elements.get('missionRotationInfo').textContent.includes('9. 11.'));
+  assert.ok(elements.get('streakMilestones').children[0].className.includes('complete'));
   const progress=elements.get('dailyMissionList').children[1].children[1].children[3].children[0];
   assert.equal(progress.style.width,'60%');
   await ui.refresh();await settle();
@@ -86,5 +100,6 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   ui.connect(null,null);
   assert.ok(elements.get('missionsStatus').textContent.includes('Sign in'));
   assert.equal(elements.get('dailyMissionList').children.length,1);
+  assert.equal(elements.get('streakMilestones').children.length,0);
   console.log('PASS: mission render, daily/weekly grouping, progress, auto credit signal, refresh safety, translation and logout isolation');
 })().catch(err=>{console.error(err);process.exitCode=1;});
