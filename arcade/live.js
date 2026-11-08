@@ -398,37 +398,78 @@ const answer=(index,choice)=>mutate('arcade_live_answer',
   {p_match_id:activeId,p_index:index,p_choice:choice});
 const cancelMatch=()=>mutate('arcade_live_cancel',{p_match_id:activeId});
 function connect(client,user){
-  const next=user?.id||null;
-  if(next!==uid){
-    epoch++;snapshot=null;active=null;activeId=null;previousInvites=-1;lastDashboard=0;lastPing=0;
+  const next=user?.id||null,previous=uid;
+  const changed=next!==uid;
+  if(changed){
+    disconnectRealtime();
+    if(previous)try{window.sessionStorage.removeItem(storageKey(previous));}catch(_){}
+    epoch++;snapshot=null;stats=null;statsLoading=false;lastStats=0;
+    active=null;activeId=null;previousInvites=-1;lastDashboard=0;lastPing=0;lastState=0;
     loadingDashboard=false;loadingState=false;loadingStateId=null;busy=false;
   }
   api=client||null;uid=next;
-  renderList();renderArena();
+  renderList();renderArena();renderStats();
   if(uid){
-    void ping();void refreshDashboard(true);
-    const link=new URLSearchParams(location.search).get('live');
-    if(UUID.test(link))void openMatch(link);
-  }
+    void ping();void refreshDashboard(true);void refreshStats(true);
+    if(!realtimeChannel)void connectRealtime(uid,epoch);
+    if(changed){
+      const link=new URLSearchParams(location.search).get('live');
+      let last=null;
+      try{last=window.sessionStorage.getItem(storageKey(uid));}catch(_){}
+      const id=UUID.test(link)?link:UUID.test(last)?last:null;
+      if(id)void openMatch(id,UUID.test(link));
+    }
+  }else networkStatus(tr('🔐 Přihlas se pro Realtime','🔐 Sign in for Realtime'));
 }
 function onPage(next){
   page=next;
-  if(next==='community'&&uid){void ping();void refreshDashboard(true);if(activeId)void refreshState();}
+  if(next==='community'&&uid){
+    void ping();void refreshDashboard(true);void refreshStats();
+    if(activeId)void refreshState();
+  }
 }
 function setNavigation(cb){navigate=cb;}
-$('liveRefresh')?.addEventListener('click',()=>{void ping();void refreshDashboard(true);if(activeId)void refreshState();});
+$('liveRefresh')?.addEventListener('click',()=>{
+  void ping();void refreshDashboard(true);void refreshStats(true);
+  if(activeId)void refreshState();
+});
 window.setInterval?.(()=>{
-  if(!uid||document.visibilityState==='hidden')return;
+  updateTimer();
+  if(!uid||document.visibilityState==='hidden'||navigator.onLine===false)return;
   void ping();
+  const now=Date.now();
   if(page==='community'){
-    if(activeId)void refreshState();
-    void refreshDashboard();
-  }else if(Date.now()-lastDashboard>15000){
+    if(activeId&&now-lastState>(realtimeConnected?7000:2500))void refreshState();
+    if(now-lastDashboard>(realtimeConnected?12000:5000))void refreshDashboard(true);
+    if(now-lastStats>30000)void refreshStats();
+  }else if(now-lastDashboard>20000){
     void refreshDashboard(true);
   }
-},2000);
-window.addEventListener('focus',()=>{if(uid){void ping();void refreshDashboard(true);if(activeId)void refreshState();}});
-window.addEventListener('foxey-arcade:locale-changed',()=>{renderList();renderArena();});
-window.FOXEY_ARCADE_LIVE=Object.freeze({connect,onPage,setNavigation,invite,openMatch,refresh:refreshDashboard});
-renderList();renderArena();
+},1000);
+function resumeConnection(){
+  if(!uid||navigator.onLine===false)return;
+  void ping();void refreshDashboard(true);void refreshStats(true);
+  if(activeId)void refreshState();
+  if(!realtimeChannel)void connectRealtime(uid,epoch);
+}
+window.addEventListener('focus',resumeConnection);
+window.addEventListener('online',()=>{
+  networkStatus(tr('🔄 Obnovuji připojení…','🔄 Reconnecting…'));
+  resumeConnection();
+});
+window.addEventListener('offline',()=>{
+  realtimeConnected=false;
+  networkStatus(tr('🔴 Offline · skóre bezpečně na serveru','🔴 Offline · score stays on server'));
+});
+window.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')resumeConnection();
+});
+window.addEventListener('foxey-arcade:locale-changed',()=>{
+  renderList();renderArena();renderStats();
+});
+window.FOXEY_ARCADE_LIVE=Object.freeze({
+  connect,onPage,setNavigation,invite,openMatch,refresh:refreshDashboard,
+  refreshStats
+});
+renderList();renderArena();renderStats();
 })();
