@@ -1565,8 +1565,15 @@
       // Launcher can open an unfinished challenge in a NEW tab. The
       // server RPC still verifies that this user owns that exact run.
       const resumeId=urlParams.get('resume');
+      const friendChallengeId=urlParams.get('friend_challenge');
       if(me&&resumeId&&uuidPattern.test(resumeId))
         void resumeAsyncChallenge(resumeId);
+      else if(me&&friendChallengeId&&uuidPattern.test(friendChallengeId)){
+        // Only friend-specific deep links auto-join. Ordinary share links
+        // keep their existing explicit "Accept challenge" flow.
+        $('asyncInvite').value=friendChallengeId;
+        void joinAsyncChallenge();
+      }
       else if(me&&urlParams.get('notifications')==='1')goToHistory();
       if(showChallengesAfterAuth)openChallengesForLauncher();
     }catch(_){}
@@ -1784,7 +1791,14 @@
       });
       if(error||data?.ok!==true||data.role!=='challenger'||data.challenge_id!==id)
         throw Error(error?.message||'join_failed');
-      await enterQuiz(data,data.mode,{id,role:'challenger'});
+      if(data.retry===true){
+        // A refreshed friend invite must resume the original server run,
+        // never replay already committed answers from question one.
+        lock(false);
+        await resumeAsyncChallenge(id);
+      }else{
+        await enterQuiz(data,data.mode,{id,role:'challenger'});
+      }
       status(T('statusReady'),'ok');
     }catch(err){
       $('asyncLobbyStatus').textContent=template(T('asyncError'),{error:errorText(err)});
