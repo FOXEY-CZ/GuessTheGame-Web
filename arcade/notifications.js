@@ -6,7 +6,7 @@
   const $=id=>document.getElementById(id);
   const choose=(cs,en)=>window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
   let api=null,userId=null,items=[],unread=0,loading=false,seq=0,opened=false;
-  let archived=false,hasMore=false,pageOffset=0;
+  let archived=false,hasMore=false,pageOffset=0,socialUnread=0;
   const PAGE_SIZE=10;
   const text=(id,value)=>{const node=$(id);if(node)node.textContent=value};
   const show=(id,yes)=>{const node=$(id);if(node)node.classList.toggle('hidden',!yes)};
@@ -36,12 +36,13 @@
     }
   }
   function render(){
-    const count=unread>99?'99+':String(unread);
+    const allUnread=unread+socialUnread;
+    const count=allUnread>99?'99+':String(allUnread);
     text('arcadeBellCount',count);
-    show('arcadeBellCount',unread>0);
+    show('arcadeBellCount',allUnread>0);
     const bell=$('arcadeBell');
     if(bell){
-      bell.setAttribute('aria-label',choose('Upozornění FOXEY Arcade','FOXEY Arcade notifications')+' ('+unread+')');
+      bell.setAttribute('aria-label',choose('Upozornění FOXEY Arcade','FOXEY Arcade notifications')+' ('+allUnread+')');
       bell.setAttribute('title',choose('Upozornění a výzvy','Notifications and challenges'));
     }
     text('arcadeNoticeTitle',choose('🔔 Oznámení FOXEY Arcade','🔔 FOXEY Arcade notifications'));
@@ -64,9 +65,10 @@
       text('arcadeNoticeStatus',choose('Přihlas se a uvidíš své výzvy ze všech her.','Sign in to see your challenges from every game.'));
       return;
     }
-    text('arcadeNoticeStatus',unread>0?
-      choose('🔔 Nové výsledky: ','🔔 Unread results: ')+unread:
-      choose('Zatím žádný nový výsledek.','No unread results.'));
+    text('arcadeNoticeStatus',allUnread>0?
+      choose('🔔 Nepřečtené výsledky: ','🔔 Unread results: ')+unread+
+        ' · '+choose('Přátelé: ','Friends: ')+socialUnread:
+      choose('Zatím žádná nepřečtená upozornění.','No unread notifications.'));
     if(!items.length){
       const p=document.createElement('p');p.className='arcade-notice-empty';
       p.textContent=archived?
@@ -137,7 +139,7 @@
     if(!api||!userId||loading||navigator.onLine===false)return;
     loading=true;
     const id=userId,stamp=seq,view=archived;
-    if(loadMore&&!hasMore)return;
+    if(loadMore&&!hasMore){loading=false;return;}
     if(loadMore)pageOffset+=PAGE_SIZE;
     const offset=pageOffset;
     try{
@@ -169,6 +171,7 @@
   }
   function toggleArchive(){
     archived=!archived;items=[];hasMore=false;pageOffset=0;
+    window.FOXEY_ARCADE_SOCIAL?.setBellArchived?.(archived);
     render();void refresh();
   }
   async function archiveChallenge(challengeId,toArchive){
@@ -236,6 +239,7 @@
     render();
     $('arcadeNoticeClose')?.focus?.();
     void refresh();
+    void window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
   }
   function close(){
     opened=false;
@@ -269,6 +273,11 @@
   });
   window.addEventListener('focus',()=>{if(userId)void refresh();});
   window.addEventListener('foxey-arcade:locale-changed',render);
+  window.addEventListener('foxey-arcade:social-unread',event=>{
+    const next=Number(event.detail?.unread);
+    socialUnread=Number.isSafeInteger(next)&&next>=0?next:0;
+    render();
+  });
   window.setInterval(()=>{
     if(userId&&document.visibilityState!=='hidden')void refresh();
   },45000);
