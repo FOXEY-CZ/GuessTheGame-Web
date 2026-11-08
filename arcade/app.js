@@ -831,7 +831,7 @@
         clean.searchParams.delete('invite_live');
         history.replaceState(null,'',clean.pathname+clean.search+clean.hash);
         go('community');
-        void window.FOXEY_ARCADE_LIVE?.invite(requestedFriend);
+        void window.FOXEY_ARCADE_LIVE?.invite(requestedFriend,{mode:'classic',target:1});
         return;
       }
       // If the user directly opened the playable route, reload the iframe
@@ -1017,7 +1017,7 @@
       const friend=event.data.friend_id;
       if(user&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(friend)){
         go('community');
-        void window.FOXEY_ARCADE_LIVE?.invite(friend);
+        void window.FOXEY_ARCADE_LIVE?.invite(friend,{mode:'classic',target:1});
       }
       return;
     }
