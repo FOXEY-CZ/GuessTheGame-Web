@@ -41,7 +41,7 @@ function instance(uid, initiallyFinished=true){
   const get=id=>{if(!elements.has(id))elements.set(id,new E(id));return elements.get(id);};
   const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Guess the Game',
     visibilityState:'visible',getElementById:get,createElement:tag=>new E(tag)};
-  const intervals=[],listeners={};const reads=new Map(),rpcCalls=[];
+  const intervals=[],listeners={};const reads=new Map(),archived=new Map(),rpcCalls=[];
   function entries(){
     const seen=reads.get(challenge)||false;
     return [{
@@ -62,9 +62,19 @@ function instance(uid, initiallyFinished=true){
     auth:{getSession:async()=>({data:{session:{user:{id:uid}}},error:null})},
     rpc:async(name,args)=>{
       rpcCalls.push(name);
-      if(name==='arcade_async_challenge_inbox'){
+      if(name==='arcade_async_challenge_history'){
         assert.equal(args.p_limit,40);
-        return {data:{ok:true,items:entries(),unread:isFinished&&!reads.get(challenge)?1:0},error:null};
+        assert.equal(args.p_offset,0);
+        const items=entries().filter(e=>!!archived.get(e.challenge_id)===args.p_archived);
+        return {data:{ok:true,items,unread:isFinished&&!reads.get(challenge)&&
+          !archived.get(challenge)?1:0,archived:args.p_archived,has_more:false,total:items.length},
+          error:null};
+      }
+      if(name==='arcade_async_challenge_archive'){
+        if(args.p_challenge_id!==challenge)throw Error('unexpected_archive_target');
+        archived.set(challenge,args.p_archived);
+        if(args.p_archived&&isFinished)reads.set(challenge,true);
+        return {data:{ok:true,challenge_id:challenge,archived:args.p_archived},error:null};
       }
       if(name==='arcade_async_challenge_status'){
         assert.ok([challenge,other].includes(args.p_challenge_id));
@@ -91,7 +101,7 @@ function instance(uid, initiallyFinished=true){
   const navigator={onLine:true,clipboard:{writeText:async()=>{}}};
   const app=new Function('window','document','navigator','localStorage','crypto','URL',script)(
     win,doc,navigator,browserStorage,{randomUUID:()=>challenge},URL);
-  return {app,get,doc,intervals,listeners,rpcCalls,reads,
+  return {app,get,doc,intervals,listeners,rpcCalls,reads,archived,
     finishChallenge:()=>{isFinished=true;}};
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
@@ -157,6 +167,22 @@ async function main(){
   assert.equal(first.doc.title,'FOXEY Arcade · Guess the Game');
   assert.ok(first.get('historyDetail').textContent.includes('Vyhráváš'));
   assert.equal(first.reads.get(challenge),true);
+  // A finished result can be archived without disturbing the active game.
+  const dismiss=first.get('historyList').children[0].children[0].children[1];
+  assert.equal(dismiss.textContent,'✕');
+  await dismiss.listeners.click();await settle();
+  assert.equal(first.archived.get(challenge),true);
+  assert.equal(first.app.getState().historyItems.length,1);
+  assert.equal(first.app.getState().game,activeRound);
+  first.get('historyArchiveToggle').listeners.click();await settle();
+  assert.equal(first.app.getState().historyItems.length,1);
+  const restore=first.get('historyList').children[0].children[0].children[1];
+  // In this fake DOM the first child is the heading; restore is its 2nd child.
+  assert.equal(restore.textContent,'↩');
+  await restore.listeners.click();await settle();
+  assert.equal(first.archived.get(challenge),false);
+  first.get('historyArchiveToggle').listeners.click();await settle();
+  assert.equal(first.app.getState().historyItems.length,2);
 
   // The other player's unread state is separate from the first player's.
   const second=instance(friend);
@@ -177,6 +203,6 @@ async function main(){
   assert.equal(second.get('historyBell').attributes['aria-label'],'My challenges; unread results: 0');
   assert.ok(!first.rpcCalls.includes('arcade_verify_progress_shadow'));
   assert.ok(!second.rpcCalls.includes('arcade_sync_legacy'));
-  console.log('PASS: history lists both accounts, unread bell, visibility refresh, independent read receipts, no payout');
+  console.log('PASS: secure quiz notification archive and restore, no lost game, independent read receipts');
 }
 main().catch(err=>{console.error(err);process.exitCode=1;});
