@@ -22,7 +22,9 @@ assert.ok(css.includes('env(safe-area-inset-bottom'));
 assert.ok(!source.includes('innerHTML'));
 assert.ok(!source.includes('service_role'));
 assert.ok(!source.includes('.update(') && !source.includes('.insert(') &&
-  !source.includes('.delete('),'challenge dashboard must be read-only');
+  !source.includes('.delete('),'challenge management must never edit client-side tables');
+assert.ok(source.includes("api.rpc('arcade_async_challenge_cancel'"),
+  'cancel must be performed through authenticated server RPC');
 
 class Element {
   constructor(id=''){
@@ -65,10 +67,11 @@ const elements=new Map(ids.map(id=>[id,new Element(id)]));
 const dock=html.match(/<nav class="arcade-mobile-dock"[\s\S]*?<\/nav>/)?.[0];
 assert.ok(dock,'mobile dock missing');
 assert.ok(dock.includes('data-page="community"'),'Friends must be a primary bottom nav item');
-assert.ok(!dock.includes('data-page="shop"'),'Shop belongs in More, not primary dock');
-assert.ok(html.includes('<button data-page="shop" type="button">🛍️ Obchod'),
-  'Shop must remain reachable in More');
-const mobile=['home','games','challenges','community'].map(x=>{
+assert.ok(dock.includes('data-page="shop"'),'Shop must be a visible bottom navigation item');
+assert.ok(!dock.includes('data-page="challenges"'),'Challenges share the Friends dock entry');
+assert.ok(html.includes('<button data-page="challenges" type="button">⚔️ Moje výzvy'),
+  'older direct Challenges route stays accessible under More');
+const mobile=['home','games','community','shop'].map(x=>{
   const e=new Element('mobile-'+x);e.dataset.page=x;return e;
 });
 const document={
@@ -85,6 +88,7 @@ const document={
 };
 let locale='cs',openBellCount=0,bellRefresh=0,nav=[];
 const window={
+  confirm:()=>true,
   FOXEY_I18N:{getLocale:()=>locale},
   FOXEY_ARCADE_NOTIFICATIONS:{open(){openBellCount++;},refresh(){bellRefresh++;}},
   events:{},
@@ -121,12 +125,24 @@ const api={rpc:async(name,args)=>{
     assert.equal(args.p_challenge_id,records[3].challenge_id);
     return {data:{ok:true,seen:true},error:null};
   }
+  if(name==='arcade_async_challenge_cancel'){
+    assert.equal(args.p_challenge_id,records[0].challenge_id);
+    records[0].status='cancelled';
+    records[0].cancelled_by_me=true;
+    return {data:{ok:true,cancelled:true},error:null};
+  }
+  if(name==='arcade_async_challenge_archive'){
+    assert.equal(args.p_challenge_id,records[0].challenge_id);
+    assert.equal(args.p_archived,true);
+    records[0].archived=true;
+    return {data:{ok:true,archived:true},error:null};
+  }
   assert.equal(name,'arcade_async_challenge_history');
   assert.equal(args.p_limit,30);
   assert.equal(args.p_offset,0);
   assert.equal(args.p_archived,false);
   reads++;
-  return {data:{ok:true,items:records,archived:false,has_more:false},error:null};
+  return {data:{ok:true,items:records.filter(x=>!x.archived),archived:false,has_more:false},error:null};
 }};
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
 
@@ -165,9 +181,13 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],'page');
   ui.onPage('community');
   assert.equal(mobile[3].attrs['aria-current'],'page');
+  assert.equal(mobile[2].attrs['aria-current'],'page');
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],undefined);
   ui.onPage('shop');
-  assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],'page');
+  assert.equal(mobile[3].attrs['aria-current'],'page');
+  assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],undefined);
+  ui.onPage('challenges');
+  assert.equal(mobile[2].attrs['aria-current'],'page');
   elements.get('mobileMoreToggle').events.click();
   assert.equal(elements.get('mobileMoreMenu').hidden,false);
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-expanded'],'true');
@@ -177,6 +197,15 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.equal(mobile[0].attrs['aria-current'],'page');
   locale='en';window.events['foxey-arcade:locale-changed']();
   assert.ok(elements.get('challengeListResults').children[0].children[2].textContent.includes('Victory'));
+  // Server cancellation with user confirmation removes the user's unfinished
+  // challenge from the active list and preserves the friend's cancelled state.
+  const cancel=elements.get('challengeListPlay').children[0].children[3].children.at(-1);
+  assert.ok(cancel.textContent.includes('Cancel challenge'));
+  cancel.events.click();await settle();await settle();await settle();
+  assert.ok(rpcNames.includes('arcade_async_challenge_cancel'));
+  assert.ok(rpcNames.includes('arcade_async_challenge_archive'));
+  assert.equal(records[0].status,'cancelled');
+  assert.equal(elements.get('challengeCountPlay').textContent,'1');
   // Logout: a new or anonymous identity cannot see the previous user's results.
   ui.connect(null,null);
   assert.equal(elements.get('challengeCountPlay').textContent,'—');
@@ -193,7 +222,8 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.equal(elements.get('challengeCountResults').textContent,'—');
   assert.ok(rpcNames.every(name=>[
     'arcade_async_challenge_history','arcade_async_challenge_status',
-    'arcade_async_challenge_mark_seen'
+    'arcade_async_challenge_mark_seen','arcade_async_challenge_cancel',
+    'arcade_async_challenge_archive'
   ].includes(name)));
-  console.log('PASS: mobile More nav, live categorized challenges, resume links, settings actions, account separation and read-only safety');
+  console.log('PASS: Shop+Friends dock, combined challenges, RPC cancel+hide, resume, results, account isolation.');
 })().catch(err=>{console.error(err);process.exitCode=1;});
