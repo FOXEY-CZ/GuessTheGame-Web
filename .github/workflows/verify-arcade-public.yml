@@ -8,6 +8,7 @@ on:
       - 'tests/arcade-global-notifications-client.cjs'
       - 'tests/secure-async-history-client.cjs'
       - 'tests/arcade-global-achievements-client.cjs'
+      - 'tests/arcade-global-missions-client.cjs'
       - 'tests/arcade-ui-subtabs-client.cjs'
       - 'tests/arcade-ui2-navigation-client.cjs'
       - '.github/workflows/verify-arcade-public.yml'
@@ -31,6 +32,7 @@ jobs:
           node --check arcade/app.js
           node --check arcade/notifications.js
           node --check arcade/ui2.js
+          node --check arcade/missions.js
           node --check arcade/i18n.js
           node --check tests/arcade-global-notifications-client.cjs
           node --check tests/secure-async-history-client.cjs
@@ -38,6 +40,8 @@ jobs:
           node tests/secure-async-history-client.cjs
           node --check tests/arcade-global-achievements-client.cjs
           node tests/arcade-global-achievements-client.cjs
+          node --check tests/arcade-global-missions-client.cjs
+          node tests/arcade-global-missions-client.cjs
           node --check tests/arcade-ui-subtabs-client.cjs
           node tests/arcade-ui-subtabs-client.cjs
           node --check tests/arcade-ui2-navigation-client.cjs
@@ -53,7 +57,7 @@ jobs:
           const gameAuth=fs.readFileSync('account-test.js','utf8');
           for(const id of ['page-home','page-games','page-play','page-community','page-account','page-settings','authForm','nickname','avatar','signOut','gameFrame','headerArcadeXp','headerArcadeLevel','homeArcadeXp','homeArcadeLevel','accountArcadeXp','accountArcadeLevel','homeXp','homeLevel','homeShards','homeCrowns','accountXp','accountLevel','accountShards','accountCrowns'])
             if(!html.includes('id="'+id+'"')) throw Error('Missing UI element '+id);
-          if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./ui2.js')||!html.includes('./config.js')||
+          if(!html.includes('./styles.css')||!html.includes('./app.js')||!html.includes('./ui2.js')||!html.includes('./missions.js')||!html.includes('./config.js')||
              !html.includes('./avatars.js')||!avatars.includes('FOXEY_AVATAR_ART'))
             throw Error('Missing relative asset links');
           if(!config.includes('sb_publishable_')||/sb_secret_|ghp_[A-Za-z0-9]{20,}|postgres:\/\//.test(config))
