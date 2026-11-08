@@ -111,6 +111,11 @@
         </div>
         <p class="small" id="homeMissionStatus" aria-live="polite">Načítám mise…</p>
         <div class="mission-grid mission-preview" id="homeMissionList"></div>
+        <div class="mission-streak-preview" id="homeStreakPreview" aria-live="polite">
+          <span class="mission-streak-flame" aria-hidden="true">🔥</span>
+          <div><strong id="homeStreakCount">0 dní v řadě</strong><p id="homeStreakHint">Hraj každý den a sbírej bonusy za sérii.</p></div>
+          <button class="secondary" type="button" data-page="missions">Zobrazit sérii</button>
+        </div>
       </section>
       <section class="progresscard achievement-panel" aria-label="Globální achievementy">
         <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
@@ -234,6 +239,16 @@
         <button class="secondary" type="button" id="missionsRefresh">↻ Obnovit mise</button>
       </div>
       <p id="missionsStatus" class="small" aria-live="polite">Načítám mise…</p>
+      <p id="missionRotationInfo" class="small mission-rotation-info" aria-live="polite">Nové úkoly se vybírají automaticky pro každé období.</p>
+      <section class="mission-streak-panel" aria-labelledby="streakPanelTitle">
+        <div class="mission-streak-heading">
+          <div><span class="eyebrow">ODMĚNY ZA PRAVIDELNOST</span><h2 id="streakPanelTitle">🔥 Série aktivních dní</h2></div>
+          <strong id="streakCurrentCount">0 dní</strong>
+        </div>
+        <p id="streakStatus" class="small">Dokonči každý den alespoň jednu odměněnou partii.</p>
+        <div class="mission-streak-progress"><span id="streakProgressFill"></span></div>
+        <div class="mission-streak-milestones" id="streakMilestones"></div>
+      </section>
       <div class="mission-periods">
         <section class="mission-period-card" aria-labelledby="dailyMissionsTitle">
           <div class="mission-period-head">
