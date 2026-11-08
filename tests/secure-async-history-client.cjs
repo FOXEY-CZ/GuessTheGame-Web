@@ -17,7 +17,8 @@ const script=raw.replace(/^\s*\(\(\) => \{/,'return (() => {')
   sendQuestionReport,toggleReport,refreshLiveRewards,showLiveRewardReceipt,finish,
   openGameAchievements,closeGameAchievements,refreshGameAchievements,
   openGameMissions,closeGameMissions,refreshGameMissions,
-  getState:()=>({historyUnread,historyItems,me,game,current})};\n})();`);
+  refreshGameSocial,
+  getState:()=>({historyUnread,historyItems,gameSocialUnread,me,game,current})};\n})();`);
 assert.ok(script.includes('return {refreshHistory'));
 const challenge='11111111-1111-4111-8111-111111111111';
 const other='44444444-4444-4444-8444-444444444444';
@@ -42,7 +43,7 @@ class E {
   focus(){}select(){}scrollIntoView(){}
 }
 function instance(uid, initiallyFinished=true){
-  let isFinished=initiallyFinished;
+  let isFinished=initiallyFinished,socialVisible=false,socialSeen=false;
   const elements=new Map();
   const get=id=>{if(!elements.has(id))elements.set(id,new E(id));return elements.get(id);};
   const doc={documentElement:{lang:'cs'},title:'FOXEY Arcade · Guess the Game',
@@ -130,6 +131,22 @@ function instance(uid, initiallyFinished=true){
           progress:4,target:5,reward_shards:15,reward_chests:1,unlocked:false
         }],new_achievements:[]},error:null};
       }
+      if(name==='arcade_social_inbox'){
+        assert.equal(args.p_limit,10);
+        assert.equal(args.p_offset,0);
+        const items=socialVisible?[{
+          notification_id:'66666666-6666-4666-8666-666666666666',
+          kind:'friend_request',subject_id:'77777777-7777-4777-8777-777777777777',
+          actor:{user_id:friend,nickname:'Buddy',avatar_id:'robot'},
+          unread:!socialSeen
+        }]:[];
+        return {data:{ok:true,items,unread:socialVisible&&!socialSeen?1:0,
+          archived:args.p_archived,has_more:false,total:items.length},error:null};
+      }
+      if(name==='arcade_social_notification_seen'){
+        assert.equal(args.p_notification_id,'66666666-6666-4666-8666-666666666666');
+        socialSeen=true;return {data:{ok:true,seen:true},error:null};
+      }
       if(name==='arcade_async_challenge_history'){
         assert.equal(args.p_limit,10);
         assert.equal(args.p_offset,0);
@@ -175,7 +192,8 @@ function instance(uid, initiallyFinished=true){
   const app=new Function('window','document','navigator','localStorage','crypto','URL',script)(
     win,doc,navigator,browserStorage,{randomUUID:()=>challenge},URL);
   return {app,get,doc,intervals,listeners,rpcCalls,reads,archived,reportCalls,rewards,
-    finishChallenge:()=>{isFinished=true;}};
+    finishChallenge:()=>{isFinished=true;},
+    showFriendNotice:()=>{socialVisible=true;}};
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
 async function main(){
@@ -196,6 +214,18 @@ async function main(){
   const first=instance(owner);
   await settle();
   assert.equal(first.app.getState().me.id,owner);
+  // The in-game bell combines protected friend requests with match results.
+  first.showFriendNotice();
+  await first.app.refreshGameSocial();await settle();
+  assert.equal(first.app.getState().gameSocialUnread,1);
+  assert.equal(first.get('historyBellCount').textContent,'2');
+  assert.equal(first.get('gameSocialList').children.length,1);
+  const openFriend=first.get('gameSocialList').children[0].children[2].children[0];
+  assert.ok(openFriend.href.includes('/arcade/'));
+  assert.equal(openFriend.target,'_blank','opening Friends must not interrupt this game');
+  openFriend.listeners.click();await settle();
+  assert.equal(first.app.getState().gameSocialUnread,0);
+  assert.equal(first.get('historyBellCount').textContent,'1');
   assert.equal(first.app.getState().historyUnread,1);
   assert.equal(first.get('historyBellCount').textContent,'1');
   assert.ok(first.doc.title.startsWith('(1)'));
