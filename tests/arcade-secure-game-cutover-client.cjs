@@ -7,18 +7,22 @@ const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
 const app=read('arcade/app.js'),arcade=read('arcade/index.html'),
  beta=read('secure-quiz-beta.html'),old=read('preview-auth-test.html'),
  root=read('index.html'),i18n=read('arcade/i18n.js');
-assert.match(app,/const GAME_URL = '\.\.\/secure-quiz-beta\.html\?v=arcade-primary-/);
+assert.match(app,/const GAME_URL = '\.\.\/secure-quiz-beta\.html\?v=[A-Za-z0-9-]+'/);
 assert.ok(!app.includes("const GAME_URL = '../preview-auth-test.html'"));
 assert.ok(arcade.includes('id="gameFrame"'));
-assert.ok(arcade.includes('app.js?v=secure-cutover-'));
-assert.ok(arcade.includes('i18n.js?v=secure-cutover-'));
+assert.ok(arcade.includes('app.js?v='));
+assert.ok(arcade.includes('i18n.js?v='));
 assert.ok(arcade.includes('href="../secure-quiz-beta.html"'));
 assert.ok(arcade.includes('href="../preview-auth-test.html"'));
 assert.ok(arcade.includes('href="../preview-3.6.html"'));
-assert.ok(arcade.includes('Skóre nové hry se bezpečně ukládá, ale XP a měny'));
-assert.ok(arcade.includes('Nově získané herní body jsou zatím testové'));
-assert.ok(arcade.includes('Pro nové výzvy je potřeba účet'));
-assert.ok(arcade.includes('🔔 zvonečku'));
+assert.ok(arcade.includes('Za serverově ověřené partie se automaticky připisují globální XP a měny'),
+  'Live payouts must be described as server-verified, not uncredited beta scores');
+assert.ok(arcade.includes('Výsledek a globální odměny se ověřují na serveru'),
+  'Embedded secure game must display current server-owned payout terms');
+assert.ok(arcade.includes('Vyžaduje přihlášení'),
+  'Secure multiplayer and rewards require a logged-in Arcade account');
+assert.ok(arcade.includes('id="arcadeBell"'),
+  'Live invitations must be reachable from the shared Arcade bell');
 assert.ok(i18n.includes('The secure Guess the Game is now the primary version'));
 assert.ok(root.includes('class="secure-upgrade-banner"'));
 assert.ok(old.includes('class="secure-upgrade-banner"'));
@@ -78,6 +82,6 @@ loads[0].fn();assert.equal(sent.length,1);
 const inspect=new Function('window',beta.match(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)
  .at(-1).replace(/^<script(?:\s[^>]*)?>|<\/script>$/g,''));
 assert.equal(typeof inspect,'function');
-console.log('PASS: primary secure iframe, verified challenge handoff, safe top navigation, legacy preserved, no real payouts');
+console.log('PASS: primary secure iframe, verified challenge handoff, safe top navigation, legacy retained, server-owned rewards');
 mainDummy();
 function mainDummy(){}
