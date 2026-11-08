@@ -901,6 +901,14 @@
     }
     const newBadges=Array.isArray(receipt?.new_achievements)?
       receipt.new_achievements.filter(x=>x&&typeof x.code==='string'):[];
+    visible('achievementUnlockBanner',newBadges.length>0);
+    if(newBadges.length){
+      $('achievementUnlockTitle').textContent=template(T('achievementsEarned'),
+        {count:newBadges.length});
+      $('achievementUnlockDescription').textContent=newBadges.map(a=>
+        (a.icon||'🏆')+' '+(lang==='en'?a.name_en:a.name_cs||a.code)
+      ).join(' · ');
+    }
     if(newBadges.length){
       const extraShards=newBadges.reduce((a,b)=>a+Math.max(0,Number(b.shards)||0),0);
       const extraChests=newBadges.reduce((a,b)=>a+Math.max(0,Number(b.free_chests)||0),0);
@@ -911,6 +919,104 @@
     $('liveRewardSummary').textContent=message;
     visible('noReward',receipt?.credited!==true);
     if(receipt?.credited!==true)$('noReward').textContent=T('noReward');
+  }
+
+  // Achievement drawer reads only owner-scoped, verified server progress.
+  // It never advances, pauses, rewinds or replaces the current quiz.
+  function renderGameAchievements(){
+    $('achievementsTitle').textContent=T('achievementsTitle');
+    $('achievementsEyebrow').textContent=T('achievementsEyebrow');
+    $('achievementsClose').setAttribute('aria-label',T('achievementsClose'));
+    $('achievementsButton').setAttribute('aria-label',T('achievementsButton'));
+    $('achievementsButton').setAttribute('title',T('achievementsButton'));
+    $('resultAchievementsButton').textContent=T('achievementsShow');
+    const entries=Array.isArray(achievementState?.achievements)?
+      achievementState.achievements:[];
+    const unlocked=entries.filter(a=>a.unlocked===true).length;
+    $('achievementHeaderCount').textContent=entries.length?
+      unlocked+'/'+entries.length:'—';
+    $('achievementsCount').textContent=template(T('achievementsSummary'),{
+      unlocked,total:entries.length
+    });
+    const xp=Math.max(0,Number(achievementState?.xp)||0);
+    const level=Math.max(1,Number(achievementState?.level)||1);
+    $('achievementsLevel').textContent=template(T('achievementsLevel'),{level});
+    $('achievementsXp').textContent=template(T('achievementsXp'),{
+      xp,remaining:100-(xp%100)
+    });
+    $('achievementsLevelFill').style.width=(xp%100)+'%';
+    $('achievementsLevelMeter').setAttribute('aria-valuenow',String(xp%100));
+    $('achievementsHint').textContent=achievementLoading?
+      T('achievementsLoading'):achievementState?
+      template(T('achievementsSummary'),{unlocked,total:entries.length}):
+      T('achievementsUnavailable');
+    const root=$('achievementsList');root.replaceChildren();
+    const sorted=[...entries].sort((a,b)=>
+      Number(b.unlocked)-Number(a.unlocked)||
+      (Number(b.progress)/Math.max(1,Number(b.target)))-
+      (Number(a.progress)/Math.max(1,Number(a.target))));
+    for(const entry of sorted){
+      const card=document.createElement('article');
+      card.className='achievement-game-card'+(entry.unlocked?' is-unlocked':'');
+      const icon=document.createElement('span');icon.className='achievement-game-icon';
+      icon.textContent=entry.icon||'🏆';icon.setAttribute('aria-hidden','true');
+      const detail=document.createElement('div');detail.className='achievement-game-copy';
+      const name=document.createElement('strong');
+      name.textContent=(lang==='en'?entry.name_en:entry.name_cs)||entry.code;
+      const desc=document.createElement('small');
+      desc.textContent=(lang==='en'?entry.description_en:entry.description_cs)||'';
+      const reward=document.createElement('span');reward.className='achievement-game-reward';
+      reward.textContent=(entry.reward_shards?'💎 +'+entry.reward_shards+' ':'')+
+        (entry.reward_chests?'🎁 +'+entry.reward_chests:'');
+      const progress=document.createElement('small');
+      progress.textContent=entry.unlocked?T('achievementsUnlocked'):
+        Math.min(Number(entry.target)||1,Number(entry.progress)||0)+' / '+entry.target;
+      const bar=document.createElement('div');bar.className='achievement-game-progress';
+      const fill=document.createElement('span');
+      fill.style.width=Math.min(100,100*(Number(entry.progress)||0)/
+        Math.max(1,Number(entry.target)||1))+'%';
+      bar.append(fill);detail.append(name,desc,reward,progress,bar);
+      card.append(icon,detail);root.append(card);
+    }
+  }
+  async function refreshGameAchievements(){
+    if(!api||!me||achievementLoading||navigator.onLine===false)return;
+    const uid=me.id,request=++achievementSeq;
+    achievementLoading=true;renderGameAchievements();
+    try{
+      const {data,error}=await api.rpc('arcade_global_achievements');
+      if(error||data?.ok!==true||!Array.isArray(data.achievements))
+        throw Error(error?.message||'achievement_request_failed');
+      if(me?.id!==uid||request!==achievementSeq)return;
+      achievementState=data;
+      if(Array.isArray(data.new_achievements)&&data.new_achievements.length){
+        // Server has already granted any missing one-time milestones; only
+        // notify the parent to refetch its own wallet/XP from Supabase.
+        try{
+          if(window.parent&&window.parent!==window)
+            window.parent.postMessage({type:'foxey-arcade:rewards-credited'},
+              window.location.origin);
+        }catch(_){}
+      }
+    }catch(err){
+      if(me?.id===uid&&request===achievementSeq)
+        $('achievementsHint').textContent=T('achievementsUnavailable');
+    }finally{
+      if(me?.id===uid&&request===achievementSeq){
+        achievementLoading=false;renderGameAchievements();
+      }
+    }
+  }
+  function openGameAchievements(){
+    if(!me)return;
+    visible('achievementsOverlay',true);
+    $('achievementsClose').focus?.();
+    renderGameAchievements();
+    void refreshGameAchievements();
+  }
+  function closeGameAchievements(){
+    visible('achievementsOverlay',false);
+    $('achievementsButton').focus?.();
   }
   function language(){
     document.documentElement.lang=lang;
@@ -954,6 +1060,8 @@
     localizeReport();
     $('auditRetryButton').textContent=T('auditRetryButton');
     $('finalScoreLabel').textContent=T('scorePoints');
+    $('inGameScoreLabel').textContent=T('scorePoints');
+    renderGameAchievements();
     renderLiveRewards();
     if(game?.resultShown)showLiveRewardReceipt(game.liveReceipt,game.rewardError);
     $('finalCorrectLabel').textContent=T('correct');
@@ -979,6 +1087,8 @@
   }
   function modeScreen(){
     game=null;current=null;pending=null;busy=false;
+    document.body?.classList?.remove('quiz-playing','quiz-finished');
+    visible('achievementsButton',!!me);
     resetReportUI();
     visible('bootPanel',false);
     visible('modePanel',!!me);visible('signIn',!me);
@@ -991,6 +1101,7 @@
       void refreshHistory();
       void refreshSoloModes();
       void refreshLiveRewards();
+      void refreshGameAchievements();
     }
   }
   function renderSoloModes(){
@@ -1676,6 +1787,8 @@
   }
   function renderQuestion(){
     if(!game||!current)return;
+    document.body?.classList?.add('quiz-playing');
+    document.body?.classList?.remove('quiz-finished');
     $('hearts').textContent='❤️'.repeat(game.lives)+'🖤'.repeat(3-game.lives);
     $('count').textContent=(game.idx+1)+' / '+game.ids.length;
     $('xp').textContent=String(game.score);$('correct').textContent=String(game.correct);
@@ -1934,7 +2047,10 @@
       $('asyncInvite').value=game.challenge.id;
     }
     visible('gamePanel',false);visible('resultPanel',true);
+    document.body?.classList?.remove('quiz-playing');
+    document.body?.classList?.add('quiz-finished');
     game.resultShown=true;
+    void refreshGameAchievements();
     lock(false);
     if(challengeState?.both_done&&game.challenge){
       try{
@@ -1976,6 +2092,10 @@
   $('backToPlatform').addEventListener('click',confirmPlatformReturn);
   $('brandLink').addEventListener('click',confirmPlatformReturn);
   $('historyBell').addEventListener('click',goToHistory);
+  $('achievementsButton').addEventListener('click',openGameAchievements);
+  $('resultAchievementsButton').addEventListener('click',openGameAchievements);
+  $('achievementsClose').addEventListener('click',closeGameAchievements);
+  $('achievementsShade').addEventListener('click',closeGameAchievements);
   $('historyOverlayClose').addEventListener('click',closeHistoryOverlay);
   $('historyOverlayShade').addEventListener('click',closeHistoryOverlay);
   $('historyOverlayRefresh').addEventListener('click',()=>void refreshHistory());
@@ -1993,6 +2113,8 @@
   document.addEventListener?.('keydown',event=>{
     if(event.key==='Escape'&&!$('historyOverlay').classList.contains('hidden'))
       closeHistoryOverlay();
+    if(event.key==='Escape'&&!$('achievementsOverlay').classList.contains('hidden'))
+      closeGameAchievements();
   });
   $('historyRefresh').addEventListener('click',()=>void refreshHistory());
   $('createAsyncChallenge').addEventListener('click',()=>void createAsyncChallenge());
