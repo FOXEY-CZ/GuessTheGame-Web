@@ -74,6 +74,34 @@
         <div class="actions"><button class="primary" type="button" data-page="play">▶️ Hrát Guess the Game</button>
           <button class="secondary" type="button" data-page="challenges">⚔️ Moje výzvy</button></div>
       </div>
+      <section class="arcade-hub" aria-label="Rychlý rozcestník FOXEY Arcade">
+        <div class="arcade-hub-heading">
+          <div><span class="eyebrow">TVŮJ ROZCESTNÍK</span><h2>Co chceš dělat?</h2></div>
+          <span class="small">Jedna platforma, více her</span>
+        </div>
+        <div class="arcade-hub-grid">
+          <button type="button" class="arcade-hub-link" data-page="games">
+            <span class="arcade-hub-icon" aria-hidden="true">🎮</span>
+            <span class="arcade-hub-copy"><strong>Knihovna her</strong><small>Hraj Guess the Game a prohlédni další tituly</small></span>
+            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="arcade-hub-link" data-page="community">
+            <span class="arcade-hub-icon" aria-hidden="true">⚡</span>
+            <span class="arcade-hub-copy"><strong>Přátelé a živé souboje</strong><small>Pozvánky, odvety, série BO3/BO5</small></span>
+            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="arcade-hub-link" data-page="missions">
+            <span class="arcade-hub-icon" aria-hidden="true">🎯</span>
+            <span class="arcade-hub-copy"><strong>Mise a odměny</strong><small>Denní a týdenní úkoly, série dní</small></span>
+            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="arcade-hub-link" data-page="shop">
+            <span class="arcade-hub-icon" aria-hidden="true">🛍️</span>
+            <span class="arcade-hub-copy"><strong>Společný obchod</strong><small>Avatary, motivy a truhly pro účet</small></span>
+            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
+          </button>
+        </div>
+      </section>
       <section class="progresscard arcade-progress" aria-label="Globální profil FOXEY Arcade">
         <div class="progresscard-title"><div><span class="eyebrow">GLOBÁLNÍ PROFIL</span><h2>🦊 FOXEY Arcade</h2></div>
           <button class="secondary" type="button" data-page="account">Upravit profil</button></div>
@@ -128,7 +156,8 @@
 
     <section class="page hidden" id="page-games">
       <div class="sectionline"><div><span class="eyebrow">ARKÁDA</span><h1>Vyber si hru</h1></div><span class="small">Další hry připravujeme</span></div>
-      <div class="gamegrid">
+      <div class="arcade-library-heading"><h2>✅ Právě si můžeš zahrát</h2><p class="small">Aktivní hry propojené s tvým FOXEY Arcade účtem.</p></div>
+      <div class="gamegrid arcade-library-live">
         <article class="gamecard available"><div class="gameart">🎮<span class="shine"></span></div>
           <div class="gamecontent"><span class="tag live">Hratelné</span><h2>Guess the Game</h2>
             <p>Poznávej hry v zabezpečeném kvízu, pokračuj v rozehraných partiích a vyzývej kamarády. Odpovědi i skóre ověřuje server.</p>
@@ -137,6 +166,9 @@
             <a class="small" href="../preview-auth-test.html" target="_blank" rel="noopener noreferrer">🕹️ Původní Guess the Game a staré výzvy ↗</a>
             <a class="small" href="../preview-3.6.html" target="_blank" rel="noopener noreferrer">Archivní stabilní verze ↗</a>
           </div></article>
+      </div>
+      <div class="arcade-library-heading arcade-upcoming-heading"><h2>🚀 Připravujeme další hry</h2><p class="small">Následující tituly zatím nejsou hratelné.</p></div>
+      <div class="gamegrid arcade-upcoming-grid">
         <article class="gamecard"><div class="gameart meme">😂</div><div class="gamecontent"><span class="tag">Připravujeme</span><h2>Guess the Meme</h2><p>Jak dobře znáš internetové memy?</p></div></article>
         <article class="gamecard"><div class="gameart draw">🎨</div><div class="gamecontent"><span class="tag">V plánu</span><h2>Draw &amp; Guess</h2><p>Jeden kreslí, ostatní hádají.</p></div></article>
         <article class="gamecard"><div class="gameart golf">⛳</div><div class="gamecontent"><span class="tag">V plánu</span><h2>Mini Golf</h2><p>Krátké zápasy a bláznivé tratě.</p></div></article>
