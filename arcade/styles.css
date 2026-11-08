@@ -1110,3 +1110,111 @@ body.arcade-reward-open{overflow:hidden}
  .arcade-bell-requests{padding:7px 10px}
  .arcade-bell-requests .friends-columns{display:grid;grid-template-columns:1fr;gap:10px}
 }
+
+
+/* FOXEY Arcade Chat 1.0: unified Friends → Chat → Duels → Challenges. */
+#page-community .arcade-social-tabs,#page-challenges .arcade-social-tabs{
+ grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.arcade-chat-unread{display:inline-grid;place-items:center;min-width:20px;
+ height:20px;padding:0 5px;border-radius:999px;background:#c54879;
+ color:#fff;font-size:.7rem;font-weight:900;line-height:1.2}
+.arcade-chat-unread.hidden{display:none!important}
+.arcade-chat-shell{min-width:0;border:1px solid #4c6389;border-radius:19px;
+ padding:18px;background:linear-gradient(145deg,#1a2947,#0e1b32);
+ box-shadow:0 7px 28px #0002}
+.arcade-chat-heading{display:flex;align-items:center;justify-content:space-between;
+ gap:15px;margin-bottom:12px}
+.arcade-chat-heading h2{font-size:clamp(1.15rem,2.7vw,1.55rem);margin:5px 0}
+.arcade-chat-heading p{margin:0}
+.arcade-chat-heading button{min-height:42px;padding:8px 13px}
+.arcade-chat-layout{display:grid;grid-template-columns:minmax(185px,290px) minmax(0,1fr);
+ min-height:490px;height:min(68dvh,630px);
+ border:1px solid #3d5275;border-radius:15px;overflow:hidden;background:#111f36}
+.arcade-chat-inbox{display:flex;flex-direction:column;min-width:0;
+ border-right:1px solid #3a5076;background:#152641}
+.arcade-chat-side-head{display:flex;justify-content:space-between;
+ align-items:center;gap:8px;padding:16px 13px 10px}
+.arcade-chat-side-head h3{font-size:.94rem;margin:0}
+.arcade-chat-conversations{display:grid;align-content:start;gap:5px;
+ padding:5px 9px 12px;overflow-y:auto;min-height:0}
+.arcade-chat-person{display:flex;align-items:center;gap:9px;width:100%;
+ min-height:67px;text-align:left;padding:10px;border:1px solid transparent;
+ border-radius:13px;background:transparent;color:#f3f6ff;font:inherit;cursor:pointer}
+.arcade-chat-person:hover,.arcade-chat-person:focus-visible{background:#2b4165}
+.arcade-chat-person.is-active{background:#364779;border-color:#786db4}
+.arcade-chat-person-body{flex:1;min-width:0;display:grid;gap:5px}
+.arcade-chat-person-body strong{font-size:.87rem;overflow:hidden;
+ text-overflow:ellipsis;white-space:nowrap}
+.arcade-chat-avatar{flex:0 0 38px;width:38px;height:38px;display:grid;
+ place-items:center;background:#353b70;border:1px solid #6a71b4;
+ border-radius:50%;font-size:1.18rem}
+.arcade-chat-preview{color:#bfcee7;white-space:nowrap;overflow:hidden;
+ text-overflow:ellipsis;font-size:.75rem}
+.arcade-chat-count{padding:3px 7px;border-radius:99px;background:#c64a79;
+ font-size:.7rem;font-weight:850}
+.arcade-chat-conversation{display:flex;flex-direction:column;min-width:0;min-height:0}
+.arcade-chat-conversation-head{display:flex;align-items:center;gap:9px;
+ min-height:70px;padding:12px 14px;border-bottom:1px solid #344b70;
+ background:#172844}
+.arcade-chat-conversation-title{flex:1;min-width:0}
+.arcade-chat-conversation-title h3{margin:0 0 5px;font-size:1rem;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arcade-chat-conversation-title .small{font-size:.72rem;line-height:1.3}
+.arcade-chat-conversation-head button{min-height:37px;padding:7px 12px;
+ font-size:.77rem;white-space:nowrap}
+.arcade-chat-back{display:none!important}
+.arcade-chat-thread{flex:1 1 auto;display:flex;flex-direction:column;
+ align-items:stretch;gap:10px;padding:18px;
+ overflow-y:auto;min-height:0;scroll-behavior:smooth;
+ overscroll-behavior:contain;background:radial-gradient(circle at 50% 0,#1a2c4b,#101e34 65%)}
+.arcade-chat-bubble{max-width:min(83%,490px);padding:11px 14px 8px;
+ border-radius:16px;border:1px solid #4c5c89;
+ background:#293d60;align-self:flex-start;overflow-wrap:anywhere}
+.arcade-chat-bubble.mine{align-self:flex-end;background:#50457e;border-color:#8271c2;
+ border-bottom-right-radius:5px}
+.arcade-chat-bubble.theirs{border-bottom-left-radius:5px}
+.arcade-chat-body{margin:0 0 6px;white-space:pre-wrap;line-height:1.5;
+ font-size:.91rem;user-select:text}
+.arcade-chat-timestamp{display:block;text-align:right;color:#b9c6e2;
+ font-size:.69rem}
+.arcade-chat-placeholder{margin:auto;text-align:center;color:#aebfd8;
+ font-size:.85rem;line-height:1.6;max-width:310px;padding:16px}
+.arcade-chat-composer{display:flex;gap:9px;align-items:end;
+ padding:13px;border-top:1px solid #385174;background:#152540}
+.arcade-chat-composer.hidden{display:none!important}
+.arcade-chat-composer textarea{flex:1;min-width:0;min-height:46px;
+ max-height:100px;resize:vertical;color:#fff;background:#0b1629;
+ border:1px solid #61769e;border-radius:12px;padding:11px;
+ font:inherit;font-size:.88rem;line-height:1.4}
+.arcade-chat-composer textarea:focus-visible{outline:2px solid #b5a1ff;outline-offset:2px}
+.arcade-chat-composer button{min-height:47px;padding:10px 14px;
+ white-space:nowrap}
+.arcade-chat-info{margin:0;padding:6px 13px 10px;color:#a4b8d3;
+ font-size:.71rem;line-height:1.35}
+.arcade-chat-load-older{align-self:center;min-height:36px;margin:7px auto 0;
+ padding:7px 13px;font-size:.75rem}
+@media(max-width:760px){
+ .arcade-chat-shell{padding:11px;border-radius:15px}
+ .arcade-chat-layout{height:min(66dvh,610px);min-height:420px;
+  grid-template-columns:1fr}
+ .arcade-chat-inbox{border-right:0}
+ .arcade-chat-conversation{display:none}
+ .friends-view-pane.has-conversation .arcade-chat-inbox{display:none}
+ .friends-view-pane.has-conversation .arcade-chat-conversation{display:flex}
+ .arcade-chat-back{display:inline-flex!important}
+ .arcade-chat-heading{flex-wrap:wrap}
+ .arcade-chat-heading button{min-height:40px}
+ .arcade-chat-thread{padding:13px 11px}
+ .arcade-chat-bubble{max-width:90%}
+ .arcade-chat-composer{padding:9px}
+ .arcade-chat-composer button{padding:10px}
+ #page-community .arcade-social-tab,#page-challenges .arcade-social-tab{
+  font-size:.71rem;padding:8px 3px;gap:4px}
+}
+@media(max-width:380px){
+ #page-community .arcade-social-tab,#page-challenges .arcade-social-tab{
+  font-size:.64rem}
+ .arcade-chat-avatar{flex-basis:32px;width:32px;height:32px}
+}
+@media(prefers-reduced-motion:reduce){.arcade-chat-thread{scroll-behavior:auto}}
