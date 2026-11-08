@@ -45,7 +45,6 @@
   "Přezdívka a avatar platí pro celou Arcade i všechny hry.": "Your nickname and avatar apply across Arcade and all games.",
   "Všechny odměny, motivy i avatary patří jednomu společnému účtu. Vyber, co tě zajímá.": "All rewards, themes and avatars belong to your shared account. Choose what to explore.",
   "🎁 Truhly 2.0": "🎁 Chests",
-  "🎁 Truhly": "🎁 Chests",
   "Nákupy probíhají na serveru a předměty se ukládají do jediného inventáře. Ochranu herních milníků dále posilujeme.": "Purchases run on the server and all items stay in a single inventory. We're continuing to harden achievement security.",
 
   "🏆 Achievementy": "🏆 Achievements",
