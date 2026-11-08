@@ -911,3 +911,25 @@ body.arcade-game-immersive #gameExitFullscreen,
  body.arcade-game-immersive #page-play .arcade-game-toolbar,
  #page-play:fullscreen .arcade-game-toolbar{margin-left:auto}
 }
+
+
+/* Bell actions: show/accept beside X hide; history is opt-in, not a main CTA. */
+.arcade-notice-history-disclosure{margin:0 0 12px;padding:0 12px;
+ border:1px solid #3b4a69;border-radius:12px;background:#121e33;color:#c6d7f0}
+.arcade-notice-history-disclosure summary{cursor:pointer;min-height:38px;
+ display:list-item;align-content:center;padding:8px 5px;
+ font-size:.79rem;font-weight:730}
+.arcade-notice-history-disclosure[open]{padding-bottom:12px}
+.arcade-notice-history-disclosure p{font-size:.76rem;margin:3px 0 10px}
+.arcade-notice-history-disclosure button{min-height:37px;padding:8px 12px;font-size:.79rem}
+.arcade-notice-help{margin:0;flex:1 1 205px;line-height:1.4}
+.arcade-notice-toolbar{gap:10px;align-items:center}
+.arcade-notice-actions .arcade-notice-dismiss{flex:0 0 41px;
+ min-width:41px;min-height:41px;padding:6px;border-radius:11px;
+ background:#283752;color:#f5e9ff;border:1px solid #687595;
+ font-size:1.2rem}
+.arcade-notice-actions .arcade-notice-dismiss:hover{background:#51354e;border-color:#be8da9}
+@media(max-width:440px){
+ .arcade-notice-actions .arcade-notice-dismiss{flex-basis:43px}
+ .arcade-notice-actions button:not(.arcade-notice-dismiss){flex:1 1 110px}
+}
