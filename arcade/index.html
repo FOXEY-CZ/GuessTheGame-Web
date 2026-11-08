@@ -33,6 +33,10 @@
         <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
          
       </div>
+      <button id="friendRequestsShortcut" class="arcade-bell arcade-friend-request-shortcut hidden" type="button" title="Žádosti o přátelství" aria-label="Otevřít žádosti o přátelství" aria-haspopup="dialog" aria-controls="arcadeNoticeOverlay">
+        <span class="friend-request-symbol" aria-hidden="true">👤<span>+</span></span>
+        <span id="friendRequestsShortcutCount" class="arcade-bell-count hidden" aria-hidden="true">0</span>
+      </button>
       <button id="arcadeBell" class="arcade-bell" type="button" title="Upozornění a výzvy" aria-label="Upozornění FOXEY Arcade">🔔 <span id="arcadeBellCount" class="arcade-bell-count hidden">0</span></button>
       <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div>
   </header>
@@ -366,22 +370,10 @@
       </div>
       <p class="small" id="friendsStatus" role="status" aria-live="polite">Pro přátele se přihlas.</p>
       <div id="friendsPanePeople" class="friends-view-pane">
-      <div class="friends-code-area">
-      <details class="friends-code-card friends-advanced">
-        <summary>🔐 Pokročilé: můj starý kód přítele</summary>
-        <div class="friends-code-details">
-        <div class="friends-code-icon" aria-hidden="true">🦊</div>
-        <div><span class="eyebrow">TVŮJ KÓD PŘÍTELE</span>
-          <strong id="myFriendCode">—</strong>
-          <p>Pošli ho kamarádovi. Najde tě podle něj, aniž by znal tvůj e-mail.</p></div>
-        <button class="secondary" type="button" id="copyFriendCode">📋 Kopírovat</button>
-        </div>
-      </details>
-      </div>
       <section class="friends-section" aria-labelledby="friendsFindTitle">
         <div class="sectionline"><h2 id="friendsFindTitle">➕ Přidat přítele podle nicku</h2></div>
         <form id="friendsSearchForm" class="friends-search-form">
-          <label for="friendsSearchInput">Zadej přezdívku kamaráda (bez e-mailu a kódu)</label>
+          <label for="friendsSearchInput">Přezdívka kamaráda</label>
           <div><input id="friendsSearchInput" required minlength="3" maxlength="30" autocomplete="off" spellcheck="false" placeholder="Např. FOXEY">
           <button class="primary" type="submit" id="friendsSearchButton">🔎 Najít</button></div>
         </form>
@@ -392,19 +384,6 @@
         <div class="sectionline"><h2 id="friendsListTitle">🤝 Moji přátelé</h2><span id="friendsCount">0</span></div>
         <div class="friends-grid" id="friendsList"></div>
       </section>
-      <details class="friends-requests-details" id="friendsRequestsDetails">
-        <summary>📩 Žádosti o přátelství <span id="friendsRequestSummaryCount" class="friends-request-pill">0</span></summary>
-        <div class="friends-columns">
-        <section class="friends-section" aria-labelledby="friendsIncomingTitle">
-          <div class="sectionline"><h2 id="friendsIncomingTitle">📩 Žádosti o přátelství</h2><span id="friendsIncomingCount">0</span></div>
-          <div class="friends-grid" id="friendsIncomingList"></div>
-        </section>
-        <section class="friends-section" aria-labelledby="friendsOutgoingTitle">
-          <div class="sectionline"><h2 id="friendsOutgoingTitle">📤 Odeslané žádosti</h2><span id="friendsOutgoingCount">0</span></div>
-          <div class="friends-grid" id="friendsOutgoingList"></div>
-        </section>
-        </div>
-      </details>
       <section id="friendProfilePanel" class="friends-public-profile hidden" aria-labelledby="friendProfileTitle">
         <div class="friends-public-head">
           <h2 id="friendProfileTitle">👤 Hráčský profil</h2>
@@ -640,6 +619,20 @@
       <button type="button" class="secondary" id="arcadeNoticeClose" aria-label="Zavřít oznámení">✕</button>
     </div>
     <p class="small" id="arcadeNoticeStatus" role="status" aria-live="polite"></p>
+    <details class="friends-requests-details arcade-bell-requests" id="friendsRequestsDetails">
+      <summary id="friendRequestsSummary" tabindex="0">📩 Žádosti o přátelství <span id="friendsRequestSummaryCount" class="friends-request-pill">0</span></summary>
+      <p id="friendRequestsHint" class="small">Přijmi nebo odmítni nové žádosti, případně zruš své odeslané žádosti.</p>
+      <div class="friends-columns">
+        <section class="friends-section" aria-labelledby="friendsIncomingTitle">
+          <div class="sectionline"><h2 id="friendsIncomingTitle">📥 Přijaté žádosti</h2><span id="friendsIncomingCount">0</span></div>
+          <div class="friends-grid" id="friendsIncomingList"></div>
+        </section>
+        <section class="friends-section" aria-labelledby="friendsOutgoingTitle">
+          <div class="sectionline"><h2 id="friendsOutgoingTitle">📤 Odeslané žádosti</h2><span id="friendsOutgoingCount">0</span></div>
+          <div class="friends-grid" id="friendsOutgoingList"></div>
+        </section>
+      </div>
+    </details>
     <div class="arcade-notice-toolbar">
       <p class="small arcade-notice-help" id="arcadeNoticeHelp">Otevři nebo přijmi pozvánku. Křížek ✕ pouze skryje oznámení.</p>
       <button class="secondary" id="arcadeNoticeRefresh" type="button">↻ Obnovit</button>
