@@ -40,6 +40,7 @@
     <button data-page="home" class="active" type="button">🏠 <span>Domů</span></button>
     <button data-page="games" type="button">🎮 <span>Hry</span></button><button data-page="shop" type="button">🛍️ <span>Obchod</span></button>
     <button data-page="challenges" type="button">⚔️ <span>Výzvy</span></button>
+    <button data-page="missions" type="button">🎯 <span>Mise</span></button>
     <button data-page="community" type="button">👥 <span>Komunita</span></button>
     <button data-page="account" type="button">👤 <span>Profil</span></button>
     <button data-page="settings" type="button">⚙️ <span>Nastavení</span></button>
@@ -56,6 +57,7 @@
     <button type="button" class="arcade-mobile-more-shade" id="mobileMoreShade" aria-label="Zavřít další nabídku"></button>
     <div class="arcade-mobile-more-sheet" role="dialog" aria-modal="true" aria-labelledby="mobileMoreTitle">
       <div class="arcade-mobile-more-head"><h2 id="mobileMoreTitle">Kam dál?</h2><button id="mobileMoreClose" type="button" aria-label="Zavřít">✕</button></div>
+      <button data-page="missions" type="button">🎯 Mise <span>Denní a týdenní odměny</span></button>
       <button data-page="account" type="button">👤 Profil <span>Účet, achievementy a inventář</span></button>
       <button data-page="settings" type="button">⚙️ Nastavení <span>Jazyk, hra a oznámení</span></button>
       <button data-page="community" type="button">👥 Komunita <span>Přátelé a budoucí chat</span></button>
@@ -101,6 +103,14 @@
           <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
         </div>
         <p class="note">Historické statistiky Guess the Game. Skutečný globální level a společné měny jsou zobrazené výše.</p>
+      </section>
+      <section class="progresscard mission-panel" aria-labelledby="homeMissionsTitle">
+        <div class="progresscard-title">
+          <div><span class="eyebrow">PRAVIDELNÉ ODMĚNY</span><h2 id="homeMissionsTitle">🎯 Denní a týdenní mise</h2></div>
+          <button class="secondary" type="button" data-page="missions">Zobrazit mise</button>
+        </div>
+        <p class="small" id="homeMissionStatus" aria-live="polite">Načítám mise…</p>
+        <div class="mission-grid mission-preview" id="homeMissionList"></div>
       </section>
       <section class="progresscard achievement-panel" aria-label="Globální achievementy">
         <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
@@ -213,6 +223,34 @@
       </article>
       <p class="note">Nákupy probíhají na serveru a předměty se ukládají do jediného inventáře. Ochranu herních milníků dále posilujeme.</p>
       </section>
+    </section>
+
+    <section class="page hidden" id="page-missions">
+      <div class="page-intro">
+        <div><span class="eyebrow">FOXEY ARCADE · VÝZVY A ODMĚNY</span>
+          <h1>🎯 Moje mise</h1>
+          <p>Hraj, plň úkoly a odměny se připíšou samy. Postup se počítá ze serverově ověřených partií.</p>
+        </div>
+        <button class="secondary" type="button" id="missionsRefresh">↻ Obnovit mise</button>
+      </div>
+      <p id="missionsStatus" class="small" aria-live="polite">Načítám mise…</p>
+      <div class="mission-periods">
+        <section class="mission-period-card" aria-labelledby="dailyMissionsTitle">
+          <div class="mission-period-head">
+            <div><span class="eyebrow">KAŽDÝ DEN</span><h2 id="dailyMissionsTitle">📅 Denní mise</h2></div>
+            <span class="mission-timer" id="dailyMissionCountdown">Reset 00:00 UTC</span>
+          </div>
+          <div class="mission-grid" id="dailyMissionList"></div>
+        </section>
+        <section class="mission-period-card" aria-labelledby="weeklyMissionsTitle">
+          <div class="mission-period-head">
+            <div><span class="eyebrow">KAŽDÉ PONDĚLÍ</span><h2 id="weeklyMissionsTitle">🏆 Týdenní mise</h2></div>
+            <span class="mission-timer" id="weeklyMissionCountdown">Reset v pondělí UTC</span>
+          </div>
+          <div class="mission-grid" id="weeklyMissionList"></div>
+        </section>
+      </div>
+      <p class="note">Odměny se vyplácejí automaticky. Do misí se započítávají ověřené partie s připsanými herními XP; staré savy se nemění.</p>
     </section>
 
     <section class="page hidden" id="page-challenges">
@@ -425,6 +463,7 @@
 <script src="./avatars.js"></script>
 <script src="./notifications.js?v=compact-bell-20261108a"></script>
 <script src="./ui2.js?v=challenge-navigation-20261108b"></script>
+<script src="./missions.js?v=arcade-missions-20261108a"></script>
 <div class="arcade-achievement-toast hidden" id="arcadeAchievementToast" role="status" aria-live="polite"></div>
 <script src="./app.js?v=challenge-navigation-20261108b"></script>
 </body>
