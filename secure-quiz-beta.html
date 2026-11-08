@@ -273,6 +273,26 @@
     .header-actions #missionsButton{min-width:38px;min-height:42px;padding:6px 5px}
     #missionsButton .achievements-small-count{font-size:.62rem}
   }
+
+  .game-streak-box{padding:13px;border-radius:14px;border:1px solid #80618a;
+    margin:12px 0;background:linear-gradient(120deg,#3a294a,#1c2f4a)}
+  .game-streak-head{display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:7px;margin-bottom:9px}
+  .game-streak-head strong{color:#ffe2b1;font-size:1rem}
+  .game-streak-head span{color:#e1d5ee;font-size:.76rem}
+  .game-streak-progress{height:8px;background:#20213a;border-radius:20px;
+    overflow:hidden;border:1px solid #725c80}
+  .game-streak-progress span{display:block;width:0%;height:100%;
+    background:linear-gradient(90deg,#ffa450,#ffdc76);transition:width .3s}
+  .game-streak-box p{font-size:.78rem;line-height:1.5;margin:9px 0}
+  .game-streak-rewards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  .game-streak-reward{display:grid;gap:4px;text-align:center;padding:9px 5px;
+    border:1px solid #655c81;border-radius:10px;background:#202940}
+  .game-streak-reward.done{border-color:#75b899;background:#265044}
+  .game-streak-reward strong{font-size:.78rem}
+  .game-streak-reward span{font-size:.72rem;color:#d4dcea;line-height:1.4}
+  @media(max-width:560px){.game-streak-rewards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(prefers-reduced-motion:reduce){.game-streak-progress span{transition:none}}
 </style>
 </head>
 <body>
@@ -476,6 +496,11 @@
       <p id="missionUnlockDescription"></p>
       <button id="resultMissionsButton" class="secondary" type="button">🎯 Moje mise</button>
     </div>
+    <div class="achievement-unlock-banner hidden" id="streakUnlockBanner" role="status" aria-live="polite">
+      <strong id="streakUnlockTitle">🔥 Série dní – nový bonus!</strong>
+      <p id="streakUnlockDescription"></p>
+      <button id="streakResultsMissionsButton" class="secondary" type="button">🎯 Zobrazit mise</button>
+    </div>
     <section class="async-result hidden" id="asyncResult" aria-labelledby="asyncResultTitle">
       <h3 id="asyncResultTitle">⚔️ Serverová výzva</h3>
       <p id="asyncResultMessage" role="status" aria-live="polite"></p>
@@ -504,6 +529,14 @@
       <button id="missionsClose" type="button" aria-label="Zavřít mise">✕</button>
     </div>
     <p class="async-help" id="missionsSummary" aria-live="polite">Načítám mise…</p>
+    <div class="game-streak-box" aria-label="Série hraní">
+      <div class="game-streak-head"><strong id="gameStreakCount">🔥 0 dní</strong>
+        <span id="gameStreakNext">Další bonus za 3 dny</span></div>
+      <div class="game-streak-progress"><span id="gameStreakFill"></span></div>
+      <p id="gameStreakHint">Hraj každý den odměněnou partii.</p>
+      <div id="gameStreakRewards" class="game-streak-rewards"></div>
+    </div>
+    <p class="game-mission-reset" id="gameMissionRotationHint">Nové mise se vybírají automaticky.</p>
     <h3 id="missionsDailyTitle" class="game-mission-heading">📅 Denní mise</h3>
     <p class="game-mission-reset" id="missionsDailyReset">Reset 00:00 UTC</p>
     <div id="gameDailyMissions" class="game-missions-grid"></div>
@@ -666,6 +699,15 @@
       missionsCompleted:'✓ Splněno · Odměna připsána',
       missionsNew:'🎉 Splněno {count} misí! Bonusové odměny připsány.',
       missionsShow:'🎯 Zobrazit všechny mise',
+      streakDays:'🔥 {n} dní v řadě',
+      streakNext:'Další bonus za {n} dní',
+      streakAll:'Všechny streak milníky splněny!',
+      streakPlayed:'✅ Dnes splněno! Série pokračuje.',
+      streakPending:'Zahraj si dnes odměněnou partii, aby série pokračovala.',
+      streakResetPending:'Hraj každý den a získávej bonusy za sérii.',
+      streakUnlockTitle:'🔥 Série dní – nová odměna!',
+      streakRotationActive:'🔄 Nové denní mise každý den v 00:00 UTC, týdenní každé pondělí.',
+      streakRotationPending:'🔄 První obměna 9. 11. v 01:00 českého času.',
       achievementsShow:'🏆 Zobrazit achievementy',
       scorePoints:'BODY',
       reportSent:'✅ Děkuju! Hlášení bylo uloženo k této otázce.',
@@ -818,6 +860,15 @@
       missionsCompleted:'✓ Complete · Reward credited',
       missionsNew:'🎉 {count} missions complete! Bonus rewards credited.',
       missionsShow:'🎯 View all missions',
+      streakDays:'🔥 {n}-day streak',
+      streakNext:'Next reward at {n} days',
+      streakAll:'All streak milestones completed!',
+      streakPlayed:'✅ Today completed! Streak continues.',
+      streakPending:'Play a rewarded game today to continue your streak.',
+      streakResetPending:'Play every day to earn streak bonuses.',
+      streakUnlockTitle:'🔥 Daily streak – reward unlocked!',
+      streakRotationActive:'🔄 New daily missions at 00:00 UTC; weekly missions every Monday.',
+      streakRotationPending:'🔄 First rotation November 9 at 00:00 UTC.',
       achievementsShow:'🏆 View achievements',
       scorePoints:'POINTS',
       reportSent:'✅ Thanks! This question has been reported.',
