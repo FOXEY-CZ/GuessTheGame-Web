@@ -188,7 +188,14 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
 .arcade-notice-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .arcade-notice-head h2{font-size:21px;margin:0}
 #arcadeNoticeClose{min-width:44px;min-height:43px;padding:6px 13px;font-size:20px}
-#arcadeNoticeRefresh{min-height:42px;padding:8px 13px;margin:0 0 14px}
+#arcadeNoticeRefresh{min-height:42px;padding:8px 13px}
+.arcade-notice-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.arcade-notice-toolbar button{min-height:42px;padding:8px 13px}
+.arcade-notice-card-head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.arcade-notice-card-head strong{flex:1;min-width:0}
+.arcade-notice-dismiss{flex:0 0 auto!important;min-width:36px;min-height:36px;padding:6px 9px!important;border-radius:10px;background:#30405d;color:#fff;border:1px solid #7182b0}
+.arcade-notice-dismiss:hover,.arcade-notice-dismiss:focus-visible{background:#554270;border-color:#d5a0eb}
+.arcade-notice-more{display:block;margin:12px auto 2px;min-height:40px;padding:9px 16px}
 .arcade-notice-list{display:grid;gap:10px}
 .arcade-notice-card{border-radius:15px;border:1px solid #536d92;
   background:#1a2946;padding:14px;display:grid;gap:7px}
