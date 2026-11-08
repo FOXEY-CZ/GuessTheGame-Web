@@ -238,13 +238,14 @@
   .quiz-playing .questionbox{margin:12px 0;padding:16px;min-height:110px}
   .quiz-playing .option{min-height:52px;padding:11px 14px}
   @media(max-width:600px){
-    .header{flex-wrap:nowrap;gap:5px}
-    .brand{flex:1 1 auto;min-width:0;font-size:.78rem;letter-spacing:.03em}
-    .header-actions{display:flex;flex:0 0 auto;gap:5px}
+    .header{flex-wrap:wrap;gap:5px}
+    .brand{flex:1 1 110px;min-width:0;font-size:.86rem;letter-spacing:.03em}
+    .header-actions{display:contents}
     .header-actions #historyBell,.header-actions #achievementsButton,.header-actions #lang{
       order:initial;min-width:42px;min-height:42px;padding:6px;font-size:1rem}
     #achievementsButton .achievements-small-count{font-size:.64rem}
-    .platform-return{display:none}
+    .platform-return{display:inline-flex;order:5;flex:1 1 100%;
+      min-height:35px;font-size:.75rem;padding:5px 9px}
     .achievements-list{grid-template-columns:1fr}
     .achievements-panel{max-height:92dvh;border-radius:18px}
   }
@@ -944,7 +945,8 @@
     $('achievementsXp').textContent=template(T('achievementsXp'),{
       xp,remaining:100-(xp%100)
     });
-    $('achievementsLevelFill').style.width=(xp%100)+'%';
+    const levelFill=$('achievementsLevelFill');
+    if(levelFill?.style)levelFill.style.width=(xp%100)+'%';
     $('achievementsLevelMeter').setAttribute('aria-valuenow',String(xp%100));
     $('achievementsHint').textContent=achievementLoading?
       T('achievementsLoading'):achievementState?
