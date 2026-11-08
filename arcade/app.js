@@ -573,8 +573,23 @@
       user=nextUser;
       profile=null;
       if(user){
-        try{profile=await getProfile(user.id);}
-        catch(_){message('⚠️ Účet je přihlášený, ale profil se nyní nepodařilo načíst. Zkus obnovit stránku.');}
+        const uid=user.id;
+        try{profile=await getProfile(uid);}
+        catch(_){message('⚠️ Profil se zatím nepodařilo načíst. Obnov stránku.');}
+        // Hands-free migration on EVERY signed-in Arcade login. The server
+        // owns the baseline, freezes the old editable save, and never trusts
+        // a client-provided XP or wallet amount. Also idempotent on retries.
+        try{
+          const auto=await supa.rpc('arcade_verified_rewards_auto_activate');
+          if(auto.error||auto.data?.ok!==true)
+            throw auto.error||Error('auto_rewards_unavailable');
+          if(user?.id!==uid)return;
+          profile=await getProfile(uid);
+        }catch(_){
+          if(user?.id===uid)
+            message('⚠️ Nepodařilo se automaticky aktualizovat odměny. Obnov stránku nebo zkus přihlášení znovu.');
+        }
+        if(user?.id!==uid)return;
         await loadGameProgress();
         await loadSharedWallet();
       }
