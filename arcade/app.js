@@ -822,6 +822,18 @@
       catch(err){console.warn('FOXEY social dashboard unavailable',err);}
       try{window.FOXEY_ARCADE_LIVE?.connect(supa,user);}
       catch(err){console.warn('FOXEY live duels unavailable',err);}
+      // An explicitly selected friend from the standalone secure game may
+      // carry a one-use invite intent to the same authenticated launcher.
+      const requestedFriend=new URLSearchParams(location.search).get('invite_live');
+      if(user&&requestedFriend&&
+         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestedFriend)){
+        const clean=new URL(location.href);
+        clean.searchParams.delete('invite_live');
+        history.replaceState(null,'',clean.pathname+clean.search+clean.hash);
+        go('community');
+        void window.FOXEY_ARCADE_LIVE?.invite(requestedFriend);
+        return;
+      }
       // If the user directly opened the playable route, reload the iframe
       // under the authenticated identity instead of leaving it in Guest mode.
       if(location.hash==='#play')go('play');
@@ -990,6 +1002,16 @@
   });
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin || event.source!==el('gameFrame').contentWindow)return;
+    if(event.data?.type==='foxey-arcade:invite-live-friend'){
+      // Navigation intent only; the authenticated live RPC still checks
+      // friendship and blocks server-side. Never accept IDs from other frames.
+      const friend=event.data.friend_id;
+      if(user&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(friend)){
+        go('community');
+        void window.FOXEY_ARCADE_LIVE?.invite(friend);
+      }
+      return;
+    }
     if(event.data?.type==='foxey-arcade:locale-changed'){
       if(['cs','en'].includes(event.data.locale))
         window.FOXEY_I18N?.setLocale(event.data.locale);
