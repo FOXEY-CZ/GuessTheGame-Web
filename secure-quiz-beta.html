@@ -301,7 +301,10 @@
       </div>
       <p id="historyNotice" class="async-help" role="status" aria-live="polite">Načítám historii výzev…</p>
       <div id="historyList" class="history-list"></div>
-      <button id="historyMore" type="button" class="history-more hidden">⬇️ Načíst další</button>
+      <div class="history-pagination">
+        <button id="historyPrev" type="button" class="history-more hidden">← Předchozí</button>
+        <button id="historyMore" type="button" class="history-more hidden">Další stránka →</button>
+      </div>
       <p id="historyDetail" class="history-detail" role="status" aria-live="polite"></p>
       <p id="historyHint" class="async-help">Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.</p>
     </section>
@@ -405,7 +408,10 @@
     <p id="historyOverlayNotice" class="async-help" role="status" aria-live="polite"></p>
     <div class="history-toolbar history-overlay-toolbar"><button id="historyOverlayArchiveToggle" type="button">📦 Archiv</button><button id="historyOverlayRefresh" type="button">🔄 Obnovit</button></div>
     <div id="historyOverlayList" class="history-list"></div>
-    <button id="historyOverlayMore" type="button" class="history-more hidden">⬇️ Načíst další</button>
+    <div class="history-pagination">
+      <button id="historyOverlayPrev" type="button" class="history-more hidden">← Předchozí</button>
+      <button id="historyOverlayMore" type="button" class="history-more hidden">Další stránka →</button>
+    </div>
     <p id="historyOverlayDetail" class="history-detail" role="status" aria-live="polite"></p>
   </section>
 </div>
@@ -512,7 +518,7 @@
       historyArchiveEmpty:'V archivu zatím nic není.',
       historyShowArchive:'📦 Archiv',historyBackInbox:'🔔 Aktivní výzvy',
       historyArchive:'Skrýt do archivu',historyRestore:'Vrátit z archivu',
-      historyMore:'⬇️ Načíst další',historyArchiveOk:'✅ Výzva byla přesunuta do archivu.',
+      historyMore:'Další stránka →',historyPrev:'← Předchozí',historyArchiveOk:'✅ Výzva byla přesunuta do archivu.',
       historyRestoreOk:'✅ Výzva byla vrácena mezi aktivní.',
       historyArchiveError:'⚠️ Změna archivu se nezdařila: {error}',
       historyNew:'🔔 Máš {n} nepřečtených výsledků!',historyClear:'Žádné nové výsledky.',
@@ -638,7 +644,7 @@
       historyArchiveEmpty:'Nothing is archived yet.',
       historyShowArchive:'📦 Archive',historyBackInbox:'🔔 Active challenges',
       historyArchive:'Move to archive',historyRestore:'Restore from archive',
-      historyMore:'⬇️ Load more',historyArchiveOk:'✅ Challenge moved to archive.',
+      historyMore:'Next page →',historyPrev:'← Previous',historyArchiveOk:'✅ Challenge moved to archive.',
       historyRestoreOk:'✅ Challenge restored to the active list.',
       historyArchiveError:'⚠️ Could not change archive: {error}',
       historyNew:'🔔 You have {n} unread results!',historyClear:'No new results.',
@@ -679,7 +685,8 @@
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
-  let historyArchived=false,historyHasMore=false;
+  let historyArchived=false,historyHasMore=false,historyPageOffset=0;
+  const HISTORY_PAGE_SIZE=10;
   const soloModes=['classic','mystery','daily','easy','medium','hard'];
   let soloProgressByMode=Object.create(null),soloLoading=false;
   // The Arcade launcher may ask for challenges before login restore finishes.
@@ -1338,6 +1345,14 @@
         visible(id,historyHasMore);
       }
     }
+    for(const id of ['historyPrev','historyOverlayPrev']){
+      const button=$(id);
+      if(button){
+        button.textContent=T('historyPrev');
+        button.disabled=historyLoading;
+        visible(id,historyPageOffset>0);
+      }
+    }
     for(const boxId of ['historyList','historyOverlayList']){
       const box=$(boxId);if(!box)continue;
       box.replaceChildren();
@@ -1408,10 +1423,12 @@
     if(!me||!api||historyLoading||navigator.onLine===false)return;
     historyLoading=true;
     const uid=me.id,view=historyArchived;
-    const offset=loadMore?historyItems.length:0;
+    if(loadMore&&!historyHasMore){historyLoading=false;return;}
+    if(loadMore)historyPageOffset+=HISTORY_PAGE_SIZE;
+    const offset=historyPageOffset;
     try{
       const {data,error}=await api.rpc('arcade_async_challenge_history',{
-        p_limit:40,p_offset:offset,p_archived:view
+        p_limit:HISTORY_PAGE_SIZE,p_offset:offset,p_archived:view
       });
       if(error||data?.ok!==true||!Array.isArray(data.items)||
           !Number.isInteger(data.unread)||data.unread<0||
@@ -1420,12 +1437,15 @@
       if(!me||me.id!==uid||historyArchived!==view)return;
       const nextItems=data.items.filter(entry=>uuidPattern.test(entry?.challenge_id)&&
         (entry.role==='creator'||entry.role==='challenger'));
-      historyItems=loadMore?[...historyItems,...nextItems]:nextItems;
+      // Bounded page, never append an unbounded list to the bell.
+      historyItems=nextItems;
       historyHasMore=data.has_more;
       historyUnread=data.unread;
       renderResumePrompt();
       renderHistory();
     }catch(err){
+      if(loadMore&&me?.id===uid&&historyArchived===view)
+        historyPageOffset=Math.max(0,historyPageOffset-HISTORY_PAGE_SIZE);
       if(me?.id===uid&&historyArchived===view){
         const message=template(T('historyError'),{error:errorText(err)});
         for(const id of ['historyNotice','historyOverlayNotice']){
@@ -1440,7 +1460,7 @@
   }
   function switchHistoryView(){
     historyArchived=!historyArchived;
-    historyItems=[];historyHasMore=false;
+    historyItems=[];historyHasMore=false;historyPageOffset=0;
     renderHistory();
     void refreshHistory();
   }
