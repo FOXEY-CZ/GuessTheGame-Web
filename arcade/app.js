@@ -59,6 +59,7 @@
   let sharedWallet=null,sharedCosmetics=null,walletStatus='guest',
       walletBusy=false,walletRequest=0;
   const THEME_IDS=new Set(['classic','retro','royal','ocean']);
+  let achievements=null,achievementStatus='guest',achievementSeq=0,achToastTimer=null;
   const walletNumber=v=>Number.isSafeInteger(v)&&v>=0?v:0;
   const ownedAvatars=()=>Array.isArray(sharedCosmetics?.owned_avatars)
     ?sharedCosmetics.owned_avatars.filter(id=>Object.hasOwn(AVATAR_CATALOG,id))
@@ -323,6 +324,91 @@
     el('accountProgressStatus').textContent=text;
     renderPrestige();
   }
+
+  const achievementsEnglish=()=>window.FOXEY_I18N?.getLocale?.()==='en';
+  function celebrate(message){
+    const toast=el('arcadeAchievementToast');if(!toast)return;
+    if(achToastTimer)clearTimeout(achToastTimer);
+    toast.textContent=message;toast.classList.remove('hidden');
+    achToastTimer=setTimeout(()=>{toast.classList.add('hidden');achToastTimer=null;},4500);
+  }
+  function renderAchievements(){
+    const eng=achievementsEnglish(),valid=!!user&&!!profile;
+    const entries=Array.isArray(achievements?.achievements)?achievements.achievements:[];
+    const unlocked=entries.filter(x=>x.unlocked).length;
+    const status=!valid?(eng?'Sign in to see achievements.':'Pro achievementy se přihlas.')
+      :achievementStatus==='error'?(eng?'Achievements unavailable.':'Achievementy se nepodařilo načíst.')
+      :achievementStatus==='loading'?(eng?'Loading achievements…':'Načítám achievementy…')
+      :eng?`${unlocked} of ${entries.length} achievements unlocked`
+           :`Odemčeno ${unlocked} z ${entries.length} achievementů`;
+    for(const id of ['homeAchievementStatus','accountAchievementStatus']){
+      if(el(id))el(id).textContent=status;
+    }
+    if(el('accountAchievementCount'))el('accountAchievementCount').textContent=
+      entries.length?`${unlocked} / ${entries.length}`:'—';
+    const xp=valid?safeNum(profile.arcade_xp):0,progress=xp%100;
+    for(const prefix of ['home','account']){
+      if(el(prefix+'LevelProgress'))el(prefix+'LevelProgress').textContent=
+        valid?`${progress} / 100 XP`:'—';
+      if(el(prefix+'LevelFill')?.style)el(prefix+'LevelFill').style.width=
+        (valid?progress:0)+'%';
+      el(prefix+'LevelBar')?.setAttribute('aria-valuenow',String(valid?progress:0));
+    }
+    const createCard=(a)=>{
+      const card=document.createElement('article');card.className='achievement-item'+(a.unlocked?' earned':'');
+      const icon=document.createElement('span');icon.className='achievement-icon';
+      icon.textContent=a.icon||'🏆';icon.setAttribute('aria-hidden','true');
+      const body=document.createElement('div');body.className='achievement-details';
+      const title=document.createElement('strong');title.className='achievement-name';
+      title.textContent=(eng?a.name_en:a.name_cs)||a.code;
+      const description=document.createElement('p');description.className='achievement-description';
+      description.textContent=(eng?a.description_en:a.description_cs)||'';
+      const reward=document.createElement('div');reward.className='achievement-reward';
+      reward.textContent=[a.reward_shards>0?'💎 +'+a.reward_shards:'',
+        a.reward_chests>0?'🎁 +'+a.reward_chests:''].filter(Boolean).join(' · ');
+      const label=document.createElement('span');label.className='achievement-progress-label';
+      label.textContent=a.unlocked?(eng?'✓ Unlocked':'✓ Odemčeno'):
+        `${a.progress} / ${a.target}`;
+      const track=document.createElement('div');track.className='achievement-progress';
+      const fill=document.createElement('span');fill.style.width=
+        (a.unlocked?100:Math.min(100,100*(Number(a.progress)||0)/Math.max(1,Number(a.target)||1)))+'%';
+      track.append(fill);body.append(title,description,reward,label,track);
+      card.append(icon,body);return card;
+    };
+    const home=el('homeAchievementGrid'),account=el('accountAchievementGrid');
+    if(!home?.replaceChildren||!account?.replaceChildren)return;
+    const nearest=[...entries].sort((a,b)=>
+      Number(b.unlocked)-Number(a.unlocked)||
+      (Number(b.progress)/Math.max(1,Number(b.target)))-
+      (Number(a.progress)/Math.max(1,Number(a.target)))).slice(0,4);
+    home.replaceChildren(...nearest.map(createCard));
+    account.replaceChildren(...entries.map(createCard));
+  }
+  async function loadAchievements(){
+    const uid=user?.id,seq=++achievementSeq;
+    if(!uid||!supa){
+      achievements=null;achievementStatus='guest';renderAchievements();return;
+    }
+    achievementStatus='loading';renderAchievements();
+    try{
+      const {data,error}=await supa.rpc('arcade_global_achievements');
+      if(error||data?.ok!==true||!Array.isArray(data.achievements))
+        throw error||Error('achievements_unavailable');
+      if(user?.id!==uid||seq!==achievementSeq)return;
+      achievements=data;achievementStatus='ready';
+      const fresh=Array.isArray(data.new_achievements)?data.new_achievements:[];
+      if(fresh.length){
+        celebrate(achievementsEnglish()?
+          `🏆 ${fresh.length} achievement(s) unlocked! Rewards added.`:
+          `🏆 Odemčeno ${fresh.length} achievementů! Odměny připsány.`);
+        void loadSharedWallet();
+      }
+    }catch(_){
+      if(user?.id!==uid||seq!==achievementSeq)return;
+      achievementStatus='error';
+    }
+    if(user?.id===uid&&seq===achievementSeq)renderAchievements();
+  }
   function renderArcadeProgress(){
     const active=!!user&&!!profile;
     const xp=active?safeNum(profile.arcade_xp):0;
@@ -335,6 +421,7 @@
       accountArcadeLevel:active?fmt(1+Math.floor(xp/100)):'—'
     };
     for(const [id,value] of Object.entries(values))el(id).textContent=value;
+    renderAchievements();
   }
   async function loadGameProgress(){
     const id=user?.id;
@@ -389,6 +476,7 @@
     }
     for(const name of PAGES)show('page-'+name,name===page);
     if(page==='shop'&&user&&supa)void loadSharedWallet();
+    if((page==='home'||page==='account')&&user&&supa&&achievementStatus==='guest')void loadAchievements();
     // On return from playing, re-read the authoritative cloud row. The iframe
     // also sends a lightweight synced notification for live updates.
     if(page!=='play' && user && supa)void loadGameProgress();
@@ -473,6 +561,7 @@
     renderArcadeProgress();
     renderWallet();
     window.FOXEY_I18N?.apply();
+    renderAchievements();
   }
   function setAuthView(view){
     if(busy)return;
@@ -569,6 +658,7 @@
       if(user?.id!==nextUser?.id){
         ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
         ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
+        ++achievementSeq;achievements=null;achievementStatus='guest';
       }
       user=nextUser;
       profile=null;
@@ -592,10 +682,12 @@
         if(user?.id!==uid)return;
         await loadGameProgress();
         await loadSharedWallet();
+        await loadAchievements();
       }
     }catch(_){
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
+      ++achievementSeq;achievements=null;achievementStatus='guest';
       user=null;profile=null;
       message('⚠️ Nepodařilo se ověřit přihlášení. Zkontroluj internet.');
     }finally{
@@ -762,6 +854,7 @@
         profile=fresh;render();
       }).catch(()=>{});
       void loadSharedWallet();
+      void loadAchievements();
       return;
     }
     if(event.data?.type!=='foxey-arcade:gtg-cloud-synced')return;
@@ -770,6 +863,7 @@
     void loadGameProgress();
     void loadSharedWallet();
   });
+  window.addEventListener('foxey-arcade:locale-changed',()=>renderAchievements());
   window.addEventListener('hashchange',()=>{
     const target=location.hash.replace(/^#/,'');
     go(target==='domu'?'home':target);
