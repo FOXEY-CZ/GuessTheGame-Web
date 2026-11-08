@@ -227,6 +227,7 @@
       </section>
       <section id="shopPanelChests" class="arcade-subpanel" role="tabpanel" aria-labelledby="shopTabChests" tabindex="0">
       <div class="sectionline"><h2>🎁 Truhly</h2><span class="small">Nové avatary, bez duplicit</span></div>
+      <p class="shop-chest-feedback" id="shopChestResult" role="status" aria-live="polite"></p>
       <div class="reward-chest-grid">
         <article class="reward-chest basic">
           <div class="chestshop-icon" id="shopChestVisual" aria-hidden="true">🎁</div>
@@ -245,13 +246,22 @@
           </div>
         </article>
       </div>
-      <div class="reward-reveal hidden" id="shopRewardReveal" role="status" aria-live="polite">
-        <div class="reward-reveal-art" id="shopRewardArt">🎉</div>
-        <div><span class="rarity-label" id="shopRewardRarity">NOVÁ ODMĚNA</span>
-          <h3 id="shopRewardName">Nový avatar</h3>
-          <p id="shopRewardCaption">Přidáno do inventáře.</p></div>
+      <div class="shop-reward-overlay hidden" id="shopRewardOverlay" role="presentation">
+        <div class="shop-reward-backdrop" aria-hidden="true"></div>
+        <section class="reward-reveal shop-reward-modal" id="shopRewardReveal" role="dialog" aria-modal="true" aria-labelledby="shopRewardTitle" tabindex="-1">
+          <button id="shopRewardClose" class="shop-reward-close" type="button" aria-label="Zavřít odměnu">✕</button>
+          <div class="shop-reward-celebration" aria-hidden="true">✨🎁✨</div>
+          <h2 id="shopRewardTitle">🎉 Získal jsi odměnu!</h2>
+          <div class="reward-reveal-art" id="shopRewardArt" aria-hidden="true">🎉</div>
+          <div><span class="rarity-label" id="shopRewardRarity">NOVÁ ODMĚNA</span>
+            <h3 id="shopRewardName">Nový avatar</h3>
+            <p id="shopRewardCaption">Přidáno do inventáře.</p></div>
+          <div class="shop-reward-actions">
+            <button class="primary" type="button" id="shopRewardDone">🎉 Super!</button>
+            <button class="secondary" type="button" id="shopRewardInventory">🎒 Zobrazit sbírku</button>
+          </div>
+        </section>
       </div>
-      <p class="small" id="shopChestResult" role="status" aria-live="polite"></p>
       <p class="note">Truhly dávají pouze kosmetické předměty, nikoliv prémiové korunky. V každé truhle se losuje rovnoměrně jen z dosud neodemčených avatarů. Kompletní sbírku už znovu neplatíš. Skutečné peníze za náhodné odměny nepřijímáme.</p>
       </section>
       <section id="shopPanelAvatars" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="shopTabAvatars" tabindex="0">
