@@ -97,7 +97,7 @@ function instance(uid, initiallyFinished=true){
         return {data:{ok:true,recovered:0,failed:0},error:null};
       }
       if(name==='arcade_async_challenge_history'){
-        assert.equal(args.p_limit,40);
+        assert.equal(args.p_limit,10);
         assert.equal(args.p_offset,0);
         const items=entries().filter(e=>!!archived.get(e.challenge_id)===args.p_archived);
         return {data:{ok:true,items,unread:isFinished&&!reads.get(challenge)&&
