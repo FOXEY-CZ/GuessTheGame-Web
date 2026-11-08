@@ -17,6 +17,9 @@ assert.ok(app.includes('FOXEY_ARCADE_LIVE?.onPage(page)'));
 assert.ok(friends.includes("entry.kind==='live_invite'"));
 assert.ok(friends.includes('FOXEY_ARCADE_LIVE?.invite(p.user_id)'));
 assert.ok(game.includes('⚡ Pozvánka na živý souboj'));
+assert.ok(game.includes('❌ Odveta byla odmítnuta'));
+assert.ok(friends.includes('live_rematch_declined'));
+assert.ok(client.includes('Odveta byla odmítnuta'));
 assert.ok(css.includes('.live-option'));
 assert.ok(!client.includes('innerHTML') && !client.includes('service_role'));
 assert.ok(!/\.from\(['"]arcade_(?:wallet|profile|live)/.test(client),
