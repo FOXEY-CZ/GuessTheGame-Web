@@ -45,6 +45,59 @@
     root.append(icon,contents);
     return root;
   }
+
+  const nValue=x=>Number.isFinite(Number(x))?Math.max(0,Number(x)):0;
+  function streakReward(m){
+    return [
+      nValue(m.shards)>0?'💎 +'+m.shards:'',
+      nValue(m.crowns)>0?'👑 +'+m.crowns:'',
+      nValue(m.free_chests)>0?'🎁 +'+m.free_chests:''
+    ].filter(Boolean).join('  ·  ');
+  }
+  function renderStreak(){
+    const signed=!!uid,streak=missions?.streak||null;
+    const days=streak?nValue(streak.current):0;
+    const active=streak?.active_today===true;
+    const next=streak?.next_milestone==null?null:nValue(streak.next_milestone);
+    text('homeStreakCount',signed&&streak?
+      tr('🔥 '+days+' dní v řadě','🔥 '+days+'-day streak'):
+      tr('🔥 Série aktivních dní','🔥 Daily play streak'));
+    text('streakCurrentCount',signed&&streak?
+      tr(days+' dní',''+days+' days'):'—');
+    const info=!signed?
+      tr('Přihlas se a zjisti svou sérii.','Sign in to see your streak.'):
+      !streak?tr('Načítám ověřené aktivní dny…','Loading verified active days…'):
+      active?tr('✅ Dnes splněno! Série pokračuje.','✅ Today completed! Streak continues.'):
+      days>0?tr('Zahraj si dnes odměněnou partii, aby série pokračovala.',
+                'Play one rewarded game today to keep your streak.'):
+      tr('Začni svou sérii jednou odměněnou partií.',
+         'Start your streak with one rewarded game.');
+    text('homeStreakHint',info);
+    text('streakStatus',info+' '+
+      (next!==null?tr('Další bonus za '+next+' dní.','Next bonus at '+next+' days.'):
+        tr('Všechny milníky této série splněny!','All streak milestones completed!')));
+    const track=$('streakProgressFill');
+    if(track?.style)track.style.width=
+      (next===null&&streak?100:next?Math.min(100,100*days/next):0)+'%';
+    const milestones=$('streakMilestones');
+    if(milestones?.replaceChildren){
+      const list=Array.isArray(streak?.milestones)?streak.milestones:[];
+      milestones.replaceChildren(...list.map(m=>{
+        const reached=days>=nValue(m.days);
+        const item=make('div','mission-streak-milestone'+(reached?' complete':''));
+        const title=make('strong','',
+          (reached?'✓ ':'🔥 ')+m.days+' '+tr('dní','days'));
+        const rewards=make('span','',streakReward(m));
+        item.append(title,rewards);
+        return item;
+      }));
+    }
+    text('missionRotationInfo',missions?.rotation_enabled?
+      tr('🔄 Denní nabídka se mění o půlnoci UTC, týdenní každé pondělí.',
+         '🔄 Daily missions rotate at UTC midnight; weekly missions every Monday.'):
+      tr('🔄 První automatická obměna proběhne 9. 11. v 01:00 českého času. Dnešní postup zůstává.',
+         '🔄 The first rotation starts on November 9 at 00:00 UTC. Today’s progress is preserved.'));
+  }
   function render(){
     const signed=!!uid;
     const entries=Array.isArray(missions?.missions)?missions.missions:[];
@@ -88,6 +141,7 @@
                                     'Reset: every day 00:00 UTC'));
     text('weeklyMissionCountdown',tr('Reset: pondělí 00:00 UTC',
                                      'Reset: Monday 00:00 UTC'));
+    renderStreak();
     const btn=$('missionsRefresh');if(btn)btn.disabled=pending||!signed;
   }
   async function refresh(){
@@ -100,7 +154,8 @@
         throw Error(error?.message||'mission_status_invalid');
       if(id!==uid||stamp!==revision)return;
       missions=data;loaded=true;
-      lastAwardCount=Array.isArray(data.new_rewards)?data.new_rewards.length:0;
+      lastAwardCount=(Array.isArray(data.new_rewards)?data.new_rewards.length:0)+
+        (Array.isArray(data.new_streak_rewards)?data.new_streak_rewards.length:0);
       if(lastAwardCount>0){
         // The parent must fetch actual account balances from authenticated
         // Supabase tables; no frontend-supplied currency is authoritative.
@@ -125,6 +180,11 @@
     if(uid&&['missions','home','account'].includes(page))void refresh();
   }
   $('missionsRefresh')?.addEventListener('click',()=>void refresh());
+  // Page can remain open across UTC midnight without a manual refresh.
+  // Hidden tabs skip polling; focus and navigation also trigger a refresh.
+  window.setInterval?.(()=>{
+    if(uid&&!pending&&document.visibilityState!=='hidden')void refresh();
+  },120000);
   window.addEventListener('foxey-arcade:locale-changed',render);
   window.addEventListener('focus',()=>{
     if(uid&&document.visibilityState!=='hidden')void refresh();
