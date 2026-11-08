@@ -44,7 +44,7 @@
   <nav class="mainnav" aria-label="Hlavní navigace">
     <button data-page="home" class="active" type="button">🏠 <span>Domů</span></button>
     <button data-page="games" type="button">🎮 <span>Hry</span></button><button data-page="shop" type="button">🛍️ <span>Obchod</span></button>
-    <button data-page="community" type="button">👥 <span>Přátelé a výzvy</span></button>
+    <button data-page="community" type="button">👥 <span>Přátelé a výzvy</span><span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
     <button data-page="missions" type="button">🎯 <span>Mise</span></button>
     
     <button data-page="account" type="button">👤 <span>Profil</span></button>
@@ -54,7 +54,7 @@
   <nav class="arcade-mobile-dock" id="mobileDock" aria-label="Rychlá mobilní navigace">
     <button data-page="home" class="active" aria-current="page" type="button"><span aria-hidden="true">🏠</span><span>Domů</span></button>
     <button data-page="games" type="button"><span aria-hidden="true">🎮</span><span>Hry</span></button>
-    <button data-page="community" type="button" aria-label="Přátelé a výzvy"><span aria-hidden="true">👥</span><span>Přátelé</span></button>
+    <button data-page="community" type="button" aria-label="Přátelé a výzvy"><span aria-hidden="true">👥</span><span>Přátelé</span><span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
     <button data-page="shop" type="button"><span aria-hidden="true">🛍️</span><span>Obchod</span></button>
     <button id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu" aria-haspopup="true"><span aria-hidden="true">☰</span><span>Více</span></button>
   </nav>
@@ -659,6 +659,7 @@
       <button type="button" class="secondary" id="arcadeNoticeClose" aria-label="Zavřít oznámení">✕</button>
     </div>
     <p class="small" id="arcadeNoticeStatus" role="status" aria-live="polite"></p>
+    <button type="button" id="arcadeNoticeGoChat" class="arcade-notice-chat-link hidden">💬 Otevřít zprávy <span class="arcade-chat-unread hidden" aria-hidden="true">0</span></button>
     <details class="friends-requests-details arcade-bell-requests" id="friendsRequestsDetails">
       <summary id="friendRequestsSummary" tabindex="0">📩 Žádosti o přátelství <span id="friendsRequestSummaryCount" class="friends-request-pill">0</span></summary>
       <p id="friendRequestsHint" class="small">Přijmi nebo odmítni nové žádosti, případně zruš své odeslané žádosti.</p>
