@@ -365,6 +365,12 @@
             <option value="speed">⚡ Rychlostní duel · 12 s / otázka</option>
             <option value="mystery">🧩 Mystery · 20 s / otázka</option>
           </select>
+          <label for="liveSeriesSelect">🏆 Formát</label>
+          <select id="liveSeriesSelect" aria-label="Formát živého souboje">
+            <option value="1">🎮 Jediný zápas 1v1</option>
+            <option value="2">🥈 Série na 2 vítězství (BO3)</option>
+            <option value="3">🥇 Série na 3 vítězství (BO5)</option>
+          </select>
           <span id="liveRealtimeStatus" class="live-network-status" role="status" aria-live="polite">☁️ Připojuji…</span>
         </div>
         <p id="liveStatus" class="small" role="status" aria-live="polite"></p>
@@ -375,6 +381,7 @@
         <div id="liveArena" class="live-arena hidden" tabindex="-1" aria-labelledby="liveArenaTitle">
           <div class="sectionline"><h3 id="liveArenaTitle">🎮 Živá aréna <span id="liveArenaMode" class="live-mode-badge"></span></h3><strong id="liveRound"></strong></div>
           <p id="liveArenaOpponent" class="small"></p>
+          <div id="liveSeriesSummary" class="live-series-summary hidden" role="status" aria-live="polite"></div>
           <div class="live-score" aria-label="Průběžné skóre"><div>TY <strong id="liveScoreHost">0</strong></div><span>VS</span><div>SOUPĚŘ <strong id="liveScoreGuest">0</strong></div></div>
           <p id="liveArenaStatus" role="status" aria-live="polite"></p>
           <strong id="liveCountdown" class="live-countdown"></strong>
@@ -386,6 +393,15 @@
           <div class="sectionline"><h3 id="liveLeaderboardTitle">🏆 PvP statistiky a žebříček přátel</h3></div>
           <div id="liveStatsSummary" class="live-stats-summary" role="status" aria-live="polite"></div>
           <div id="liveLeaderboard" class="live-leaderboard"></div>
+        </section>
+        <section id="liveHeadToHeadPanel" class="live-stats-card" aria-labelledby="liveHeadToHeadTitle">
+          <div class="sectionline">
+            <h3 id="liveHeadToHeadTitle">📜 Vzájemné zápasy</h3>
+            <button type="button" class="secondary" id="liveHeadToHeadRefresh">↻ Obnovit</button>
+          </div>
+          <p id="liveHeadToHeadStatus" class="small" role="status" aria-live="polite">Vyber kamaráda tlačítkem „Vzájemné zápasy“.</p>
+          <div id="liveHeadToHeadStats" class="live-stats-summary"></div>
+          <div id="liveHeadToHeadRows" class="live-history-list"></div>
         </section>
       </section>
       <details class="friends-blocked-area">
