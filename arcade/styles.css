@@ -575,3 +575,44 @@ body.arcade-theme-ocean .hero{background:radial-gradient(circle at 95% 15%,#217f
  .mission-description{font-size:.79rem}
 }
 @media(prefers-reduced-motion:reduce){.mission-progress-fill{transition:none}}
+
+
+/* Daily streak milestone roadmap inside the rotating mission dashboard. */
+.mission-streak-preview{display:flex;align-items:center;gap:11px;padding:13px 15px;
+  border-radius:15px;border:1px solid #715d8c;background:linear-gradient(115deg,#352a4e,#1d2e48);
+  margin-top:14px}
+.mission-streak-flame{font-size:1.8rem;flex:0 0 auto}
+.mission-streak-preview>div{min-width:0;flex:1}
+.mission-streak-preview strong{font-size:.95rem}
+.mission-streak-preview p{font-size:.77rem;line-height:1.45;color:#c5d6e6;margin:3px 0 0}
+.mission-streak-preview button{min-height:39px;flex:0 0 auto;font-size:.8rem}
+.mission-streak-panel{padding:clamp(15px,3vw,22px);border-radius:19px;
+  background:linear-gradient(115deg,#3a2d50,#1a2945 60%,#17253b);
+  border:1px solid #776292;margin:12px 0 17px}
+.mission-streak-heading{display:flex;gap:12px;flex-wrap:wrap;
+  justify-content:space-between;align-items:center}
+.mission-streak-heading h2{font-size:clamp(1.15rem,3vw,1.5rem);margin:6px 0 5px}
+.mission-streak-heading>strong{color:#ffeac2;font-size:clamp(1.25rem,4vw,1.65rem);
+  font-variant-numeric:tabular-nums}
+.mission-streak-panel>.small{font-size:.84rem;margin:7px 0 12px;line-height:1.5}
+.mission-streak-progress{height:10px;overflow:hidden;border-radius:40px;background:#141a31;
+  border:1px solid #645c84}
+.mission-streak-progress span{display:block;height:100%;width:0;
+  border-radius:40px;background:linear-gradient(90deg,#fa9d45,#ffdb72);
+  transition:width .32s}
+.mission-streak-milestones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;margin-top:14px}
+.mission-streak-milestone{display:grid;gap:5px;align-content:start;min-width:0;
+  padding:11px 9px;background:#1e2b43;border:1px solid #53617a;
+  border-radius:12px;text-align:center}
+.mission-streak-milestone strong{font-size:.86rem}
+.mission-streak-milestone span{font-size:.75rem;line-height:1.5;color:#d9dcef}
+.mission-streak-milestone.complete{background:#25453b;border-color:#73b494}
+.mission-rotation-info{border-left:3px solid #a5c5ec;padding-left:11px;
+  margin:7px 0 12px;font-size:.83rem;line-height:1.4}
+@media(max-width:730px){
+ .mission-streak-milestones{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mission-streak-preview{flex-wrap:wrap;padding:12px}
+ .mission-streak-preview button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.mission-streak-progress span{transition:none}}
