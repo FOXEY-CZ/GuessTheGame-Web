@@ -278,12 +278,12 @@
       </article>
     </div>
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
-      🧪 Zatím jde o oddělený test. Původní offline kvíz stále obsahuje veřejné otázky a klíč odpovědí; ostré odměny zůstávají vypnuté.
+      🛡️ Odpovědi ověřuje server. Starý postup je zachovaný a nové XP i měny se ukládají automaticky do společného profilu.
     </p>
 
     <section class="async-box" aria-labelledby="asyncTitle">
       <h3 id="asyncTitle">⚔️ Soukromé výzvy mezi hráči</h3>
-      <p class="async-help" id="asyncHelp">Vytvoř výzvu, odehraj 10 stejných otázek a pošli odkaz kamarádovi. Skóre se odhalí až po obou dohraných partiích. Zatím bez výplat.</p>
+      <p class="async-help" id="asyncHelp">Vytvoř výzvu, odehraj stejné otázky a pošli odkaz kamarádovi. Skóre se odhalí až po dohrání obou hráčů. Odměny se připisují podle serverových pravidel.</p>
       <button id="createAsyncChallenge" class="primary" type="button">⚔️ Vytvořit serverovou výzvu</button>
       <label id="asyncInviteLabel" for="asyncInvite">Odkaz nebo ID výzvy</label>
       <input id="asyncInvite" type="text" autocomplete="off" spellcheck="false" placeholder="https://…?challenge=…" maxlength="300" aria-describedby="asyncLobbyStatus">
@@ -385,7 +385,7 @@
         <button type="button" id="asyncRefresh">🔄 Obnovit výsledek</button>
       </div>
     </section>
-    <p class="lead" id="noReward">Tento bezpečnostní test nepřipisuje XP ani herní měny do skutečného profilu.</p>
+    <p class="lead" id="noReward">Nové ověřené partie automaticky připisují XP a herní měny do společného profilu.</p>
     <div class="bottom">
       <button id="auditRetryButton" class="secondary hidden" type="button">🔄 Znovu ověřit výsledek</button>
       <button id="againButton" class="primary" type="button">HRÁT ZNOVU</button>
@@ -393,7 +393,7 @@
     </div>
   </section>
 
-  <div class="footer" id="footer">FOXEY Arcade · Zabezpečená Guess the Game · Odpovědi ověřuje server · Odměny zatím testovací</div>
+  <div class="footer" id="footer">FOXEY Arcade · Zabezpečená Guess the Game · Automaticky synchronizované odměny</div>
 </main>
 <div id="historyOverlay" class="history-overlay hidden" role="presentation">
   <div id="historyOverlayShade" class="history-overlay-shade"></div>
@@ -451,7 +451,7 @@
       platformLeaveConfirm:'Rozehraná partie se ukládá na server. Po návratu můžeš pokračovat od poslední potvrzené akce. Vrátit se na platformu?',
       platformPendingConfirm:'Poslední akce ještě nemusí být potvrzená serverem. Po návratu se načte pouze potvrzený postup. Opravdu odejít?',
       platformWait:'⏳ Počkej, než server dokončí aktuální požadavek.',
-      footer:'FOXEY Arcade · Serverový kvíz · Skutečné odměny po aktivaci',
+      footer:'FOXEY Arcade · Serverový kvíz · Automatické XP a odměny',
       hearts:'Životy',
       caveat:'🛡️ Hlavní zabezpečená hra FOXEY Arcade. Staré savy jsou uložené a společná XP i měny se synchronizují automaticky.',
       challenges:'↩ Staré výzvy v původní Guess the Game',
@@ -576,7 +576,7 @@
       platformLeaveConfirm:'The server saves your progress after each confirmed action. You can continue later. Return to the Arcade platform?',
       platformPendingConfirm:'The last action may not have been confirmed by the server. Only confirmed progress will be restored. Leave anyway?',
       platformWait:'⏳ Please wait for the current server request to finish.',
-      footer:'FOXEY Arcade · Verified game · Real rewards after opt-in',
+      footer:'FOXEY Arcade · Verified game · Automatic XP and rewards',
       hearts:'Lives',
       caveat:'🛡️ The main secure FOXEY Arcade game. Old saves are preserved and shared XP and currencies sync automatically.',
       challenges:'↩ Old challenges in the original Guess the Game',
