@@ -196,7 +196,16 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
    'badge clears after accepted request');
  // Challenge friend, receive a server-bound receipt, then open the creator run.
  const friendCard=nodes.get('friendsList').children[0];
- friendCard.children[1].children[1].events.click();
+ const friendActions=friendCard.children[1].children;
+ const chatButton=friendActions.find(x=>x.textContent.includes('Napsat'));
+ assert.ok(chatButton,'accepted friends need a Message button');
+ chatButton.events.click();
+ assert.equal(nodes.get('friendsPaneChat').classList.contains('hidden'),false,
+   'Message button opens the Chat section without leaving Arcade');
+ ui.openPane('people');
+ const challengeButton=friendActions.find(x=>x.textContent.includes('Vyzvat'));
+ assert.ok(challengeButton);
+ challengeButton.events.click();
  await settle();await settle();
  assert.ok(assigned.includes('resume='+challenge),
    'targeted challenge should open creator run: '+nodes.get('friendsStatus').textContent);
