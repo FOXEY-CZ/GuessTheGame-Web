@@ -101,7 +101,13 @@ function instance(uid, initiallyFinished=true){
       }
       if(name==='arcade_global_missions'){
         return {data:{ok:true,daily_start:'2026-11-08',
-          weekly_start:'2026-11-02',new_rewards:[],
+          weekly_start:'2026-11-02',new_rewards:[],new_streak_rewards:[],
+          rotation_enabled:false,streak:{
+            current:3,best:3,active_today:true,next_milestone:7,
+            milestones:[{days:3,shards:10,crowns:0,free_chests:0},
+              {days:7,shards:0,crowns:0,free_chests:1},
+              {days:14,shards:30,crowns:0,free_chests:0},
+              {days:30,shards:40,crowns:1,free_chests:2}]},
           missions:[{code:'daily_play',period:'daily',icon:'🎮',
             name_cs:'První partie',name_en:'First Game',
             description_cs:'Dohraj jednu hru.',description_en:'Finish one game.',
@@ -230,15 +236,22 @@ async function main(){
   assert.equal(first.get('gameDailyMissions').children.length,1);
   assert.equal(first.get('gameWeeklyMissions').children.length,1);
   assert.equal(first.get('missionHeaderCount').textContent,'0/2');
+  assert.equal(first.get('gameStreakRewards').children.length,4);
+  assert.ok(first.get('gameStreakFill').style.width.startsWith('42.'));
+  assert.ok(first.get('gameStreakCount').textContent.includes('3'));
+  assert.ok(first.get('gameMissionRotationHint').textContent.includes('9. 11.'));
   first.app.closeGameMissions();
   assert.equal(first.get('missionsOverlay').hidden,true);
   first.app.showLiveRewardReceipt({
     ok:true,credited:true,xp:90,shards:5,crowns:0,level:5,xp_total:480,
     new_missions:[{code:'daily_play',icon:'🎮',name_cs:'První partie',
-      name_en:'First Game',shards:5,crowns:0,free_chests:0}]
+      name_en:'First Game',shards:5,crowns:0,free_chests:0}],
+    new_streak_rewards:[{days:3,shards:10,crowns:0,free_chests:0}]
   },'');
   assert.equal(first.get('missionUnlockBanner').hidden,false);
   assert.ok(first.get('missionUnlockDescription').textContent.includes('První partie'));
+  assert.equal(first.get('streakUnlockBanner').hidden,false);
+  assert.ok(first.get('streakUnlockDescription').textContent.includes('💎 +10'));
   assert.ok(!first.rpcCalls.includes('arcade_sync_legacy'));
   // The bell is ALWAYS clickable during the active quiz. Viewing the shared
   // inbox must not discard the round, answer choices or pending RPC state.
