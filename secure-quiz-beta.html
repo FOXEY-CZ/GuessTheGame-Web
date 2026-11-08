@@ -399,7 +399,7 @@
       <button id="hubTabHistory" class="game-hub-tab" type="button" role="tab"
         aria-controls="gameHubHistory" aria-selected="false" tabindex="-1" data-game-hub="history">📜 Historie</button>
     </nav>
-    <p id="gameHubDescription" class="game-hub-description">Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.</p>
+    <p id="gameHubDescription" class="game-hub-description" aria-live="polite">Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.</p>
     <div id="gameHubSolo" class="game-hub-pane" role="tabpanel" aria-labelledby="hubTabSolo">
     <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
       <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
@@ -678,7 +678,8 @@
       loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'SERVEROVÁ VOLBA OTÁZEK',
-      modeTitle:'Vyber režim',hubSolo:'🎮 Sólo režimy',hubChallenges:'⚔️ Výzvy s přáteli',
+      modeTitle:'Vyber režim',hubTitleSolo:'Vyber režim',hubTitleChallenges:'Soukromé výzvy',hubTitleHistory:'Historie výzev',
+      hubSolo:'🎮 Sólo režimy',hubChallenges:'⚔️ Výzvy s přáteli',
       hubHistory:'📜 Historie',hubSoloHint:'Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.',
       hubChallengesHint:'⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.',
       hubHistoryHint:'📜 Rozehrané i dokončené výzvy. Starší najdeš v archivu; otevřenou výzvu můžeš obnovit.',
@@ -843,7 +844,8 @@
       loginTitle:'Sign in to FOXEY Arcade first',
       loginText:'This beta requires an account. The original guest and offline game is still available.',
       loginLink:'Open FOXEY Arcade',modeEyebrow:'SERVER-SELECTED QUESTIONS',
-      modeTitle:'Choose a mode',hubSolo:'🎮 Solo modes',hubChallenges:'⚔️ Friend challenges',
+      modeTitle:'Choose a mode',hubTitleSolo:'Choose a mode',hubTitleChallenges:'Friend challenges',hubTitleHistory:'Challenge history',
+      hubSolo:'🎮 Solo modes',hubChallenges:'⚔️ Friend challenges',
       hubHistory:'📜 History',hubSoloHint:'Pick a solo mode, start a new game or resume an unfinished one.',
       hubChallengesHint:'⚔️ Share private challenges with a link. Live 1v1 and BO3/BO5 series are in Arcade → Friends.',
       hubHistoryHint:'📜 Your ongoing and finished challenges. Older entries are archived; unfinished games can be resumed.',
@@ -1403,6 +1405,9 @@
     };
     const box=$('gameHubDescription');
     if(box)box.textContent=T(descriptions[section]);
+    const title=$('modeTitle');
+    if(title)title.textContent=T({solo:'hubTitleSolo',
+      challenges:'hubTitleChallenges',history:'hubTitleHistory'}[section]);
   }
   function language(){
     document.documentElement.lang=lang;
