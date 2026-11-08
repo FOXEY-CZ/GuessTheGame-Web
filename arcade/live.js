@@ -120,10 +120,14 @@ async function refreshStats(force=false){
 
 const people=()=>Array.isArray(snapshot?.friends)?snapshot.friends:[];
 const matches=()=>Array.isArray(snapshot?.matches)?snapshot.matches:[];
-// One source of truth for both phones: a linked, still-active rematch request.
-const pendingRematch=m=>m?.state==='finished'?
-  matches().find(x=>x.rematch_of===m.match_id &&
-    ['invited','lobby','running'].includes(x.state)):null;
+// Match rows arrive newest first. A finished game's latest rematch can be
+// pending, running, accepted or explicitly declined by the other player.
+const latestRematch=m=>m?.state==='finished'?
+  matches().find(x=>x.rematch_of===m.match_id):null;
+const pendingRematch=m=>{
+  const latest=latestRematch(m);
+  return latest&&['invited','lobby','running'].includes(latest.state)?latest:null;
+};
 const label=p=>(p?.nickname||tr('Hráč','Player')).slice(0,40);
 const status=s=>text('liveStatus',s);
 function safeError(e){return String(e?.message||'network_error').slice(0,115);}
@@ -179,7 +183,10 @@ function renderList(){
     const oppPoints=m.role==='host'?m.guest_score:m.host_score;
     const rematchLabel=m.rematch_of&&m.state==='invited'?
       (m.role==='guest'?tr('🔄 Žádost o odvetu','🔄 Rematch requested'):
-        tr('🔄 Čeká na odvetu','🔄 Rematch pending')):null;
+        tr('🔄 Čeká na odvetu','🔄 Rematch pending')):
+      m.rematch_of&&m.state==='declined'?
+      (m.role==='host'?tr('❌ Odveta byla odmítnuta','❌ Rematch declined'):
+        tr('❌ Odvetu jsi odmítl','❌ You declined the rematch')):null;
     head.append(elem('strong','',label(m.opponent)),
       elem('span','',(rematchLabel||translation[m.state]||m.state)+' · '+modeName(m.mode)));
     if(m.state==='finished')head.append(elem('span','',
@@ -234,7 +241,10 @@ function renderArena(){
       tr('✅ Odpověď uložená. Čekáme na soupeře nebo konec kola.','✅ Answer saved. Waiting for the other player or timer.'):
       tr('🔥 Odpověz před vypršením času.','🔥 Answer before the timer ends.'),
     finished:tr('🏆 Zápas dokončen.','🏆 Match complete.'),
-    declined:tr('Pozvánka odmítnuta.','Invite declined.'),
+    declined:m.rematch_of?
+      (host?tr('❌ Odveta byla odmítnuta.','❌ The rematch was declined.'):
+        tr('❌ Odvetu jsi odmítl.','❌ You declined the rematch.')):
+      tr('Pozvánka odmítnuta.','Invite declined.'),
     cancelled:tr('Zápas zrušen.','Match canceled.'),
     expired:tr('Zápas vypršel.','Match expired.')};
   text('liveArenaStatus',states[m.state]||m.state);
@@ -272,6 +282,12 @@ function renderArena(){
     question.append(elem('p','small',tr('Tvoje skóre ','Your score ')+myScore+
       ' : '+oppScore+tr(' soupeř',' opponent')));
     const pending=pendingRematch(m);
+    const latest=latestRematch(m);
+    if(!pending&&latest?.state==='declined'&&latest.role==='host'){
+      question.append(elem('p','live-rematch-result',tr(
+        '❌ Odveta byla odmítnuta. Soupeř tvoji žádost nepřijal.',
+        '❌ The rematch was declined. Your opponent did not accept.')));
+    }
     if(!pending){
       controls.append(btn(tr('🔄 Požádat o odvetu','🔄 Request rematch'),
         ()=>void rematch(),'primary',busy));
@@ -407,7 +423,8 @@ async function answerRematchRequest(matchId,accept){
         '✅ Rematch accepted! Both players should ready up.'));
       await openMatch(matchId);
     }else{
-      status(tr('❌ Odveta odmítnuta.','❌ Rematch declined.'));
+      status(tr('❌ Odvetu jsi odmítl. Soupeř dostane oznámení.',
+        '❌ You declined the rematch. Your opponent will be notified.'));
       renderArena();
     }
     window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
@@ -468,7 +485,13 @@ async function mutate(name,args,message){
   finally{if(isCurrent(owner,stamp)){busy=false;renderArena();}}
 }
 const respond=accept=>mutate('arcade_live_respond',{p_match_id:activeId,p_accept:accept},
-  accept?tr('✅ Pozvánka přijata.','✅ Invite accepted.'):tr('Pozvánka odmítnuta.','Invite declined.'));
+  accept?
+    (active?.rematch_of?tr('✅ Odveta přijata.','✅ Rematch accepted.'):
+      tr('✅ Pozvánka přijata.','✅ Invite accepted.')):
+    (active?.rematch_of?
+      tr('❌ Odvetu jsi odmítl. Soupeř dostane oznámení.',
+         '❌ You declined the rematch. Your opponent will be notified.'):
+      tr('Pozvánka odmítnuta.','Invite declined.')));
 const setReady=ready=>mutate('arcade_live_ready',{p_match_id:activeId,p_ready:ready});
 const answer=(index,choice)=>mutate('arcade_live_answer',
   {p_match_id:activeId,p_index:index,p_choice:choice});
