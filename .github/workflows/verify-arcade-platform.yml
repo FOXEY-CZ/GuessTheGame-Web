@@ -74,6 +74,7 @@ jobs:
             tests/arcade-series-two-player-client.cjs
             tests/arcade-head-to-head-race.cjs
             tests/arcade-game-fullscreen-client.cjs
+            tests/arcade-chest-reward-client.cjs
             tests/secure-game-friend-picker-client.cjs
             tests/arcade-secure-game-cutover-client.cjs
             tests/shadow-action-client.cjs
