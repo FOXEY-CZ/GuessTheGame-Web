@@ -45,6 +45,24 @@
     <button data-page="settings" type="button">⚙️ <span>Nastavení</span></button>
   </nav>
 
+  <nav class="arcade-mobile-dock" id="mobileDock" aria-label="Rychlá mobilní navigace">
+    <button data-page="home" class="active" aria-current="page" type="button"><span aria-hidden="true">🏠</span><span>Domů</span></button>
+    <button data-page="games" type="button"><span aria-hidden="true">🎮</span><span>Hry</span></button>
+    <button data-page="challenges" type="button"><span aria-hidden="true">⚔️</span><span>Výzvy</span></button>
+    <button data-page="shop" type="button"><span aria-hidden="true">🛍️</span><span>Obchod</span></button>
+    <button id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu" aria-haspopup="true"><span aria-hidden="true">☰</span><span>Více</span></button>
+  </nav>
+  <div id="mobileMoreMenu" class="arcade-mobile-more hidden" role="presentation">
+    <button type="button" class="arcade-mobile-more-shade" id="mobileMoreShade" aria-label="Zavřít další nabídku"></button>
+    <div class="arcade-mobile-more-sheet" role="dialog" aria-modal="true" aria-labelledby="mobileMoreTitle">
+      <div class="arcade-mobile-more-head"><h2 id="mobileMoreTitle">Kam dál?</h2><button id="mobileMoreClose" type="button" aria-label="Zavřít">✕</button></div>
+      <button data-page="account" type="button">👤 Profil <span>Účet, achievementy a inventář</span></button>
+      <button data-page="settings" type="button">⚙️ Nastavení <span>Jazyk, hra a oznámení</span></button>
+      <button data-page="community" type="button">👥 Komunita <span>Přátelé a budoucí chat</span></button>
+      <button data-page="play" type="button">▶️ Pokračovat ve hře <span>Otevřít Guess the Game</span></button>
+    </div>
+  </div>
+
   <main id="main" tabindex="-1">
     <section class="page" id="page-home">
       <div class="hero">
@@ -198,21 +216,38 @@
     </section>
 
     <section class="page hidden" id="page-challenges">
-      <span class="eyebrow">FOXEY CHALLENGES · BETA</span><h1>⚔️ Výzvy mezi kamarády</h1>
-      <p>Vytvoř zabezpečenou výzvu a pošli ji kamarádovi. Oba hrajete stejné serverové otázky, skóre se zobrazí až po dokončení obou hráčů. Pro nové výzvy je potřeba účet.</p>
-      <div class="twogrid">
-        <article class="tile">
-          <div class="tileicon">🎮</div><h2>Guess the Game</h2>
-          <p>Vytvoř výzvu, pošli odkaz kamarádovi a porovnejte první dokončené pokusy. Oba hrajete stejné otázky.</p>
-          <button class="primary full" id="launchChallenge" type="button">⚔️ Otevřít výzvy ve hře</button>
-          <p class="note" id="challengeLaunchStatus" role="status" aria-live="polite">Nové výzvy jsou uložené na účtu a dohledáš je ve zvonečku. Staré výzvy zůstávají v původní verzi hry.</p>
-          <a class="small" href="../preview-auth-test.html" target="_blank" rel="noopener noreferrer">Původní výzvy a odkazy ↗</a>
-        </article>
-        <article class="tile">
-          <div class="tileicon">🏆</div><h2>Historie v Arcade</h2>
-          <p>Historii serverových výzev a nové výsledky už najdeš ve 🔔 zvonečku nahoře i přímo ve hře. Rozšířené statistiky a přátelé přijdou později.</p>
-          <span class="tag live">Aktivní</span>
-        </article>
+      <div class="page-intro challenge-page-intro">
+        <div><span class="eyebrow">FOXEY ARCADE · SOUBOJE</span><h1>⚔️ Moje výzvy</h1>
+          <p>Rychlý přehled, co máš rozehrané, na koho čekáš a jak dopadly poslední zápasy.</p>
+        </div>
+        <div class="challenge-page-actions">
+          <button class="primary" id="launchChallenge" type="button">➕ Vytvořit / přijmout výzvu</button>
+          <button class="secondary" id="challengeInboxButton" type="button">🔔 Zvoneček a archiv</button>
+        </div>
+      </div>
+      <div class="challenge-dashboard-stats" aria-label="Přehled výzev">
+        <div><span>▶️ K hraní</span><strong id="challengeCountPlay">—</strong></div>
+        <div><span>⏳ Čeká se</span><strong id="challengeCountWaiting">—</strong></div>
+        <div><span>🏆 Výsledky</span><strong id="challengeCountResults">—</strong></div>
+      </div>
+      <p class="small" id="challengeLaunchStatus" role="status" aria-live="polite">Pro načtení výzev se přihlas.</p>
+      <div class="challenge-dashboard-groups">
+        <section class="challenge-dashboard-group" aria-labelledby="challengePlayTitle">
+          <div class="sectionline"><h2 id="challengePlayTitle">▶️ Pokračovat ve hře</h2><span class="small">Rozehrané výzvy</span></div>
+          <div id="challengeListPlay" class="challenge-dashboard-list"></div>
+        </section>
+        <section class="challenge-dashboard-group" aria-labelledby="challengeWaitingTitle">
+          <div class="sectionline"><h2 id="challengeWaitingTitle">⏳ Čekání na soupeře</h2><span class="small">Výzvy bez obou výsledků</span></div>
+          <div id="challengeListWaiting" class="challenge-dashboard-list"></div>
+        </section>
+        <section class="challenge-dashboard-group" aria-labelledby="challengeResultsTitle">
+          <div class="sectionline"><h2 id="challengeResultsTitle">🏆 Nedávné výsledky</h2><span class="small">Starší najdeš v archivu</span></div>
+          <div id="challengeListResults" class="challenge-dashboard-list"></div>
+        </section>
+      </div>
+      <div class="challenge-dashboard-footer">
+        <button class="secondary" id="challengeRefresh" type="button">↻ Obnovit přehled</button>
+        <a class="small" href="../preview-auth-test.html" target="_blank" rel="noopener noreferrer">Staré výzvy v původní hře ↗</a>
       </div>
     </section>
 
@@ -313,18 +348,52 @@
     </section>
 
     <section class="page hidden" id="page-settings">
-      <span class="eyebrow">NASTAVENÍ PLATFORMY</span><h1>O FOXEY Arcade</h1>
-      <article class="tile language-settings" aria-labelledby="languageTitle">
-        <h2 id="languageTitle">🌍 Jazyk / Language</h2>
-        <p>Zvolený jazyk platí pro launcher i vestavěnou Guess the Game. Změní se okamžitě a zůstane uložený v tomto prohlížeči.</p>
-        <label for="arcadeLanguage">Jazyk rozhraní</label>
-        <select id="arcadeLanguage" name="arcadeLanguage" autocomplete="off">
-          <option value="cs">🇨🇿 Čeština</option>
-          <option value="en">🇬🇧 English</option>
-        </select>
-      </article>
-      <article class="tile"><h2>Správa dat</h2><p>Zde později přibude záloha a smazání postupu jednotlivých her, smazání veškerého postupu a úplné smazání účtu — vždy s potvrzením.</p><span class="tag">Připravujeme</span></article>
-      <article class="tile"><h2>Aktuální fáze</h2><p>První centrální aplikace. Přihlašování a osobní profil jsou propojené se stávajícím Supabase projektem. Společná peněženka, komunitní funkce a integrace her jsou zatím ve vývoji.</p></article>
+      <div class="page-intro">
+        <div><span class="eyebrow">FOXEY ARCADE · PŘEDVOLBY</span><h1>⚙️ Nastavení</h1>
+          <p>Jen to, co opravdu potřebuješ. Jazyk se mění okamžitě, herní postup a odměny se ukládají automaticky.</p>
+        </div>
+      </div>
+      <div class="settings-grid">
+        <section class="settings-card" aria-labelledby="languageTitle">
+          <div class="settings-card-icon" aria-hidden="true">🌍</div>
+          <div class="settings-card-body">
+            <h2 id="languageTitle">Jazyk rozhraní</h2>
+            <p>Platí pro Arcade i Guess the Game. Volba se uloží pro tento prohlížeč.</p>
+            <label for="arcadeLanguage">Zvolený jazyk</label>
+            <select id="arcadeLanguage" name="arcadeLanguage" autocomplete="off">
+              <option value="cs">🇨🇿 Čeština</option><option value="en">🇬🇧 English</option>
+            </select>
+          </div>
+        </section>
+        <section class="settings-card" aria-labelledby="settingsGameTitle">
+          <div class="settings-card-icon" aria-hidden="true">🎮</div>
+          <div class="settings-card-body">
+            <h2 id="settingsGameTitle">Hra a ovládání</h2>
+            <p>Zvuky, vibrace a další nastavení samotného kvízu najdeš přímo ve hře.</p>
+            <button type="button" class="secondary" id="settingsOpenGame">🎮 Otevřít Guess the Game</button>
+          </div>
+        </section>
+        <section class="settings-card" aria-labelledby="settingsNotificationsTitle">
+          <div class="settings-card-icon" aria-hidden="true">🔔</div>
+          <div class="settings-card-body">
+            <h2 id="settingsNotificationsTitle">Oznámení a historie</h2>
+            <p>Ve zvonečku zůstává jen krátký přehled; starší dokončené výzvy jsou v archivu.</p>
+            <button type="button" class="secondary" id="settingsOpenBell">🔔 Otevřít oznámení</button>
+          </div>
+        </section>
+        <section class="settings-card" aria-labelledby="settingsAccountTitle">
+          <div class="settings-card-icon" aria-hidden="true">👤</div>
+          <div class="settings-card-body">
+            <h2 id="settingsAccountTitle">Účet a synchronizace</h2>
+            <p>Globální XP, měny a inventář jsou sdílené napříč platformou. Přezdívku a avatar upravíš v profilu.</p>
+            <button type="button" class="secondary" id="settingsOpenAccount">👤 Otevřít profil</button>
+          </div>
+        </section>
+      </div>
+      <section class="settings-information" aria-labelledby="settingsInfoTitle">
+        <h2 id="settingsInfoTitle">ℹ️ Správa dat</h2>
+        <p>Savy a výsledky výzev zůstávají zachované. Mazání účtu ani herního postupu tady nenabízíme, dokud nebude připravený bezpečný postup s potvrzením a možností zálohy.</p>
+      </section>
     </section>
   </main>
   <footer>© FOXEY Arcade · Testovací základ · Současné Guess the Game zůstává samostatně funkční</footer>
