@@ -250,6 +250,29 @@
     .achievements-panel{max-height:92dvh;border-radius:18px}
   }
   @media(prefers-reduced-motion:reduce){.achievements-meter>span{transition:none}}
+
+  /* Missions share the existing centered, scroll-contained achievement drawer. */
+  .game-missions-panel{max-height:88dvh}
+  .game-mission-heading{font-size:1.06rem;margin:17px 0 3px}
+  .game-mission-reset{color:#bdd5e7;font-size:.76rem;margin:0 0 10px}
+  .game-missions-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .game-mission-card{display:flex;gap:10px;padding:12px;border-radius:13px;
+    background:#192a47;border:1px solid #435d7c;min-width:0}
+  .game-mission-card.complete{background:#1d3d3a;border-color:#6a9d8f}
+  .game-mission-icon{font-size:1.6rem;flex:0 0 32px}
+  .game-mission-body{display:grid;gap:4px;min-width:0;flex:1}
+  .game-mission-body strong{font-size:.88rem}
+  .game-mission-body p{font-size:.76rem;line-height:1.4;margin:0;color:#c3d4e9}
+  .game-mission-body span{font-size:.76rem;color:#a6ead2}
+  .game-mission-track{height:5px;overflow:hidden;border-radius:30px;background:#30415f}
+  .game-mission-track>span{display:block;height:100%;background:#9ad9bc}
+  .game-mission-reward{font-size:.8rem;font-weight:700;color:#e7f4dd}
+  @media(max-width:650px){
+    .game-missions-grid{grid-template-columns:1fr}
+    .header-actions{gap:4px}
+    .header-actions #missionsButton{min-width:38px;min-height:42px;padding:6px 5px}
+    #missionsButton .achievements-small-count{font-size:.62rem}
+  }
 </style>
 </head>
 <body>
@@ -260,6 +283,7 @@
       <a id="backToPlatform" class="platform-return" href="./arcade/" target="_top">← Zpět do Arcade</a>
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
       <button id="achievementsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="achievementsOverlay" aria-label="Achievementy" title="Achievementy">🏆 <span id="achievementHeaderCount" class="achievements-small-count">—</span></button>
+      <button id="missionsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="missionsOverlay" aria-label="Mise" title="Mise">🎯 <span id="missionHeaderCount" class="achievements-small-count">—</span></button>
       <button id="lang" class="lang" type="button">CZ / EN</button>
     </div>
   </div>
@@ -447,6 +471,11 @@
       <p id="achievementUnlockDescription"></p>
       <button id="resultAchievementsButton" class="secondary" type="button">🏆 Zobrazit achievementy</button>
     </div>
+    <div class="achievement-unlock-banner hidden" id="missionUnlockBanner" role="status" aria-live="polite">
+      <strong id="missionUnlockTitle">🎯 Splněné mise</strong>
+      <p id="missionUnlockDescription"></p>
+      <button id="resultMissionsButton" class="secondary" type="button">🎯 Moje mise</button>
+    </div>
     <section class="async-result hidden" id="asyncResult" aria-labelledby="asyncResultTitle">
       <h3 id="asyncResultTitle">⚔️ Serverová výzva</h3>
       <p id="asyncResultMessage" role="status" aria-live="polite"></p>
@@ -467,6 +496,22 @@
 
   <div class="footer" id="footer">FOXEY Arcade · Zabezpečená Guess the Game · Automaticky synchronizované odměny</div>
 </main>
+<div id="missionsOverlay" class="achievements-overlay hidden" role="presentation">
+  <div id="missionsShade" class="achievements-shade"></div>
+  <section class="achievements-panel game-missions-panel" role="dialog" aria-modal="true" aria-labelledby="missionsTitle">
+    <div class="achievements-panel-header">
+      <div><span class="label" id="missionsEyebrow">FOXEY ARCADE · VÝZVY</span><h2 id="missionsTitle">🎯 Mise</h2></div>
+      <button id="missionsClose" type="button" aria-label="Zavřít mise">✕</button>
+    </div>
+    <p class="async-help" id="missionsSummary" aria-live="polite">Načítám mise…</p>
+    <h3 id="missionsDailyTitle" class="game-mission-heading">📅 Denní mise</h3>
+    <p class="game-mission-reset" id="missionsDailyReset">Reset 00:00 UTC</p>
+    <div id="gameDailyMissions" class="game-missions-grid"></div>
+    <h3 id="missionsWeeklyTitle" class="game-mission-heading">🏆 Týdenní mise</h3>
+    <p class="game-mission-reset" id="missionsWeeklyReset">Reset pondělí 00:00 UTC</p>
+    <div id="gameWeeklyMissions" class="game-missions-grid"></div>
+  </section>
+</div>
 <div id="achievementsOverlay" class="achievements-overlay hidden" role="presentation">
   <div id="achievementsShade" class="achievements-shade"></div>
   <section class="achievements-panel" role="dialog" aria-modal="true" aria-labelledby="achievementsTitle">
@@ -607,6 +652,20 @@
       achievementsXp:'{xp} XP · do další úrovně {remaining} XP',
       achievementsUnlocked:'✓ Odemčeno',
       achievementsEarned:'🎉 Nově odemčeno {count} achievementů!',
+      missionsTitle:'🎯 Moje mise',
+      missionsEyebrow:'FOXEY ARCADE · ODMĚNY',
+      missionsButton:'Zobrazit mise',
+      missionsClose:'Zavřít mise',
+      missionsSummary:'Splněno {done} z {total} misí',
+      missionsLoading:'Načítám mise ze serveru…',
+      missionsUnavailable:'⚠️ Mise se nepodařilo načíst. Zkus je znovu otevřít.',
+      missionsDaily:'📅 Denní mise',
+      missionsWeekly:'🏆 Týdenní mise',
+      missionsDailyReset:'Reset denně v 00:00 UTC',
+      missionsWeeklyReset:'Reset každé pondělí v 00:00 UTC',
+      missionsCompleted:'✓ Splněno · Odměna připsána',
+      missionsNew:'🎉 Splněno {count} misí! Bonusové odměny připsány.',
+      missionsShow:'🎯 Zobrazit všechny mise',
       achievementsShow:'🏆 Zobrazit achievementy',
       scorePoints:'BODY',
       reportSent:'✅ Děkuju! Hlášení bylo uloženo k této otázce.',
@@ -745,6 +804,20 @@
       achievementsXp:'{xp} XP · {remaining} XP to next level',
       achievementsUnlocked:'✓ Unlocked',
       achievementsEarned:'🎉 {count} new achievements unlocked!',
+      missionsTitle:'🎯 My Missions',
+      missionsEyebrow:'FOXEY ARCADE · REWARDS',
+      missionsButton:'View missions',
+      missionsClose:'Close missions',
+      missionsSummary:'Completed {done} of {total} missions',
+      missionsLoading:'Loading missions from server…',
+      missionsUnavailable:'⚠️ Could not load missions. Try opening them again.',
+      missionsDaily:'📅 Daily missions',
+      missionsWeekly:'🏆 Weekly missions',
+      missionsDailyReset:'Resets daily at 00:00 UTC',
+      missionsWeeklyReset:'Resets every Monday at 00:00 UTC',
+      missionsCompleted:'✓ Complete · Reward credited',
+      missionsNew:'🎉 {count} missions complete! Bonus rewards credited.',
+      missionsShow:'🎯 View all missions',
       achievementsShow:'🏆 View achievements',
       scorePoints:'POINTS',
       reportSent:'✅ Thanks! This question has been reported.',
@@ -796,6 +869,7 @@
   let liveRewardState=null,liveRewardLoading=false;
   let liveRewardReconcileAttempted=false;
   let achievementState=null,achievementLoading=false,achievementSeq=0;
+  let missionState=null,missionLoading=false,missionSeq=0;
   let createOperation=null;
   const activeChallengePrefix='foxey.arcade.active.challenge.v1.';
   let historyItems=[],historyUnread=0,historyLoading=false;
