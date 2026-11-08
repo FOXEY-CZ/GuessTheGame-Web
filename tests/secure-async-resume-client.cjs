@@ -42,14 +42,15 @@ function apiFor(uid){
         return {data:{ok:true,role:'creator',challenge_id:cid,run_id:run.runId,
           mode:run.mode,question_ids:ids},error:null};
       }
-      if(name==='arcade_async_challenge_inbox'){
+      if(name==='arcade_async_challenge_inbox'||name==='arcade_async_challenge_history'){
         const items=[...runs.values()].filter(r=>r.owner===uid).map(r=>({
           challenge_id:r.challengeId,role:'creator',mode:r.mode,
           creator_done:r.finalized,challenger_done:false,
           status:r.finalized?'waiting':'creator_playing',both_done:false,unread:false,
           created_at:'2026-11-07T19:00:00.000Z'
         }));
-        return {data:{ok:true,items,unread:0},error:null};
+        return {data:{ok:true,items,unread:0,archived:args.p_archived===true,
+          has_more:false,total:items.length},error:null};
       }
       if(name==='arcade_async_challenge_resume'){
         const run=getRun(args.p_challenge_id);
