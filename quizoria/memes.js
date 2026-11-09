@@ -291,7 +291,7 @@ async function answer(index,retry=false){
   run=data;feedback={ok:data.was_correct===true,correctIndex:data.correct_option,picked:request.p_choice};
   lastQuestion=previous;awaitNext=!data.finished;
   status(data.finished?'':t('save'));
-  if(data.finished)void refreshRuns();
+  if(data.finished){void refreshRuns();void window.QUIZORIA_PROGRESS?.refresh?.();}
   try{navigator.vibrate?.(data.was_correct?[28]:[60,35,60]);}catch(_){}
  }catch(err){status(t('loadError')+' '+(err?.message||''),true);}
  finally{locked=false;renderGame();}
