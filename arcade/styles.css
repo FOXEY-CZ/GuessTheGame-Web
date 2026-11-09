@@ -1218,3 +1218,65 @@ body.arcade-reward-open{overflow:hidden}
  .arcade-chat-avatar{flex-basis:32px;width:32px;height:32px}
 }
 @media(prefers-reduced-motion:reduce){.arcade-chat-thread{scroll-behavior:auto}}
+
+
+/* Chat 1.1 — shared server presence + non-blocking in-game mini chat. */
+.friends-presence,.arcade-chat-presence{font-size:.76rem;font-weight:750;line-height:1.3}
+.friends-presence.is-online,.arcade-chat-presence.is-online{color:#74e5b7}
+.friends-presence.is-offline,.arcade-chat-presence.is-offline{color:#b9c5de}
+.arcade-chat-presence{font-size:.7rem}
+.arcade-mini-chat{position:fixed;z-index:10020;bottom:calc(84px + env(safe-area-inset-bottom,0px));
+ right:calc(14px + env(safe-area-inset-right,0px));max-width:calc(100vw - 24px);
+ color:#f5f6ff;font-family:system-ui,-apple-system,Roboto,"Segoe UI",sans-serif}
+.arcade-mini-chat.hidden,.arcade-mini-panel.hidden,.arcade-mini-count.hidden{display:none!important}
+.arcade-mini-toggle{position:relative;display:grid;place-items:center;margin-left:auto;
+ width:54px;height:54px;border-radius:18px;border:1px solid #8876e2;
+ background:linear-gradient(135deg,#6256ae,#30265d);color:white;font-size:1.5rem;
+ box-shadow:0 9px 30px #030612a8;cursor:pointer;touch-action:manipulation}
+.arcade-mini-toggle:focus-visible,.arcade-mini-close:focus-visible,
+.arcade-mini-panel button:focus-visible,.arcade-mini-panel input:focus-visible,
+.arcade-mini-panel select:focus-visible{outline:2px solid #9ffcf1;outline-offset:2px}
+.arcade-mini-count{position:absolute;right:-7px;top:-7px;min-width:23px;height:23px;
+ display:grid;place-items:center;border-radius:20px;background:#e65f81;color:#fff;
+ border:2px solid #202640;font-size:.7rem;font-weight:900}
+.arcade-mini-panel{position:absolute;right:0;bottom:calc(100% + 10px);
+ width:min(350px,calc(100vw - 25px));height:min(480px,66dvh);
+ min-height:265px;display:flex;flex-direction:column;overflow:hidden;
+ border:1px solid #6d6da2;border-radius:18px;background:#111c34;
+ box-shadow:0 18px 55px #000a}
+.arcade-mini-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+ padding:10px 12px;background:#222c4c;border-bottom:1px solid #394969}
+.arcade-mini-head strong{font-size:.9rem}
+.arcade-mini-close{border:0;border-radius:8px;background:#344366;
+ color:#fff;cursor:pointer;min-width:32px;min-height:32px}
+.arcade-mini-friends{display:block;width:calc(100% - 20px);margin:10px;
+ border:1px solid #526282;border-radius:9px;padding:9px;color:#fff;background:#253453;
+ font-size:.85rem;min-height:40px}
+.arcade-mini-status{min-height:0;margin:0 12px 5px;color:#ffc589;font-size:.73rem}
+.arcade-mini-status:empty{display:none}
+.arcade-mini-thread{min-height:0;flex:1;display:flex;flex-direction:column;gap:8px;
+ overflow-y:auto;overscroll-behavior:contain;padding:10px;
+ background:linear-gradient(160deg,#121b32,#141f38)}
+.arcade-mini-message{align-self:flex-start;max-width:85%;border:1px solid #4b648b;
+ border-radius:12px 12px 12px 4px;background:#263552;padding:8px 10px;
+ font-size:.82rem;line-height:1.35;overflow-wrap:anywhere;white-space:pre-wrap}
+.arcade-mini-message.mine{align-self:flex-end;border-radius:12px 12px 4px 12px;
+ background:#493f7d;border-color:#7462b4}
+.arcade-mini-message span{display:block}
+.arcade-mini-message small{display:block;margin-top:5px;text-align:right;
+ font-size:.62rem;color:#b6c6e5}
+.arcade-mini-placeholder{margin:auto;text-align:center;font-size:.82rem;color:#b9c5de}
+.arcade-mini-form{display:flex;gap:7px;padding:9px;border-top:1px solid #37496a;
+ background:#192641}
+.arcade-mini-input{flex:1;min-width:0;min-height:41px;padding:9px 11px;
+ border:1px solid #637294;border-radius:11px;color:#fff;background:#101b2f;font-size:.85rem}
+.arcade-mini-send{min-width:42px;min-height:41px;padding:8px 12px;
+ border:0;border-radius:11px;color:#15132b;background:#87eade;font-weight:900;cursor:pointer}
+.arcade-mini-send:disabled,.arcade-mini-input:disabled{opacity:.55}
+body.arcade-game-immersive .arcade-mini-chat,#page-play:fullscreen .arcade-mini-chat{
+ bottom:calc(15px + env(safe-area-inset-bottom,0px))}
+@media(min-width:900px){.arcade-mini-chat{bottom:24px}}
+@media(max-width:450px){
+ .arcade-mini-panel{height:min(420px,65dvh)}
+ .arcade-mini-toggle{width:49px;height:49px;border-radius:15px}
+}
