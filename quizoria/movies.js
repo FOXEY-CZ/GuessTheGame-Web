@@ -23,7 +23,7 @@ const dict={
     joined:'Výzva načtena, všichni mají stejné otázky.',
     loading:'🛡️ Ověřuji serverovou partii…',loadError:'⚠️ Požadavek se nepodařil.',
     retry:'↻ Opakovat požadavek',question:'Otázka',points:'Body',
-    credits:'Více o díle (Wikipedia)',imageError:'Obrázek se nepodařilo načíst. Otevři zdrojový obrázek.',
+    credits:'Více o díle (Wikipedia)',imageError:'Filmová indicie není dostupná.',
     linkImage:'Více o filmu či seriálu',
     correct:'✅ Správně!',wrong:'❌ To není správně.',right:'Správná odpověď:',
     next:'Další otázka →',finished:'🏆 Konec kvízu!',
@@ -41,13 +41,13 @@ const dict={
     invalid:'Server vrátil neplatnou odpověď.',playFirst:'Vyber možnost odpovědi.',
     mime:'Vlastní otázky a emoji indicie Quizorie. Nepoužíváme filmové záběry ani plakáty. Body nejsou peníze.',
     sharePlaying:'Hraješ výzvu s kamarádem. Pošli mu odkaz.',shareCopy:'📋 Zkopírovat odkaz',
-    copyDone:'Odkaz zkopírován.',hint:'Obrázek má vlastní licenci; pod ním najdeš autora a zdroj.',
+    copyDone:'Odkaz zkopírován.',hint:'Používáme vlastní emoji indicie a textové otázky.',
     latest:'Nedávno dokončeno',active:'Rozehráno'
   },
   en:{
     title:'🎬 Movies & Series',sub:'Can you identify movies and shows from original clues?',
     back:'← Back to Quizoria',intro:'Choose a mode, read a clue and answer. The server verifies each choice.',
-    category:'😂 Movies & Internet',new:'▶ Play',resume:'⏯ Resume',
+    category:'🎬 Movies & Series',new:'▶ Play',resume:'⏯ Resume',
     modes:['🎞️ Film & TV Mix','🎬 Films Only','📺 Series Only','🟢 Beginner','🟠 Film Buff','🔥 Expert','📅 Daily Cinema'],
     subs:['5 films and 5 shows at mixed levels','10 film questions','10 TV show questions','10 easy questions','10 medium questions','10 expert-level questions','Same 5 questions for everyone (UTC)'],
     saves:'💾 Saved and recent runs',none:'No saved runs yet. Choose a mode to begin!',
@@ -57,7 +57,7 @@ const dict={
     joined:'Challenge loaded. Both players get identical questions.',
     loading:'🛡️ Checking your server-verified game…',loadError:'⚠️ The server request failed.',
     retry:'↻ Retry request',question:'Question',points:'Points',
-    credits:'Read about this title (Wikipedia)',imageError:'Image failed to load. Open the source image.',
+    credits:'Read about this title (Wikipedia)',imageError:'Movie clue unavailable.',
     linkImage:'Learn about the film or show',
     correct:'✅ Correct!',wrong:'❌ Not quite.',right:'Correct answer:',
     next:'Next question →',finished:'🏆 Quiz finished!',
@@ -74,7 +74,7 @@ const dict={
     invalid:'The server sent an invalid response.',playFirst:'Choose an answer.',
     mime:'Original Quizoria trivia and emoji clues; no copyrighted movie stills or posters. Points are not real money.',
     sharePlaying:'You are playing a friend challenge. Share the link.',shareCopy:'📋 Copy invite link',
-    copyDone:'Link copied.',hint:'Images retain their own licenses; credits appear beneath each picture.',
+    copyDone:'Link copied.',hint:'We use original emoji clues and written trivia.',
     latest:'Recently completed',active:'In progress'
   }
 };
