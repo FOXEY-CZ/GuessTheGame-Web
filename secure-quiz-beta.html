@@ -426,36 +426,19 @@
   <section id="modePanel" class="panel hidden">
     <div class="label" id="modeEyebrow">QUIZORIA · KATEGORIE A REŽIMY</div>
     <h2 id="modeTitle">Videohry · vyber režim</h2>
-    <section id="quizoriaCategoriesZone" class="quizoria-categories-zone" aria-labelledby="quizoriaCategoriesTitle">
-      <div class="quizoria-categories-top">
-        <div>
-          <div class="label">QUIZORIA · 1.0 FOUNDATION</div>
-          <h3 id="quizoriaCategoriesTitle">Vyber si svůj kvízový svět</h3>
-          <p id="quizoriaCategoriesIntro">Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.</p>
-        </div>
-        <span class="quizoria-category-count">1 / 5 LIVE</span>
+    <section class="quizoria-quickzone" id="quizoriaQuickSection" aria-labelledby="quizoriaQuickTitle">
+      <div class="quizoria-quick-icon" aria-hidden="true">⚡</div>
+      <div class="quizoria-quick-content">
+        <span class="label">QUIZORIA · START</span>
+        <h3 id="quizoriaQuickTitle">Rychlá hra</h3>
+        <p id="quizoriaQuickDescription">Pusť se rovnou do 10 otázek z videoher. Pravidla a uložený postup zůstávají stejné.</p>
       </div>
-      <div id="quizoriaCategories" class="quizoria-category-list" aria-label="Kategorie Quizoria">
-        <button class="quizoria-category selected" type="button" disabled>🎮 Videohry · Hratelné</button>
+      <div class="quizoria-quick-actions">
+        <button class="primary" id="quizoriaQuickStart" type="button">▶ Hrát hned</button>
+        <button class="solo-continue hidden" id="quizoriaQuickContinue" type="button">⏯ Pokračovat</button>
       </div>
-      <p id="quizoriaCategoryNote" class="quizoria-category-note">Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.</p>
     </section>
 
-    <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
-      <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
-      <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
-      <p id="liveRewardsLegacy" class="live-rewards-note">Postup a odměny se synchronizují automaticky.</p>
-      <p id="liveRewardsStatus" role="status" aria-live="polite"></p>
-    </section>
-    <nav class="game-hub-tabs" id="gameHubTabs" role="tablist" aria-label="Sekce hry">
-      <button id="hubTabSolo" class="game-hub-tab is-active" type="button" role="tab"
-        aria-controls="gameHubSolo" aria-selected="true" tabindex="0" data-game-hub="solo">🎮 Sólo režimy</button>
-      <button id="hubTabChallenges" class="game-hub-tab" type="button" role="tab"
-        aria-controls="gameHubChallenges" aria-selected="false" tabindex="-1" data-game-hub="challenges">⚔️ Výzvy s přáteli</button>
-      <button id="hubTabHistory" class="game-hub-tab" type="button" role="tab"
-        aria-controls="gameHubHistory" aria-selected="false" tabindex="-1" data-game-hub="history">📜 Historie</button>
-    </nav>
-    <p id="gameHubDescription" class="game-hub-description" aria-live="polite">Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.</p>
     <div id="gameHubSolo" class="game-hub-pane" role="tabpanel" aria-labelledby="hubTabSolo">
     <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
       <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
@@ -464,6 +447,37 @@
       <p id="resumeError" class="async-help" role="status" aria-live="polite"></p>
     </section>
     <div class="inbox-head solo-head"><p id="soloUpdateStatus" class="async-help" role="status" aria-live="polite">Načítám rozehrané hry…</p><button id="soloRefresh" type="button">🔄 Obnovit</button></div>
+    <div class="quizoria-mode-top" id="quizoriaModeSection">
+      <div class="quizoria-section-eyebrow">01 · PRAVIDLA HRY</div>
+      <h3 id="quizoriaModesTitle">🧠 Herní režimy</h3>
+      <p id="quizoriaModesDescription">Nejdřív vyber způsob hraní. Kategorie otázek jsou samostatně níže.</p>
+    </div>
+    <div class="quizoria-featured-modes" aria-label="Speciální připravované režimy">
+      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaMillionTitle">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">💰</span>
+          <span class="mode-copy"><strong id="quizoriaMillionTitle">💰 Milionová výzva</strong>
+            <small id="quizoriaMillionSubtitle">15 otázek, záchytné body a nápovědy. Brzy v Quizorii.</small></span>
+          <span class="quizoria-mode-badge" id="quizoriaMillionBadge">BRZY</span>
+        </div>
+      </article>
+      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaSurvivalTitle">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">❤️</span>
+          <span class="mode-copy"><strong id="quizoriaSurvivalTitle">Přežití</strong>
+            <small id="quizoriaSurvivalSubtitle">Odpovídej bez chyb a překonávej své rekordy.</small></span>
+          <span class="quizoria-mode-badge" id="quizoriaSurvivalBadge">BRZY</span>
+        </div>
+      </article>
+      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaEndlessTitle">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">♾️</span>
+          <span class="mode-copy"><strong id="quizoriaEndlessTitle">Nekonečný kvíz</strong>
+            <small id="quizoriaEndlessSubtitle">Hraj tak dlouho, jak budeš chtít.</small></span>
+          <span class="quizoria-mode-badge" id="quizoriaEndlessBadge">BRZY</span>
+        </div>
+      </article>
+    </div>
     <p class="quizoria-modes-intro" id="quizoriaModeIntro">🎯 Režimy a rozehrané partie pro kategorii Videohry</p>
     <div class="modes" id="modes">
       <article class="mode-choice" data-mode-card="classic">
@@ -497,20 +511,52 @@
         <div class="mode-choice-actions"><button class="solo-start" id="soloStart_hard" type="button" data-mode="hard">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_hard" type="button" data-solo-continue="hard">▶️ Pokračovat</button></div>
       </article>
 
-      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaMillionTitle">
-        <div class="mode-choice-head">
-          <span class="mode-icon" aria-hidden="true">💰</span>
-          <span class="mode-copy"><strong id="quizoriaMillionTitle">💰 Milionová výzva</strong>
-            <small id="quizoriaMillionSubtitle">15 otázek, záchytné body a nápovědy. Brzy v Quizorii.</small></span>
-          <span class="quizoria-mode-badge" id="quizoriaMillionBadge">BRZY</span>
-        </div>
-      </article>
     </div>
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
       🛡️ Odpovědi ověřuje server. Starý postup je zachovaný a nové XP i měny se ukládají automaticky do společného profilu.
     </p>
 
     </div>
+    <div class="quizoria-category-section-heading" id="quizoriaCategorySection">
+      <span class="quizoria-section-eyebrow">02 · OTÁZKY</span>
+      <h3 id="quizoriaCategorySectionTitle">🎮 Kategorie</h3>
+      <p id="quizoriaCategorySectionDescription">Stejné herní režimy, různá témata. Zatím jsou hratelné Videohry.</p>
+    </div>
+    <section id="quizoriaCategoriesZone" class="quizoria-categories-zone" aria-labelledby="quizoriaCategoriesTitle">
+      <div class="quizoria-categories-top">
+        <div>
+          <div class="label">QUIZORIA · 1.0 FOUNDATION</div>
+          <h3 id="quizoriaCategoriesTitle">Vyber si svůj kvízový svět</h3>
+          <p id="quizoriaCategoriesIntro">Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.</p>
+        </div>
+        <span class="quizoria-category-count">1 / 5 LIVE</span>
+      </div>
+      <div id="quizoriaCategories" class="quizoria-category-list" aria-label="Kategorie Quizoria">
+        <button class="quizoria-category selected" type="button" disabled>🎮 Videohry · Hratelné</button>
+      </div>
+      <p id="quizoriaCategoryNote" class="quizoria-category-note">Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.</p>
+    </section>
+
+    <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
+      <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
+      <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
+      <p id="liveRewardsLegacy" class="live-rewards-note">Postup a odměny se synchronizují automaticky.</p>
+      <p id="liveRewardsStatus" role="status" aria-live="polite"></p>
+    </section>
+    <section class="quizoria-social-section" aria-labelledby="quizoriaSocialTitle" id="quizoriaSocialSection">
+      <span class="quizoria-section-eyebrow">03 · SPOLEČNÉ HRANÍ</span>
+      <h3 id="quizoriaSocialTitle">⚔️ Multiplayer a historie</h3>
+      <p id="quizoriaSocialDescription">Vyzvi kamaráda, zahraj si souboj nebo pokračuj v rozdělané výzvě.</p>
+    </section>
+    <nav class="game-hub-tabs" id="gameHubTabs" role="tablist" aria-label="Sekce hry">
+      <button id="hubTabSolo" class="game-hub-tab is-active" type="button" role="tab"
+        aria-controls="gameHubSolo" aria-selected="true" tabindex="0" data-game-hub="solo">🎮 Sólo režimy</button>
+      <button id="hubTabChallenges" class="game-hub-tab" type="button" role="tab"
+        aria-controls="gameHubChallenges" aria-selected="false" tabindex="-1" data-game-hub="challenges">⚔️ Výzvy s přáteli</button>
+      <button id="hubTabHistory" class="game-hub-tab" type="button" role="tab"
+        aria-controls="gameHubHistory" aria-selected="false" tabindex="-1" data-game-hub="history">📜 Historie</button>
+    </nav>
+    <p id="gameHubDescription" class="game-hub-description" aria-live="polite">Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.</p>
     <div id="gameHubChallenges" class="game-hub-pane hidden" role="tabpanel" aria-labelledby="hubTabChallenges">
       <p class="game-hub-context" id="gameHubChallengeHint">⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.</p>
     <section class="game-friend-picker" aria-labelledby="gameFriendsTitle">
@@ -1632,9 +1678,8 @@
     if(box)box.textContent=T(descriptions[section]);
     if(section==='challenges'&&me&&!gameFriends.length)
       void refreshGameFriends();
-    const title=$('modeTitle');
-    if(title)title.textContent=T({solo:'hubTitleSolo',
-      challenges:'hubTitleChallenges',history:'hubTitleHistory'}[section]);
+    // Main menu title belongs to Quizoria itself; changing tabs must not
+    // make the quick-play and category section appear to be a challenge-only menu.
   }
   function language(){
     document.documentElement.lang=lang;
@@ -3183,7 +3228,7 @@
   },45000);
   window.QUIZORIA_UI?.setOpenModes(()=>{
     selectGameHub('solo');
-    $('gameHubTabs')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+    $('quizoriaModeSection')?.scrollIntoView?.({behavior:'smooth',block:'start'});
   });
   // Bootstrap must always render at least one usable screen, even if optional
   // history widgets, browser storage, or sign-in encounter an exception.
