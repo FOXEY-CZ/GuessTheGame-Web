@@ -7,14 +7,15 @@
 const names=Object.freeze({
   memes:'quizoria_meme',
   movies:'quizoria_movie',
-  music:'quizoria_music'
+  music:'quizoria_music',
+  general:'quizoria_general'
 });
 const actions=Object.freeze([
   'begin','resume','answer','my_runs',
   'challenge_create','challenge_join','challenge_status'
 ]);
 window.QUIZORIA_CATEGORY_ENGINE=Object.freeze({
-  version:'1.5',
+  version:'1.6',
   categories:Object.freeze(Object.keys(names)),
   config(category){
     const c=window.QUIZORIA_CATALOG?.getCategory?.(category);
