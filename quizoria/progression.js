@@ -48,7 +48,33 @@
     }
   };
   let lang='cs',api=null,userId=null,data=null,requestId=0,busy=false,afterClaim=null;
+  const observers=new Set();
   const tr=k=>localeText[lang][k]||k;
+  function progressionSnapshot(){
+    // Return only category aggregates already verified by quizoria_progress.
+    // Never expose operation tokens, answer keys, wallet amounts or editable state.
+    const categories={};
+    if(userId&&data?.categories){
+      for(const key of ['video_games','memes','movies','music','general']){
+        const source=data.categories[key]||{};
+        const clean=field=>Number.isSafeInteger(source[field])&&source[field]>=0?source[field]:0;
+        categories[key]=Object.freeze({
+          games:clean('games'),answered:clean('answered'),correct:clean('correct'),
+          best:clean('best'),skill_level:Math.max(1,clean('skill_level'))
+        });
+      }
+    }
+    return Object.freeze({
+      signedIn:!!userId,verified:!!userId&&!!data?.categories,
+      categories:Object.freeze(categories)
+    });
+  }
+  function notifyObservers(){
+    const snapshot=progressionSnapshot();
+    for(const callback of observers){
+      try{callback(snapshot);}catch(e){console.warn('Quizoria stats UI listener failed',e);}
+    }
+  }
   const num=v=>new Intl.NumberFormat(lang==='cs'?'cs-CZ':'en-US').format(Number(v)||0);
   const safe=(v,min=0)=>Math.max(min,Number.isFinite(+v)?+v:0);
   function status(msg,error=false){
@@ -163,6 +189,7 @@
     $('quizoriaMilestoneTitle').textContent=tr('badges');
     $('quizoriaProgressFoot').textContent=tr('caption')+' '+tr('categoryLevel');
     $('quizoriaProgressRefresh').disabled=busy||!userId;
+    notifyObservers();
     if(!data){
       $('quizoriaOverviewStats').replaceChildren();
       $('quizoriaCategoryStats').replaceChildren();
@@ -226,6 +253,13 @@
     },
     setLocale(next){lang=next==='en'?'en':'cs';render();},
     refresh(){return refresh(true);},
+    subscribe(callback){
+      if(typeof callback!=='function')return ()=>{};
+      observers.add(callback);
+      try{callback(progressionSnapshot());}
+      catch(e){console.warn('Quizoria stats UI listener failed',e);}
+      return ()=>observers.delete(callback);
+    },
     setAfterClaim(callback){afterClaim=typeof callback==='function'?callback:null;}
   });
   render();
