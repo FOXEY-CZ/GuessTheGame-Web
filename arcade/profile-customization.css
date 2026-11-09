@@ -1,0 +1,170 @@
+/* FOXEY Arcade 2.5 — Profile & Customization.
+ * Presentation only. Account identity, saves and cosmetics remain server-owned.
+ */
+#page-account{--pc-ink:#f4f7ff;--pc-muted:#b3c5de;--pc-edge:#465c83;--pc-violet:#a59af4;--pc-cyan:#76e0e3;min-width:0}
+#page-account .pc-heading{display:flex;align-items:center;justify-content:space-between;gap:17px;margin:9px 0 17px}
+#page-account .pc-heading h1{margin:6px 0;font-size:clamp(1.65rem,3.2vw,2.25rem);letter-spacing:-.035em}
+#page-account .pc-heading p{margin:0;color:#b6cae2;font-size:.86rem;line-height:1.55;max-width:640px}
+#page-account .pc-heading .eyebrow{color:#9fe9e3}
+#page-account .ng-account-toolbar{margin:0;display:flex;gap:8px;justify-content:flex-end}
+#page-account .ng-account-toolbar button{min-height:43px;padding:9px 13px;border-radius:11px;font-size:.81rem}
+#page-account #accountNotice{margin:7px 0;min-height:0;color:#bdd3ed;line-height:1.45}
+#page-account #accountNotice:empty{display:none}
+#playerAccount.accountpanel{padding:0!important;margin:0 0 23px;max-width:none;width:100%;border:0;background:transparent;box-shadow:none}
+#playerAccount .pc-cover{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:23px;overflow:hidden;padding:clamp(22px,3.8vw,38px);border:1px solid #7778b4;border-radius:24px;background:radial-gradient(circle at 87% -5%,#7664c58c,transparent 52%),linear-gradient(125deg,#343268,#202e55 65%,#1b4055);box-shadow:0 18px 42px #030a1d4b}
+#playerAccount .pc-cover:before{position:absolute;inset:0;content:"";pointer-events:none;z-index:-1;background:radial-gradient(circle at 4% 105%,#49b5af30,transparent 48%)}
+#playerAccount .pc-cover:after{content:"✧";position:absolute;right:14%;top:-63px;font-size:300px;color:#ccdbff0d;z-index:-1;pointer-events:none}
+#playerAccount .profilehero{display:flex;align-items:center;gap:19px;margin:0;min-width:0;flex:1}
+#playerAccount .profilehero .bigavatar{display:grid;place-items:center;flex:0 0 clamp(90px,11vw,132px);width:clamp(90px,11vw,132px);height:clamp(90px,11vw,132px);max-width:none!important;border:2px solid #b6aff2;border-radius:30px;background:linear-gradient(125deg,#6a5fbc,#316c88);box-shadow:0 12px 27px #070f2b88,inset 0 1px #ffffff50;font-size:3.5rem;overflow:hidden}
+#playerAccount .profilehero .bigavatar .custom-icon,#playerAccount .profilehero .bigavatar svg{display:block;width:100%;height:100%;max-width:100%;max-height:100%}
+#playerAccount .profilehero>div:last-child{min-width:0}
+#playerAccount .profilehero h2{font-size:clamp(1.45rem,3.3vw,2.3rem);line-height:1.17;letter-spacing:-.035em;overflow-wrap:anywhere;margin:6px 0}
+#playerAccount .profilehero #profileEmail{font-size:.78rem;color:#c1cdea;overflow-wrap:anywhere;line-height:1.5;margin:6px 0 9px}
+#playerAccount .profilehero .pc-identity-eyebrow{display:inline-flex;align-items:center;gap:6px;letter-spacing:.085em;font-size:.68rem;font-weight:850;color:#abf9e4}
+#playerAccount .profilehero .pc-level-text{font-size:.85rem;font-weight:750;color:#e0e8ff;line-height:1.5;margin:5px 0}
+#playerAccount .pc-cover-side{position:relative;display:grid;gap:8px;align-items:center;min-width:150px;flex:0 0 185px}
+#playerAccount .pc-cover-side .pc-side-tag{display:flex;align-items:center;gap:7px;background:#101d3d85;border:1px solid #8e91bc7c;padding:11px 12px;border-radius:12px;font-size:.76rem;color:#eaf0ff;font-weight:770;line-height:1.35}
+#playerAccount .pc-cover-side .pc-side-tag>span:first-child{font-size:1.2rem}
+#playerAccount .pc-cover-side button{border-radius:11px;min-height:42px;font-size:.78rem;background:#f2efff;color:#39306d;font-weight:840;border:1px solid #fff;cursor:pointer}
+#playerAccount .pc-cover-side button:hover{background:#fff}
+#playerAccount .pc-progression{padding:16px 21px;border-radius:0 0 18px 18px;border:1px solid #465c80;border-top:0;background:#192944;margin:0 10px 19px}
+#playerAccount .pc-progression .global-level-meter{margin:0}
+#playerAccount .pc-progression .global-level-meter-label{gap:10px;font-size:.82rem}
+#playerAccount .pc-progression .global-level-track{margin:9px 0 0;border:1px solid #4f638a;background:#0b1731;border-radius:99px;height:11px;overflow:hidden}
+#playerAccount .pc-progression .global-level-fill{background:linear-gradient(90deg,#4ebdce,#b7a1ff)}
+#playerAccount .pc-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:0 0 19px}
+#playerAccount .pc-stat{display:flex;align-items:center;gap:12px;min-width:0;min-height:89px;padding:13px;border:1px solid #465c80;border-radius:16px;background:linear-gradient(145deg,#1c2c49,#15253e)}
+#playerAccount .pc-stat-icon{display:grid;place-items:center;flex:0 0 41px;width:41px;height:41px;background:linear-gradient(135deg,#45457e,#33587d);border-radius:12px;font-size:1.24rem}
+#playerAccount .pc-stat-copy{display:flex;flex-direction:column;gap:5px;min-width:0}
+#playerAccount .pc-stat-copy span{font-size:.72rem;color:#b4c9e2;font-weight:760;line-height:1.27}
+#playerAccount .pc-stat-copy strong{font-size:clamp(1.17rem,2.25vw,1.5rem);color:#f2f6ff;line-height:1.15;letter-spacing:-.02em;font-weight:860;font-variant-numeric:tabular-nums}
+#playerAccount .pc-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:0 0 20px}
+#playerAccount .pc-shortcut{display:flex;align-items:center;gap:12px;padding:13px;min-height:68px;border:1px solid #54608d;border-radius:14px;background:linear-gradient(125deg,#29284f,#172a47);color:#f4f4ff;text-align:left;cursor:pointer;transition:transform .18s,border-color .18s}
+#playerAccount .pc-shortcut:hover{transform:translateY(-2px);border-color:#b1a1f1}
+#playerAccount .pc-shortcut .pc-shortcut-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:#434076;font-size:1.19rem}
+#playerAccount .pc-shortcut strong{display:block;font-size:.84rem}
+#playerAccount .pc-shortcut small{display:block;font-size:.68rem;color:#b5c4e4;margin-top:3px;line-height:1.4}
+#playerAccount #accountTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0 17px;padding:7px;background:#121e36;border:1px solid #3e5278;border-radius:17px}
+#playerAccount #accountTabs .arcade-subtab{min-width:0;min-height:50px;flex:none;border-radius:12px;font-size:.85rem;padding:10px 8px;white-space:normal;line-height:1.3}
+#playerAccount #accountTabs .arcade-subtab.is-active{background:linear-gradient(125deg,#6255b1,#3b518b);border-color:#a19be5;box-shadow:0 4px 14px #020c2a55}
+#playerAccount .arcade-subpanel{min-width:0;padding:clamp(15px,2.8vw,24px);border:1px solid #3d5479;border-radius:19px;background:linear-gradient(150deg,#1a2a46,#14223a);box-shadow:0 9px 26px #04091a2b}
+#playerAccount .arcade-subpanel.hidden{display:none!important}
+#playerAccount .pc-overview-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(240px,.85fr);gap:20px;align-items:start}
+#playerAccount .pc-overview-grid .account-panel-intro h3{font-size:1.16rem;margin:3px 0 8px}
+#playerAccount .pc-overview-grid .account-panel-intro p{font-size:.82rem;line-height:1.55}
+#playerAccount #profileForm{display:grid;gap:9px}
+#playerAccount #profileForm label{font-size:.82rem;color:#cbd8ed;font-weight:760;margin-top:7px}
+#playerAccount #profileForm input,#playerAccount #profileForm select{width:100%;max-width:none;min-height:48px;border-radius:11px;background:#101d33;border:1px solid #50698a;color:#f4f7ff;padding:10px 12px}
+#playerAccount #profileForm .note{font-size:.72rem;color:#a8b9d2;line-height:1.4;margin:0 0 4px}
+#playerAccount #profileForm #profileSave{justify-self:stretch;min-height:48px;border-radius:11px;font-size:.9rem;margin-top:7px}
+#playerAccount .pc-customize-panel{background:linear-gradient(155deg,#25284c,#192943);border:1px solid #575a96;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+#playerAccount .pc-customize-panel h3{font-size:1.1rem;margin:0}
+#playerAccount .pc-customize-panel>p{font-size:.78rem;line-height:1.52;color:#b9c9e4;margin:0}
+#playerAccount .pc-theme-showcase{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #6a6a97;border-radius:13px;background:linear-gradient(125deg,#302c59,#1a3851)}
+#playerAccount .pc-theme-icon{width:47px;height:47px;flex:0 0 47px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(125deg,#6557a4,#3a6e9a);font-size:1.6rem}
+#playerAccount .pc-theme-showcase strong{font-size:.9rem;display:block}
+#playerAccount .pc-theme-showcase small{display:block;color:#b8c8e4;font-size:.68rem;line-height:1.4;margin-top:3px}
+#playerAccount .pc-customize-panel button{min-height:43px;width:100%;border-radius:11px;font-size:.82rem}
+#playerAccount .pc-customize-split{border-top:1px solid #485575;padding-top:13px;display:grid;gap:9px}
+#playerAccount .pc-customize-split strong{font-size:.83rem}
+#playerAccount .pc-customize-split span{font-size:.75rem;color:#bdcce7}
+#playerAccount #accountPanelAchievements .inventory-panel,
+#playerAccount #accountPanelInventory .inventory-panel{margin:0}
+#playerAccount .pc-achievement-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:0 0 15px}
+#playerAccount .pc-achievement-controls .sectionline{margin:0}
+#playerAccount .pc-filter-group{display:flex;gap:5px;flex-wrap:wrap;border:1px solid #445878;background:#0f1c31;padding:5px;border-radius:11px}
+#playerAccount .pc-filter-group button{min-height:36px;border-radius:8px;padding:7px 12px;background:transparent;border:1px solid transparent;color:#bccfea;font-size:.75rem;font-weight:770;cursor:pointer}
+#playerAccount .pc-filter-group button.is-active{background:#42407b;color:#fff;border-color:#8580c0}
+#playerAccount .pc-achievements-meter{height:8px;border-radius:90px;background:#0e1b30;border:1px solid #526386;overflow:hidden;margin:10px 0 17px}
+#playerAccount .pc-achievements-meter span{display:block;width:0;height:100%;border-radius:90px;background:linear-gradient(90deg,#60c4ce,#ad94ef);transition:width .35s}
+#playerAccount .pc-achievement-empty{padding:25px;border:1px dashed #53698b;border-radius:13px;color:#b4c7e4;text-align:center;font-size:.85rem}
+#playerAccount .achievement-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:12px}
+#playerAccount .achievement-item{padding:15px;border:1px solid #415877;border-radius:13px;background:linear-gradient(145deg,#20304d,#16253d);min-width:0}
+#playerAccount .achievement-item.earned{border-color:#448c82;background:linear-gradient(135deg,#1c4848,#182c45)}
+#playerAccount .achievement-item .achievement-progress{border-radius:100px;overflow:hidden}
+#playerAccount .pc-inventory-header{display:flex;align-items:start;justify-content:space-between;gap:15px;margin:0 0 13px}
+#playerAccount .pc-inventory-header .sectionline{margin:0 0 6px}
+#playerAccount .pc-inventory-header p{font-size:.79rem;line-height:1.5;color:#bdcce4;margin:0}
+#playerAccount .pc-inventory-header button{flex:0 0 auto;min-height:40px;border-radius:11px;padding:9px 12px;font-size:.75rem}
+#playerAccount .inventory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin:16px 0 0}
+#playerAccount .inventory-item{min-height:226px;border-radius:16px;background:linear-gradient(150deg,#243554,#17253d);border:1px solid #4b6182;display:flex;flex-direction:column;align-items:center;gap:8px;padding:15px;transition:transform .16s,border-color .16s;position:relative}
+#playerAccount .inventory-item:hover{transform:translateY(-2px);border-color:#9289cf}
+#playerAccount .inventory-item.is-equipped{border-color:#5ad1ba;box-shadow:0 0 0 1px #5ad1ba35}
+#playerAccount .inventory-item.epic{background:linear-gradient(150deg,#3a2b5c,#19253f);border-color:#8874b6}
+#playerAccount .inventory-item.legendary{background:linear-gradient(150deg,#4b3c28,#19253d);border-color:#b7965d}
+#playerAccount .inventory-item .pc-item-rarity{align-self:center;display:inline-flex;border:1px solid #526e96;color:#b9e5fa;border-radius:8px;padding:4px 7px;letter-spacing:.05em;font-size:.61rem;font-weight:900}
+#playerAccount .inventory-item.epic .pc-item-rarity{color:#e3c7ff;border-color:#8f69bf}
+#playerAccount .inventory-item.legendary .pc-item-rarity{color:#f6d99c;border-color:#ae8c54}
+#playerAccount .inventory-item .avatar-art{max-width:94px;min-height:82px;flex:none}
+#playerAccount .inventory-item strong{font-size:.86rem;line-height:1.35;text-align:center;overflow-wrap:anywhere}
+#playerAccount .inventory-item button{min-height:40px;border-radius:11px;font-size:.76rem;margin-top:auto}
+#playerAccount .inventory-item.is-equipped button{background:#24584f;border-color:#4eb79c;color:#c5f9eb}
+#playerAccount #accountPanelStats .gameprofile-summary{padding:0;border:0;background:transparent}
+#playerAccount #accountPanelStats .progresscard-title{gap:12px}
+#playerAccount #accountPanelStats .wallet{margin:12px 0}
+#playerAccount #accountPanelStats .wallet>div:not(.hidden){background:linear-gradient(125deg,#263859,#1c2d47);border:1px solid #4f6488;border-radius:12px}
+#playerAccount .account-sign-out{display:block;margin:16px 0 0 auto;min-height:43px;padding:10px 17px;font-size:.78rem;border-radius:11px;opacity:.84}
+#page-account #guestAccount.accountpanel{border-radius:19px;border-color:#4a5c80;max-width:620px;margin:15px auto 20px;background:linear-gradient(145deg,#1e3050,#131f36);box-shadow:0 18px 36px #03081944}
+@media(max-width:1050px){
+ #playerAccount .pc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #playerAccount .pc-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:800px){
+ #playerAccount .pc-cover{padding:22px;gap:12px}
+ #playerAccount .pc-cover-side{flex-basis:160px}
+ #playerAccount .pc-overview-grid{grid-template-columns:1fr}
+ #playerAccount .pc-customize-panel{display:grid;grid-template-columns:1fr 1fr;column-gap:15px}
+ #playerAccount .pc-customize-panel>h3,#playerAccount .pc-customize-panel>p{grid-column:1/-1}
+ #playerAccount .pc-customize-panel .pc-customize-split{border-top:0;border-left:1px solid #485575;padding:0 0 0 15px}
+ #playerAccount .pc-shortcut{padding:11px;gap:8px}
+}
+@media(max-width:600px){
+ #page-account .pc-heading{align-items:flex-start;flex-direction:column;gap:10px;margin:8px 0 14px}
+ #page-account .pc-heading h1{font-size:1.7rem}
+ #page-account .pc-heading .ng-account-toolbar{width:100%;gap:8px}
+ #page-account .pc-heading .ng-account-toolbar button{flex:1}
+ #playerAccount .pc-cover{padding:18px;border-radius:19px;gap:12px}
+ #playerAccount .profilehero{gap:12px;align-items:center}
+ #playerAccount .profilehero .bigavatar{width:75px;height:75px;flex-basis:75px;border-radius:19px}
+ #playerAccount .profilehero h2{font-size:1.35rem;line-height:1.2}
+ #playerAccount .profilehero #profileEmail{font-size:.67rem}
+ #playerAccount .profilehero .pc-identity-eyebrow{font-size:.61rem}
+ #playerAccount .profilehero .pc-level-text{font-size:.74rem}
+ #playerAccount .pc-cover-side{display:none}
+ #playerAccount .pc-progression{padding:13px 15px;margin:0 5px 14px}
+ #playerAccount .pc-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #playerAccount .pc-stat{min-height:77px;gap:9px;padding:10px}
+ #playerAccount .pc-stat-icon{width:35px;height:35px;flex-basis:35px;font-size:1.1rem}
+ #playerAccount .pc-stat-copy strong{font-size:1.15rem}
+ #playerAccount .pc-stat-copy span{font-size:.67rem}
+ #playerAccount .pc-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:15px}
+ #playerAccount .pc-shortcut{min-height:63px}
+ #playerAccount .pc-shortcut:last-child{grid-column:1/-1}
+ #playerAccount .pc-shortcut .pc-shortcut-icon{width:34px;height:34px;flex-basis:34px}
+ #playerAccount .pc-shortcut small{font-size:.65rem}
+ #playerAccount #accountTabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:13px 0;padding:6px}
+ #playerAccount #accountTabs .arcade-subtab{min-height:46px;font-size:.81rem}
+ #playerAccount .arcade-subpanel{padding:15px;border-radius:16px}
+ #playerAccount .pc-customize-panel{display:flex}
+ #playerAccount .pc-customize-panel .pc-customize-split{border-top:1px solid #485575;border-left:0;padding:13px 0 0}
+ #playerAccount .pc-achievement-controls{align-items:stretch;flex-direction:column}
+ #playerAccount .pc-filter-group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #playerAccount .pc-filter-group button{padding:8px 5px;font-size:.7rem}
+ #playerAccount .pc-inventory-header{align-items:stretch;flex-direction:column}
+ #playerAccount .pc-inventory-header button{width:100%}
+ #playerAccount .inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #playerAccount .inventory-item{min-height:210px;padding:11px}
+}
+@media(max-width:365px){
+ #playerAccount .pc-cover{padding:14px}
+ #playerAccount .profilehero .bigavatar{width:61px;height:61px;flex-basis:61px}
+ #playerAccount .profilehero h2{font-size:1.16rem}
+ #playerAccount .pc-stat{padding:9px 7px}
+ #playerAccount .pc-stat-icon{display:none}
+ #playerAccount .pc-shortcut{flex-direction:column;align-items:flex-start}
+ #playerAccount .pc-shortcut:last-child{flex-direction:row}
+ #playerAccount .inventory-grid{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ #playerAccount .pc-shortcut,#playerAccount .inventory-item,#playerAccount .pc-achievements-meter span{transition:none!important;transform:none!important}
+}
