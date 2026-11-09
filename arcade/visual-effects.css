@@ -1,0 +1,151 @@
+/* FOXEY Arcade 2.7 — Visual Effects Update.
+ * Purely decorative GPU-friendly effects. No changes to currencies, saves or RPCs.
+ * Honors prefers-reduced-motion and Arcade's reduced-motion preference. */
+
+/* Subtle neon arcade grid behind the launcher. Never catches input. */
+body::before{
+  content:"";position:fixed;inset:-28px;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 52% 46% at 80% 4%,rgba(126,84,208,.23),transparent 76%),
+    radial-gradient(ellipse 52% 45% at 12% 87%,rgba(35,137,168,.19),transparent 78%),
+    linear-gradient(90deg,rgba(124,142,212,.09) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(124,142,212,.09) 1px,transparent 1px);
+  background-size:auto,auto,46px 46px,46px 46px;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#0009 50%,#0005 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,#0009 50%,#0005 100%);
+  opacity:.55;
+  animation:fx-grid-drift 26s ease-in-out infinite alternate;
+}
+.layout{position:relative;z-index:1}
+.ambient-a{animation:fx-aura-one 21s ease-in-out infinite alternate}
+.ambient-b{animation:fx-aura-two 27s ease-in-out infinite alternate}
+@keyframes fx-grid-drift{
+  from{transform:translate3d(-8px,-7px,0)}
+  to{transform:translate3d(8px,7px,0)}
+}
+@keyframes fx-aura-one{
+  from{transform:translate3d(-40px,-10px,0) scale(.92);opacity:.35}
+  to{transform:translate3d(36px,42px,0) scale(1.15);opacity:.57}
+}
+@keyframes fx-aura-two{
+  from{transform:translate3d(23px,7px,0) scale(.9);opacity:.33}
+  to{transform:translate3d(-30px,-45px,0) scale(1.17);opacity:.52}
+}
+
+/* Distinct but short route-change animation. Existing page visibility remains intact. */
+.page:not(.hidden){animation:fx-section-enter .3s cubic-bezier(.2,.82,.3,1) both}
+@keyframes fx-section-enter{
+  from{opacity:.3;transform:translate3d(0,12px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* Interactive lighting follows mouse movement on pointer-capable desktops. */
+.fx-light-card{position:relative;isolation:isolate;overflow:hidden}
+.fx-light-card::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  border-radius:inherit;
+  background:radial-gradient(260px circle at var(--fx-x,50%) var(--fx-y,50%),
+    rgba(201,182,255,.21),rgba(115,228,247,.085) 40%,transparent 74%);
+  opacity:0;transition:opacity .24s ease;
+}
+@media(hover:hover) and (pointer:fine){
+ .fx-light-card:hover::after{opacity:1}
+ .fx-light-card:hover{border-color:#aaa2e7;box-shadow:0 16px 36px #030a2059,0 0 23px #817ce326}
+ #page-home .ng-feature:hover{box-shadow:0 22px 53px #070d2f88,0 0 34px #8580e333}
+ #page-shop .reward-chest:hover{box-shadow:0 15px 38px #02071d75,0 0 25px #857dd133}
+ #playerAccount .pc-cover:hover,.social-hub-hero:hover{box-shadow:0 22px 49px #03071e91,0 0 26px #9d8be329}
+}
+.ng-feature .ng-feature-mark{
+  animation:fx-quiz-logo-float 4.8s ease-in-out infinite alternate;
+  box-shadow:0 18px 45px #020c3777,inset 0 2px #e1f2ff55,0 0 26px #a39ef055;
+}
+.ng-feature .ng-feature-spark.one{animation:fx-sparkle 3.3s ease-in-out infinite alternate}
+.ng-feature .ng-feature-spark.two{animation:fx-sparkle 4.5s 1s ease-in-out infinite alternate-reverse}
+.sr-hero .sr-hero-icon{animation:fx-shop-float 5.3s ease-in-out infinite alternate}
+#page-home .ng-feature{border-color:#8b86d8}
+#page-home .ng-feature .ng-feature-actions .primary{box-shadow:0 4px 20px #bdb6f455}
+#page-home .ng-feature .ng-feature-actions .primary:hover{box-shadow:0 5px 26px #d5cfff77}
+#playerAccount .pc-cover{transition:box-shadow .22s ease}
+.social-hub-hero{transition:box-shadow .22s ease}
+@keyframes fx-quiz-logo-float{
+  from{transform:translate3d(0,-5px,0) rotate(-9deg)}
+  to{transform:translate3d(0,8px,0) rotate(-4deg)}
+}
+@keyframes fx-sparkle{
+  from{opacity:.54;transform:scale(.85)}
+  to{opacity:1;transform:scale(1.2)}
+}
+@keyframes fx-shop-float{
+  from{transform:translate3d(0,-4px,0) rotate(-9deg)}
+  to{transform:translate3d(0,7px,0) rotate(-3deg)}
+}
+
+/* Authenticated XP delta HUD. Never changes displayed XP or progress values. */
+.fx-xp-toast{
+  position:fixed;right:max(18px,env(safe-area-inset-right,0px));
+  top:calc(91px + env(safe-area-inset-top,0px));
+  z-index:290;display:flex;align-items:center;gap:13px;
+  max-width:min(355px,calc(100vw - 30px));min-height:67px;
+  border:1px solid #a6c9ed;border-radius:16px;padding:12px 16px;
+  background:linear-gradient(128deg,#353276ee,#153b58f5);
+  box-shadow:0 15px 43px #030718aa,0 0 20px #4fe1e744;
+  color:#f2fff9;font-weight:900;font-size:.97rem;
+  letter-spacing:.006em;pointer-events:none;
+}
+.fx-xp-toast.hidden{display:none!important}
+.fx-xp-toast.fx-xp-show{animation:fx-xp-enter .46s cubic-bezier(.18,.86,.25,1.1) both}
+.fx-xp-toast.fx-level-up{border-color:#edd18b;
+  background:linear-gradient(120deg,#64436dee,#594b36f2);
+  box-shadow:0 15px 44px #030718bb,0 0 27px #ffd38b59}
+.fx-xp-emblem{display:grid;place-items:center;flex:0 0 43px;height:43px;
+  width:43px;border:1px solid #a1dce7;border-radius:12px;
+  background:linear-gradient(145deg,#3f86a3,#6157a9);font-size:22px}
+.fx-level-up .fx-xp-emblem{border-color:#ecd38c;background:linear-gradient(140deg,#9e7c37,#84559e)}
+.fx-xp-text{min-width:0;display:flex;flex-direction:column;gap:3px}
+.fx-xp-text strong{color:#baffee;font-size:1.16rem;line-height:1.2;font-variant-numeric:tabular-nums}
+.fx-level-up .fx-xp-text strong{color:#ffe4a0}
+.fx-xp-text small{font-size:.73rem;color:#d8e5fa;font-weight:690;line-height:1.3}
+.fx-xp-flash{animation:fx-number-flash 1.2s ease-out both!important}
+.fx-xp-track-flash{animation:fx-progress-glow 1.3s ease-out both!important}
+@keyframes fx-xp-enter{
+  from{opacity:0;transform:translate3d(24px,-15px,0) scale(.89)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes fx-number-flash{
+  0%{filter:brightness(1);text-shadow:none}
+  25%{filter:brightness(1.55);text-shadow:0 0 22px #81eddf}
+  100%{filter:brightness(1);text-shadow:none}
+}
+@keyframes fx-progress-glow{
+  0%{filter:brightness(1)}
+  35%{filter:brightness(1.55) drop-shadow(0 0 7px #93e8e2)}
+  100%{filter:brightness(1)}
+}
+
+/* Keep effects cheaper on mobile and protect short viewports. */
+@media(max-width:760px){
+ body::before{opacity:.28;animation:none}
+ .ambient-a,.ambient-b{animation:none}
+ .ng-feature .ng-feature-mark{animation-duration:6.8s}
+ .fx-xp-toast{top:calc(125px + env(safe-area-inset-top,0px));right:12px;left:12px;max-width:none;padding:10px 12px;min-height:57px}
+ .fx-xp-emblem{flex-basis:38px;width:38px;height:38px;font-size:19px}
+}
+@media(max-width:450px){
+ .fx-xp-toast{top:calc(116px + env(safe-area-inset-top,0px))}
+ .fx-xp-text strong{font-size:1.01rem}
+}
+/* Accessibility and low-power preferences override every new motion effect. */
+@media(prefers-reduced-motion:reduce){
+ body::before,.ambient-a,.ambient-b,.ng-feature .ng-feature-mark,
+ .ng-feature .ng-feature-spark,.sr-hero .sr-hero-icon,
+ .page:not(.hidden),.fx-xp-toast.fx-xp-show,
+ .fx-xp-flash,.fx-xp-track-flash{animation:none!important}
+ .fx-light-card::after{display:none!important}
+ .fx-light-card:hover{transform:none!important;transition:none!important}
+}
+html.arcade-motion-minimal body::before,
+html.arcade-motion-minimal .ambient-a,html.arcade-motion-minimal .ambient-b{
+ animation:none!important
+}
+html.arcade-motion-minimal .fx-light-card::after{display:none!important}
+html.arcade-motion-minimal .fx-light-card:hover{transform:none!important}
