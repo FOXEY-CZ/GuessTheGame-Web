@@ -1,0 +1,140 @@
+/* Quizoria Million Challenge — original game-show design, responsive first. */
+.million-panel{position:relative;overflow:hidden;border:1px solid #8d7cbd;
+ background:radial-gradient(ellipse at 40% -10%,#45346e 0%,transparent 55%),
+ linear-gradient(160deg,#161939,#132a42 65%,#10142b);
+ box-shadow:0 15px 65px #05081280;max-width:940px}
+.million-panel::before{content:"";position:absolute;inset:0 0 auto;height:4px;
+ background:linear-gradient(90deg,#6c80ed,#dfb964,#9b73ed,#61d5d4)}
+.million-panel .million-topbar{display:flex;align-items:center;justify-content:space-between;
+ gap:10px;margin-bottom:18px}
+.million-panel .million-back,.million-panel .million-sound{min-height:40px;padding:8px 11px;
+ font-size:.81rem;border:1px solid #52648a;background:#202848}
+.million-panel .million-sound{font-size:.77rem}
+.million-brand{display:flex;align-items:center;gap:15px;margin-bottom:15px}
+.million-logo{display:grid;place-items:center;flex:none;width:65px;height:65px;
+ font-size:2.3rem;border-radius:20px;background:linear-gradient(145deg,#684f8f,#283b77);
+ border:1px solid #b39adc;box-shadow:0 5px 18px #08091466}
+.million-brand h2{margin:4px 0;font-size:clamp(1.45rem,4vw,2.2rem);
+ color:#fff4c9;line-height:1.2;letter-spacing:.005em}
+.million-brand p{color:#bbcae5;margin:4px 0;font-size:.85rem}
+.million-brand .label{color:#b9aaff;font-size:.69rem}
+.million-status{min-height:0;margin:8px 0 14px;padding:0;font-size:.82rem;
+ line-height:1.5;color:#9ee7d6}
+.million-status:empty{display:none}
+.million-status.error{color:#ffb7c0}
+.million-statline{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px;
+ padding:12px 14px;border:1px solid #526b9d;border-radius:14px 14px 0 0;
+ background:linear-gradient(110deg,#1d3158,#302e5b)}
+.million-statline span{color:#b7dffb;font-size:.84rem;font-weight:850}
+.million-statline strong{color:#ffdaa1;font-size:clamp(1.03rem,3vw,1.38rem);font-variant-numeric:tabular-nums}
+.million-progress{height:9px;border:1px solid #4b6b94;border-top:0;
+ border-radius:0 0 13px 13px;background:#101a33;overflow:hidden}
+.million-progress>span{display:block;height:100%;width:0;
+ background:linear-gradient(90deg,#72d7e5,#dbb56a);transition:width .35s ease}
+.million-safety{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;
+ color:#aec0d9;font-size:.74rem;margin:11px 0 17px}
+.million-safety span:last-child{color:#f4ce8a;font-weight:850}
+.million-question-box{padding:22px 18px;border-radius:20px;
+ border:1px solid #566e9f;background:linear-gradient(160deg,#1d2c58,#202344);
+ box-shadow:inset 0 1px 1px #ffffff15}
+.million-question-accent{text-align:center;color:#b89bff;
+ font-size:.77rem;letter-spacing:.7em;margin-bottom:9px}
+.million-question-box h3{font-size:clamp(1.12rem,3.1vw,1.44rem);
+ line-height:1.48;text-align:center;max-width:700px;margin:0 auto 21px;
+ min-height:65px;display:grid;place-items:center;font-weight:830;color:#f5f8ff}
+.million-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.million-option{display:flex;align-items:center;gap:11px;text-align:left;
+ min-width:0;min-height:62px;padding:11px 13px;border-radius:13px;
+ border:1px solid #626eaf;background:linear-gradient(140deg,#243559,#24294d);
+ font-size:.86rem;font-weight:750;overflow-wrap:anywhere;color:#f4f5ff;
+ transition:background .15s,border-color .15s,transform .15s}
+.million-option:hover:not(:disabled){background:linear-gradient(145deg,#394976,#3a387b);
+ border-color:#dac591;transform:translateY(-2px)}
+.million-option:focus-visible{outline:3px solid #f2d18d;outline-offset:2px}
+.million-option:disabled{opacity:.45;cursor:not-allowed}
+.million-option-letter{width:30px;height:30px;flex:none;display:grid;place-items:center;
+ border:1px solid #cda96c;border-radius:9px;color:#ffdda5;font-weight:950;background:#ffffff0d}
+.million-option-content{min-width:0;overflow-wrap:anywhere}
+.million-lifelines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:9px;margin:14px 0}
+.million-lifelines button{min-height:46px;font-size:.79rem;padding:7px 9px;
+ background:#273358;border:1px solid #627dab}
+.million-lifelines button:not(:disabled):hover{border-color:#fad993;background:#34466a}
+.million-lifelines button:disabled{opacity:.45;cursor:not-allowed}
+.million-audience-result{display:grid;gap:8px;margin-top:19px;padding:14px;
+ border-radius:14px;border:1px solid #6f79a8;background:#141f3f}
+.million-audience-row{display:grid;grid-template-columns:minmax(60px,1fr) minmax(50px,1.2fr) 42px;
+ align-items:center;gap:9px;font-size:.74rem;color:#d4e0f3}
+.million-audience-row span{overflow-wrap:anywhere}
+.million-audience-row b{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.million-audience-meter{height:8px;background:#313c61;border-radius:99px;overflow:hidden}
+.million-audience-fill{height:100%;background:linear-gradient(90deg,#7b91fc,#eed08b);
+ border-radius:99px;transition:width .25s}
+.million-audience-note{font-size:.72rem;color:#c4c8e5;margin:8px 0 0}
+.million-feedback{margin:13px 0;padding:18px;border-radius:14px;font-size:.96rem;
+ line-height:1.5;font-weight:850;border:1px solid #7080b8;background:#243354;
+ text-align:center}
+.million-feedback.correct{border-color:#4bba9d;background:#184c49;color:#c8fff0;
+ animation:million-correct-flash .5s ease-out}
+.million-feedback.incorrect{border-color:#d36f8a;background:#56263e;color:#ffe0eb}
+@keyframes million-correct-flash{0%{transform:scale(.98);filter:brightness(1.45)}
+ 100%{transform:scale(1);filter:brightness(1)}}
+.million-actions{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ gap:10px;margin:10px 0 18px}
+.million-actions button{padding:10px 17px;min-height:43px;font-size:.85rem}
+.million-cashout{background:#64493a;border-color:#ae876b}
+.million-final{padding:24px 17px;margin:15px 0 19px;text-align:center;
+ border-radius:19px;border:1px solid #bca16d;
+ background:radial-gradient(ellipse at top,#544368,#242850 65%,#17233e);
+ box-shadow:inset 0 0 35px #d4b77314;animation:million-result .4s ease-out}
+@keyframes million-result{from{opacity:.55;transform:translateY(12px)}to{opacity:1;transform:none}}
+.million-final h3{font-size:clamp(1.45rem,4vw,2rem);color:#ffe1a3;margin:0 0 13px}
+.million-final>strong{display:block;font-size:clamp(1.2rem,3.4vw,1.8rem);
+ color:#fff4da;margin-bottom:13px}
+.million-final p{font-size:.86rem;line-height:1.5;color:#b8e8e5;margin:10px 0 17px}
+.million-final button{min-width:180px}
+.million-ladder{margin:17px 0 13px;border-radius:13px;background:#15223c;
+ border:1px solid #4d628b}
+.million-ladder summary{padding:14px 16px;cursor:pointer;font-size:.86rem;
+ font-weight:850;color:#d6d9f5;min-height:45px}
+.million-ladder-list{display:grid;gap:4px;padding:8px 13px 13px}
+.million-ladder-row{padding:7px 10px;border-radius:8px;color:#a6b9d6;
+ background:#202c49;font-size:.78rem;font-variant-numeric:tabular-nums}
+.million-ladder-row.checkpoint{color:#e9cd96;background:#33304a}
+.million-ladder-row.cleared{color:#b9f5e0}
+.million-ladder-row.active{background:#685291;color:#fff;font-weight:900;
+ outline:1px solid #c6affb}
+.million-legal-note{font-size:.7rem;color:#9fb0cc;line-height:1.5;margin:14px 0 0}
+.quizoria-million-feature{border-color:#bb9664!important;
+ background:linear-gradient(125deg,#3c3157,#252f57)!important}
+.quizoria-million-feature .quizoria-mode-badge.live{background:#2c785e;color:#ddffed;
+ border-radius:9px;padding:6px 9px;font-weight:900;font-size:.68rem}
+#modePanel .quizoria-featured-modes .quizoria-million-feature{
+ display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+ flex-wrap:wrap;gap:10px;min-height:83px;padding:13px}
+#modePanel .quizoria-featured-modes .quizoria-million-feature .mode-choice-head{flex:1 1 200px}
+.quizoria-million-launch{min-height:42px!important;font-size:.82rem;padding:9px 12px;
+ flex:0 0 auto}
+#modePanel .quizoria-featured-modes .quizoria-million-feature .quizoria-mode-badge{margin-left:8px}
+@media(max-width:620px){
+ .million-panel{padding:16px 12px;border-radius:18px}
+ .million-logo{width:48px;height:48px;font-size:1.6rem;border-radius:13px}
+ .million-brand{gap:11px}
+ .million-brand p{font-size:.73rem}
+ .million-brand h2{font-size:1.4rem}
+ .million-topbar{margin-bottom:12px}
+ .million-panel .million-back,.million-panel .million-sound{font-size:.73rem;padding:8px}
+ .million-statline{padding:11px 12px}
+ .million-question-box{padding:16px 12px}
+ .million-question-box h3{min-height:0;margin:0 auto 18px}
+ .million-options{grid-template-columns:1fr;gap:8px}
+ .million-option{min-height:54px;padding:10px 11px;font-size:.84rem}
+ .million-lifelines{gap:6px}
+ .million-lifelines button{font-size:.7rem;min-height:48px;padding:7px 5px}
+ .million-audience-row{grid-template-columns:minmax(75px,1fr) minmax(60px,1fr) 42px}
+ #modePanel .quizoria-featured-modes .quizoria-million-feature{align-items:stretch}
+ .quizoria-million-launch{flex:1 1 100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .million-feedback,.million-final,.million-option,.million-progress>span{animation:none;transition:none}
+}
