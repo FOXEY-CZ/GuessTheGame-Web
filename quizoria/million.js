@@ -283,7 +283,7 @@
     }finally{busy=false;render();}
   }
   function close(){
-    if(busy||pending)return;
+    if(busy)return;
     showPanel(false);feedback=null;awaitNext=false;
     // A run is kept on the server. Returning to Arcade never forfeits it.
   }
