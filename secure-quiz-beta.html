@@ -1079,6 +1079,126 @@
     </p>
   </section>
 
+  <section id="quizoriaGeneralPanel" class="panel general-panel hidden" aria-labelledby="generalTitle">
+    <div class="general-nav">
+      <button id="generalBack" type="button">← Zpět do Quizorie</button>
+      <span class="general-studio">QUIZORIA · GENERAL KNOWLEDGE</span>
+    </div>
+    <div class="general-brand">
+      <div class="general-logo" aria-hidden="true">🌍</div>
+      <div>
+        <div class="label" id="generalCategory">🌍 Všeobecné znalosti</div>
+        <h2 id="generalTitle">Všeobecné znalosti</h2>
+        <p id="generalSubtitle">Věda, zeměpis, historie a technologie v jednom kvízu!</p>
+      </div>
+    </div>
+    <p id="generalStatus" class="general-status" role="status" aria-live="polite"></p>
+    <div id="generalLobby">
+      <p class="general-intro" id="generalIntro">Vyber téma, přečti indicii a odpověz. Odpověď ověřuje server.</p>
+      <div class="general-mode-grid">
+        <button type="button" class="general-mode-card" data-general-mode="classic">
+          <strong id="generalMode_classic">🌍 Všeobecný mix</strong>
+          <small id="generalModeSub_classic">10 otázek ze čtyř různých oblastí</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="geography">
+          <strong id="generalMode_geography">🗺️ Zeměpis</strong>
+          <small id="generalModeSub_geography">Svět, státy, příroda a geografické rekordy</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="history">
+          <strong id="generalMode_history">🏛️ Historie</strong>
+          <small id="generalModeSub_history">Civilizace, osobnosti a významné události</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="science">
+          <strong id="generalMode_science">🔬 Věda</strong>
+          <small id="generalModeSub_science">Příroda, vesmír, fyzika a biologie</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="technology">
+          <strong id="generalMode_technology">💻 Technologie</strong>
+          <small id="generalModeSub_technology">Počítače, internet a moderní technika</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="easy">
+          <strong id="generalMode_easy">🟢 Nováček</strong>
+          <small id="generalModeSub_easy">10 jednodušších znalostních otázek</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="medium">
+          <strong id="generalMode_medium">🟠 Znalec</strong>
+          <small id="generalModeSub_medium">10 středně obtížných otázek</small>
+        </button>
+        <button type="button" class="general-mode-card" data-general-mode="hard">
+          <strong id="generalMode_hard">🔥 Expert</strong>
+          <small id="generalModeSub_hard">10 obtížných otázek</small>
+        </button>
+        <button type="button" class="general-mode-card general-daily" data-general-mode="daily">
+          <strong id="generalMode_daily">📅 Denní znalosti</strong>
+          <small id="generalModeSub_daily">5 společných otázek každý den (UTC)</small>
+        </button>
+      </div>
+      <p id="generalDailyNote" class="general-help">Denní otázky se mění každý den podle UTC.</p>
+      <details class="general-saves" open>
+        <summary id="generalSavedTitle">💾 Rozehrané a nedávné hry</summary>
+        <div id="generalSavedList"></div>
+      </details>
+      <section class="general-challenge" aria-labelledby="generalChallengeTitle">
+        <h3 id="generalChallengeTitle">⚔️ Znalostní výzva s kamarádem</h3>
+        <p id="generalChallengeDesc">Vytvoř výzvu, pošli odkaz a oba odehrajete stejných 10 otázek. Skóre se porovná po dohrání obou.</p>
+        <button id="generalChallengeCreate" class="general-create-button" type="button">⚔️ Vytvořit výzvu</button>
+        <div class="general-invite-display hidden" id="generalInviteDisplay">
+          <input type="text" id="generalInviteLink" readonly aria-label="Odkaz na general výzvu" />
+          <button id="generalInviteCopy" type="button">📋 Kopírovat</button>
+        </div>
+        <div class="general-join-controls">
+          <input type="text" id="generalInviteInput" maxlength="280" autocomplete="off"
+            placeholder="Odkaz nebo ID výzvy…" aria-label="Vlož odkaz nebo ID znalostní výzvy" />
+          <button id="generalChallengeJoin" type="button">🎮 Přijmout odkaz / ID</button>
+        </div>
+        <button id="generalMatchCheck" class="general-match-check" type="button">🏆 Zkontrolovat souboj</button>
+        <p id="generalMatchStatus" class="general-help" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+    <div id="generalPlay" class="hidden">
+      <div id="generalTopShare" class="general-top-share hidden">
+        <p>⚔️ <span id="generalTopShareText">Hraješ výzvu s kamarádem. Pošli mu odkaz.</span></p>
+        <button id="generalTopShareCopy" type="button">📋 Zkopírovat odkaz</button>
+      </div>
+      <div class="general-scoreline">
+        <strong id="generalStage">Otázka 1 / 10</strong>
+        <span id="generalScore">Body: 0</span>
+      </div>
+      <div id="generalProgressTrack" class="general-progress" role="progressbar"
+        aria-label="Dokončené otázky" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+        <span id="generalProgressFill"></span>
+      </div>
+      <section id="generalQuestionArea" class="general-question-box" aria-labelledby="generalPrompt">
+        <div class="general-image-frame general-clue-frame">
+          <span id="generalMediaType" class="general-media-type">🌍 ZNALOSTI</span>
+          <div id="generalVisual" class="general-clue-emoji" role="img" aria-label="Originální emoji indicie">🌍</div>
+          <p id="generalClue" class="general-clue-text"></p>
+          <p id="generalImageError" class="hidden"></p>
+          <a id="generalImageOpen" class="general-open-original hidden" href="https://en.wikipedia.org/" target="_blank" rel="noopener noreferrer">Více o tématu</a>
+        </div>
+        <a id="generalImageCredit" href="https://en.wikipedia.org/" target="_blank"
+          rel="noopener noreferrer" class="general-image-credit hidden">Více o tématu</a>
+        <h3 id="generalPrompt">Načítám otázku…</h3>
+        <div id="generalOptions" class="general-options" role="group" aria-label="Možnosti odpovědi"></div>
+      </section>
+      <p id="generalFeedback" class="general-feedback hidden" role="status" aria-live="polite"></p>
+      <div class="general-actions">
+        <button id="generalRetry" type="button" class="hidden">↻ Opakovat požadavek</button>
+        <button id="generalNext" class="primary hidden" type="button">Další otázka →</button>
+      </div>
+      <section id="generalFinal" class="general-result hidden" aria-labelledby="generalFinalTitle">
+        <h3 id="generalFinalTitle">🏆 Konec kvízu!</h3>
+        <strong id="generalFinalScore">Tvůj výsledek: 0</strong>
+        <p id="generalReward"></p>
+        <p id="generalFinalMatch" class="general-final-match hidden"></p>
+        <button id="generalAnother" type="button" class="primary">🎮 Další kvíz</button>
+      </section>
+    </div>
+    <p id="generalLegal" class="general-legal">
+      Původní vzdělávací otázky a emoji indicie. Body nejsou peníze.
+    </p>
+  </section>
+
   <section id="gamePanel" class="panel hidden">
     <div class="line">
       <div class="label" id="gameLabel">SERVEROVÝ KVÍZ</div>
