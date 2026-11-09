@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="./styles.css?v=quizoria-general-20261109b">
   <link rel="stylesheet" href="./nextgen.css?v=foxey-nextgen-22-20261109a">
   <link rel="stylesheet" href="./social-hub.css?v=foxey-social-23-20261109b">
+  <link rel="stylesheet" href="./shop-rewards.css?v=foxey-shop-24-20261109a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -48,7 +49,7 @@
 
   <nav class="mainnav" aria-label="Hlavní navigace">
     <button data-page="home" class="active" type="button">🏠 <span>Domů</span></button>
-    <button data-page="games" type="button">🎮 <span>Hry</span></button><button data-page="shop" type="button">🛍️ <span>Obchod</span></button>
+    <button data-page="games" type="button">🎮 <span>Hry</span></button>
     <button data-page="community" type="button">👥 <span>Přátelé a výzvy</span><span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
     <button data-page="missions" type="button">🎯 <span>Mise</span></button>
     
@@ -220,14 +221,36 @@
     </section>
 
     <section class="page hidden" id="page-shop">
-      <span class="eyebrow">JEDEN OBCHOD PRO VŠECHNY HRY</span><h1>🛍️ Obchod FOXEY Arcade</h1>
-      <p>Všechny odměny, motivy i avatary patří jednomu společnému účtu. Vyber, co tě zajímá.</p>
-      <p id="shopStatus" class="small" role="status" aria-live="polite">Přihlas se pro načtení peněženky.</p>
+      <header class="sr-hero" aria-labelledby="shopHeroTitle">
+        <div class="sr-hero-copy">
+          <span class="eyebrow">🎁 FOXEY ARCADE · SHOP &amp; REWARDS</span>
+          <h1 id="shopHeroTitle">Obchod <span>FOXEY Arcade</span></h1>
+          <p>Odemkni avatary, vybírej motivy a dokonči svou sbírku. Jedna peněženka a inventář pro všechny hry.</p>
+          <div class="sr-hero-flags"><span>💎 Herní krystaly</span><span>👑 Společné korunky</span><span>🛡️ Ověřované odměny</span></div>
+        </div>
+        <div class="sr-hero-art" aria-hidden="true">
+          <span class="sr-hero-orbit"></span><span class="sr-hero-icon">🎁</span>
+          <span class="sr-hero-spark s1">✦</span><span class="sr-hero-spark s2">✧</span>
+        </div>
+      </header>
+      <div class="sr-wallet-head">
+        <div class="sr-section-head"><h2>💰 Moje peněženka</h2><p>Aktuální stav z tvého účtu</p></div>
+        <button class="secondary" type="button" id="shopRefresh">↻ Aktualizovat</button>
+      </div>
       <div class="shared-shop-wallet">
         <div><span>💎 Krystaly</span><strong id="shopShards">—</strong></div>
         <div><span>👑 Korunky</span><strong id="shopCrowns">—</strong></div>
         <div><span>🎁 Truhly zdarma</span><strong id="shopFreeChests">—</strong></div>
-        <button class="secondary" type="button" id="shopRefresh">↻ Aktualizovat</button>
+      </div>
+      <p id="shopStatus" class="small" role="status" aria-live="polite">Přihlas se pro načtení peněženky.</p>
+      <div class="sr-collection" aria-label="Postup sbírky speciálních avatarů">
+        <span class="sr-collection-icon" aria-hidden="true">🎒</span>
+        <div class="sr-collection-info">
+          <strong>Sbírka speciálních avatarů</strong>
+          <small>Běžní, epičtí a legendární avataři. Jen skutečně odemčené předměty.</small>
+          <div id="shopCollectionProgress" class="sr-progress" role="progressbar" aria-label="Odemčené speciální avatary" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><span id="shopCollectionFill"></span></div>
+        </div>
+        <strong class="sr-collection-count" id="shopCollectionCount">— / 6</strong>
       </div>
       <nav class="arcade-subtabs" id="shopTabs" role="tablist" aria-label="Kategorie obchodu">
         <button id="shopTabChests" class="arcade-subtab is-active" role="tab" aria-selected="true" aria-controls="shopPanelChests" tabindex="0" data-shop-tab="chests" type="button">🎁 Truhly</button>
@@ -236,6 +259,7 @@
       </nav>
       <section id="shopPanelThemes" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="shopTabThemes" tabindex="0">
       <div class="sectionline"><h2>🎨 Motivy Quizoria · Videohry</h2><span class="small">Platí pro tvůj účet</span></div>
+      <p id="shopThemeOwnedSummary" aria-live="polite">Motivy se načtou po přihlášení.</p>
       <div id="shopThemes" class="shopitems">
         <article class="tile"><div class="tileicon">🌙</div><h3>Classic</h3><p>Výchozí motiv.</p><button data-theme="classic" class="secondary" type="button">Načítání…</button></article>
         <article class="tile"><div class="tileicon">🕹️</div><h3>Retro</h3><p>35 krystalů 💎</p><button data-theme="retro" class="secondary" type="button">Načítání…</button></article>
@@ -245,9 +269,10 @@
 
       </section>
       <section id="shopPanelChests" class="arcade-subpanel" role="tabpanel" aria-labelledby="shopTabChests" tabindex="0">
-      <div class="sectionline"><h2>🎁 Truhly</h2>
-        <button type="button" class="secondary shop-chest-preview" id="shopPreviewChest">👀 Ukázka zobrazení odměny (zdarma)</button>
+      <div class="sr-chests-heading"><h2>🎁 Truhly</h2>
+        <button type="button" class="secondary shop-chest-preview" id="shopPreviewChest">👀 Vyzkoušet animaci zdarma</button>
       </div>
+      <p id="shopFreeHint" class="sr-free-hint" role="status" aria-live="polite">🎁 Počet bezplatných truhel načtu z tvého účtu.</p>
       <p class="shop-chest-feedback" id="shopChestResult" role="status" aria-live="polite"></p>
       <div class="reward-chest-grid">
         <article class="reward-chest basic">
@@ -255,6 +280,8 @@
           <div><span class="rarity-label basic-label">BĚŽNÁ</span><h3>Pixelová truhla</h3>
             <p>Jeden ze tří avatarů: Pixel Fox, Neon Ghost nebo Space Cat. Každý dosud nezískaný má stejnou šanci.</p>
             <div class="chest-price">💎 100 <span>nebo 1 truhla zdarma</span></div>
+            <div class="sr-tier-collection"><span>Odemčeno ze sbírky</span><strong id="shopBasicOwnedCount">— / 3</strong></div>
+            <div class="sr-tier-progress" aria-hidden="true"><span id="shopBasicProgress"></span></div>
             <button class="primary" type="button" id="shopOpenChest">Otevřít běžnou</button>
           </div>
         </article>
@@ -263,6 +290,8 @@
           <div><span class="rarity-label epic-label">EPICKÁ</span><h3>Kybernetická truhla</h3>
             <p>Jeden ze dvou epických avatarů: Cyber Fox nebo Arcade Dragon. Každý nezískaný má stejnou šanci.</p>
             <div class="chest-price">💎 300 <span>krystalů</span></div>
+            <div class="sr-tier-collection"><span>Odemčeno ze sbírky</span><strong id="shopEpicOwnedCount">— / 2</strong></div>
+            <div class="sr-tier-progress" aria-hidden="true"><span id="shopEpicProgress"></span></div>
             <button class="primary" type="button" id="shopOpenEpicChest">Otevřít epickou</button>
           </div>
         </article>
@@ -663,14 +692,14 @@
 </div>
       <div class="shop-reward-overlay hidden" id="shopRewardOverlay" role="presentation">
         <div class="shop-reward-backdrop" aria-hidden="true"></div>
-        <section class="reward-reveal shop-reward-modal" id="shopRewardReveal" role="dialog" aria-modal="true" aria-labelledby="shopRewardTitle" tabindex="-1">
+        <section class="reward-reveal shop-reward-modal" id="shopRewardReveal" role="dialog" aria-modal="true" aria-labelledby="shopRewardTitle" aria-describedby="shopRewardCaption" tabindex="-1">
           <button id="shopRewardClose" class="shop-reward-close" type="button" aria-label="Zavřít odměnu">✕</button>
           <div class="shop-reward-celebration" aria-hidden="true">✨🎁✨</div>
           <h2 id="shopRewardTitle">🎉 Získal jsi odměnu!</h2>
           <div class="reward-reveal-art" id="shopRewardArt" aria-hidden="true">🎉</div>
           <div><span class="rarity-label" id="shopRewardRarity">NOVÁ ODMĚNA</span>
             <h3 id="shopRewardName">Nový avatar</h3>
-            <p id="shopRewardCaption">Přidáno do inventáře.</p></div>
+            <p id="shopRewardCaption" aria-live="polite">Přidáno do inventáře.</p></div>
           <div class="shop-reward-actions">
             <button class="primary" type="button" id="shopRewardDone">🎉 Super!</button>
             <button class="secondary" type="button" id="shopRewardInventory">🎒 Zobrazit sbírku</button>
