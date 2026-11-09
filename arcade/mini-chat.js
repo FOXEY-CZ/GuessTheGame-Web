@@ -3,12 +3,15 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const tr=(cs,en)=>window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
+const standalone=/\/secure-quiz-beta\.html$/i.test(location.pathname);
+const tr=(cs,en)=>standalone?
+  (document.documentElement.lang==='en'?en:cs):
+  window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const node=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x;};
 let api=null,uid=null,rev=0,page='home',liveOpponent=null,liveState=null;
 let opened=false,friendId=null,contactList=[],items=[],busy=false,loading=false,pending=null;
-let lastInbox=0,lastMessages=0;
+let lastInbox=0,lastMessages=0,standaloneUnread=0;
 const root=node('div','arcade-mini-chat hidden');
 root.setAttribute('aria-label','Mini chat FOXEY Arcade');
 const toggle=node('button','arcade-mini-toggle','💬');
@@ -42,13 +45,13 @@ function current(owner,stamp){return uid===owner&&rev===stamp;}
 const active=()=>!!uid&&(page==='play'||(page==='community'&&
   ['invited','lobby','running'].includes(liveState)&&UUID.test(liveOpponent||'')));
 function mount(){
-  const host=page==='play'?$('page-play'):$('liveArena');
+  const host=standalone?document.body:(page==='play'?$('page-play'):$('liveArena'));
   if(host&&root.parentElement!==host)host.append(root);
   const visible=active();
   root.classList.toggle('hidden',!visible);
   if(!visible&&opened)closePanel();
-  badge.textContent=String(Math.min(99,window.FOXEY_ARCADE_CHAT?.getUnread?.()||0));
-  const count=Number(window.FOXEY_ARCADE_CHAT?.getUnread?.()||0);
+  const count=Number(window.FOXEY_ARCADE_CHAT?.getUnread?.()??standaloneUnread);
+  badge.textContent=count>99?'99+':String(Math.max(0,count));
   badge.classList.toggle('hidden',count<1);
   toggle.setAttribute('aria-label',count?tr('Otevřít chat, nepřečtené: ','Open chat, unread: ')+count:
     tr('Otevřít chat','Open chat'));
@@ -97,6 +100,8 @@ async function fetchInbox(){
     if(!current(owner,stamp))return;
     contactList=data.conversations.filter(c=>UUID.test(c?.friend?.user_id||'')).slice(0,150);
     lastInbox=Date.now();
+    standaloneUnread=Math.max(0,Number(data.unread)||0);
+    mount();
     if(friendId&&!contactList.some(c=>c.friend.user_id===friendId)){
       friendId=null;items=[];pending=null;renderMessages();
     }
@@ -207,7 +212,7 @@ window.FOXEY_MINI_CHAT=Object.freeze({
     const next=user?.id||null;
     if(next!==uid){
       rev++;uid=next;api=client||null;
-      friendId=null;contactList=[];items=[];pending=null;busy=false;loading=false;
+      friendId=null;contactList=[];items=[];pending=null;busy=false;loading=false;standaloneUnread=0;
       lastInbox=0;lastMessages=0;closePanel();renderContacts();renderMessages();
     }else api=client||null;
     mount();
