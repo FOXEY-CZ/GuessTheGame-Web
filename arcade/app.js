@@ -1119,7 +1119,11 @@
     .forEach(button=>button.addEventListener('click',()=>{
       if(!user)return;
       selectSubtab('account',button.dataset.accountTab);
-      el('accountTabs')?.scrollIntoView?.({behavior:'smooth',block:'nearest'});
+      const minimalMotion=document.documentElement.classList.contains('arcade-motion-minimal')
+        ||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+      el('accountTabs')?.scrollIntoView?.({
+        behavior:minimalMotion?'auto':'smooth',block:'nearest'
+      });
     }));
   document.querySelectorAll('#page-account [data-achievement-filter]')
     .forEach(button=>button.addEventListener('click',()=>{
