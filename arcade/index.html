@@ -18,6 +18,7 @@
     }
   </script>
   <link rel="stylesheet" href="./styles.css?v=quizoria-general-20261109b">
+  <link rel="stylesheet" href="./nextgen.css?v=foxey-nextgen-22-20261109a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -33,12 +34,15 @@
         <span class="resource" title="Společné korunky">👑 <b id="headerCrowns">—</b></span>
          
       </div>
+      <div class="ng-header-actions">
+      <button id="arcadeStoreShortcut" class="arcade-header-shop" data-page="shop" type="button" aria-label="Otevřít společný obchod"><span aria-hidden="true">🛍️</span> Obchod</button>
       <button id="friendRequestsShortcut" class="arcade-bell arcade-friend-request-shortcut hidden" type="button" title="Žádosti o přátelství" aria-label="Otevřít žádosti o přátelství" aria-haspopup="dialog" aria-controls="arcadeNoticeOverlay">
         <span class="friend-request-symbol" aria-hidden="true">👤<span>+</span></span>
         <span id="friendRequestsShortcutCount" class="arcade-bell-count hidden" aria-hidden="true">0</span>
       </button>
       <button id="arcadeBell" class="arcade-bell" type="button" title="Upozornění a výzvy" aria-label="Upozornění FOXEY Arcade">🔔 <span id="arcadeBellCount" class="arcade-bell-count hidden">0</span></button>
-      <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div>
+      <button id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu" aria-haspopup="dialog" aria-label="Další možnosti a nastavení" title="Další možnosti">☰</button>
+      <button class="userchip" type="button" data-page="account"><span id="headerAvatar">🎮</span> <span id="headerName" data-no-i18n>Host</span></button></div></div>
   </header>
 
   <nav class="mainnav" aria-label="Hlavní navigace">
@@ -54,9 +58,8 @@
   <nav class="arcade-mobile-dock" id="mobileDock" aria-label="Rychlá mobilní navigace">
     <button data-page="home" class="active" aria-current="page" type="button"><span aria-hidden="true">🏠</span><span>Domů</span></button>
     <button data-page="games" type="button"><span aria-hidden="true">🎮</span><span>Hry</span></button>
-    <button data-page="community" type="button" aria-label="Přátelé a výzvy"><span aria-hidden="true">👥</span><span>Přátelé</span><span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
-    <button data-page="shop" type="button"><span aria-hidden="true">🛍️</span><span>Obchod</span></button>
-    <button id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu" aria-haspopup="true"><span aria-hidden="true">☰</span><span>Více</span></button>
+    <button data-page="community" type="button" aria-label="Komunita, přátelé a zprávy"><span aria-hidden="true">👥</span><span>Komunita</span><span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
+    <button data-page="account" type="button"><span aria-hidden="true">👤</span><span>Profil</span></button>
   </nav>
   <div id="mobileMoreMenu" class="arcade-mobile-more hidden" role="presentation">
     <button type="button" class="arcade-mobile-more-shade" id="mobileMoreShade" aria-label="Zavřít další nabídku"></button>
@@ -64,6 +67,7 @@
       <div class="arcade-mobile-more-head"><h2 id="mobileMoreTitle">Kam dál?</h2><button id="mobileMoreClose" type="button" aria-label="Zavřít">✕</button></div>
       <button data-page="challenges" type="button">⚔️ Moje výzvy <span>Souboje, rozehrané partie a výsledky</span></button>
       <button data-page="missions" type="button">🎯 Mise <span>Denní a týdenní odměny</span></button>
+      <button data-page="shop" type="button">🛍️ Obchod <span>Truhly, avatary a motivy</span></button>
       <button data-page="account" type="button">👤 Profil <span>Účet, achievementy a inventář</span></button>
       <button data-page="settings" type="button">⚙️ Nastavení <span>Jazyk, hra a oznámení</span></button>
       <a class="arcade-standalone-link arcade-more-game" href="../secure-quiz-beta.html?v=quizoria-polish-20261109a" target="_blank" rel="noopener noreferrer">▶️ Pokračovat ve hře <span>Otevřít Quizorii</span></a>
@@ -72,13 +76,45 @@
 
   <main id="main" tabindex="-1">
     <section class="page" id="page-home">
-      <div class="hero">
-        <span class="eyebrow">VÍTEJ V NOVÉM HERNÍM SVĚTĚ</span>
-        <h1>Tvůj <span>herní domov.</span></h1>
-        <p>Pokračuj ve hře, prohlédni výzvy nebo sleduj svůj společný postup. Všechno na jednom místě.</p>
-        <div class="actions"><a class="primary arcade-standalone-link" href="../secure-quiz-beta.html?v=quizoria-polish-20261109a" target="_blank" rel="noopener noreferrer">▶️ Hrát Quizorii</a>
-          <button class="secondary" type="button" data-page="challenges">⚔️ Moje výzvy</button></div>
+      <div class="ng-welcome">
+        <div><span class="eyebrow">🦊 FOXEY ARCADE · TVŮJ HERNÍ SVĚT</span>
+          <h1>Vítej v Arcade, <span id="homeWelcomeName" data-no-i18n>hráči</span>! 👋</h1>
+          <p>Pokračuj tam, kde jsi skončil, plň mise a zahraj si s kamarády.</p>
+        </div>
+        <button class="ng-welcome-profile" data-page="account" type="button" aria-label="Otevřít hráčský profil">
+          <span class="ng-welcome-avatar" id="homeWelcomeAvatar" aria-hidden="true">🦊</span><span class="ng-profile-copy">Můj profil</span><span aria-hidden="true">›</span>
+        </button>
       </div>
+      <section class="ng-feature" aria-label="Hlavní hra Quizoria">
+        <div class="ng-feature-copy">
+          <span class="eyebrow">🎮 A FOXEY ARCADE GAME · 5 HRATELNÝCH KATEGORIÍ</span>
+          <h2>QUIZORIA</h2>
+          <p>Pět kvízových světů. Společný účet, odměny, výzvy a rozehrané partie.</p>
+          <div class="ng-feature-pills" aria-label="Kategorie Quizorie">
+            <span>🎮 Videohry</span><span>😂 Memy</span><span>🎬 Filmy</span><span>🎵 Hudba</span><span>🌍 Vědomosti</span>
+          </div>
+          <div class="ng-feature-actions">
+            <a class="primary arcade-standalone-link" href="../secure-quiz-beta.html?v=quizoria-polish-20261109a" target="_blank" rel="noopener noreferrer">▶ Hrát / pokračovat</a>
+            <button class="secondary" type="button" data-page="games">Knihovna her</button>
+          </div>
+        </div>
+        <div class="ng-feature-art" aria-hidden="true"><span class="ng-feature-spark one">✦</span><span class="ng-feature-mark">Q</span><span class="ng-feature-spark two">✧</span></div>
+      </section>
+      <div class="ng-home-heading"><h2>Co chceš dělat?</h2><span>Všechno po ruce</span></div>
+      <div class="ng-quick-grid" aria-label="Rychlé akce">
+        <button type="button" class="ng-quick-link" data-page="missions"><span class="ng-quick-icon" aria-hidden="true">🎯</span><span><strong>Denní a týdenní mise</strong><small>Postup, odměny a série dní</small></span></button>
+        <button type="button" class="ng-quick-link" data-page="community"><span class="ng-quick-icon" aria-hidden="true">👥</span><span><strong>Přátelé a chat</strong><small>Konverzace a společné hraní</small></span></button>
+        <button type="button" class="ng-quick-link" data-page="challenges"><span class="ng-quick-icon" aria-hidden="true">⚔️</span><span><strong>Moje výzvy</strong><small>Rozehrané partie a výsledky</small></span></button>
+      </div>
+      <section class="ng-library" aria-labelledby="ngLibraryTitle">
+        <div class="ng-home-heading"><h2 id="ngLibraryTitle">Knihovna her</h2><span>Další tituly připravujeme</span></div>
+        <div class="ng-library-grid">
+          <a class="ng-library-tile arcade-standalone-link" href="../secure-quiz-beta.html?v=quizoria-polish-20261109a" target="_blank" rel="noopener noreferrer">
+            <span class="ng-library-art" aria-hidden="true">🧠</span><span class="ng-library-copy"><strong>Quizoria</strong><small>5 hratelných světů · Hrát</small></span><span class="ng-library-status">HRATELNÉ</span></a>
+          <article class="ng-library-tile ng-upcoming"><span class="ng-library-art" aria-hidden="true">🎨</span><span class="ng-library-copy"><strong>Draw &amp; Guess</strong><small>Kreslení a hádání</small></span><span class="ng-library-status">BRZY</span></article>
+          <article class="ng-library-tile ng-upcoming"><span class="ng-library-art" aria-hidden="true">⛳</span><span class="ng-library-copy"><strong>Mini Golf</strong><small>Krátké zápasy</small></span><span class="ng-library-status">BRZY</span></article>
+        </div>
+      </section>
       <section class="arcade-shop-spotlight" aria-labelledby="homeShopSpotlightTitle">
         <div class="arcade-shop-spotlight-icon" aria-hidden="true">🎁</div>
         <div class="arcade-shop-spotlight-copy">
@@ -89,34 +125,8 @@
         </div>
         <button type="button" class="primary arcade-shop-spotlight-action" data-page="shop">Prohlédnout obchod</button>
       </section>
-      <section class="arcade-hub" aria-label="Rychlý rozcestník FOXEY Arcade">
-        <div class="arcade-hub-heading">
-          <div><span class="eyebrow">TVŮJ ROZCESTNÍK</span><h2>Co chceš dělat?</h2></div>
-          <span class="small">Jedna platforma, více her</span>
-        </div>
-        <div class="arcade-hub-grid">
-          <button type="button" class="arcade-hub-link" data-page="games">
-            <span class="arcade-hub-icon" aria-hidden="true">🎮</span>
-            <span class="arcade-hub-copy"><strong>Knihovna her</strong><small>Hraj Quizorii a prohlédni další tituly</small></span>
-            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
-          </button>
-          <button type="button" class="arcade-hub-link" data-page="community">
-            <span class="arcade-hub-icon" aria-hidden="true">⚡</span>
-            <span class="arcade-hub-copy"><strong>Přátelé a živé souboje</strong><small>Pozvánky, odvety, série BO3/BO5</small></span>
-            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
-          </button>
-          <button type="button" class="arcade-hub-link" data-page="missions">
-            <span class="arcade-hub-icon" aria-hidden="true">🎯</span>
-            <span class="arcade-hub-copy"><strong>Mise a odměny</strong><small>Denní a týdenní úkoly, série dní</small></span>
-            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
-          </button>
-          <button type="button" class="arcade-hub-link" data-page="shop">
-            <span class="arcade-hub-icon" aria-hidden="true">🛍️</span>
-            <span class="arcade-hub-copy"><strong>Společný obchod</strong><small>Avatary, motivy a truhly pro účet</small></span>
-            <span class="arcade-hub-chevron" aria-hidden="true">›</span>
-          </button>
-        </div>
-      </section>
+      <div class="ng-home-heading"><h2>Tvůj postup a aktuální mise</h2><span>Data z tvého účtu</span></div>
+      <div class="ng-dashboard-grid">
       <section class="progresscard arcade-progress" aria-label="Globální profil FOXEY Arcade">
         <div class="progresscard-title"><div><span class="eyebrow">GLOBÁLNÍ PROFIL</span><h2>🦊 FOXEY Arcade</h2></div>
           <button class="secondary" type="button" data-page="account">Upravit profil</button></div>
@@ -134,19 +144,6 @@
         </div>
         <p class="note">Společné XP, level a měny pro celý účet. Odměny se ukládají automaticky.</p>
       </section>
-      <section class="progresscard" id="homeProgress" aria-label="Postup kategorie Videohry v Quizorii">
-        <div class="progresscard-title"><div><span class="eyebrow">QUIZORIA · TVŮJ POSTUP</span><h2>🎮 Videohry</h2></div>
-          <button class="secondary progressRefresh" type="button" data-action="refreshProgress" title="Znovu načíst z cloudu">↻ Aktualizovat</button></div>
-        <p class="small" id="homeProgressStatus" aria-live="polite">Přihlas se, aby se načetly statistiky.</p>
-        <div class="statgrid">
-          <div class="stat"><span>✨ XP</span><strong id="homeXp">—</strong></div>
-          <div class="stat"><span>🎖️ Level</span><strong id="homeLevel">—</strong></div>
-          <div class="stat hidden"><span>💎 Krystaly</span><strong id="homeShards">—</strong></div>
-          <div class="stat hidden"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
-          <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
-        </div>
-        <p class="note">Historické statistiky původního Guess the Game zůstávají součástí kategorie Videohry. Globální level a měny jsou zobrazené výše.</p>
-      </section>
       <section class="progresscard mission-panel" aria-labelledby="homeMissionsTitle">
         <div class="progresscard-title">
           <div><span class="eyebrow">PRAVIDELNÉ ODMĚNY</span><h2 id="homeMissionsTitle">🎯 Denní a týdenní mise</h2></div>
@@ -160,6 +157,25 @@
           <button class="secondary" type="button" data-page="missions">Zobrazit sérii</button>
         </div>
       </section>
+      </div>
+      <details class="ng-details">
+        <summary>📊 Podrobné statistiky Quizorie</summary>
+      <section class="progresscard" id="homeProgress" aria-label="Postup kategorie Videohry v Quizorii">
+        <div class="progresscard-title"><div><span class="eyebrow">QUIZORIA · TVŮJ POSTUP</span><h2>🎮 Videohry</h2></div>
+          <button class="secondary progressRefresh" type="button" data-action="refreshProgress" title="Znovu načíst z cloudu">↻ Aktualizovat</button></div>
+        <p class="small" id="homeProgressStatus" aria-live="polite">Přihlas se, aby se načetly statistiky.</p>
+        <div class="statgrid">
+          <div class="stat"><span>✨ XP</span><strong id="homeXp">—</strong></div>
+          <div class="stat"><span>🎖️ Level</span><strong id="homeLevel">—</strong></div>
+          <div class="stat hidden"><span>💎 Krystaly</span><strong id="homeShards">—</strong></div>
+          <div class="stat hidden"><span>👑 Korunky</span><strong id="homeCrowns">—</strong></div>
+          <div class="stat"><span>🎮 Kvízy</span><strong id="homePlayed">—</strong></div>
+        </div>
+        <p class="note">Historické statistiky původního Guess the Game zůstávají součástí kategorie Videohry. Globální level a měny jsou zobrazené výše.</p>
+      </section>
+      </details>
+      <details class="ng-details">
+        <summary>🏆 Achievementy a odemčené odznaky</summary>
       <section class="progresscard achievement-panel" aria-label="Globální achievementy">
         <div class="progresscard-title"><div><span class="eyebrow">ODZNAKY A ODMĚNY</span><h2>🏆 Achievementy</h2></div>
           <button class="secondary" type="button" data-page="account" data-account-tab="achievements">Všechny achievementy</button>
@@ -167,6 +183,7 @@
         <p class="small" id="homeAchievementStatus" aria-live="polite">Načítám achievementy…</p>
         <div class="achievement-grid" id="homeAchievementGrid"></div>
       </section>
+      </details>
     </section>
 
     <section class="page hidden" id="page-games">
@@ -494,6 +511,7 @@
     <section class="page hidden" id="page-account">
       <span class="eyebrow">JEDEN ÚČET PRO VŠECHNY HRY</span><h1>Hráčský profil</h1>
       <p class="small" id="accountNotice" role="status" aria-live="polite"></p>
+      <div class="ng-account-toolbar"><button type="button" class="secondary" data-page="missions">🎯 Moje mise</button><button type="button" class="secondary" data-page="settings">⚙️ Nastavení</button></div>
       <div id="guestAccount" class="accountpanel">
         <div class="tabrow"><button id="tabLogin" type="button" class="selected">Přihlásit se</button><button id="tabSignup" type="button">Vytvořit účet</button></div>
         <form id="authForm">
