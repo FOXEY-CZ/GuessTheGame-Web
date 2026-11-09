@@ -391,6 +391,7 @@
 <link rel="stylesheet" href="./quizoria/music.css?v=quizoria-general-20261109b">
 <link rel="stylesheet" href="./quizoria/general.css?v=quizoria-general-20261109b">
 <link rel="stylesheet" href="./quizoria/polish.css?v=quizoria-polish-20261109a">
+<link rel="stylesheet" href="./quizoria/coach.css?v=quizoria-20-20261109a">
 </head>
 <body>
 <main class="wrap">
@@ -457,6 +458,19 @@
         <button class="primary" id="quizoriaQuickStart" type="button">▶ Hrát hned</button>
         <button class="solo-continue hidden" id="quizoriaQuickContinue" type="button">⏯ Pokračovat</button>
       </div>
+    </section>
+
+    <section id="quizoriaCoach" class="q2-coach" aria-labelledby="quizoriaCoachTitle">
+      <div class="q2-coach-head">
+        <div><span class="label">QUIZORIA 2.0 · TVŮJ HERNÍ PLÁN</span>
+          <h3 id="quizoriaCoachTitle">🧭 Co si zahrát dál?</h3>
+          <p id="quizoriaCoachSubtitle">Tři ověřené herní cesty podle tvých výsledků. Každou partii ukládá server.</p>
+        </div>
+        <button type="button" class="q2-refresh" id="quizoriaCoachRefresh">↻ Aktualizovat</button>
+      </div>
+      <p class="q2-coach-status" id="quizoriaCoachStatus" role="status" aria-live="polite"></p>
+      <div id="quizoriaCoachCards" class="q2-coach-cards" aria-label="Doporučené kvízy"></div>
+      <button type="button" id="quizoriaCoachDuels" class="q2-duels">⚔️ Radši souboj s kamarádem? Otevřít výzvy</button>
     </section>
 
     <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
@@ -614,6 +628,15 @@
       <p id="quizoriaProgressStatus" class="qp-status" role="status" aria-live="polite"></p>
       <div id="quizoriaOverviewStats" class="qp-overview" aria-label="Celkový postup Quizorie"></div>
       <div id="quizoriaCategoryStats" class="qp-stat-list" aria-label="Statistiky kategorií"></div>
+      <section id="quizoriaSkillBoard" class="q2-skill-board" aria-labelledby="quizoriaSkillTitle">
+        <div class="q2-skill-heading"><div>
+          <h4 id="quizoriaSkillTitle">📊 Moje znalosti podle kategorií</h4>
+          <p id="quizoriaSkillDesc">Úspěšnost z ověřených odpovědí. Přehled se aktualizuje po dohrání a slouží k výběru další obtížnosti.</p>
+        </div></div>
+        <p id="quizoriaSkillStatus" class="q2-skill-status" role="status" aria-live="polite"></p>
+        <div id="quizoriaSkillGrid" class="q2-skill-grid"></div>
+      </section>
+
       <div class="qp-milestones-head">
         <h4 id="quizoriaMilestoneTitle">🎖️ Milníky Quizorie</h4>
         <span id="quizoriaMilestoneCount">—</span>
@@ -1399,7 +1422,8 @@
 <script src="./quizoria/million.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/category-engine.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/memes.js?v=quizoria-general-20261109b"></script>
-<script src="./quizoria/progression.js?v=quizoria-general-20261109b"></script>
+<script src="./quizoria/progression.js?v=quizoria-20-20261109a"></script>
+<script src="./quizoria/coach.js?v=quizoria-20-20261109a"></script>
 <script src="./quizoria/movies.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/music.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/general.js?v=quizoria-general-20261109b"></script>
