@@ -289,6 +289,7 @@
       if(error||data?.ok!==true)throw error||Error('invalid_response');
       if(seq!==requestNumber)return;
       pending=null;run=data;writeStatus(run.status==='active'?tr('activeHint'):'');
+      if(run.status!=='active')void window.QUIZORIA_PROGRESS?.refresh?.();
       if(data.answered){
         feedback={correct:data.was_correct===true,answer:data.correct_answer};
         awaitNext=data.was_correct===true&&data.status==='active';
