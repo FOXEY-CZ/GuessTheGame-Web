@@ -458,7 +458,7 @@ BEGIN
     RETURN arcade_private.quizoria_meme_view(r) ||
       jsonb_build_object('challenge_id',c.challenge_id,'creator',true);
   END IF;
-  IF c.expires_at<=now() OR c.challenger_id IS NOT NULL AND c.challenger_id<>uid
+  IF c.expires_at<=now() OR (c.challenger_id IS NOT NULL AND c.challenger_id<>uid)
     THEN RAISE EXCEPTION 'challenge_unavailable';END IF;
   IF c.challenger_id=uid THEN
     SELECT * INTO r FROM arcade_private.quizoria_meme_runs WHERE run_id=c.challenger_run_id;
@@ -492,7 +492,7 @@ BEGIN
   IF uid IS NULL THEN RAISE EXCEPTION 'not_authenticated';END IF;
   SELECT * INTO c FROM arcade_private.quizoria_meme_challenges
     WHERE challenge_id=p_challenge_id;
-  IF NOT FOUND OR uid NOT IN (c.creator_id,c.challenger_id) THEN
+  IF NOT FOUND OR (uid<>c.creator_id AND (c.challenger_id IS NULL OR uid<>c.challenger_id)) THEN
     RAISE EXCEPTION 'challenge_not_yours';END IF;
   SELECT * INTO cr FROM arcade_private.quizoria_meme_runs WHERE run_id=c.creator_run_id;
   IF c.challenger_run_id IS NOT NULL THEN
