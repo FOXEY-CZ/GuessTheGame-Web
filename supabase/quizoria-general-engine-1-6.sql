@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS arcade_private.quizoria_general_questions(
   difficulty text NOT NULL CHECK(difficulty IN ('easy','medium','hard')),
   prompt_cs text NOT NULL,
   prompt_en text NOT NULL,
+  clue_cs text NOT NULL DEFAULT '',
+  clue_en text NOT NULL DEFAULT '',
   options jsonb NOT NULL CHECK(jsonb_typeof(options)='array' AND jsonb_array_length(options)=4),
   answer_index integer NOT NULL CHECK(answer_index BETWEEN 0 AND 3),
   visual text NOT NULL,
