@@ -569,13 +569,6 @@
     if(view)url.searchParams.set('view',view);
     return url.href;
   }
-  function launchStandaloneGame(view=''){
-    // Called synchronously by a user click; same tab as fallback when needed.
-    const url=standaloneGameUrl(view);
-    const popup=window.open(url,'_blank');
-    if(popup){try{popup.opener=null;}catch(_){}}
-    else location.assign(url);
-  }
   function go(page){
     if(!PAGES.has(page))page='home';
     // Legacy #play deep links also go directly to the standalone game.
