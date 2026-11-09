@@ -3,11 +3,13 @@
  * shared daily question sets and two-player link challenges. */
 (()=>{
 'use strict';
+const engine=window.QUIZORIA_CATEGORY_ENGINE;
+if(!engine?.config('memes'))return;
 const $=id=>document.getElementById(id);
 const root=$('quizoriaMemePanel');
 if(!root)return;
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const modes=['classic','easy','medium','hard','daily'];
+const modes=engine.config('memes').modes.filter(mode=>mode!=='friend');
 const dict={
   cs:{
     title:'😂 Guess the Meme',sub:'Poznáš internetové legendy jen podle obrázku?',
@@ -235,7 +237,7 @@ async function refreshRuns(){
  if(!uid||!api)return;
  const current=uid,seq=++serial;
  try{
-  const {data,error}=await api.rpc('quizoria_meme_my_runs');
+  const {data,error}=await engine.rpc(api,'memes','my_runs');
   if(error||data?.ok!==true||!Array.isArray(data.runs))throw error||Error('bad_runs');
   if(uid!==current||seq!==serial)return;
   runs=data.runs;updateSaved();
@@ -248,7 +250,7 @@ async function begin(modeName){
  if(!beginPending||beginPending.type!=='begin'||beginPending.mode!==modeName)
   beginPending={type:'begin',mode:modeName,operation:crypto.randomUUID()};
  try{
-  const {data,error}=await api.rpc('quizoria_meme_begin',{
+  const {data,error}=await engine.rpc(api,'memes','begin',{
     p_mode:modeName,p_operation:beginPending.operation
   });
   if(error||data?.ok!==true||!data.has_run)throw error||Error('begin_failed');
@@ -264,7 +266,7 @@ async function resume(id){
  if(locked||!uid||!api||!uuid.test(String(id||'')))return;
  locked=true;status(t('loading'));
  try{
-  const {data,error}=await api.rpc('quizoria_meme_resume',{p_run_id:id});
+  const {data,error}=await engine.rpc(api,'memes','resume',{p_run_id:id});
   if(error||data?.ok!==true||!data.has_run)throw error||Error('resume_failed');
   if(pending?.p_run_id!==data.run_id)pending=null;
   run=data;mode=data.mode;feedback=null;awaitNext=false;
@@ -285,7 +287,7 @@ async function answer(index,retry=false){
  const previous=lastQuestion||run.question;
  renderGame();
  try{
-  const {data,error}=await api.rpc('quizoria_meme_answer',request);
+  const {data,error}=await engine.rpc(api,'memes','answer',request);
   if(error||data?.ok!==true||data.answered!==true)throw error||Error('invalid_reply');
   pending=null;
   run=data;feedback={ok:data.was_correct===true,correctIndex:data.correct_option,picked:request.p_choice};
@@ -321,7 +323,7 @@ async function createChallenge(){
  if(!beginPending||beginPending.type!=='create')
    beginPending={type:'create',operation:crypto.randomUUID()};
  try{
-  const {data,error}=await api.rpc('quizoria_meme_challenge_create',{
+  const {data,error}=await engine.rpc(api,'memes','challenge_create',{
     p_operation:beginPending.operation
   });
   if(error||data?.ok!==true||!uuid.test(data.challenge_id))throw error||Error('challenge_create');
@@ -342,7 +344,7 @@ async function joinChallenge(value){
  if(!id){status(t('emptyInvite'),true);return;}
  locked=true;status(t('loading'));
  try{
-  const {data,error}=await api.rpc('quizoria_meme_challenge_join',{
+  const {data,error}=await engine.rpc(api,'memes','challenge_join',{
     p_challenge_id:id,p_operation:crypto.randomUUID()
   });
   if(error||data?.ok!==true||!data.has_run)throw error||Error('challenge_join');
@@ -357,7 +359,7 @@ async function joinChallenge(value){
 async function pollChallenge(silent=false){
  if(!api||!uid||!uuid.test(String(challengeId||'')))return;
  try{
-  const {data,error}=await api.rpc('quizoria_meme_challenge_status',{
+  const {data,error}=await engine.rpc(api,'memes','challenge_status',{
     p_challenge_id:challengeId
   });
   if(error||data?.ok!==true)throw error||Error('match_status');
