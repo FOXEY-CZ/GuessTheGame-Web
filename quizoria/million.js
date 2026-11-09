@@ -79,8 +79,8 @@
   let muted=false,audioCtx=null,requestNumber=0;
   const tr=key=>dict[locale][key]||key;
   const categoryNames={
-    cs:{'video-games':'🎮 Videohry','memes':'😂 Memy','movies':'🎬 Filmy a seriály','music':'🎵 Hudba'},
-    en:{'video-games':'🎮 Video Games','memes':'😂 Memes','movies':'🎬 Movies & Series','music':'🎵 Music'}
+    cs:{'video-games':'🎮 Videohry','memes':'😂 Memy','movies':'🎬 Filmy a seriály','music':'🎵 Hudba','general':'🌍 Všeobecné znalosti'},
+    en:{'video-games':'🎮 Video Games','memes':'😂 Memes','movies':'🎬 Movies & Series','music':'🎵 Music','general':'🌍 General Knowledge'}
   };
   const currentName=()=>categoryNames[locale][selectedCategory]||selectedCategory;
   const money=n=>new Intl.NumberFormat(locale==='cs'?'cs-CZ':'en-US')
