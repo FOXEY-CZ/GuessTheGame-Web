@@ -115,6 +115,10 @@ html.arcade-motion-minimal *::after{
  scroll-behavior:auto!important;animation:none!important;transition:none!important}
 html.arcade-motion-minimal #page-settings .settings-card,
 html.arcade-motion-minimal #arcadeNoticeOverlay .arcade-notice-drawer{animation:none!important;transition:none!important}
+html.arcade-motion-minimal :is(.ng-quick-link,.ng-library-tile,.pc-shortcut,
+  .inventory-item,.reward-chest,.settings-card,.shopitems .tile):hover{
+  transform:none!important
+}
 
 /* Gentle shared interaction feedback, with OS and user motion settings respected. */
 #arcadeBellCount:not(.hidden){animation:sm-unread-pulse .32s ease-out both}
