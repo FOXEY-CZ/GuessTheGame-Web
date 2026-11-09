@@ -386,6 +386,7 @@
 <link rel="stylesheet" href="./quizoria/foundation.css?v=quizoria-menu-20261109c">
 <link rel="stylesheet" href="./quizoria/million.css?v=quizoria-million-20261109e">
 <link rel="stylesheet" href="./quizoria/memes.css?v=quizoria-memes-20261109b">
+<link rel="stylesheet" href="./quizoria/progression.css?v=quizoria-progress-20261109a">
 </head>
 <body>
 <main class="wrap">
@@ -573,6 +574,23 @@
         <button class="quizoria-category selected" type="button" disabled>🎮 Videohry · Hratelné</button>
       </div>
       <p id="quizoriaCategoryNote" class="quizoria-category-note">Videohry i Memy mají své samostatné serverově ověřované otázky, ukládání a odměny.</p>
+    </section>
+    <section id="quizoriaProgression" class="qp-section" aria-labelledby="quizoriaProgressTitle">
+      <div class="qp-section-header">
+        <div class="qp-section-title">
+          <h3 id="quizoriaProgressTitle">🏆 Tvůj postup</h3>
+          <p id="quizoriaProgressSub">Každá kategorie má vlastní statistiky. XP a měny zůstávají společné pro FOXEY Arcade.</p>
+        </div>
+        <button id="quizoriaProgressRefresh" type="button">↻ Obnovit</button>
+      </div>
+      <p id="quizoriaProgressStatus" class="qp-status" role="status" aria-live="polite"></p>
+      <div id="quizoriaCategoryStats" class="qp-stat-list" aria-label="Statistiky kategorií"></div>
+      <div class="qp-milestones-head">
+        <h4 id="quizoriaMilestoneTitle">🎖️ Milníky Quizorie</h4>
+        <span id="quizoriaMilestoneCount">—</span>
+      </div>
+      <div id="quizoriaMilestones" class="qp-milestones"></div>
+      <p id="quizoriaProgressFoot" class="qp-foot">Odznaky lze vyzvednout jen jednou. Podmínky a skutečné odměny ověřuje server.</p>
     </section>
 
     </div>
@@ -984,6 +1002,7 @@
 <script src="./quizoria/quizoria-ui.js?v=quizoria-memes-20261109b"></script>
 <script src="./quizoria/million.js?v=quizoria-million-20261109e"></script>
 <script src="./quizoria/memes.js?v=quizoria-memes-20261109b"></script>
+<script src="./quizoria/progression.js?v=quizoria-progress-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
@@ -1945,6 +1964,7 @@
     window.QUIZORIA_UI?.setLocale(lang);
     window.QUIZORIA_MILLION?.setLocale(lang);
     window.QUIZORIA_MEMES?.setLocale(lang);
+    window.QUIZORIA_PROGRESS?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
     // History is optional UI; never let it abort bootstrap/authentication.
     // Previously this ran before getSession() had even finished.
@@ -1956,6 +1976,7 @@
   }
   function modeScreen(){
     window.QUIZORIA_MILLION?.onMenu?.();
+    window.QUIZORIA_PROGRESS?.refresh?.();
     game=null;current=null;pending=null;busy=false;
     document.body?.classList?.remove('quiz-playing','quiz-finished');
     visible('achievementsButton',!!me);
@@ -2150,6 +2171,7 @@
     me=!error&&data?.session?.user||null;
     window.QUIZORIA_MILLION?.connect?.(api,me);
     window.QUIZORIA_MEMES?.connect?.(api,me);
+    window.QUIZORIA_PROGRESS?.connect?.(api,me);
     // Same secured friend-only mini chat in the standalone game.
     window.FOXEY_MINI_CHAT?.connect?.(api,me);
     window.FOXEY_MINI_CHAT?.onPage?.('play');
