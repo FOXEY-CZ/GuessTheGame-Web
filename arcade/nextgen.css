@@ -1,0 +1,176 @@
+/* FOXEY Arcade 2.2 — Next Gen Launcher, phase 1.
+   Presentation only: existing auth, wallets, RPCs, saves, missions, chat and challenges remain authoritative. */
+:root{--ng-ink:#eff5ff;--ng-muted:#a9bbd7;--ng-line:#394b6e;--ng-deep:#10192e;--ng-violet:#9783ff;--ng-cyan:#68e5e8}
+body{background:radial-gradient(ellipse at 72% -18%,#343167 0%,transparent 44%),radial-gradient(ellipse at 6% 95%,#113d53 0%,transparent 48%),#0b1121}
+.layout{max-width:1260px}
+.topbar{border-color:#2b3654}
+.brand-icon{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;background:linear-gradient(135deg,#6354b6,#276f92);border:1px solid #6571ab;border-radius:14px;font-size:27px}
+.brand strong{font-weight:950;letter-spacing:.055em}
+.brand em{color:#a8a2ff}
+.topright{gap:10px}
+.ng-header-actions{display:flex;align-items:center;gap:9px}
+.arcade-header-shop{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;min-height:42px;padding:8px 13px;border:1px solid #7163b1;border-radius:12px;background:linear-gradient(120deg,#34325d,#252c4c);color:#e9e1ff;font-size:.8rem;font-weight:850;cursor:pointer}
+.arcade-header-shop:hover{background:#504783;border-color:#a495f7}
+#mobileMoreToggle{display:none}
+.mainnav{width:100%;justify-content:center;margin:14px 0 25px;padding:6px;gap:5px;max-width:none;background:#121c31;border-color:#303f61;box-shadow:0 10px 29px #060b1966}
+.mainnav button{border-radius:11px;min-height:44px;letter-spacing:.005em}
+.mainnav button.active{background:linear-gradient(125deg,#3f3b7b,#2b3c66);box-shadow:inset 0 0 0 1px #696caa}
+#page-home{--ng-card:linear-gradient(145deg,#1c2a45,#16243c)}
+.ng-welcome{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:8px 0 17px}
+.ng-welcome h1{font-size:clamp(1.62rem,3.2vw,2.3rem);line-height:1.17;margin:6px 0 8px;letter-spacing:-.04em}
+.ng-welcome h1 span{color:#b7adff}
+.ng-welcome p{font-size:.86rem;line-height:1.55;margin:0;max-width:630px;color:#adbfda}
+.ng-welcome-profile{display:flex;align-items:center;gap:9px;flex:none;border:1px solid #495678;background:#202c48;color:#eef4ff;border-radius:15px;padding:8px 12px;font-size:.8rem;font-weight:850;min-height:48px;cursor:pointer}
+.ng-welcome-profile:hover{border-color:#9592ef;background:#303859}
+.ng-welcome-avatar{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;overflow:hidden;border-radius:10px;background:#3b377a;font-size:21px}
+.ng-welcome-avatar svg{width:100%;height:100%}
+.ng-feature{position:relative;isolation:isolate;min-height:275px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(180px,.8fr);gap:18px;align-items:center;border:1px solid #7370ba;border-radius:25px;padding:clamp(24px,3.8vw,45px);overflow:hidden;background:radial-gradient(circle at 87% 15%,#6960bc99 0%,transparent 39%),linear-gradient(125deg,#38346d 0%,#252d5d 48%,#17374f 100%);box-shadow:0 20px 45px #04081944}
+.ng-feature:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 10% 110%,#43aab022,transparent 46%);pointer-events:none;z-index:-1}
+.ng-feature-copy{position:relative;z-index:2;min-width:0}
+.ng-feature .eyebrow{color:#a6fff2;letter-spacing:.145em}
+.ng-feature h2{font-size:clamp(2.65rem,6vw,4.6rem);margin:11px 0 5px;letter-spacing:-.07em;line-height:1.03;color:#fff;text-shadow:0 7px 20px #090e2e55}
+.ng-feature p{font-size:clamp(.88rem,1.65vw,1.03rem);line-height:1.55;margin:9px 0 0;color:#d3def5;max-width:440px}
+.ng-feature-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+.ng-feature-pills span{border:1px solid #8690c266;background:#101b385e;border-radius:999px;padding:6px 9px;font-size:.7rem;font-weight:750;color:#e8edff}
+.ng-feature-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.ng-feature-actions a,.ng-feature-actions button{min-height:47px;padding:12px 19px;border-radius:12px;text-decoration:none;font-weight:850;font-size:.86rem}
+.ng-feature-actions .primary{background:#f2eeff;color:#332c75;border:1px solid #fff;box-shadow:0 5px 18px #100e4566}
+.ng-feature-actions .primary:hover{background:white;color:#21194c}
+.ng-feature-actions .secondary{border:1px solid #a1a7d4;background:#2b3565b0;color:#f5f8ff}
+.ng-feature-art{position:relative;display:grid;place-items:center;min-height:205px;pointer-events:none}
+.ng-feature-art::before,.ng-feature-art::after{content:"";position:absolute;width:210px;height:210px;border:1px solid #a4c2ff44;border-radius:50%;transform:rotate(30deg) scaleX(.83)}
+.ng-feature-art::after{width:165px;height:165px;border-color:#8cf2e177;transform:rotate(-30deg) scaleX(.83)}
+.ng-feature-mark{display:grid;place-items:center;width:163px;height:163px;border-radius:36px;background:linear-gradient(145deg,#7471da,#3a598e 65%,#216e85);border:2px solid #a5acff;box-shadow:0 18px 45px #020c3777,inset 0 2px #e1f2ff55;transform:rotate(-9deg);font-size:91px;font-weight:1000;line-height:1;color:#d9fff9;text-shadow:5px 6px #39387688}
+.ng-feature-spark{position:absolute;font-size:31px;color:#b8fff5;text-shadow:0 0 18px #5df6ee}
+.ng-feature-spark.one{top:6px;right:21px}.ng-feature-spark.two{bottom:10px;left:18px;color:#ffdeb3}
+.ng-home-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:26px 0 12px}
+.ng-home-heading h2{font-size:clamp(1.05rem,2.3vw,1.38rem);margin:0;letter-spacing:-.02em}
+.ng-home-heading span{font-size:.74rem;color:#91a7cd}
+.ng-quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ng-quick-link{display:flex;gap:13px;align-items:center;text-align:left;min-width:0;min-height:94px;padding:16px;border:1px solid #3c5177;border-radius:17px;background:var(--ng-card);color:#f0f5ff;cursor:pointer;transition:transform .18s ease,border-color .18s ease}
+.ng-quick-link:hover{border-color:#9e96ed;transform:translateY(-2px)}
+.ng-quick-icon{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#484a86,#284b73);font-size:23px}
+.ng-quick-link strong{display:block;font-size:.89rem;line-height:1.3}
+.ng-quick-link small{display:block;color:#b2c2db;font-size:.72rem;line-height:1.45;margin-top:4px}
+.ng-library{margin:18px 0 6px}
+.ng-library-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:11px}
+.ng-library-tile{display:flex;align-items:center;gap:13px;border:1px solid #3c506c;border-radius:17px;background:var(--ng-card);padding:14px;text-align:left;min-width:0;min-height:89px;color:#f4f8ff;text-decoration:none}
+.ng-library-tile[href]:hover{border-color:#b0a5ff;transform:translateY(-1px)}
+.ng-library-art{display:grid;place-items:center;flex:0 0 49px;width:49px;height:49px;border-radius:13px;background:linear-gradient(130deg,#6a5dbb,#237c94);font-size:26px}
+.ng-library-tile.ng-upcoming .ng-library-art{background:#303852;filter:saturate(.78)}
+.ng-library-copy{min-width:0}
+.ng-library-copy strong{display:block;font-size:.86rem}
+.ng-library-copy small{display:block;color:#acbed7;font-size:.71rem;line-height:1.45;margin-top:4px}
+.ng-library-status{margin-left:auto;font-size:.65rem;font-weight:800;color:#a5f3db;white-space:nowrap}
+.ng-upcoming .ng-library-status{color:#acb7d2}
+#page-home .arcade-shop-spotlight{min-height:0;margin:18px 0;padding:13px 16px;border-radius:16px;background:linear-gradient(130deg,#29254b,#1a2945);border-color:#524a81;gap:12px}
+#page-home .arcade-shop-spotlight-icon{font-size:29px;flex:0 0 41px;width:41px}
+#page-home .arcade-shop-spotlight-copy h2{font-size:1rem;margin:3px 0}
+#page-home .arcade-shop-spotlight-copy p{font-size:.73rem;margin:1px 0}
+#page-home .arcade-shop-spotlight-status{font-weight:750}
+#page-home .arcade-shop-spotlight-action{min-height:40px;padding:10px 14px;font-size:.76rem}
+.ng-dashboard-grid{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:14px;margin-top:21px}
+#page-home .ng-dashboard-grid .progresscard{margin:0;min-width:0}
+#page-home .ng-dashboard-grid .mission-panel .mission-preview{max-height:310px;overflow:auto;scrollbar-width:thin}
+#page-home .ng-dashboard-grid .mission-panel .mission-streak-preview{margin-top:12px}
+#page-home .ng-dashboard-grid .arcade-progress .statgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#page-home .ng-dashboard-grid .progresscard .progresscard-title{gap:10px}
+.ng-details{margin:14px 0 0;border:1px solid #324664;border-radius:16px;background:linear-gradient(145deg,#18263e,#132138);overflow:hidden}
+.ng-details>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;min-height:55px;padding:13px 17px;color:#dae6ff;font-size:.89rem;font-weight:800;list-style:none}
+.ng-details>summary::after{content:"⌄";font-size:1.2rem;transition:transform .16s}
+.ng-details[open]>summary::after{transform:rotate(180deg)}
+.ng-details>summary::-webkit-details-marker{display:none}
+.ng-details>summary:hover{background:#ffffff0b}
+.ng-details>.progresscard{border:0!important;border-top:1px solid #334763!important;border-radius:0!important;background:transparent!important;margin:0!important}
+.ng-details .achievement-grid{max-height:440px;overflow:auto;scrollbar-width:thin}
+#page-home .ng-details .progresscard{padding:17px}
+#page-home .ng-details .achievement-panel{margin-bottom:0}
+.ng-account-toolbar{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:-10px 0 14px}
+.ng-account-toolbar button{min-height:40px}
+#page-games .arcade-library-live .quizoria-library-card{border-color:#4e6093;box-shadow:0 12px 35px #050a1c44}
+#page-games .quizoria-library-card .quizoria-gameart{background:radial-gradient(circle at 55% 25%,#6d67ce,#2c6681 68%,#1b264f)}
+@media(min-width:761px){
+  .mainnav button{padding-inline:clamp(10px,1.9vw,23px)}
+  .ng-feature-art{min-height:230px}
+}
+@media(max-width:980px){
+  .ng-dashboard-grid{grid-template-columns:1fr}
+  .ng-quick-link{padding:13px;gap:9px}
+  .ng-quick-icon{flex-basis:41px;width:41px;height:41px;font-size:22px}
+  .ng-library-grid{grid-template-columns:1fr 1fr}
+  .ng-library-tile:first-child{grid-column:1/-1}
+}
+@media(max-width:760px){
+  body{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  .layout{padding-inline:14px}
+  .topbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 8px;padding:12px 0 10px;min-height:0}
+  .topbar>.brand{grid-area:1/1;min-width:0;gap:9px}
+  .brand-icon{width:40px;height:40px;flex-basis:40px;font-size:24px;border-radius:12px}
+  .brand strong{font-size:clamp(.92rem,4vw,1.15rem);white-space:nowrap}
+  .brand small{font-size:.59rem}
+  .topright{display:contents}
+  #connectionStatus{display:none!important}
+  .topbar .headerwallet{grid-area:2/1/3/3;display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:7px;max-width:none!important;min-width:0}
+  .headerwallet .header-xp-resource,.headerwallet .resource:nth-child(2){display:none}
+  .headerwallet .resource{min-height:36px;border:1px solid #364768;background:#1b2842;border-radius:10px;padding:7px 10px;font-size:.78rem}
+  .headerwallet .resource b{font-size:.86rem;font-variant-numeric:tabular-nums}
+  .ng-header-actions{grid-area:1/2;display:flex;gap:5px}
+  .ng-header-actions .userchip,.ng-header-actions #friendRequestsShortcut{display:none!important}
+  .ng-header-actions #arcadeBell,.ng-header-actions #mobileMoreToggle{display:grid;place-items:center;min-width:39px;width:39px;min-height:40px;height:40px;padding:5px;border:1px solid #3b4a6c;border-radius:11px;background:#1b2941;color:#e6efff;font-size:18px}
+  .ng-header-actions .arcade-header-shop{display:grid;place-items:center;min-width:39px;width:39px;min-height:40px;height:40px;padding:5px;font-size:0}
+  .ng-header-actions .arcade-header-shop span{font-size:21px}
+  .ng-header-actions #mobileMoreToggle{display:grid}
+  .mainnav{display:none!important}
+  .arcade-mobile-dock{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:rgba(13,21,40,.985);border-top:1px solid #43587f}
+  .arcade-mobile-dock button{border-radius:13px}
+  .arcade-mobile-dock button.active{background:linear-gradient(135deg,#3c386e,#2d406a);border-color:#676dab}
+  .ng-welcome{margin:14px 0 15px}
+  .ng-welcome-profile{padding:7px 8px;gap:6px}
+  .ng-welcome-profile .ng-profile-copy{display:none}
+  .ng-feature{grid-template-columns:minmax(0,1fr) 105px;gap:5px;padding:20px;min-height:236px;border-radius:21px}
+  .ng-feature h2{font-size:clamp(2.25rem,8vw,3.6rem)}
+  .ng-feature p{font-size:.82rem}
+  .ng-feature-art{min-height:140px}
+  .ng-feature-mark{height:96px;width:96px;border-radius:23px;font-size:55px}
+  .ng-feature-art:before{height:125px;width:125px}
+  .ng-feature-art:after{height:110px;width:110px}
+  .ng-feature-spark{font-size:21px}
+  .ng-feature-actions{gap:8px;margin-top:18px}
+  .ng-feature-actions a,.ng-feature-actions button{min-height:45px;font-size:.78rem;padding:10px 13px}
+  .ng-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .ng-quick-link{min-height:92px;gap:9px}
+  .ng-quick-link:last-child{grid-column:1/-1;min-height:74px}
+  .ng-library-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .ng-library-tile{min-height:83px;padding:11px;gap:9px}
+  .ng-library-tile:first-child{grid-column:1/-1}
+  .ng-library-art{flex-basis:39px;width:39px;height:39px;font-size:23px;border-radius:11px}
+  .ng-library-status{font-size:.59rem}
+  #page-home .arcade-shop-spotlight-action{min-height:42px}
+  .ng-account-toolbar{justify-content:stretch}
+  .ng-account-toolbar button{flex:1}
+}
+@media(max-width:440px){
+  .ng-welcome h1{font-size:1.43rem}
+  .ng-welcome p{font-size:.77rem}
+  .ng-feature{grid-template-columns:minmax(0,1fr) 76px;gap:0;padding:17px;min-height:236px}
+  .ng-feature-art{min-height:135px}
+  .ng-feature-mark{height:72px;width:72px;border-radius:17px;font-size:43px}
+  .ng-feature-art:before{height:102px;width:102px}
+  .ng-feature-art:after{height:82px;width:82px}
+  .ng-feature-spark.one{top:3px;right:-4px}
+  .ng-feature-spark.two{bottom:7px;left:-10px}
+  .ng-feature-pills{gap:5px}
+  .ng-feature-pills span{font-size:.63rem;padding:5px 7px}
+  .ng-feature-actions{flex-direction:column;align-items:stretch;margin-right:-2px}
+  .ng-feature-actions a,.ng-feature-actions button{width:100%}
+  .ng-quick-link{display:flex;flex-direction:column;align-items:flex-start;padding:12px;min-height:114px}
+  .ng-quick-link:last-child{flex-direction:row;align-items:center;min-height:73px}
+  .ng-library-tile:not(:first-child){display:flex;flex-direction:column;align-items:flex-start}
+  .ng-library-tile:not(:first-child) .ng-library-status{margin-left:0}
+  #page-home .arcade-shop-spotlight{padding:13px;gap:9px}
+  #page-home .arcade-shop-spotlight-copy{flex:1 1 calc(100% - 60px)}
+  #page-home .arcade-shop-spotlight-action{flex:1 1 100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .ng-quick-link,.ng-library-tile,.ng-details>summary::after{transition:none!important}
+}
