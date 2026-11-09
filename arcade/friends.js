@@ -110,7 +110,15 @@
   function personCard(p,kind,item){
     if(!p||!validId.test(p.user_id))return null;
     const card=node('article','friends-card');
-    card.append(publicInfo(p));
+    const info=publicInfo(p);
+    if(kind==='friend'){
+      const present=window.FOXEY_ARCADE_LIVE?.getFriendPresence?.(p.user_id);
+      info.querySelector('.friends-player-info')?.append(node('span','friends-presence '+
+        (present===true?'is-online':'is-offline'),present===null||present===undefined?
+        tr('◌ Zjišťuji stav…','◌ Checking status…'):
+        present?tr('🟢 Online','🟢 Online'):tr('⚪ Offline','⚪ Offline')));
+    }
+    card.append(info);
     const buttons=node('div','friends-actions');
     buttons.append(profileButton(p));
     if(kind==='search'){
@@ -656,6 +664,9 @@
       if(currentPage==='community')void refresh();
       void refreshInbox();
     }
+  });
+  window.addEventListener('foxey-arcade:presence',()=>{
+    if(uid&&currentPage==='community')render();
   });
   window.addEventListener('foxey-arcade:locale-changed',()=>{
     render();renderInbox();if(selected)renderPublicProfile();
