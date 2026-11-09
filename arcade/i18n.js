@@ -5,6 +5,19 @@
   'use strict';
   const KEY='foxey.arcade.locale.v1';
   const EN=Object.freeze({
+  "🦊 FOXEY ARCADE · SOCIAL HUB": "🦊 FOXEY ARCADE · SOCIAL HUB",
+  "⚔️ FOXEY ARCADE · SOCIAL HUB": "⚔️ FOXEY ARCADE · SOCIAL HUB",
+  "👥 Komunita": "👥 Community",
+  "Kamarádi, zprávy, živé souboje a společné výzvy. Všechno na jednom místě.": "Friends, messages, live duels and shared challenges. All in one place.",
+  "Moji přátelé": "My friends",
+  "Nepřečtené zprávy": "Unread messages",
+  "Čekající žádosti": "Pending requests",
+  "Sekce Social Hub FOXEY Arcade": "FOXEY Arcade Social Hub sections",
+  "Přehled komunity": "Community overview",
+  "Komunita FOXEY Arcade": "FOXEY Arcade Community",
+  "Moje výzvy FOXEY Arcade": "My FOXEY Arcade challenges",
+  "Pokračuj v rozehraných partiích, zkontroluj soupeře a prohlédni své výsledky.": "Resume ongoing games, check on opponents and see your results.",
+  "➕ Nová výzva": "➕ New challenge",
   "🦊 FOXEY ARCADE · TVŮJ HERNÍ SVĚT": "🦊 FOXEY ARCADE · YOUR GAMING WORLD",
   "Vítej v Arcade,": "Welcome to Arcade,",
   "Pokračuj tam, kde jsi skončil, plň mise a zahraj si s kamarády.": "Pick up where you left off, complete missions and play with friends.",
