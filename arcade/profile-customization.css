@@ -168,3 +168,15 @@
 @media(prefers-reduced-motion:reduce){
  #playerAccount .pc-shortcut,#playerAccount .inventory-item,#playerAccount .pc-achievements-meter span{transition:none!important;transform:none!important}
 }
+
+
+/* Equipped themes recolor the profile cover without changing the saved theme. */
+body.arcade-theme-retro #playerAccount .pc-cover{border-color:#c780ac;background:radial-gradient(circle at 86% 0%,#aa588b99,transparent 52%),linear-gradient(125deg,#4c294b,#2e233f 70%,#222943)}
+body.arcade-theme-retro #playerAccount .profilehero .bigavatar{background:linear-gradient(125deg,#98577c,#653a77);border-color:#dfa1c7}
+body.arcade-theme-retro #playerAccount .pc-shortcut{background:linear-gradient(125deg,#422943,#222840)}
+body.arcade-theme-royal #playerAccount .pc-cover{border-color:#caac7b;background:radial-gradient(circle at 85% -5%,#987c5299,transparent 53%),linear-gradient(125deg,#403154,#2c2947 70%,#202b45)}
+body.arcade-theme-royal #playerAccount .profilehero .bigavatar{background:linear-gradient(125deg,#9c7953,#59457f);border-color:#e5c493}
+body.arcade-theme-royal #playerAccount .pc-shortcut{background:linear-gradient(125deg,#42344a,#202a40)}
+body.arcade-theme-ocean #playerAccount .pc-cover{border-color:#53b6c4;background:radial-gradient(circle at 85% -5%,#207c9499,transparent 53%),linear-gradient(125deg,#174c69,#19344c 70%,#143649)}
+body.arcade-theme-ocean #playerAccount .profilehero .bigavatar{background:linear-gradient(125deg,#248ba2,#1f547d);border-color:#86d6e1}
+body.arcade-theme-ocean #playerAccount .pc-shortcut{background:linear-gradient(125deg,#164357,#172b44)}
