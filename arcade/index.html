@@ -17,7 +17,7 @@
       location.replace(target.href);
     }
   </script>
-  <link rel="stylesheet" href="./styles.css?v=chat-1-1-presence-mini-20261109a">
+  <link rel="stylesheet" href="./styles.css?v=native-fullscreen-20261109a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -195,11 +195,11 @@
         <button class="secondary" type="button" data-page="games">← Zpět na hry</button>
         <div><strong>🎮 Guess the Game</strong><span class="small">Zabezpečená serverová verze · průběh u účtu</span></div>
         <div class="arcade-game-toolbar">
-          <button class="secondary" id="gameExitFullscreen" type="button" aria-label="Opustit celou obrazovku">↙ Režim okna</button>
+          <button class="secondary" id="gameExitFullscreen" type="button" aria-label="Spustit skutečný fullscreen">⛶ Skutečný fullscreen</button>
           <a class="small" href="../secure-quiz-beta.html" target="_blank" rel="noopener noreferrer">Otevřít samostatně ↗</a>
         </div>
       </div>
-      <p class="small" id="gameHelp">🛡️ Tohle je nová zabezpečená Guess the Game: šest režimů s uloženým postupem, soukromé výzvy a historie výsledků. Vyžaduje přihlášení. Výsledek a globální odměny se ověřují na serveru a automaticky synchronizují do společného profilu.</p>
+      <p id="gameFullscreenStatus" class="arcade-fullscreen-status hidden" role="status" aria-live="polite"></p>\n      <p class="small" id="gameHelp">🛡️ Tohle je nová zabezpečená Guess the Game: šest režimů s uloženým postupem, soukromé výzvy a historie výsledků. Vyžaduje přihlášení. Výsledek a globální odměny se ověřují na serveru a automaticky synchronizují do společného profilu.</p>
       <iframe id="gameFrame" title="Guess the Game – vestavěná hra" loading="lazy" allow="fullscreen"></iframe>
     </section>
 
@@ -713,6 +713,6 @@
 <script src="./ui2.js?v=arcade-community-shop-cancel-chest-20261108l"></script>
 <script src="./missions.js?v=rotating-missions-streaks-20261108a"></script>
 <div class="arcade-achievement-toast hidden" id="arcadeAchievementToast" role="status" aria-live="polite"></div>
-<script src="./app.js?v=chat-1-1-presence-mini-20261109a"></script>
+<script src="./app.js?v=native-fullscreen-20261109a"></script>
 </body>
 </html>
