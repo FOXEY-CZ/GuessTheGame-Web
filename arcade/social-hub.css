@@ -1,0 +1,142 @@
+/* FOXEY Arcade 2.3 – Social Hub presentation layer.
+   No account writes, RPC changes, matchmaking changes or message processing. */
+#page-community,#page-challenges{--sh-bg:#0e1a30;--sh-card:#172843;--sh-edge:#455d83;--sh-highlight:#afa6ff;min-width:0}
+.social-hub-hero{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid #6268a9;border-radius:24px;background:radial-gradient(circle at 95% -25%,#6553b399,transparent 52%),linear-gradient(130deg,#292d60,#1a3050 63%,#173f52);padding:clamp(19px,3.5vw,32px);box-shadow:0 15px 35px #02081255;margin:8px 0 16px}
+.social-hub-hero::after{content:"✦";position:absolute;right:17%;bottom:-59px;font-size:172px;color:#c4c9ff12;pointer-events:none;z-index:-1}
+.social-hub-heading{flex:1;min-width:0}
+.social-hub-heading .eyebrow{color:#a0f5e9;letter-spacing:.14em}
+.social-hub-heading h1{font-size:clamp(1.75rem,4vw,2.65rem);line-height:1.13;letter-spacing:-.04em;margin:8px 0}
+.social-hub-heading p{font-size:clamp(.8rem,1.45vw,.94rem);line-height:1.55;max-width:610px;margin:0;color:#d0e0f7}
+.social-hub-actions{display:flex;flex-wrap:wrap;gap:9px;justify-content:flex-end;align-items:center;max-width:320px}
+.social-hub-actions button,.social-hub-actions a{min-height:43px;border-radius:12px;font-size:.79rem;padding:10px 14px;white-space:normal;text-align:center}
+.social-hub-actions .primary{color:#fff;background:linear-gradient(110deg,#7966d5,#5b60c3)}
+.social-hub-activity{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:14px 0}
+.social-hub-metric{display:flex;align-items:center;gap:14px;min-width:0;padding:14px 16px;border:1px solid #415577;background:linear-gradient(140deg,#1b2b46,#15243d);border-radius:16px}
+.social-hub-metric-icon{display:grid;place-items:center;flex:0 0 43px;height:43px;width:43px;border-radius:13px;background:linear-gradient(135deg,#3b467b,#294b70);font-size:1.25rem}
+.social-hub-metric-label{display:grid;gap:3px;min-width:0}
+.social-hub-metric-label small{font-size:.73rem;font-weight:700;color:#b1c4df;line-height:1.3}
+.social-hub-metric-label strong{font-size:1.37rem;line-height:1.25;font-weight:850;color:#f5fbff;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#page-community .social-hub-tabs,#page-challenges .social-hub-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:7px;margin:14px 0 19px;border:1px solid #42577b;border-radius:17px;background:#121f37;box-shadow:0 7px 21px #050a1b3d}
+#page-community .social-hub-tabs .arcade-social-tab,#page-challenges .social-hub-tabs .arcade-social-tab{display:flex;min-width:0;min-height:50px;align-items:center;justify-content:center;gap:8px;border-radius:12px;border:1px solid transparent;padding:11px 9px;font-size:.88rem;font-weight:800;color:#b9cde9;transition:background-color .15s,border-color .15s,transform .15s}
+#page-community .social-hub-tabs .arcade-social-tab:hover,#page-challenges .social-hub-tabs .arcade-social-tab:hover{background:#263a5c;color:#fff}
+#page-community .social-hub-tabs .arcade-social-tab.is-active,#page-challenges .social-hub-tabs .arcade-social-tab.is-active{color:white;background:linear-gradient(125deg,#6255b4,#354f86);border-color:#9991e9;box-shadow:0 4px 14px #01081e55}
+#page-community .social-hub-tabs .arcade-chat-unread,#page-challenges .social-hub-tabs .arcade-chat-unread{flex:none;margin-left:1px}
+#page-community #friendsStatus{font-size:.77rem;margin:0 0 10px;color:#b3c8e5;line-height:1.5}
+.social-people-grid{display:grid;grid-template-columns:minmax(270px,.88fr) minmax(0,1.28fr);gap:13px;align-items:start}
+#page-community .social-people-grid>.friends-section{margin:0;min-width:0;height:100%;background:linear-gradient(150deg,#182a47,#14243c);border:1px solid #425a7d;border-radius:18px;padding:17px;box-shadow:0 8px 21px #0409192b}
+#page-community .social-people-grid .friends-section .sectionline{margin:0 0 14px}
+#page-community .social-people-grid .friends-section .sectionline h2{font-size:clamp(.98rem,2.2vw,1.2rem)}
+#page-community #friendsFindTitle,#page-community #friendsListTitle{letter-spacing:-.015em}
+#page-community .social-people-grid .friends-search-form{gap:10px}
+#page-community .social-people-grid .friends-search-form label{font-size:.76rem;color:#c1d6f1}
+#page-community .social-people-grid #friendsSearchInput{border-radius:12px;min-height:48px;background:#0c1b31;border-color:#576f97}
+#page-community .social-people-grid #friendsSearchButton{border-radius:12px;min-width:91px;font-size:.82rem}
+#page-community .social-people-grid #friendsSearchResults{grid-template-columns:1fr}
+#page-community .social-people-grid #friendsList{grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));align-content:start}
+#page-community .friends-card{background:linear-gradient(145deg,#223554,#1b2c48);border:1px solid #4b6386;border-radius:15px;padding:15px;box-shadow:inset 0 1px #ffffff0a;transition:transform .17s,border-color .17s}
+#page-community .friends-card:hover{border-color:#958dce;transform:translateY(-1px)}
+#page-community .friends-avatar{background:linear-gradient(125deg,#4b458e,#28678c);border:1px solid #6374b1}
+#page-community .friends-player-info strong{font-size:.96rem;line-height:1.3}
+#page-community .friends-actions button{border-radius:10px;min-height:43px}
+#page-community .friends-actions button.primary{background:#514a93;border-color:#8c84d8}
+#page-community .friends-public-profile{scroll-margin-top:115px;border-color:#807fbe;background:linear-gradient(130deg,#29395a,#172b47)}
+#page-community .friends-blocked-area{margin:15px 0;background:#131f36;border-color:#3d5275}
+#page-community .friends-view-pane.hidden{display:none!important}
+#page-community .arcade-chat-shell{margin:0;padding:17px;border:1px solid #465f85;border-radius:19px;background:linear-gradient(145deg,#192c49,#111e36);box-shadow:0 12px 34px #030a1a35}
+#page-community .arcade-chat-heading{margin:0 0 13px;gap:13px}
+#page-community .arcade-chat-heading h2{margin:5px 0;font-size:1.28rem}
+#page-community .arcade-chat-heading p{font-size:.79rem;line-height:1.45;color:#b4c7df}
+#page-community .arcade-chat-layout{border-radius:16px;border:1px solid #445d84;grid-template-columns:minmax(210px,290px) minmax(0,1fr);height:min(66dvh,670px);min-height:450px;background:#101e35}
+#page-community .arcade-chat-inbox{background:linear-gradient(155deg,#182b49,#13223b)}
+#page-community .arcade-chat-side-head{padding:15px 14px 8px}
+#page-community .arcade-chat-person{border-radius:12px;margin-bottom:3px;min-height:73px}
+#page-community .arcade-chat-person.is-active{background:#3c417c;border-color:#887fcf}
+#page-community .arcade-chat-conversation-head{background:#1a2b4b;border-color:#364c71}
+#page-community .arcade-chat-thread{background:radial-gradient(circle at 75% 0,#1d3050,#101d33 68%)}
+#page-community .arcade-chat-bubble{border-radius:15px 15px 15px 4px;box-shadow:0 3px 9px #040a1c1f}
+#page-community .arcade-chat-bubble.mine{border-radius:15px 15px 4px 15px;background:#504b8e}
+#page-community .arcade-chat-composer textarea{min-height:44px;max-height:130px;border-radius:11px}
+#page-community .arcade-chat-composer button{min-height:44px;border-radius:11px}
+#page-community .live-section{border:1px solid #47638c;border-radius:19px;margin:0;background:linear-gradient(140deg,#182c49,#13243e);padding:clamp(15px,2.6vw,22px)}
+#page-community .live-section .sectionline{margin:0 0 12px}
+#page-community .live-section #liveTitle{font-size:clamp(1.12rem,2.8vw,1.45rem)}
+#page-community .live-mode-picker{border:1px solid #4d6285;border-radius:14px;background:#192a48;padding:14px}
+#page-community .live-list{min-width:0}
+#page-community .live-item{border-radius:13px;border-color:#425e81}
+#page-challenges .challenge-page-intro{margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+#page-challenges .challenge-page-intro .eyebrow{color:#a6f4e9}
+#page-challenges .challenge-page-actions{display:flex;gap:9px;flex-wrap:wrap}
+#page-challenges .challenge-page-actions>*{min-height:43px;padding:10px 13px;border-radius:11px;font-size:.8rem}
+#page-challenges .challenge-dashboard-stats{margin:0 0 13px;gap:11px}
+#page-challenges .challenge-dashboard-stats>div{background:linear-gradient(125deg,#222e4e,#172941);border:1px solid #4b648a;border-radius:16px;min-height:79px;padding:13px 16px}
+#page-challenges .challenge-dashboard-stats strong{font-size:1.6rem;color:#f3f7ff}
+#page-challenges .challenge-dashboard-groups{gap:13px}
+#page-challenges .challenge-dashboard-group{border:1px solid #465d80;border-radius:18px;background:linear-gradient(140deg,#1b2a47,#13233c);padding:clamp(13px,2.3vw,19px)}
+#page-challenges .challenge-dashboard-group .sectionline{margin:0 0 12px}
+#page-challenges .challenge-dashboard-card{border-radius:14px;background:#202f4d;border-color:#435d85}
+#page-challenges .challenge-dashboard-card button{border-radius:10px;min-height:41px}
+#page-challenges .challenge-dashboard-footer{margin-top:16px}
+#page-community :where(button,input,textarea,select):focus-visible,
+#page-challenges :where(button,a):focus-visible{outline:2px solid #9bedf3;outline-offset:3px}
+@media(max-width:920px){
+ .social-people-grid{grid-template-columns:1fr}
+ #page-community .social-people-grid>.friends-section{height:auto}
+ #page-community .social-people-grid #friendsList{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+}
+@media(max-width:760px){
+ .social-hub-hero{padding:17px;border-radius:18px;gap:11px;align-items:flex-start}
+ .social-hub-heading h1{font-size:1.66rem;margin:7px 0}
+ .social-hub-heading p{font-size:.79rem;line-height:1.45}
+ .social-hub-actions{max-width:145px;gap:7px}
+ .social-hub-actions button,.social-hub-actions a{font-size:.71rem;padding:9px 10px;min-height:40px;width:100%}
+ .social-hub-activity{gap:7px}
+ .social-hub-metric{padding:10px;gap:8px;min-height:65px;border-radius:13px}
+ .social-hub-metric-icon{flex:0 0 33px;width:33px;height:33px;font-size:1.1rem;border-radius:10px}
+ .social-hub-metric-label small{font-size:.64rem}
+ .social-hub-metric-label strong{font-size:1.13rem}
+ #page-community .social-hub-tabs,#page-challenges .social-hub-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px;margin:12px 0 15px}
+ #page-community .social-hub-tabs .arcade-social-tab,#page-challenges .social-hub-tabs .arcade-social-tab{min-height:47px;padding:10px 6px;font-size:.82rem}
+ #page-community .arcade-chat-shell{padding:12px;border-radius:16px}
+ #page-community .arcade-chat-layout{display:grid;grid-template-columns:1fr;height:min(64dvh,590px);min-height:375px}
+ #page-community .arcade-chat-inbox{border-right:0}
+ #page-community .arcade-chat-conversation{display:none}
+ #page-community .friends-view-pane.has-conversation .arcade-chat-inbox{display:none}
+ #page-community .friends-view-pane.has-conversation .arcade-chat-conversation{display:flex}
+ #page-community .arcade-chat-back{display:inline-flex!important}
+ #page-community .arcade-chat-heading{flex-wrap:wrap}
+ #page-community .arcade-chat-heading h2{font-size:1.15rem}
+ #page-community .arcade-chat-thread{padding:12px}
+ #page-community .friends-public-profile{scroll-margin-top:100px}
+ #page-challenges .challenge-page-intro{display:flex;flex-direction:column;align-items:stretch}
+ #page-challenges .challenge-dashboard-stats>div{min-height:72px;padding:10px}
+}
+@media(max-width:480px){
+ .social-hub-hero{display:flex;flex-direction:column;padding:16px}
+ .social-hub-heading h1{font-size:1.55rem}
+ .social-hub-actions{width:100%;max-width:none;flex-direction:row}
+ .social-hub-actions button,.social-hub-actions a{flex:1 1 135px}
+ .social-hub-activity{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .social-hub-metric{flex-direction:column;align-items:center;text-align:center;gap:4px;padding:9px 4px;min-height:89px}
+ .social-hub-metric-icon{flex:0 0 31px;width:31px;height:31px}
+ .social-hub-metric-label strong{font-size:1.15rem}
+ #page-community .social-people-grid>.friends-section{padding:14px}
+ #page-community .social-people-grid #friendsList{grid-template-columns:1fr}
+ #page-community .friends-search-form>div{flex-wrap:nowrap}
+ #page-community .friends-search-form input{flex:1 1 auto;min-width:0}
+ #page-community .friends-search-form button{flex:0 0 auto;min-width:78px}
+ #page-community .arcade-chat-layout{height:min(61dvh,590px);min-height:365px}
+ #page-challenges .challenge-dashboard-stats{gap:6px}
+ #page-challenges .challenge-dashboard-stats>div{padding:10px 6px}
+ #page-challenges .challenge-dashboard-stats>div span{font-size:.71rem}
+ #page-challenges .challenge-dashboard-stats>div strong{font-size:1.38rem}
+}
+@media(max-width:350px){
+ .social-hub-activity{grid-template-columns:1fr}
+ .social-hub-metric{flex-direction:row;align-items:center;text-align:left;min-height:51px;gap:10px;padding:8px 10px}
+ #page-community .social-hub-tabs .arcade-social-tab,#page-challenges .social-hub-tabs .arcade-social-tab{font-size:.74rem}
+ #page-community .friends-search-form>div{flex-wrap:wrap}
+ #page-community .friends-search-form input,#page-community .friends-search-form button{flex:1 1 100%}
+}
+@media(prefers-reduced-motion:reduce){
+ #page-community .friends-card,.social-hub-tabs .arcade-social-tab{transition:none!important}
+}
