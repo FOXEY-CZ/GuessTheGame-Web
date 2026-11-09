@@ -293,8 +293,11 @@
   function onPage(page){
     currentPage=page;
     setMore(false,false);
-    const main=page==='play'?'games':page==='challenges'?'community':page;
-    const isMore=['account','missions','settings'].includes(page);
+    // The 2.2 dock has four primary destinations. Settings belongs to Profile,
+    // while the top-bar menu retains direct access to missions and shop.
+    const main=page==='play'?'games':page==='challenges'?'community':
+      page==='settings'?'account':page;
+    const isMore=['missions','settings','shop'].includes(page);
     document.querySelectorAll('.arcade-mobile-dock button[data-page]').forEach(button=>{
       const active=button.dataset.page===main;
       button.classList.toggle('active',active);
