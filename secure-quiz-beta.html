@@ -998,10 +998,10 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script src="account-config.js"></script>
-<script src="./quizoria/catalog.js?v=quizoria-memes-20261109b"></script>
-<script src="./quizoria/quizoria-ui.js?v=quizoria-memes-20261109b"></script>
-<script src="./quizoria/million.js?v=quizoria-million-20261109e"></script>
-<script src="./quizoria/memes.js?v=quizoria-memes-20261109b"></script>
+<script src="./quizoria/catalog.js?v=quizoria-progress-20261109a"></script>
+<script src="./quizoria/quizoria-ui.js?v=quizoria-progress-20261109a"></script>
+<script src="./quizoria/million.js?v=quizoria-progress-20261109a"></script>
+<script src="./quizoria/memes.js?v=quizoria-progress-20261109a"></script>
 <script src="./quizoria/progression.js?v=quizoria-progress-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
@@ -3464,6 +3464,10 @@
     if(me&&document.visibilityState!=='hidden')void refreshHistory();
   },45000);
   $('quizoriaMemeFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MEMES?.openCategory?.());
+  window.QUIZORIA_PROGRESS?.setAfterClaim?.(()=>{
+    void refreshLiveRewards();
+    void refreshGameAchievements();
+  });
   window.QUIZORIA_UI?.setOpenModes(category=>{
     if(category==='memes'){
       window.QUIZORIA_MEMES?.openCategory?.();
