@@ -159,6 +159,10 @@
     render();
   }
   function render(){
+    if(opened){
+      document.body?.classList.toggle('quiz-playing',!!run&&run.status==='active');
+      document.body?.classList.toggle('quiz-finished',!!run&&run.status!=='active');
+    }
     updateLaunch();if(!run){return;}
     $('millionCurrentStage').textContent=tr('question')+' '+Math.min(run.stage+1,15)+' / 15';
     $('millionPrize').textContent=tr('prize')+' '+money(steps[Math.min(run.stage,14)]);
@@ -249,7 +253,7 @@
         render();
       }else{
         writeStatus(tr('loading'));render();
-        await loadState();writeStatus(tr('activeHint'));
+        await loadState();writeStatus(run?.status==='active'?tr('activeHint'):'');
       }
       return;
     }
