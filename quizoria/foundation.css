@@ -110,3 +110,97 @@ button.quizoria-category:focus-visible{outline:2px solid #7affe8;outline-offset:
  .quizoria-mode-top,.quizoria-category-section-heading{margin-top:23px}
  .quizoria-social-section{padding:14px}
 }
+
+
+/* Quizoria lobby refresh — four top tabs instead of a single long page. */
+#modePanel{margin-top:10px;padding:clamp(15px,3vw,24px);border-radius:20px}
+#modePanel>.label{font-size:.66rem;letter-spacing:.13em}
+#modePanel>#modeTitle{margin:6px 0 12px;font-size:clamp(1.25rem,3.7vw,1.8rem)}
+#modePanel .quizoria-hub-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:5px;margin:0 0 10px;padding:5px;border:1px solid #4a618c;border-radius:16px;
+ background:#101c36}
+#modePanel .quizoria-hub-nav .game-hub-tab{min-height:48px;padding:9px 5px;
+ font-size:clamp(.68rem,1.8vw,.9rem);letter-spacing:0;border-radius:12px;
+ overflow-wrap:normal;word-break:normal}
+#modePanel .game-hub-description{min-height:0;margin:0 0 11px;
+ color:#a8bfdf;font-size:.79rem;line-height:1.45}
+#modePanel .game-hub-pane.hidden{display:none!important}
+#modePanel #gameHubSolo{padding-top:0}
+#modePanel .quizoria-quickzone{margin:7px 0 14px;padding:14px;gap:12px;
+ border-radius:16px;box-shadow:0 5px 17px #070d1c66}
+#modePanel .quizoria-quick-icon{width:49px;height:49px;flex-basis:49px;font-size:1.6rem}
+#modePanel .quizoria-quick-content h3{font-size:1.25rem;margin:3px 0}
+#modePanel .quizoria-quick-content p{font-size:.77rem;line-height:1.4}
+#modePanel .quizoria-quick-actions{gap:7px}
+#modePanel .quizoria-quick-actions button{min-height:41px;font-size:.82rem}
+.quizoria-quick-progress{margin-top:6px!important;color:#aaffeb!important;
+ font-size:.72rem!important;line-height:1.3!important}
+#modePanel .quizoria-mode-top{margin:14px 0 9px}
+#modePanel .quizoria-mode-top h3{font-size:1.13rem}
+#modePanel .quizoria-mode-top p{font-size:.78rem}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid){grid-template-columns:1fr}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .quizoria-coming-mode:first-child{
+ grid-column:auto;min-height:72px;padding:13px}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .mode-choice-head{
+ align-items:center;flex-wrap:nowrap}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .mode-icon{font-size:1.35rem}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .mode-copy{flex:1;min-width:0}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .mode-copy strong{font-size:.95rem}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .mode-copy small{font-size:.73rem}
+#modePanel .quizoria-featured-modes:not(.quizoria-future-grid) .quizoria-mode-badge{flex:none}
+#modePanel .quizoria-future-drawer{margin:8px 0 12px;border:1px solid #3e506f;
+ border-radius:12px;background:#14243e}
+#modePanel .quizoria-future-drawer summary{padding:12px 14px;cursor:pointer;
+ color:#cbd7ef;font-size:.81rem;font-weight:800;min-height:44px}
+#modePanel .quizoria-future-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+ padding:0 10px 10px}
+#modePanel .quizoria-future-grid .mode-choice{min-height:88px}
+#modePanel .quizoria-modes-intro{margin:15px 0 8px;font-size:.83rem}
+#modePanel #gameHubSolo #modes{gap:9px;margin-top:0}
+#modePanel #gameHubSolo #modes .mode-choice{padding:12px;border-radius:13px;gap:8px}
+#modePanel #gameHubSolo #modes .mode-choice-head{gap:8px}
+#modePanel #gameHubSolo #modes .mode-copy strong{font-size:.9rem}
+#modePanel #gameHubSolo #modes .mode-copy small{font-size:.74rem}
+#modePanel #gameHubSolo #modes .mode-icon{width:42px;height:42px;flex-basis:42px;font-size:1.25rem}
+#modePanel #gameHubSolo #modes .mode-choice-actions button{min-height:39px;font-size:.75rem;padding:8px 7px}
+#modePanel #gameHubSolo #modes [data-mode-card="classic"]{display:none!important}
+#modePanel .solo-head{margin:3px 0 11px;gap:8px}
+#modePanel .solo-head .async-help{font-size:.72rem}
+#modePanel .solo-head button{min-height:35px;font-size:.73rem;padding:6px 8px}
+#modePanel #legacyCaveat{font-size:.74rem!important;color:#a9c6e2}
+#modePanel .quizoria-rewards-drawer{margin:14px 0 0;border:1px solid #3e5578;
+ border-radius:12px;background:#14233d;overflow:hidden}
+#modePanel .quizoria-rewards-drawer summary{display:flex;align-items:center;justify-content:space-between;
+ gap:10px;padding:12px 14px;min-height:43px;cursor:pointer;
+ font-size:.82rem;color:#cfe6f8;font-weight:800;list-style:none}
+#modePanel .quizoria-rewards-drawer summary::-webkit-details-marker{display:none}
+#modePanel .quizoria-rewards-drawer[open] summary span{transform:rotate(180deg)}
+#modePanel .quizoria-rewards-drawer .live-rewards{margin:0 10px 10px}
+#modePanel .quizoria-category-section-heading{margin:8px 0 12px}
+#modePanel .quizoria-categories-zone{margin:0;padding:14px}
+#modePanel .quizoria-social-section{margin:8px 0 13px;padding:13px 14px;border-radius:13px}
+#modePanel .quizoria-social-section h3{font-size:1.08rem}
+#modePanel #gameHubCategories .quizoria-category-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+#modePanel #gameHubCategories .quizoria-category.selected{grid-column:1/-1}
+body:not(.quiz-playing):not(.quiz-finished) .hero{padding:12px 8px 6px}
+body:not(.quiz-playing):not(.quiz-finished) .hero-art{display:none}
+body:not(.quiz-playing):not(.quiz-finished) .hero h1{
+ margin:3px auto 4px;font-size:clamp(1.7rem,5vw,2.35rem)}
+body:not(.quiz-playing):not(.quiz-finished) .hero .lead{
+ font-size:.84rem;line-height:1.4;max-width:540px}
+body:not(.quiz-playing):not(.quiz-finished) .hero .label{font-size:.64rem}
+#modePanel~.status{min-height:0}
+@media(max-width:560px){
+ #modePanel{padding:13px 11px}
+ #modePanel .quizoria-hub-nav{gap:3px;padding:4px}
+ #modePanel .quizoria-hub-nav .game-hub-tab{font-size:.7rem;min-height:45px;padding:7px 2px}
+ #modePanel .quizoria-future-grid{grid-template-columns:1fr}
+ #modePanel .quizoria-quickzone{gap:10px;padding:12px}
+ #modePanel .quizoria-quick-icon{width:43px;height:43px;flex-basis:43px;font-size:1.35rem}
+ #modePanel .quizoria-quick-content{flex:1 1 calc(100% - 55px)}
+ #modePanel .quizoria-quick-actions{flex:1 1 100%;max-width:none;flex-direction:row}
+ #modePanel .quizoria-quick-actions button{flex:1 1 50%}
+ #modePanel #gameHubCategories .quizoria-category-list{grid-template-columns:1fr}
+ #modePanel #gameHubCategories .quizoria-category.selected{grid-column:auto}
+ #modePanel #gameHubSolo #modes{grid-template-columns:1fr}
+}
