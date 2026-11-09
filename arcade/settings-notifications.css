@@ -106,6 +106,8 @@
  #arcadeNoticeOverlay .arcade-bell-requests>summary{padding:10px 12px;font-size:.8rem}
 }
 @media(prefers-reduced-motion:reduce){#arcadeNoticeOverlay .arcade-notice-drawer{animation:none!important}}
+/* Friend requests live in the shared bell drawer rather than a second top-bar shortcut. */
+#friendRequestsShortcut{display:none!important}
 body.arcade-notice-open{overflow:hidden}
 html.arcade-motion-minimal{scroll-behavior:auto!important}
 html.arcade-motion-minimal *,html.arcade-motion-minimal *::before,
