@@ -183,6 +183,10 @@
     const friends=safeList(dashboard?.friends),incoming=safeList(dashboard?.incoming),
       outgoing=safeList(dashboard?.outgoing),blocked=safeList(dashboard?.blocked);
     setText('friendsCount',logged?String(friends.length):'—');
+    // 2.3 Social Hub metrics mirror server-confirmed dashboard rows.
+    // A missing/not-yet-loaded dashboard stays unknown rather than showing a fake zero.
+    setText('socialFriendsMetric',logged&&dashboard?String(friends.length):'—');
+    setText('socialRequestsMetric',logged&&dashboard?String(incoming.length):'—');
     setText('friendsIncomingCount',logged?String(incoming.length):'—');
     setText('friendsOutgoingCount',logged?String(outgoing.length):'—');
     setText('friendsRequestSummaryCount',logged?
@@ -648,6 +652,7 @@
     btn.addEventListener('click',()=>openPane('people'));
   }
   $('friendRequestsShortcut')?.addEventListener('click',openRequests);
+  $('socialRequestsButton')?.addEventListener('click',openRequests);
   $('friendsSearchForm')?.addEventListener('submit',event=>void search(event));
   $('friendsRefresh')?.addEventListener('click',()=>void refresh());
   $('friendProfileClose')?.addEventListener('click',()=>{
