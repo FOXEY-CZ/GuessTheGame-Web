@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101a32">
-<title>FOXEY Arcade · Guess the Game</title>
+<title>Quizoria — A FOXEY Arcade Game</title>
 <style>
   :root{color-scheme:dark;--bg:#0b1225;--panel:#152340;--edge:#3b5277;--text:#eef5ff;--sub:#a9b8d4;--aqua:#57e1d5;--purple:#8983ff;--gold:#ffcf80}
   *{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
@@ -383,11 +383,12 @@
   @media(max-width:420px){.game-shop-shortcut{
     min-width:37px;padding:7px 8px;font-size:1rem}}
 </style>
+<link rel="stylesheet" href="./quizoria/foundation.css?v=quizoria-foundation-20261109a">
 </head>
 <body>
 <main class="wrap">
   <div class="header">
-    <a id="brandLink" class="brand" href="./arcade/" target="_top">🦊 FOXEY <span>ARCADE</span></a>
+    <a id="brandLink" class="brand quizoria-brand" href="./arcade/" target="_top"><span class="brand-mark">🧠</span><span><b>QUIZORIA</b><small class="quizoria-studio">A FOXEY Arcade Game</small></span></a>
     <div class="header-actions">
       <a id="backToPlatform" class="platform-return" href="./arcade/" target="_top">← Zpět do Arcade</a>
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
@@ -398,14 +399,14 @@
     </div>
   </div>
   <div class="hero">
-    <div class="label" id="eyebrow">SERVEROVÝ KVÍZ · OVĚŘENÉ ODMĚNY</div>
+    <div class="label" id="eyebrow">A FOXEY ARCADE GAME · KVÍZOVÝ SVĚT</div>
     <div class="hero-art" aria-hidden="true">
       <span class="hero-orbit hero-orbit-a"></span><span class="hero-orbit hero-orbit-b"></span>
-      <span class="hero-mark">?</span><span class="hero-spark hero-spark-a">✦</span>
+      <span class="hero-mark">Q</span><span class="hero-spark hero-spark-a">✦</span>
       <span class="hero-spark hero-spark-b">◆</span><span class="hero-spark hero-spark-c">✧</span>
     </div>
-    <h1 id="heroTitle">Poznáš hru podle indicií?</h1>
-    <p class="lead" id="heroLead">Otázky i správné odpovědi spravuje server. Prohlížeč dostane jen aktuální zadání a čtyři možnosti.</p>
+    <h1 id="heroTitle">QUIZORIA</h1>
+    <p class="lead" id="heroLead">Jeden kvízový svět, stále více témat. Začni s Videohry a postupně objevuj další kategorie.</p>
   </div>
   <div class="status" id="status" role="status" aria-live="polite"></div>
 
@@ -423,8 +424,23 @@
   </section>
 
   <section id="modePanel" class="panel hidden">
-    <div class="label" id="modeEyebrow">SERVEROVÁ VOLBA OTÁZEK</div>
-    <h2 id="modeTitle">Vyber režim</h2>
+    <div class="label" id="modeEyebrow">QUIZORIA · KATEGORIE A REŽIMY</div>
+    <h2 id="modeTitle">Videohry · vyber režim</h2>
+    <section id="quizoriaCategoriesZone" class="quizoria-categories-zone" aria-labelledby="quizoriaCategoriesTitle">
+      <div class="quizoria-categories-top">
+        <div>
+          <div class="label">QUIZORIA · 1.0 FOUNDATION</div>
+          <h3 id="quizoriaCategoriesTitle">Vyber si svůj kvízový svět</h3>
+          <p id="quizoriaCategoriesIntro">Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.</p>
+        </div>
+        <span class="quizoria-category-count">1 / 5 LIVE</span>
+      </div>
+      <div id="quizoriaCategories" class="quizoria-category-list" aria-label="Kategorie Quizoria">
+        <button class="quizoria-category selected" type="button" disabled>🎮 Videohry · Hratelné</button>
+      </div>
+      <p id="quizoriaCategoryNote" class="quizoria-category-note">Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.</p>
+    </section>
+
     <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
       <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
       <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
@@ -448,6 +464,7 @@
       <p id="resumeError" class="async-help" role="status" aria-live="polite"></p>
     </section>
     <div class="inbox-head solo-head"><p id="soloUpdateStatus" class="async-help" role="status" aria-live="polite">Načítám rozehrané hry…</p><button id="soloRefresh" type="button">🔄 Obnovit</button></div>
+    <p class="quizoria-modes-intro" id="quizoriaModeIntro">🎯 Režimy a rozehrané partie pro kategorii Videohry</p>
     <div class="modes" id="modes">
       <article class="mode-choice" data-mode-card="classic">
         <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">⚡</span><span class="mode-copy"><strong id="soloName_classic">Rychlá hra</strong><small id="soloSub_classic">10 otázek · různé obtížnosti</small></span></div>
@@ -478,6 +495,15 @@
         <div class="mode-choice-head"><span class="mode-icon" aria-hidden="true">🔥</span><span class="mode-copy"><strong id="soloName_hard">Hardcore</strong><small id="soloSub_hard">10 těžkých otázek</small></span></div>
         <p class="mode-choice-progress hidden" id="soloProgress_hard" aria-live="polite"></p>
         <div class="mode-choice-actions"><button class="solo-start" id="soloStart_hard" type="button" data-mode="hard">🆕 Nová hra</button><button class="solo-continue hidden" id="soloContinue_hard" type="button" data-solo-continue="hard">▶️ Pokračovat</button></div>
+      </article>
+
+      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaMillionTitle">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">💰</span>
+          <span class="mode-copy"><strong id="quizoriaMillionTitle">💰 Milionová výzva</strong>
+            <small id="quizoriaMillionSubtitle">15 otázek, záchytné body a nápovědy. Brzy v Quizorii.</small></span>
+          <span class="quizoria-mode-badge" id="quizoriaMillionBadge">BRZY</span>
+        </div>
       </article>
     </div>
     <p class="lead" id="legacyCaveat" style="font-size:.82rem;margin:20px 0 0">
@@ -639,7 +665,7 @@
     </div>
   </section>
 
-  <div class="footer" id="footer">FOXEY Arcade · Zabezpečená Guess the Game · Automaticky synchronizované odměny</div>
+  <div class="footer" id="footer">Quizoria · A FOXEY Arcade Game · Automaticky synchronizované odměny</div>
 </main>
 <div id="missionsOverlay" class="achievements-overlay hidden" role="presentation">
   <div id="missionsShade" class="achievements-shade"></div>
@@ -721,6 +747,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script src="account-config.js"></script>
+<script src="./quizoria/catalog.js?v=quizoria-foundation-20261109a"></script>
+<script src="./quizoria/quizoria-ui.js?v=quizoria-foundation-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
