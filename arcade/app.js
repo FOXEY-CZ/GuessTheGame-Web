@@ -128,6 +128,7 @@
   }
   function renderWallet(){
     const ready=!!user&&!!sharedWallet&&!!sharedCosmetics;
+    const en=window.FOXEY_I18N?.getLocale?.()==='en';
     const shards=ready?fmt(walletNumber(sharedWallet.shards)):'—';
     const crowns=ready?fmt(walletNumber(sharedWallet.crowns)):'—';
     const free=ready?fmt(walletNumber(sharedWallet.free_chests)):'—';
@@ -175,10 +176,13 @@
       const themes=fresh&&Array.isArray(sharedCosmetics.owned_themes)
         ?new Set(sharedCosmetics.owned_themes.filter(t=>THEME_IDS.has(t)))
         :new Set();
-      const text= !user?'🔐 Přihlas se, aby se zobrazily tvoje motivy.'
-        :!fresh?'☁️ Načítám odemčené motivy…'
-        :'🎨 Odemčené motivy: '+themes.size+' / '+THEME_IDS.size+
-          ' · Zakoupené motivy zůstávají ve společném účtu.';
+      const text= !user
+        ?(en?'🔐 Sign in to see your themes.':'🔐 Přihlas se, aby se zobrazily tvoje motivy.')
+        :!fresh?(en?'☁️ Loading unlocked themes…':'☁️ Načítám odemčené motivy…')
+        :(en?'🎨 Unlocked themes: ':'🎨 Odemčené motivy: ')+
+          themes.size+' / '+THEME_IDS.size+
+          (en?' · Purchased themes belong to your shared account.'
+             :' · Zakoupené motivy zůstávají ve společném účtu.');
       themeSummary.textContent=text;
     }
     const freeHint=el('shopFreeHint');
@@ -188,14 +192,17 @@
       freeHint.classList.toggle('has-free',canUseFree);
       freeHint.classList.toggle('is-locked',!fresh||collectionFull('basic'));
       freeHint.textContent=!user
-        ?'🔐 Přihlas se a uvidíš své bezplatné truhly.'
-        :!fresh?'☁️ Načítám dostupné truhly z účtu…'
+        ?(en?'🔐 Sign in to see your free chests.':'🔐 Přihlas se a uvidíš své bezplatné truhly.')
+        :!fresh?(en?'☁️ Loading available chests…':'☁️ Načítám dostupné truhly z účtu…')
         :collectionFull('basic')
-          ?'✅ Běžnou sbírku už máš kompletní — další otevírání je zablokované.'
+          ?(en?'✅ Your common collection is complete — further openings are disabled.'
+              :'✅ Běžnou sbírku už máš kompletní — další otevírání je zablokované.')
         :canUseFree
-          ?'🎁 Máš '+fmt(freeCount)+' '+(freeCount===1?'truhlu zdarma':'truhel zdarma')+
-            ' — nejdřív využijeme tuto odměnu, krystaly zůstanou nedotčené.'
-          :'💎 Momentálně nemáš truhlu zdarma. Běžnou lze otevřít za 100 krystalů.';
+          ?(en?'🎁 Free chests available: '+fmt(freeCount)+'. Use a free chest before spending crystals.'
+              :'🎁 Máš '+fmt(freeCount)+' '+(freeCount===1?'truhlu zdarma':'truhel zdarma')+
+               ' — nejdřív využijeme tuto odměnu, krystaly zůstanou nedotčené.')
+          :(en?'💎 No free chests available. A common chest costs 100 crystals.'
+              :'💎 Momentálně nemáš truhlu zdarma. Běžnou lze otevřít za 100 krystalů.');
     }
     const shopHint=el('homeShopStatus');
     if(shopHint){
@@ -327,14 +334,22 @@
     reveal.classList.toggle('is-epic',tier==='epic');
     reveal.classList.toggle('is-demo',demo);
     el('shopRewardArt').textContent=tier==='epic'?'💜':'🎁';
+    const en=window.FOXEY_I18N?.getLocale?.()==='en';
     el('shopRewardTitle').textContent=demo
-      ?'👀 Ukázka otevření truhly':'🎁 Otevírám truhlu…';
+      ?(en?'👀 Chest opening preview':'👀 Ukázka otevření truhly')
+      :(en?'🎁 Opening chest…':'🎁 Otevírám truhlu…');
     el('shopRewardRarity').textContent=demo
-      ?'DEMO · BEZ NÁKUPU':tier==='epic'?'EPICKÁ TRUHLA':'BĚŽNÁ TRUHLA';
-    el('shopRewardName').textContent=demo?'Ukázková animace':'Čekám na potvrzení';
+      ?(en?'DEMO · NO PURCHASE':'DEMO · BEZ NÁKUPU')
+      :tier==='epic'?(en?'EPIC CHEST':'EPICKÁ TRUHLA')
+        :(en?'COMMON CHEST':'BĚŽNÁ TRUHLA');
+    el('shopRewardName').textContent=demo
+      ?(en?'Preview animation':'Ukázková animace')
+      :(en?'Waiting for server':'Čekám na potvrzení');
     el('shopRewardCaption').textContent=demo
-      ?'Tato animace je zdarma. Nic nedostaneš a nic se ti neodečte.'
-      :'Odměnu přidělí až server. Na účet se připíše pouze ověřený výsledek.';
+      ?(en?'This is a free visual preview. No items or currency are added or deducted.'
+          :'Tato animace je zdarma. Nic nedostaneš a nic se ti neodečte.')
+      :(en?'Only the server awards items after verification.'
+          :'Odměnu přidělí až server. Na účet se připíše pouze ověřený výsledek.');
     el('shopRewardInventory').classList.add('hidden');
     el('shopRewardDone').textContent='✕ Zavřít';
     showChestReward();
@@ -350,11 +365,13 @@
          !reveal.classList.contains('is-demo'))return;
       reveal.classList.remove('is-opening');
       showAvatar('pixel-fox',el('shopRewardArt'));
-      el('shopRewardTitle').textContent='👀 Ukázka odměny';
+      el('shopRewardTitle').textContent=window.FOXEY_I18N?.getLocale?.()==='en'
+        ?'👀 Reward preview':'👀 Ukázka odměny';
       el('shopRewardRarity').textContent='DEMO · NEZÍSKÁNO';
       el('shopRewardName').textContent=AVATAR_CATALOG['pixel-fox'].name;
-      el('shopRewardCaption').textContent=
-        'Jen ukázka zobrazení. Žádný avatar nebyl připsán a nic se neodečetlo.';
+      el('shopRewardCaption').textContent=window.FOXEY_I18N?.getLocale?.()==='en'
+        ?'Preview only: no avatar was granted and no currency was deducted.'
+        :'Jen ukázka zobrazení. Žádný avatar nebyl připsán a nic se neodečetlo.';
       el('shopRewardDone').textContent='✓ Zavřít ukázku';
     },1050);
   }
