@@ -33,6 +33,11 @@
       signedOut:'Přihlas se do FOXEY Arcade, aby šla soutěž spustit.',
       activeHint:'Rozehraná soutěž je uložená na serveru a lze se k ní později vrátit.',
       continue:'Pokračovat',busy:'Pracuji s ověřeným výsledkem…',
+      pickTitle:'🎯 Vyber kategorii soutěže',pickIntro:'Každá kategorie má vlastní otázky a rozehranou soutěž.',
+      startCategory:'▶ Zahájit soutěž',resumeCategory:'⏯ Pokračovat v soutěži',
+      savedCategory:'Uloženo · otázka',newCategory:'Zatím neodehráno — můžeš začít.',
+      backToCategory:'← Zpět na kategorie',changeCategory:'Vybrat kategorii',
+      sourceLabel:'Zdroj obrázku',
       empty:'Milionová výzva zatím nebyla spuštěná.',audienceTip:'Nápověda publika'
     },
     en:{
@@ -60,13 +65,24 @@
       signedOut:'Sign in to FOXEY Arcade to play this challenge.',
       activeHint:'Your active challenge is saved on the server and can be resumed later.',
       continue:'Continue',busy:'Verifying your action…',
+      pickTitle:'🎯 Choose a quiz category',pickIntro:'Each category has its own questions and saved run.',
+      startCategory:'▶ Start challenge',resumeCategory:'⏯ Resume challenge',
+      savedCategory:'Saved · question',newCategory:'No challenge yet — ready to start.',
+      backToCategory:'← Back to categories',changeCategory:'Choose category',
+      sourceLabel:'Image source',
       empty:'No Million Challenge run yet.',audienceTip:'Audience lifeline'
     }
   };
   let locale='cs', client=null,uid=null,run=null,opened=false;
+  let selectedCategory='video-games',pickerOpen=true,lastAnsweredQuestion=null;
   let busy=false,pending=null,awaitNext=false,feedback=null;
   let muted=false,audioCtx=null,requestNumber=0;
   const tr=key=>dict[locale][key]||key;
+  const categoryNames={
+    cs:{'video-games':'🎮 Videohry','memes':'😂 Memy','movies':'🎬 Filmy a seriály','music':'🎵 Hudba'},
+    en:{'video-games':'🎮 Video Games','memes':'😂 Memes','movies':'🎬 Movies & Series','music':'🎵 Music'}
+  };
+  const currentName=()=>categoryNames[locale][selectedCategory]||selectedCategory;
   const money=n=>new Intl.NumberFormat(locale==='cs'?'cs-CZ':'en-US')
     .format(Math.max(0,Number(n)||0));
   try{muted=localStorage.getItem('quizoria.million.sound.v1')==='off';}catch(_){}
@@ -104,15 +120,15 @@
     if(show)$('modePanel')?.classList.add('hidden');
     else if(wasOpen&&uid)$('modePanel')?.classList.remove('hidden');
     root.classList.toggle('hidden',!show);
-    document.body?.classList.toggle('quiz-playing',show&&run?.status==='active');
-    document.body?.classList.toggle('quiz-finished',show&&!!run&&run.status!=='active');
+    document.body?.classList.toggle('quiz-playing',show&&!pickerOpen&&run?.status==='active');
+    document.body?.classList.toggle('quiz-finished',show&&!pickerOpen&&!!run&&run.status!=='active');
     if(show)root.scrollIntoView?.({block:'start',behavior:'smooth'});
     updateLaunch();
   }
   function updateLaunch(){
     const button=$('quizoriaMillionLaunch');
     if(!button)return;
-    button.textContent=run?.status==='active'?tr('resume'):tr('launch');
+    button.textContent=tr('launch');
     button.disabled=busy||!uid;
   }
   function showReward(reward){
@@ -144,8 +160,8 @@
   }
   function localizeStatic(){
     const ids={
-      millionTitle:'title',millionSubtitle:'subtitle',millionBack:'back',
-      millionCategory:'questionCategory',millionFifty:'fifty',
+      millionTitle:'title',millionSubtitle:'subtitle',
+      millionFifty:'fifty',
       millionAudience:'audience',millionSwap:'swap',
       millionCashout:'cashout',millionNext:'next',
       millionRetry:'retry',millionAnother:'another',
@@ -156,12 +172,60 @@
       if($(id))$(id).textContent=tr(key);
     }
     $('millionSound').textContent=tr(muted?'soundOff':'soundOn');
+    $('millionPickTitle').textContent=tr('pickTitle');
+    $('millionPickIntro').textContent=tr('pickIntro');
+    for(const button of root.querySelectorAll('[data-million-category]')){
+      button.textContent=categoryNames[locale][button.dataset.millionCategory]||button.dataset.millionCategory;
+    }
     render();
   }
+  function renderPicker(){
+    $('millionCategory').textContent=currentName();
+    root.querySelectorAll('[data-million-category]').forEach(button=>{
+      const selected=button.dataset.millionCategory===selectedCategory;
+      button.classList.toggle('is-selected',selected);
+      button.setAttribute('aria-pressed',String(selected));
+      button.disabled=busy;
+    });
+    const active=run?.category===selectedCategory&&run.status==='active';
+    $('millionSelectedState').textContent=active?
+      tr('savedCategory')+' '+Math.min(run.stage+1,15)+' / 15':
+      tr('newCategory');
+    $('millionBeginSelected').textContent=tr(active?'resumeCategory':'startCategory');
+    $('millionBeginSelected').disabled=busy||!uid;
+    $('millionCategoryPicker').classList.toggle('hidden',!pickerOpen);
+    $('millionGameContent').classList.toggle('hidden',pickerOpen);
+    $('millionBack').textContent=tr(pickerOpen?'back':'backToCategory');
+  }
+  function displayAnswer(choice,q){
+    const idx=Array.isArray(q?.options)?q.options.indexOf(choice):-1;
+    const labels=Array.isArray(q?.option_labels)?q.option_labels:[];
+    return idx>=0&&labels[idx]?.[locale]?labels[idx][locale]:String(choice||'');
+  }
+  function renderMedia(q){
+    const media=$('millionQuestionMedia');
+    const visual=$('millionVisual'),img=$('millionImage'),clue=$('millionClue'),credit=$('millionImageCredit');
+    const symbol=String(q?.visual||'');
+    const imageUrl=String(q?.image_url||'');
+    const picture=imageUrl.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/');
+    const source=String(q?.source_url||'');
+    const hint=String(q?.['clue_'+locale]||'');
+    const hasMedia=!!symbol||picture||!!hint;
+    media.classList.toggle('hidden',!hasMedia);
+    visual.classList.toggle('hidden',!symbol);visual.textContent=symbol;
+    img.classList.toggle('hidden',!picture);
+    if(picture&&img.dataset.src!==imageUrl){img.dataset.src=imageUrl;img.src=imageUrl;}
+    if(!picture){img.removeAttribute('src');delete img.dataset.src;}
+    clue.classList.toggle('hidden',!hint);clue.textContent=hint;
+    credit.classList.toggle('hidden',!(picture&&source.startsWith('https://commons.wikimedia.org/wiki/File:')));
+    credit.textContent=tr('sourceLabel');
+    if(source.startsWith('https://commons.wikimedia.org/wiki/File:'))credit.href=source;
+  }
   function render(){
+    renderPicker();
     if(opened){
-      document.body?.classList.toggle('quiz-playing',!!run&&run.status==='active');
-      document.body?.classList.toggle('quiz-finished',!!run&&run.status!=='active');
+      document.body?.classList.toggle('quiz-playing',!pickerOpen&&!!run&&run.status==='active');
+      document.body?.classList.toggle('quiz-finished',!pickerOpen&&!!run&&run.status!=='active');
     }
     updateLaunch();if(!run){return;}
     $('millionCurrentStage').textContent=tr('question')+' '+Math.min(run.stage+1,15)+' / 15';
@@ -204,6 +268,7 @@
     }
     if(feedback&&awaitNext)return;
     const q=run.question;
+    renderMedia(q);
     $('millionQuestion').textContent=q?.[locale]||tr('loading');
     const options=$('millionOptions');options.replaceChildren();
     const hidden=new Set(Array.isArray(q?.hidden)?q.hidden:[]);
@@ -211,7 +276,7 @@
       const button=make('button','million-option');
       button.type='button';
       const letter=make('span','million-option-letter','ABCD'[i]||'?');
-      const content=make('span','million-option-content',hidden.has(answer)?'—':answer);
+      const content=make('span','million-option-content',hidden.has(answer)?'—':displayAnswer(answer,q));
       button.append(letter,content);
       button.disabled=hidden.has(answer)||busy||!!pending;
       if(!button.disabled)button.addEventListener('click',()=>void act('answer',answer));
@@ -222,7 +287,7 @@
       tip.classList.remove('hidden');
       q.audience.forEach(item=>{
         const row=make('div','million-audience-row');
-        const name=make('span','',String(item.choice||''));
+        const name=make('span','',displayAnswer(item.choice,q));
         const meter=make('div','million-audience-meter');
         const fill=make('div','million-audience-fill');
         fill.style.width=Math.max(0,Math.min(100,Number(item.percent)||0))+'%';
@@ -233,16 +298,28 @@
     }else tip.classList.add('hidden');
     $('millionAudienceNote').classList.toggle('hidden',!Array.isArray(q?.audience));
   }
-  async function loadState(){
+  async function loadState(category=selectedCategory){
     if(!client||!uid)return;
     const seq=++requestNumber;
     try{
-      const {data,error}=await client.rpc('quizoria_million_state');
+      const {data,error}=await client.rpc('quizoria_million_state_category',{p_category:category});
       if(error||data?.ok!==true)throw error||Error('state_unavailable');
-      if(seq!==requestNumber)return;
+      if(seq!==requestNumber||category!==selectedCategory)return;
       run=data.has_run?data:null;
       if(opened)render();else updateLaunch();
     }catch(err){console.warn('Quizoria million state unavailable',err);}
+  }
+  async function openPicker(){
+    if(!uid){writeStatus(tr('signedOut'),true);return;}
+    pickerOpen=true;showPanel(true);render();
+    await loadState(selectedCategory);
+  }
+  async function switchCategory(category){
+    if(busy||pending||!categoryNames.cs[category])return;
+    selectedCategory=category;run=null;feedback=null;awaitNext=false;
+    requestNumber++;render();writeStatus(tr('loading'));
+    await loadState(category);
+    writeStatus('');
   }
   async function start(forceNew=false){
     if(busy||!client||!uid){writeStatus(tr('signedOut'),true);return;}
@@ -257,13 +334,14 @@
       }
       return;
     }
-    busy=true;pending=null;feedback=null;awaitNext=false;
+    pickerOpen=false;
+    busy=true;pending=null;feedback=null;awaitNext=false;lastAnsweredQuestion=null;
     showPanel(true);writeStatus(tr('loading'));
     render();
     const seq=++requestNumber;
     try{
-      const {data,error}=await client.rpc('quizoria_million_begin',{
-        p_operation:crypto.randomUUID()
+      const {data,error}=await client.rpc('quizoria_million_begin_category',{
+        p_operation:crypto.randomUUID(),p_category:selectedCategory
       });
       if(error||data?.ok!==true||!data.has_run)throw error||Error('invalid_state');
       if(seq!==requestNumber)return;
@@ -282,6 +360,7 @@
     };
     if(!pending)return;
     const request={...pending};
+    if(action==='answer'&&!retry)lastAnsweredQuestion=run.question;
     busy=true;writeStatus(tr('busy'));render();
     const seq=++requestNumber;
     try{
@@ -291,7 +370,8 @@
       pending=null;run=data;writeStatus(run.status==='active'?tr('activeHint'):'');
       if(run.status!=='active')void window.QUIZORIA_PROGRESS?.refresh?.();
       if(data.answered){
-        feedback={correct:data.was_correct===true,answer:data.correct_answer};
+        feedback={correct:data.was_correct===true,
+          answer:displayAnswer(data.correct_answer,lastAnsweredQuestion||run.question)};
         awaitNext=data.was_correct===true&&data.status==='active';
         tone(data.was_correct?(data.status==='won'?'win':'correct'):'wrong');
       }else if(action==='cashout'){feedback=null;tone('win');}
@@ -305,8 +385,15 @@
     showPanel(false);feedback=null;awaitNext=false;
     // A run is kept on the server. Returning to Arcade never forfeits it.
   }
-  $('quizoriaMillionLaunch')?.addEventListener('click',()=>void start());
-  $('millionBack')?.addEventListener('click',close);
+  $('quizoriaMillionLaunch')?.addEventListener('click',()=>void openPicker());
+  root.querySelectorAll('[data-million-category]').forEach(button=>{
+    button.addEventListener('click',()=>void switchCategory(button.dataset.millionCategory));
+  });
+  $('millionBeginSelected')?.addEventListener('click',()=>void start());
+  $('millionBack')?.addEventListener('click',()=>{
+    if(pickerOpen)close();
+    else void openPicker();
+  });
   $('millionFifty')?.addEventListener('click',()=>void act('fifty'));
   $('millionAudience')?.addEventListener('click',()=>void act('audience'));
   $('millionSwap')?.addEventListener('click',()=>void act('swap'));
@@ -320,7 +407,7 @@
     if(!awaitNext||pending||busy)return;
     awaitNext=false;feedback=null;render();
   });
-  $('millionAnother')?.addEventListener('click',()=>void start(true));
+  $('millionAnother')?.addEventListener('click',()=>void openPicker());
   $('millionSound')?.addEventListener('click',()=>{
     muted=!muted;
     try{localStorage.setItem('quizoria.million.sound.v1',muted?'off':'on');}catch(_){}
@@ -331,7 +418,7 @@
     connect(supa,user){
       const next=user?.id||null;
       if(uid===next&&client===supa)return;
-      uid=next;client=supa;run=null;busy=false;pending=null;
+      uid=next;client=supa;run=null;busy=false;pending=null;pickerOpen=true;selectedCategory='video-games';
       feedback=null;awaitNext=false;requestNumber++;
       if(!uid){showPanel(false);updateLaunch();return;}
       void loadState();
