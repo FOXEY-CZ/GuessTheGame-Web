@@ -194,7 +194,7 @@ function renderQuestion(){
  const options=$('survivalOptions');options.replaceChildren();
  for(const [index,answer] of q.options.entries()){
   const button=make('button','survival-option');
-  button.type='button';button.disabled=locked||advance;
+  button.type='button';button.disabled=locked||advance||!!pending;
   button.dataset.survivalChoice=String(index);
   button.append(make('b','',String.fromCharCode(65+index)),
     make('span','',String(answer?.[lang]||answer?.cs||'—')));
@@ -358,7 +358,9 @@ function open(){
  document.body.classList.remove('quiz-playing','quiz-finished');
  document.body.classList.add('quiz-survival-active');
  render();void refreshLobby();
- root.scrollIntoView?.({behavior:'smooth',block:'start'});
+ const minimal=document.documentElement.classList.contains('arcade-motion-minimal')||
+    window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+ root.scrollIntoView?.({behavior:minimal?'auto':'smooth',block:'start'});
 }
 function localize(){
  $('quizoriaSurvivalTitle').textContent=t('title');
@@ -405,6 +407,11 @@ $('survivalPlayAgain')?.addEventListener('click',()=>{
  run=null;pending=null;feedback=null;advance=false;shownQuestion=null;
  render();void refreshLobby();
 });
+// The shared Arcade motion preference also applies to Quizoria standalone.
+try{
+ if(localStorage.getItem('foxey.arcade.motion.v1')==='reduce')
+  document.documentElement.classList.add('arcade-motion-minimal');
+}catch(_){}
 document.addEventListener('keydown',event=>{
  if(!opened||!run||run.finished||run.expired||locked||advance||pending)return;
  if(document.activeElement?.matches?.('input,textarea,[contenteditable="true"]'))return;
