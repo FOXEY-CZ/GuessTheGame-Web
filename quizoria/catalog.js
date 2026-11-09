@@ -12,7 +12,7 @@
     {id:'memes',icon:'😂',state:'available',allowedModes:['classic','easy','medium','hard','daily','friend'],
       cs:{name:'Memy a internet',description:'Uhodni mem, jeho původ a známé internetové momenty.'},
       en:{name:'Memes & Internet',description:'Guess memes, their origins and famous internet moments.'}},
-    {id:'movies',icon:'🎬',state:'planned',allowedModes:[],
+    {id:'movies',icon:'🎬',state:'available',allowedModes:['classic','films','series','easy','medium','hard','daily','friend'],
       cs:{name:'Filmy a seriály',description:'Poznávej filmy, seriály, postavy a filmové světy.'},
       en:{name:'Movies & Series',description:'Recognize movies, shows, characters and fictional worlds.'}},
     {id:'music',icon:'🎵',state:'planned',allowedModes:[],
@@ -29,7 +29,7 @@
   }));
   const frozen=Object.freeze(categories);
   window.QUIZORIA_CATALOG=Object.freeze({
-    version:'1.3',
+    version:'1.4',
     categories:frozen,
     defaultCategory:'video-games',
     getCategory(id){return frozen.find(item=>item.id===id)||null;},
