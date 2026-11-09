@@ -18,16 +18,17 @@
       memeFeatured:'Guess the Meme',memeFeaturedSub:'Obrázkové otázky, denní kvíz a výzvy s přáteli',memeFeaturedLaunch:'▶ Hrát memy',
       moviesFeatured:'Filmy a seriály',moviesFeaturedSub:'96 otázek, emoji indicie a filmové souboje',moviesFeaturedLaunch:'▶ Hrát filmy',
       musicFeatured:'Hudba a rap',musicFeaturedSub:'96 hudebních otázek · CZ/SK rap a světová hudba',musicFeaturedLaunch:'▶ Hrát hudbu',
+      generalFeatured:'Všeobecné znalosti',generalFeaturedSub:'120 otázek · zeměpis, historie, věda, technologie',generalFeaturedLaunch:'▶ Hrát znalosti',
       futureSummary:'✨ Další připravované režimy',rewardsSummary:'💎 XP, odměny a synchronizace',
       modesTitle:'🧠 Herní režimy',modesDesc:'Vyber si režim pro kategorii Videohry. Další režimy budeme postupně přidávat.',
-      categoryTitle:'🎮 Kategorie',categoryDesc:'Čtyři hratelné kategorie: Videohry, Memy, Filmy a Hudba.',
+      categoryTitle:'🎮 Kategorie',categoryDesc:'Všech pět kategorií je hratelných — včetně Všeobecných znalostí.',
       socialTitle:'⚔️ Výzvy s přáteli',socialDesc:'Pošli kamarádovi výzvu nebo ho pozvi do živého souboje.',
       survival:'Přežití',survivalSub:'Odpovídej bez chyb a překonávej své rekordy.',
       endless:'Nekonečný kvíz',endlessSub:'Hraj tak dlouho, jak budeš chtít.',
-      header:'Vyber si svůj kvízový svět',sub:'Čtyři kvízové světy — Videohry, Memy, Filmy a Hudba.',
+      header:'Vyber si svůj kvízový svět',sub:'Pět kvízových světů: Videohry, Memy, Filmy, Hudba a Vědomosti.',
       active:'HRATELNÉ',planned:'PŘIPRAVUJEME',selected:'Vybraná kategorie',
       modeIntro:'🎯 Další režimy · Videohry',
-      note:'Čtyři kategorie s vlastními ověřenými otázkami, postupem a společnými měnami.',
+      note:'Pět hratelných kategorií se zabezpečenými otázkami, savy a společnými měnami.',
       millionaire:'💰 Milionová výzva',millionaireSub:'15 otázek · záchytné body · tři nápovědy',
       future:'BRZY',play:'HRÁT',button:'🎮 Vybrat režim'},
     en:{quickTitle:'Quick Game',quickDesc:'Jump straight into 10 video game questions. Your rules and existing progress stay the same.',
@@ -35,16 +36,17 @@
       memeFeatured:'Guess the Meme',memeFeaturedSub:'Picture trivia, daily quizzes and friend challenges',memeFeaturedLaunch:'▶ Play Memes',
       moviesFeatured:'Movies & Series',moviesFeaturedSub:'96 trivia questions, emoji clues and friend duels',moviesFeaturedLaunch:'▶ Play Movies',
       musicFeatured:'Music & Rap',musicFeaturedSub:'96 music questions · CZ/SK rap and international artists',musicFeaturedLaunch:'▶ Play Music',
+      generalFeatured:'General Knowledge',generalFeaturedSub:'120 questions · geography, history, science and technology',generalFeaturedLaunch:'▶ Play Trivia',
       futureSummary:'✨ More coming modes',rewardsSummary:'💎 XP, rewards & sync',
       modesTitle:'🧠 Game Modes',modesDesc:'Choose a mode for Video Games. More modes will be added over time.',
-      categoryTitle:'🎮 Categories',categoryDesc:'Four playable categories: Video Games, Memes, Movies and Music.',
+      categoryTitle:'🎮 Categories',categoryDesc:'All five quiz categories are now playable, including General Knowledge.',
       socialTitle:'⚔️ Friend Challenges',socialDesc:'Send a friend a challenge or invite them to a live duel.',
       survival:'Survival',survivalSub:'Keep answering correctly and beat your records.',
       endless:'Endless Quiz',endlessSub:'Play for as long as you like.',
-      header:'Choose your quiz world',sub:'Four quiz worlds: Video Games, Memes, Movies and Music.',
+      header:'Choose your quiz world',sub:'Five quiz worlds: Video Games, Memes, Movies, Music and Knowledge.',
       active:'PLAYABLE',planned:'COMING SOON',selected:'Selected category',
       modeIntro:'🎯 More modes · Video Games',
-      note:'Four categories with server-verified questions, progress and shared currencies.',
+      note:'Five playable categories with server-verified questions, saves and shared currencies.',
       millionaire:'💰 Million Challenge',millionaireSub:'15 questions · checkpoints · three lifelines',
       future:'SOON',play:'PLAY',button:'🎮 Choose a mode'}
   };
@@ -64,7 +66,8 @@
       quizoriaMemeFeatureLaunch:'memeFeaturedLaunch',
       quizoriaMovieFeatureTitle:'moviesFeatured',quizoriaMovieFeatureDescription:'moviesFeaturedSub',
       quizoriaMovieFeatureLaunch:'moviesFeaturedLaunch',
-      quizoriaMusicFeatureTitle:'musicFeatured',quizoriaMusicFeatureDescription:'musicFeaturedSub',quizoriaMusicFeatureLaunch:'musicFeaturedLaunch'
+      quizoriaMusicFeatureTitle:'musicFeatured',quizoriaMusicFeatureDescription:'musicFeaturedSub',quizoriaMusicFeatureLaunch:'musicFeaturedLaunch',
+      quizoriaGeneralFeatureTitle:'generalFeatured',quizoriaGeneralFeatureDescription:'generalFeaturedSub',quizoriaGeneralFeatureLaunch:'generalFeaturedLaunch'
     })){
       const target=$(id);if(target)target.textContent=t[key];
     }
