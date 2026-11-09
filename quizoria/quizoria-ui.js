@@ -60,7 +60,7 @@
       quizoriaCategorySectionTitle:'categoryTitle',
       quizoriaCategorySectionDescription:'categoryDesc',
       quizoriaSocialTitle:'socialTitle',quizoriaSocialDescription:'socialDesc',
-      quizoriaSurvivalTitle:'survival',quizoriaSurvivalSubtitle:'survivalSub',
+      // Survival 2.1 owns its localized live title and subtitle.
       quizoriaEndlessTitle:'endless',quizoriaEndlessSubtitle:'endlessSub',
       quizoriaMemeFeatureTitle:'memeFeatured',quizoriaMemeFeatureDescription:'memeFeaturedSub',
       quizoriaMemeFeatureLaunch:'memeFeaturedLaunch',
@@ -71,10 +71,9 @@
     })){
       const target=$(id);if(target)target.textContent=t[key];
     }
-    for(const id of ['quizoriaMillionBadge','quizoriaSurvivalBadge',
-      'quizoriaEndlessBadge']){
-      const target=$(id);if(target)target.textContent=t.future;
-    }
+    // Only Endless is pending; Million and Survival are fully playable.
+    $('quizoriaSurvivalBadge').textContent=t.play;
+    $('quizoriaEndlessBadge').textContent=t.future;
     $('quizoriaCategoriesTitle').textContent=t.header;
     $('quizoriaCategoriesIntro').textContent=t.sub;
     $('quizoriaCategoryNote').textContent=t.note;
