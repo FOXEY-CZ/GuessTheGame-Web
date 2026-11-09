@@ -683,6 +683,19 @@
       </div>
     </div>
     <p class="million-status" id="millionStatus" aria-live="polite" role="status"></p>
+    <section id="millionCategoryPicker" class="million-category-picker" aria-labelledby="millionPickTitle">
+      <h3 id="millionPickTitle">🎯 Vyber kategorii soutěže</h3>
+      <p id="millionPickIntro">Každá kategorie má vlastní otázky a uloženou rozehranou soutěž.</p>
+      <div id="millionCategoryChoices" class="million-category-choices" role="group" aria-label="Kategorie Milionové výzvy">
+        <button type="button" data-million-category="video-games" class="is-selected">🎮 Videohry</button>
+        <button type="button" data-million-category="memes">😂 Memy</button>
+        <button type="button" data-million-category="movies">🎬 Filmy a seriály</button>
+        <button type="button" data-million-category="music">🎵 Hudba</button>
+      </div>
+      <p id="millionSelectedState" class="million-selected-state" aria-live="polite"></p>
+      <button type="button" id="millionBeginSelected" class="primary million-begin-selected">▶ Zahájit soutěž</button>
+    </section>
+    <div id="millionGameContent" class="hidden">
     <div class="million-statline" aria-live="polite">
       <span id="millionCurrentStage">Otázka 1 / 15</span>
       <strong id="millionPrize">Hraješ o 100</strong>
@@ -697,6 +710,14 @@
     </div>
     <section id="millionQuestionArea" class="million-question-box" aria-labelledby="millionQuestion">
       <div class="million-question-accent">✦ ✦ ✦</div>
+      <div id="millionQuestionMedia" class="million-question-media hidden">
+        <span id="millionVisual" class="million-question-emoji hidden" aria-label="Vizuální indicie"></span>
+        <img id="millionImage" class="million-question-image hidden" alt="Obrázková indicie otázky"
+          referrerpolicy="no-referrer" loading="eager" decoding="async" />
+        <p id="millionClue" class="million-question-clue hidden"></p>
+        <a id="millionImageCredit" class="million-question-source hidden" target="_blank"
+          rel="noopener noreferrer" href="https://commons.wikimedia.org/">Zdroj obrázku</a>
+      </div>
       <h3 id="millionQuestion">Načítám otázku…</h3>
       <div id="millionOptions" class="million-options" role="group" aria-label="Možnosti odpovědi"></div>
       <div id="millionAudienceResult" class="million-audience-result hidden"></div>
@@ -726,6 +747,7 @@
     <p id="millionLegalNote" class="million-legal-note">
       Soutěžní částky nejsou skutečné korunky. Odměny do Arcade připisuje pouze server.
     </p>
+    </div>
   </section>
 
   <section id="quizoriaMemePanel" class="panel meme-panel hidden" aria-labelledby="memeTitle">
