@@ -1,0 +1,54 @@
+/* Quizoria Foundation 1.0 — additive UI; secure game engine untouched. */
+:root{--quizoria-aqua:#66ead7;--quizoria-violet:#a39aff}
+.quizoria-brand{display:flex;align-items:center;gap:8px}
+.quizoria-brand b{font-size:1.06rem;letter-spacing:.08em}
+.quizoria-brand .brand-mark{font-size:1.3rem;line-height:1}
+.quizoria-studio{display:block;margin-top:2px;color:#aab9db;font-size:.59rem;
+ letter-spacing:.14em;text-transform:uppercase;font-weight:800}
+.hero .hero-mark{font-weight:1000;font-size:clamp(72px,17vw,115px);color:#91fff0;
+ text-shadow:6px 7px 0 #756bd2}
+.quizoria-categories-zone{margin:10px 0 22px;padding:17px;border:1px solid #5f649e;
+ border-radius:19px;background:linear-gradient(145deg,#1c2850 0%,#122946 60%,#15213b 100%)}
+.quizoria-categories-top{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:13px}
+.quizoria-categories-top h3{margin:4px 0 7px;font-size:clamp(1.08rem,3vw,1.4rem)}
+.quizoria-categories-top p{margin:0;color:#b8cbed;font-size:.82rem;line-height:1.5}
+.quizoria-category-count{flex:0 0 auto;border:1px solid #5a79b1;background:#162747;
+ padding:7px 9px;border-radius:20px;font-size:.67rem;font-weight:850;color:#90ebd7}
+.quizoria-category-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.quizoria-category{display:flex;align-items:center;min-width:0;min-height:95px;
+ gap:10px;padding:13px;border-radius:14px;text-align:left;background:#172741;
+ border:1px solid #3c5579;color:#eaf2ff}
+button.quizoria-category{width:100%;cursor:pointer}
+button.quizoria-category:hover{border-color:#89def1;background:#233b61}
+button.quizoria-category:focus-visible{outline:2px solid #7affe8;outline-offset:3px}
+.quizoria-category.selected{grid-column:1/-1;background:linear-gradient(130deg,#305c6c,#2e346a);
+ border-color:#76e1d6;box-shadow:0 8px 25px #10121b66}
+.quizoria-category.is-planned{opacity:.72;cursor:default}
+.quizoria-category-icon{flex:0 0 auto;display:grid;place-items:center;width:43px;height:43px;
+ border-radius:12px;background:#ffffff17;font-size:1.6rem}
+.quizoria-category-info{min-width:0;display:grid;gap:5px;flex:1}
+.quizoria-category-info strong{font-size:.89rem;line-height:1.25}
+.quizoria-category-info small{font-size:.74rem;line-height:1.42;color:#c0cfeb}
+.quizoria-category-status{flex:0 0 auto;padding:5px 7px;border-radius:8px;
+ font-size:.6rem;font-weight:900;letter-spacing:.035em}
+.quizoria-category-status.live{background:#1b534b;color:#a1fff0}
+.quizoria-category-status.future{background:#3e405d;color:#bcc9e3}
+.quizoria-category-note{color:#a9bddb;font-size:.74rem;line-height:1.45;margin:13px 2px 0}
+.quizoria-modes-intro{margin:20px 0 12px;font-weight:850;color:#d6e8ff;font-size:.88rem}
+.quizoria-coming-mode{opacity:.73;border-style:dashed;align-content:center}
+.quizoria-coming-mode .quizoria-mode-badge{font-size:.66rem;padding:5px 8px;border-radius:9px;
+ background:#393c62;color:#c6c8ed;font-weight:850}
+.quizoria-coming-mode .mode-choice-head{align-items:start}
+#modePanel .live-rewards{margin:12px 0 16px}
+@media(max-width:560px){
+ .quizoria-categories-zone{padding:12px}
+ .quizoria-categories-top{flex-wrap:wrap}
+ .quizoria-category-count{font-size:.65rem}
+ .quizoria-category-list{grid-template-columns:1fr}
+ .quizoria-category.selected{grid-column:auto}
+ .quizoria-category{min-height:80px;padding:11px}
+ .quizoria-category-status{font-size:.58rem}
+ .quizoria-category-icon{width:38px;height:38px}
+ .quizoria-category-info strong{font-size:.84rem}
+}
+@media(prefers-reduced-motion:reduce){.quizoria-category{transition:none}}
