@@ -18,7 +18,7 @@
     {id:'music',icon:'🎵',state:'available',allowedModes:['classic','czsk','world','easy','medium','hard','daily','friend'],
       cs:{name:'Hudba',description:'Interpreti, hudební zajímavosti a alba.'},
       en:{name:'Music',description:'Artists, music trivia and albums.'}},
-    {id:'general',icon:'🌍',state:'planned',allowedModes:[],
+    {id:'general',icon:'🌍',state:'available',allowedModes:['classic','geography','history','science','technology','easy','medium','hard','daily','friend'],
       cs:{name:'Všeobecné znalosti',description:'Zeměpis, historie, věda a zajímavosti.'},
       en:{name:'General Knowledge',description:'Geography, history, science and trivia.'}}
   ].map(category=>Object.freeze({
@@ -29,7 +29,7 @@
   }));
   const frozen=Object.freeze(categories);
   window.QUIZORIA_CATALOG=Object.freeze({
-    version:'1.5',
+    version:'1.6',
     categories:frozen,
     defaultCategory:'video-games',
     getCategory(id){return frozen.find(item=>item.id===id)||null;},
