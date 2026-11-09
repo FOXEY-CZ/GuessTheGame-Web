@@ -1280,3 +1280,24 @@ body.arcade-game-immersive .arcade-mini-chat,#page-play:fullscreen .arcade-mini-
  .arcade-mini-panel{height:min(420px,65dvh)}
  .arcade-mini-toggle{width:49px;height:49px;border-radius:15px}
 }
+\n
+/* True browser fullscreen (not a CSS-only imitation). */
+#page-play:fullscreen{position:relative;inset:auto;width:100%;height:100%;
+ max-width:none;padding:0;gap:0;border:0;border-radius:0;background:#090e1e;overflow:hidden}
+#page-play:fullscreen #gameFrame{display:block;width:100%;height:100%;flex:1 1 100%;
+ min-height:0;border:0;border-radius:0}
+#page-play:fullscreen .gameplaybar{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));
+ left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px));
+ z-index:7;display:flex;justify-content:space-between;gap:8px;align-items:center;
+ min-height:0;padding:0;background:transparent;border:0;pointer-events:none}
+#page-play:fullscreen .gameplaybar>div:not(.arcade-game-toolbar){display:none}
+#page-play:fullscreen .gameplaybar>button,
+#page-play:fullscreen .gameplaybar .arcade-game-toolbar button{pointer-events:auto;
+ min-height:36px;padding:7px 10px;border:1px solid #65739a;border-radius:10px;
+ background:#1b2948ee;color:#f1f5ff;font-size:.75rem;box-shadow:0 5px 15px #0009}
+#page-play:fullscreen .gameplaybar .arcade-game-toolbar{margin-left:auto;flex:0 0 auto}
+#page-play:fullscreen .gameplaybar .arcade-game-toolbar>a{display:none}
+#page-play:fullscreen #gameHelp,#page-play:fullscreen #gameFullscreenStatus{display:none!important}
+.arcade-fullscreen-status{margin:10px 0 14px;padding:11px 13px;border:1px solid #97723f;
+ border-radius:12px;color:#ffdaa0;background:#392916;font-size:.86rem;line-height:1.5}
+.arcade-fullscreen-status.hidden{display:none!important}
