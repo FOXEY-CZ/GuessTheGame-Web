@@ -563,100 +563,24 @@
     });
     selectSubtab(group,group==='account'?accountTab:shopTab);
   }
-  // The game uses REAL browser fullscreen. Never pretend a CSS viewport
-  // enlargement is fullscreen when requestFullscreen fails or is unavailable.
-  let arcadeImmersive=false,fullscreenPending=false,fullscreenAttempt=0;
-  const fullscreenNotice=(message)=>{
-    const target=el('gameFullscreenStatus');
-    if(!target)return;
-    target.textContent=message||'';
-    target.classList.toggle('hidden',!message);
-  };
-  function updateImmersive(on){
-    arcadeImmersive=!!on;
-    document.body?.classList?.toggle('arcade-game-immersive',arcadeImmersive);
-    const exit=el('gameExitFullscreen');
-    if(exit){
-      exit.textContent=arcadeImmersive?'↙ '+(window.FOXEY_I18N?.getLocale?.()==='en'?
-        'Windowed mode':'Režim okna'):'⛶ '+(window.FOXEY_I18N?.getLocale?.()==='en'?
-        'Real fullscreen':'Skutečný fullscreen');
-      exit.setAttribute('aria-label',exit.textContent);
-      exit.disabled=fullscreenPending;
-    }
+  // All play entries open the standalone secure quiz, never an embedded iframe.
+  function standaloneGameUrl(view=''){
+    const url=new URL(GAME_URL,location.href);
+    if(view)url.searchParams.set('view',view);
+    return url.href;
   }
-  function unavailableFullscreen(){
-    fullscreenNotice(window.FOXEY_I18N?.getLocale?.()==='en'?
-      'Your browser did not allow real fullscreen. Try opening FOXEY Arcade directly in Chrome or another supported browser, then tap Real fullscreen.':
-      'Prohlížeč nepovolil skutečný fullscreen. Otevři FOXEY Arcade přímo v Chromu nebo jiném podporovaném prohlížeči a klepni na Skutečný fullscreen.');
+  function launchStandaloneGame(view=''){
+    // Called synchronously by a user click; same tab as fallback when needed.
+    const url=standaloneGameUrl(view);
+    const popup=window.open(url,'_blank');
+    if(popup){try{popup.opener=null;}catch(_){}}
+    else location.assign(url);
   }
-  function enterGameFullscreen(){
-    const page=el('page-play');
-    if(!page||fullscreenPending)return;
-    if(document.fullscreenElement===page){
-      updateImmersive(true);fullscreenNotice('');return;
-    }
-    // Must be called synchronously from a user tap/click. Some browsers
-    // require transient user activation and block calls from auto-navigation.
-    if(!document.fullscreenEnabled||typeof page.requestFullscreen!=='function'){
-      updateImmersive(false);unavailableFullscreen();return;
-    }
-    fullscreenPending=true;
-    const attempt=++fullscreenAttempt;
-    updateImmersive(false);
-    fullscreenNotice('');
-    try{
-      const response=page.requestFullscreen({navigationUI:'hide'});
-      Promise.resolve(response).then(()=>{
-        if(attempt!==fullscreenAttempt)return;
-        fullscreenPending=false;
-        if(page.classList.contains('hidden')){
-          if(document.fullscreenElement===page)void document.exitFullscreen?.();
-          updateImmersive(false);
-          return;
-        }
-        const active=document.fullscreenElement===page;
-        updateImmersive(active);
-        if(!active)unavailableFullscreen();
-      }).catch(()=>{
-        if(attempt!==fullscreenAttempt)return;
-        fullscreenPending=false;updateImmersive(false);unavailableFullscreen();
-      });
-    }catch(_){
-      fullscreenPending=false;updateImmersive(false);unavailableFullscreen();
-    }
-  }
-  function leaveGameFullscreen(){
-    fullscreenAttempt++;fullscreenPending=false;fullscreenNotice('');
-    const page=el('page-play');
-    if(document.fullscreenElement===page&&
-       typeof document.exitFullscreen==='function'){
-      try{void Promise.resolve(document.exitFullscreen()).catch(()=>{});}
-      catch(_){}
-    }
-    updateImmersive(false);
-  }
-  document.addEventListener?.('fullscreenchange',()=>{
-    const native=document.fullscreenElement===el('page-play');
-    // Reconcile both explicit button and ESC/system exits with actual state.
-    updateImmersive(native);
-    if(native)fullscreenNotice('');
-  });
   function go(page){
     if(!PAGES.has(page))page='home';
-    if(page==='play'){
-      const frame=el('gameFrame');
-      const identity=user?.id||'guest';
-      // The frame is same-origin and reads the shared Supabase Auth storage key.
-      // Reload only when the signed-in player changes, not on every menu switch.
-      if(frame.dataset.player!==identity || frame.getAttribute('src')!==GAME_URL){
-        frame.dataset.player=identity;
-        frame.setAttribute('src',GAME_URL);
-      }
-    }
+    // Legacy #play deep links also go directly to the standalone game.
+    if(page==='play'){location.assign(standaloneGameUrl());return;}
     for(const name of PAGES)show('page-'+name,name===page);
-    if(page==='play')enterGameFullscreen();
-    else if(arcadeImmersive||document.fullscreenElement===el('page-play'))
-      leaveGameFullscreen();
     if(page!=='shop')closeChestReward();
     if(page==='shop'){
       selectSubtab('shop',shopTab);
@@ -695,34 +619,6 @@
       authHash.has('error_code')||authHash.has('type');
     if(!hasAuthCallback)history.replaceState(null,'','#'+(page==='home'?'domu':page));
     window.FOXEY_I18N?.apply();
-  }
-  // Ask the secure, owner-scoped quiz to reveal its authenticated challenge
-  // section without reloading an active iframe or discarding its run.
-  function openChallengeInGame(){
-    const frame=el('gameFrame');
-    el('challengeLaunchStatus').textContent=user?
-      '⚔️ Otevírám zabezpečené výzvy…':
-      '🔐 Pro nové serverové výzvy se přihlas ke svému FOXEY Arcade účtu.';
-    go('play');
-    const request=()=>{
-      try{
-        if(!frame.contentWindow)return false;
-        frame.contentWindow.postMessage({
-          type:'foxey-arcade:open-challenges'
-        },location.origin);
-        return true;
-      }catch(_){return false;}
-    };
-    // After assigning iframe.src, the browser can temporarily report an
-    // already-complete about:blank/previous document. Only consider the
-    // iframe ready if it is really showing our new secure game path.
-    let secureReady=false;
-    try{
-      secureReady=frame.contentDocument?.readyState==='complete'&&
-        frame.contentWindow?.location?.pathname?.endsWith('/secure-quiz-beta.html');
-    }catch(_){}
-    if(secureReady)request();
-    else frame.addEventListener('load',request,{once:true});
   }
   function closeGameOnIdentityChange(){
     // Unload an old iframe session on account switch/logout, so another player
@@ -1038,11 +934,6 @@
   window.FOXEY_ARCADE_UI2?.setNavigation(go);
   window.FOXEY_ARCADE_SOCIAL?.setNavigation(go);
   window.FOXEY_ARCADE_LIVE?.setNavigation(go);
-  el('gameExitFullscreen')?.addEventListener('click',()=>{
-    if(arcadeImmersive||document.fullscreenElement===el('page-play'))
-      leaveGameFullscreen();
-    else enterGameFullscreen();
-  });
   document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',event=>{
     event.preventDefault();
     go(button.dataset.page);
@@ -1051,7 +942,6 @@
   }));
   bindSubtabs('account');
   bindSubtabs('shop');
-  el('launchChallenge').addEventListener('click',openChallengeInGame);
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
   // Shared locale is independent of authentication, wallets and game saves.
@@ -1061,7 +951,6 @@
   window.addEventListener('foxey-arcade:locale-changed',event=>{
     if(!['cs','en'].includes(event.detail?.locale))return;
     render(); // Re-render locale-sensitive numbers and statuses, never user data.
-    updateImmersive(arcadeImmersive);
     const frame=el('gameFrame');
     if(frame.getAttribute('src')&&frame.contentWindow?.postMessage){
       frame.contentWindow.postMessage({
