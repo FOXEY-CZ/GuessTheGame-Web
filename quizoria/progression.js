@@ -20,7 +20,7 @@
       games:'Kvízů',accuracy:'Úspěšnost',best:'Nejlepší skóre',
       totalGames:'Dokončené kvízy',favorite:'Nejhranější téma',allAccuracy:'Celková úspěšnost',unlocked:'Vyzvednuté odznaky',
       perfect:'Bez chyby',wins:'Výhry',skill:'Úroveň znalostí',
-      video:'🎮 Videohry',memes:'😂 Memy',movies:'🎬 Filmy a seriály',music:'🎵 Hudba',million:'💰 Milionová výzva',
+      video:'🎮 Videohry',memes:'😂 Memy',movies:'🎬 Filmy a seriály',music:'🎵 Hudba',general:'🌍 Všeobecné znalosti',million:'💰 Milionová výzva',
       checkpoint:'Nejvyšší otázka',outOf:'z',completed:'splněno',
       reward:'Odměna',claiming:'Vyzvedávám ověřenou odměnu…',
       granted:'✅ Odměna připsána do FOXEY Arcade:',duplicate:'Tento odznak už máš vyzvednutý.',
@@ -37,7 +37,7 @@
       games:'Quizzes',accuracy:'Accuracy',best:'Best Score',
       totalGames:'Completed quizzes',favorite:'Most played topic',allAccuracy:'Overall accuracy',unlocked:'Claimed badges',
       perfect:'Perfect',wins:'Wins',skill:'Knowledge level',
-      video:'🎮 Video Games',memes:'😂 Memes',movies:'🎬 Movies & Series',music:'🎵 Music',million:'💰 Million Challenge',
+      video:'🎮 Video Games',memes:'😂 Memes',movies:'🎬 Movies & Series',music:'🎵 Music',general:'🌍 General Knowledge',million:'💰 Million Challenge',
       checkpoint:'Highest Question',outOf:'of',completed:'completed',
       reward:'Reward',claiming:'Claiming your verified reward…',
       granted:'✅ Reward added to FOXEY Arcade:',duplicate:'This milestone was already claimed.',
@@ -58,7 +58,7 @@
   function renderOverview(){
     const parent=$('quizoriaOverviewStats');parent.replaceChildren();
     if(!data?.categories)return;
-    const names={video_games:'video',memes:'memes',movies:'movies',music:'music'};
+    const names={video_games:'video',memes:'memes',movies:'movies',music:'music',general:'general'};
     const entries=Object.entries(names).map(([id,label])=>
       ({label:tr(label),...data.categories[id]}));
     const categories=Object.values(data.categories);
@@ -89,6 +89,7 @@
       {id:'memes',label:'memes',theme:'memes'},
       {id:'movies',label:'movies',theme:'movies'},
       {id:'music',label:'music',theme:'music'},
+      {id:'general',label:'general',theme:'general'},
       {id:'million',label:'million',theme:'million'}
     ];
     for(const item of catalog){
