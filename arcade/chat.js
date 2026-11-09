@@ -72,12 +72,15 @@
         (f.user_id===selectedId?' is-active':''));
       btn.type='button';btn.setAttribute('aria-pressed',f.user_id===selectedId?'true':'false');
       const name=create('strong','',safeText(f.nickname||'Hráč',36));
+      name.setAttribute('data-no-i18n',''); // User-chosen nickname must remain untouched.
       const avatar=create('span','arcade-chat-avatar','🦊');
       avatar.setAttribute('aria-hidden','true');
       const body=create('span','arcade-chat-person-body');
       const latest=item.last_message;
       const preview=safeText(latest?.body||tr('Začni konverzaci…','Start a conversation…'),95);
-      body.append(name,create('span','arcade-chat-preview',preview));
+      const snippet=create('span','arcade-chat-preview',preview);
+      if(latest?.body)snippet.setAttribute('data-no-i18n','');
+      body.append(name,snippet);
       btn.append(avatar,body);
       const count=toCount(item.unread);
       if(count){const pill=create('span','arcade-chat-count',count>99?'99+':String(count));
@@ -93,6 +96,8 @@
     if(!root?.replaceChildren)return;
     $('chatFriendName').textContent=friend?.nickname||tr(
       'Vyber si kamaráda','Choose a friend');
+    if(friend)$('chatFriendName').setAttribute('data-no-i18n','');
+    else $('chatFriendName').removeAttribute('data-no-i18n');
     $('chatFriendStatus').textContent=selectedId?tr(
       'Soukromá konverzace · jen potvrzení přátelé',
       'Private conversation · accepted friends only'):
@@ -121,7 +126,9 @@
     for(const msg of messages){
       const mine=msg.sender_id===uid;
       const entry=create('article','arcade-chat-bubble'+(mine?' mine':' theirs'));
-      entry.append(create('p','arcade-chat-body',safeText(msg.body)));
+      const messageBody=create('p','arcade-chat-body',safeText(msg.body));
+      messageBody.setAttribute('data-no-i18n','');
+      entry.append(messageBody);
       const time=create('time','arcade-chat-timestamp',nowTime(msg.created_at));
       if(msg.created_at)time.setAttribute('datetime',safeText(msg.created_at,40));
       entry.append(time);root.append(entry);
