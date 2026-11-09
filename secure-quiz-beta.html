@@ -721,6 +721,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script src="account-config.js"></script>
+<link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
+<script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
 (() => {
   'use strict';
@@ -1866,6 +1868,9 @@
     const {data,error}=await api.auth.getSession();
     const priorUser=me?.id||null;
     me=!error&&data?.session?.user||null;
+    // Same secured friend-only mini chat in the standalone game.
+    window.FOXEY_MINI_CHAT?.connect?.(api,me);
+    window.FOXEY_MINI_CHAT?.onPage?.('play');
     if(priorUser!==me?.id){
       ++gameFriendsSeq;gameFriends=[];gameFriendsLoading=false;
       soloProgressByMode=Object.create(null);
