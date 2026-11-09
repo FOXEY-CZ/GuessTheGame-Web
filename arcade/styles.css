@@ -1282,11 +1282,11 @@ body.arcade-game-immersive .arcade-mini-chat,#page-play:fullscreen .arcade-mini-
 }
 \n
 /* True browser fullscreen (not a CSS-only imitation). */
-#page-play:fullscreen{position:relative;inset:auto;width:100%;height:100%;
+body.arcade-game-immersive #page-play:fullscreen{position:relative;inset:auto;width:100%;height:100%;
  max-width:none;padding:0;gap:0;border:0;border-radius:0;background:#090e1e;overflow:hidden}
-#page-play:fullscreen #gameFrame{display:block;width:100%;height:100%;flex:1 1 100%;
+body.arcade-game-immersive #page-play:fullscreen #gameFrame{display:block;width:100%;height:100%;flex:1 1 100%;
  min-height:0;border:0;border-radius:0}
-#page-play:fullscreen .gameplaybar{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));
+body.arcade-game-immersive #page-play:fullscreen .gameplaybar{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));
  left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px));
  z-index:7;display:flex;justify-content:space-between;gap:8px;align-items:center;
  min-height:0;padding:0;background:transparent;border:0;pointer-events:none}
