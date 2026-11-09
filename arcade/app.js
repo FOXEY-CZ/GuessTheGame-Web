@@ -61,7 +61,7 @@
   const THEME_IDS=new Set(['classic','retro','royal','ocean']);
   let achievements=null,achievementStatus='guest',achievementSeq=0,achToastTimer=null;
   // Navigation-only state; never changes a saved game or wallet.
-  let accountTab='overview',shopTab='chests';
+  let accountTab='overview',shopTab='chests',achievementFilter='all';
   const walletNumber=v=>Number.isSafeInteger(v)&&v>=0?v:0;
   const ownedAvatars=()=>Array.isArray(sharedCosmetics?.owned_avatars)
     ?sharedCosmetics.owned_avatars.filter(id=>Object.hasOwn(AVATAR_CATALOG,id))
@@ -86,6 +86,13 @@
     const ready=!!user&&!!sharedCosmetics;
     const ids=ready?ownedAvatars():[];
     el('shopOwnedCount').textContent=ready?ids.length+' avatarů v inventáři':'Přihlas se';
+    const en=window.FOXEY_I18N?.getLocale?.()==='en';
+    const avatarStat=el('profileStatAvatars');
+    if(avatarStat)avatarStat.textContent=ready?fmt(ids.length):'—';
+    const avatarSummary=el('profileAvatarSummary');
+    if(avatarSummary)avatarSummary.textContent=ready
+      ?(en?'Unlocked avatars: ':'Odemčené avatary: ')+fmt(ids.length)
+      :(en?'Loading inventory…':'Načítám inventář…');
     const art={
       'pixel-fox':'avatarArtPixelFox','neon-ghost':'avatarArtNeonGhost',
       'space-cat':'avatarArtSpaceCat','cyber-fox':'avatarArtCyberFox',
@@ -115,15 +122,26 @@
     if(typeof root.replaceChildren!=='function')return;
     root.replaceChildren();
     el('inventoryCount').textContent=ids.length+' avatarů';
-    for(const id of ids){
-      const item=document.createElement('article');item.className='inventory-item '+AVATAR_CATALOG[id].rarity;
+    const rank={legendary:0,epic:1,basic:2};
+    // Local sorting affects only how owned items are displayed, never inventory state.
+    const ordered=[...ids].sort((a,b)=>
+      Number(b===profile?.avatar_id)-Number(a===profile?.avatar_id)||
+      (rank[AVATAR_CATALOG[a].rarity]??3)-(rank[AVATAR_CATALOG[b].rarity]??3)||
+      AVATAR_CATALOG[a].name.localeCompare(AVATAR_CATALOG[b].name));
+    for(const id of ordered){
+      const equipped=profile?.avatar_id===id,rarity=AVATAR_CATALOG[id].rarity;
+      const item=document.createElement('article');
+      item.className='inventory-item '+rarity+(equipped?' is-equipped':'');
+      const label=document.createElement('span');label.className='pc-item-rarity';
+      label.textContent=rarity==='legendary'?(en?'LEGENDARY':'LEGENDÁRNÍ')
+        :rarity==='epic'?(en?'EPIC':'EPICKÝ'):(en?'COMMON':'BĚŽNÝ');
       const icon=document.createElement('div');icon.className='avatar-art';showAvatar(id,icon);
       const name=document.createElement('strong');name.textContent=AVATAR_CATALOG[id].name;
       const btn=document.createElement('button');btn.type='button';btn.className='secondary';
-      btn.disabled=walletBusy||profile?.avatar_id===id;
-      btn.textContent=profile?.avatar_id===id?'✓ Používáš':'Použít';
+      btn.disabled=walletBusy||equipped;
+      btn.textContent=equipped?(en?'✓ Equipped':'✓ Používáš'):(en?'Equip':'Použít');
       btn.addEventListener('click',()=>{void equipAvatar(id);});
-      item.append(icon,name,btn);root.append(item);
+      item.append(label,icon,name,btn);root.append(item);
     }
   }
   function renderWallet(){
@@ -144,6 +162,21 @@
       :walletStatus==='ready'?'✅ Jedna společná peněženka pro všechny hry.'
       :'☁️ Peněženka zatím není načtená.';
     el('shopStatus').textContent=status;
+    const themeNames=Object.freeze({
+      classic:{cs:'Classic',en:'Classic',icon:'🌙'},
+      retro:{cs:'Retro',en:'Retro',icon:'🕹️'},
+      royal:{cs:'Royal',en:'Royal',icon:'👑'},
+      ocean:{cs:'Ocean',en:'Ocean',icon:'🌊'}
+    });
+    const themeReady=ready&&walletStatus==='ready';
+    const activeTheme=themeReady&&Object.hasOwn(themeNames,sharedCosmetics.equipped_theme)
+      ?themeNames[sharedCosmetics.equipped_theme]:null;
+    for(const id of ['profileActiveTheme','profileCoverTheme']){
+      const node=el(id);
+      if(node)node.textContent=activeTheme?activeTheme[en?'en':'cs']:'—';
+    }
+    const profileThemeIcon=el('profileThemeIcon');
+    if(profileThemeIcon)profileThemeIcon.textContent=activeTheme?.icon||'🎨';
     // Shop 2.4: all counters derive exclusively from the authenticated wallet
     // and server-provided inventory; placeholders are displayed until both load.
     const fresh=ready&&walletStatus==='ready';
@@ -498,6 +531,13 @@
     }
     if(el('accountAchievementCount'))el('accountAchievementCount').textContent=
       entries.length?`${unlocked} / ${entries.length}`:'—';
+    const profileAchievementStat=el('profileStatAchievements');
+    if(profileAchievementStat)profileAchievementStat.textContent=
+      valid&&achievementStatus==='ready'?fmt(unlocked):'—';
+    const achievementMeter=el('profileAchievementsFill');
+    if(achievementMeter?.style)achievementMeter.style.width=
+      valid&&achievementStatus==='ready'&&entries.length
+        ?Math.min(100,unlocked/entries.length*100)+'%':'0%';
     const xp=valid?safeNum(profile.arcade_xp):0,progress=xp%100;
     for(const prefix of ['home','account']){
       if(el(prefix+'LevelProgress'))el(prefix+'LevelProgress').textContent=
@@ -534,7 +574,20 @@
       (Number(b.progress)/Math.max(1,Number(b.target)))-
       (Number(a.progress)/Math.max(1,Number(a.target)))).slice(0,4);
     home.replaceChildren(...nearest.map(createCard));
-    account.replaceChildren(...entries.map(createCard));
+    const filtered=achievementFilter==='unlocked'?entries.filter(a=>a.unlocked)
+      :achievementFilter==='pending'?entries.filter(a=>!a.unlocked):entries;
+    const cards=filtered.map(createCard);
+    if(!cards.length&&typeof document.createElement==='function'){
+      const empty=document.createElement('p');
+      empty.className='pc-achievement-empty';
+      empty.textContent=!valid?(eng?'Sign in to see your achievements.':'Přihlas se pro achievementy.')
+        :achievementStatus!=='ready'?(eng?'Loading achievements…':'Načítám achievementy…')
+        :achievementFilter==='unlocked'?(eng?'No achievements unlocked yet.':'Zatím nemáš žádné odemčené achievementy.')
+        :achievementFilter==='pending'?(eng?'All achievements are unlocked!':'Všechny achievementy jsou odemčené!')
+        :(eng?'No achievements available yet.':'Zatím nejsou dostupné žádné achievementy.');
+      cards.push(empty);
+    }
+    account.replaceChildren(...cards);
   }
   async function loadAchievements(){
     const uid=user?.id,seq=++achievementSeq;
@@ -588,6 +641,9 @@
       accountArcadeLevel:active?fmt(1+Math.floor(xp/100)):'—'
     };
     for(const [id,value] of Object.entries(values))el(id).textContent=value;
+    const profileXp=el('profileStatXp'),profileLevel=el('profileStatLevel');
+    if(profileXp)profileXp.textContent=active?fmt(xp):'—';
+    if(profileLevel)profileLevel.textContent=active?fmt(1+Math.floor(xp/100)):'—';
     renderAchievements();
   }
   async function loadGameProgress(){
@@ -1053,9 +1109,28 @@
     go(button.dataset.page);
     if(button.dataset.page==='account'&&button.dataset.accountTab)
       selectSubtab('account',button.dataset.accountTab);
+    if(button.dataset.page==='shop'&&button.dataset.shopTab)
+      selectSubtab('shop',button.dataset.shopTab);
   }));
   bindSubtabs('account');
   bindSubtabs('shop');
+  // Profile shortcuts share the existing tab controls; they do not save data.
+  document.querySelectorAll('#page-account [data-account-tab]:not([role="tab"])')
+    .forEach(button=>button.addEventListener('click',()=>{
+      if(!user)return;
+      selectSubtab('account',button.dataset.accountTab);
+      el('accountTabs')?.scrollIntoView?.({behavior:'smooth',block:'nearest'});
+    }));
+  document.querySelectorAll('#page-account [data-achievement-filter]')
+    .forEach(button=>button.addEventListener('click',()=>{
+      achievementFilter=button.dataset.achievementFilter;
+      for(const option of document.querySelectorAll('#page-account [data-achievement-filter]')){
+        const active=option.dataset.achievementFilter===achievementFilter;
+        option.classList.toggle('is-active',active);
+        option.setAttribute('aria-pressed',String(active));
+      }
+      renderAchievements();
+    }));
   el('tabLogin').addEventListener('click',()=>setMode('login'));
   el('tabSignup').addEventListener('click',()=>setMode('signup'));
   // Shared locale is independent of authentication, wallets and game saves.
