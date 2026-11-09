@@ -51,8 +51,8 @@
 #page-shop .reward-chest{position:relative;display:grid;grid-template-columns:1fr;gap:0;align-content:start;padding:21px;min-width:0;border-radius:20px;overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s}
 #page-shop .reward-chest:hover{transform:translateY(-2px);box-shadow:0 13px 28px #03071b66;border-color:#77b3e0}
 #page-shop .reward-chest.epic:hover{border-color:#bf8af5}
-#page-shop .reward-chest .chestshop-icon{width:100%;min-height:133px;display:grid;place-items:center;font-size:clamp(4.1rem,8vw,6rem);filter:drop-shadow(0 8px 17px #040c2b66)}
-#page-shop .reward-chest .chestshop-icon:before{content:"";position:absolute;width:123px;height:123px;border:1px solid #7bd7f04b;border-radius:50%;z-index:0}
+#page-shop .reward-chest .chestshop-icon{position:relative;isolation:isolate;width:100%;min-height:133px;display:grid;place-items:center;font-size:clamp(4.1rem,8vw,6rem);filter:drop-shadow(0 8px 17px #040c2b66)}
+#page-shop .reward-chest .chestshop-icon:before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:123px;height:123px;border:1px solid #7bd7f04b;border-radius:50%;z-index:-1}
 #page-shop .reward-chest.epic .chestshop-icon:before{border-color:#c58bf566}
 #page-shop .reward-chest .rarity-label{font-size:.64rem;letter-spacing:.09em}
 #page-shop .reward-chest h3{font-size:1.3rem;margin:9px 0 7px;letter-spacing:-.025em}
