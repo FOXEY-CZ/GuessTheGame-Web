@@ -134,7 +134,7 @@ BEGIN
     reason:='not_activated';
   ELSE
     SELECT count(*) INTO v_our_day FROM arcade_private.quizoria_million_rewards
-    WHERE user_id=uid AND xp>0 AND created_at::date=(now() AT TIME ZONE 'UTC')::date;
+    WHERE user_id=uid AND xp>0 AND (created_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date;
     SELECT
       (SELECT count(*) FROM arcade_private.quizoria_million_rewards
        WHERE user_id=uid AND xp>0 AND created_at>now()-interval '1 hour')+
@@ -208,9 +208,9 @@ BEGIN
   -- long-running games survive later bank/translation updates.
   WITH bank AS (
     SELECT q.id,q.difficulty,q.answer,
-      pg_catalog.coalesce(v4.wrong,v3.wrong,v2.wrong,q.wrong) AS wrong,
-      pg_catalog.coalesce(v4.cs,v3.cs,v2.cs,t.cs) AS cs,
-      pg_catalog.coalesce(v4.en,v3.en,v2.en,t.en) AS en
+      coalesce(v4.wrong,v3.wrong,v2.wrong,q.wrong) AS wrong,
+      coalesce(v4.cs,v3.cs,v2.cs,t.cs) AS cs,
+      coalesce(v4.en,v3.en,v2.en,t.en) AS en
     FROM arcade_private.quiz_questions q
     JOIN arcade_private.quiz_question_texts t ON t.id=q.id
     LEFT JOIN arcade_private.quiz_question_options_v2 v2 ON v2.id=q.id
@@ -243,8 +243,8 @@ BEGIN
   SELECT pg_catalog.jsonb_agg(question ORDER BY tier,rn) FILTER(WHERE rn<=5),
          pg_catalog.jsonb_agg(question ORDER BY tier,rn) FILTER(WHERE rn=6)
     INTO v_questions,v_reserves FROM packed;
-  IF pg_catalog.jsonb_array_length(pg_catalog.coalesce(v_questions,'[]'::jsonb))<>15
-    OR pg_catalog.jsonb_array_length(pg_catalog.coalesce(v_reserves,'[]'::jsonb))<>3
+  IF pg_catalog.jsonb_array_length(coalesce(v_questions,'[]'::jsonb))<>15
+    OR pg_catalog.jsonb_array_length(coalesce(v_reserves,'[]'::jsonb))<>3
   THEN RAISE EXCEPTION 'question_bank_incomplete';END IF;
   INSERT INTO arcade_private.quizoria_million_runs(
     user_id,operation_id,questions,reserves
@@ -290,7 +290,7 @@ DECLARE
 BEGIN
   IF uid IS NULL THEN RAISE EXCEPTION 'not_authenticated';END IF;
   IF p_run_id IS NULL OR p_event_id IS NULL OR
-    p_action NOT IN ('answer','fifty','audience','swap','cashout')
+    (p_action IS NULL OR p_action NOT IN ('answer','fifty','audience','swap','cashout'))
   THEN RAISE EXCEPTION 'invalid_action';END IF;
   SELECT * INTO r FROM arcade_private.quizoria_million_runs
     WHERE run_id=p_run_id AND user_id=uid FOR UPDATE;
