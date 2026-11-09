@@ -812,7 +812,7 @@
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'QUIZORIA · KATEGORIE A REŽIMY',
       modeTitle:'Co si dnes zahraješ?',hubTitleSolo:'Videohry · vyber režim',hubTitleChallenges:'Soukromé výzvy',hubTitleHistory:'Historie výzev',
-      hubSolo:'🎮 Sólo režimy',hubChallenges:'⚔️ Výzvy s přáteli',
+      hubSolo:'⬆️ Herní režimy',hubChallenges:'⚔️ Výzvy s přáteli',
       hubHistory:'📜 Historie',hubSoloHint:'🎯 Herní režimy najdeš výše. Tady můžeš otevřít výzvy a historii.',
       hubChallengesHint:'⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.',
       hubHistoryHint:'📜 Rozehrané i dokončené výzvy. Starší najdeš v archivu; otevřenou výzvu můžeš obnovit.',
@@ -993,7 +993,7 @@
       loginText:'This beta requires an account. The original guest and offline game is still available.',
       loginLink:'Open FOXEY Arcade',modeEyebrow:'QUIZORIA · CATEGORIES & MODES',
       modeTitle:'What will you play today?',hubTitleSolo:'Video Games · choose a mode',hubTitleChallenges:'Friend challenges',hubTitleHistory:'Challenge history',
-      hubSolo:'🎮 Solo modes',hubChallenges:'⚔️ Friend challenges',
+      hubSolo:'⬆️ Game modes',hubChallenges:'⚔️ Friend challenges',
       hubHistory:'📜 History',hubSoloHint:'🎯 Game modes are above. You can open friend challenges and history here.',
       hubChallengesHint:'⚔️ Share private challenges with a link. Live 1v1 and BO3/BO5 series are in Arcade → Friends.',
       hubHistoryHint:'📜 Your ongoing and finished challenges. Older entries are archived; unfinished games can be resumed.',
@@ -3065,7 +3065,11 @@
   });
   $('gameHubTabs').addEventListener('click',event=>{
     const tab=event.target.closest?.('button[data-game-hub]');
-    if(tab)selectGameHub(tab.dataset.gameHub);
+    if(tab){
+      selectGameHub(tab.dataset.gameHub);
+      if(tab.dataset.gameHub==='solo')
+        $('quizoriaModeSection')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+    }
   });
   $('gameHubTabs').addEventListener('keydown',event=>{
     if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
@@ -3077,6 +3081,8 @@
     const next=event.key==='Home'?0:event.key==='End'?names.length-1:
       (current+(event.key==='ArrowRight'?1:-1)+names.length)%names.length;
     selectGameHub(names[next],true);
+    if(names[next]==='solo')
+      $('quizoriaModeSection')?.scrollIntoView?.({behavior:'smooth',block:'start'});
   });
   $('bootRetry').addEventListener('click',()=>void authenticate().catch(err=>{
     $('bootText').textContent=T('bootFailed')+' ('+errorText(err)+')';
