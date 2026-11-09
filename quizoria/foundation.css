@@ -174,7 +174,8 @@ button.quizoria-category:focus-visible{outline:2px solid #7affe8;outline-offset:
  gap:10px;padding:12px 14px;min-height:43px;cursor:pointer;
  font-size:.82rem;color:#cfe6f8;font-weight:800;list-style:none}
 #modePanel .quizoria-rewards-drawer summary::-webkit-details-marker{display:none}
-#modePanel .quizoria-rewards-drawer[open] summary span{transform:rotate(180deg)}
+#modePanel .quizoria-rewards-drawer summary .quizoria-rewards-chevron{display:inline-block;transition:transform .15s}
+#modePanel .quizoria-rewards-drawer[open] summary .quizoria-rewards-chevron{transform:rotate(180deg)}
 #modePanel .quizoria-rewards-drawer .live-rewards{margin:0 10px 10px}
 #modePanel .quizoria-category-section-heading{margin:8px 0 12px}
 #modePanel .quizoria-categories-zone{margin:0;padding:14px}
