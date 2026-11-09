@@ -45,6 +45,8 @@
     for(const el of document.querySelectorAll?.('.arcade-chat-unread')||[]){
       el.textContent=num;el.classList.toggle('hidden',unread<1);
     }
+    const socialUnreadMetric=$('socialUnreadMetric');
+    if(socialUnreadMetric)socialUnreadMetric.textContent=uid?num:'—';
     const summary=$('chatUnreadSummary');
     if(summary)summary.textContent=unread?tr('Nepřečtené: ','Unread: ')+num:'';
     try{window.dispatchEvent?.(new CustomEvent('foxey-arcade:chat-unread',{
