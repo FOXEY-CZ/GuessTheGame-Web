@@ -465,13 +465,14 @@
       <p id="quizoriaModesDescription">Nejdřív vyber způsob hraní. Kategorie otázek jsou samostatně níže.</p>
     </div>
     <div class="quizoria-featured-modes" aria-label="Připravované režimy">
-      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaMillionTitle">
+      <article class="mode-choice quizoria-million-feature" aria-labelledby="quizoriaMillionTitle">
         <div class="mode-choice-head">
           <span class="mode-icon" aria-hidden="true">💰</span>
           <span class="mode-copy"><strong id="quizoriaMillionTitle">💰 Milionová výzva</strong>
-            <small id="quizoriaMillionSubtitle">15 otázek, záchytné body a nápovědy. Brzy v Quizorii.</small></span>
-          <span class="quizoria-mode-badge" id="quizoriaMillionBadge">BRZY</span>
+            <small id="quizoriaMillionSubtitle">15 otázek · záchytné body · tři nápovědy</small></span>
+          <span class="quizoria-mode-badge live" id="quizoriaMillionBadge">HRÁT</span>
         </div>
+        <button id="quizoriaMillionLaunch" class="primary quizoria-million-launch" type="button">▶ Spustit Milionovou výzvu</button>
       </article>
     </div>
     <details class="quizoria-future-drawer" id="quizoriaFutureDrawer">
@@ -620,6 +621,65 @@
       <p id="historyHint" class="async-help">Výsledky se automaticky kontrolují, když máš tuto stránku otevřenou. Oznámení na zavřený telefon zatím nepřicházejí.</p>
     </section>
     </div>
+  </section>
+
+  <section id="quizoriaMillionPanel" class="panel million-panel hidden" aria-labelledby="millionTitle">
+    <div class="million-topbar">
+      <button id="millionBack" class="million-back" type="button">← Zpět na výběr</button>
+      <button id="millionSound" class="million-sound" type="button" aria-label="Přepnout zvuk">🔊 Zvuky zapnuté</button>
+    </div>
+    <div class="million-brand">
+      <span class="million-logo" aria-hidden="true">💰</span>
+      <div>
+        <span class="label" id="millionCategory">🎮 Videohry</span>
+        <h2 id="millionTitle">💰 Milionová výzva</h2>
+        <p id="millionSubtitle">15 otázek. Tři nápovědy. Jedno velké finále.</p>
+      </div>
+    </div>
+    <p class="million-status" id="millionStatus" aria-live="polite" role="status"></p>
+    <div class="million-statline" aria-live="polite">
+      <span id="millionCurrentStage">Otázka 1 / 15</span>
+      <strong id="millionPrize">Hraješ o 100</strong>
+    </div>
+    <div class="million-progress" role="progressbar" aria-label="Dokončené otázky"
+      aria-valuemin="0" aria-valuemax="15" aria-valuenow="0">
+      <span id="millionProgressFill"></span>
+    </div>
+    <div class="million-safety">
+      <span id="millionBanked">Můžeš odejít s 0</span>
+      <span id="millionCheckpoint">Jistá výhra: 0</span>
+    </div>
+    <section id="millionQuestionArea" class="million-question-box" aria-labelledby="millionQuestion">
+      <div class="million-question-accent">✦ ✦ ✦</div>
+      <h3 id="millionQuestion">Načítám otázku…</h3>
+      <div id="millionOptions" class="million-options" role="group" aria-label="Možnosti odpovědi"></div>
+      <div id="millionAudienceResult" class="million-audience-result hidden"></div>
+      <p id="millionAudienceNote" class="million-audience-note hidden">Simulovaný tip publika</p>
+    </section>
+    <p id="millionFeedback" class="million-feedback hidden" aria-live="polite"></p>
+    <div class="million-lifelines" id="millionLifelines" aria-label="Nápovědy">
+      <button id="millionFifty" type="button">✂️ 50:50</button>
+      <button id="millionAudience" type="button">👥 Tip publika</button>
+      <button id="millionSwap" type="button">🔄 Výměna otázky</button>
+    </div>
+    <div class="million-actions">
+      <button id="millionCashout" class="million-cashout" type="button">💼 Odebrat výhru</button>
+      <button id="millionRetry" class="hidden" type="button">↻ Opakovat požadavek</button>
+      <button id="millionNext" class="primary hidden" type="button">Další otázka →</button>
+    </div>
+    <section class="million-final hidden" id="millionFinal" aria-labelledby="millionFinalTitle">
+      <h3 id="millionFinalTitle">🏆 MILION!</h3>
+      <strong id="millionFinalPrize">Tvoje soutěžní výhra: 0</strong>
+      <p id="millionReward" aria-live="polite">Ověřené odměny</p>
+      <button id="millionAnother" class="primary" type="button">▶ Hrát znovu</button>
+    </section>
+    <details class="million-ladder">
+      <summary id="millionLadderLabel">🏆 Žebříček částek</summary>
+      <div id="millionLadderList" class="million-ladder-list"></div>
+    </details>
+    <p id="millionLegalNote" class="million-legal-note">
+      Soutěžní částky nejsou skutečné korunky. Odměny do Arcade připisuje pouze server.
+    </p>
   </section>
 
   <section id="gamePanel" class="panel hidden">
@@ -808,6 +868,7 @@
 <script src="account-config.js"></script>
 <script src="./quizoria/catalog.js?v=quizoria-foundation-20261109a"></script>
 <script src="./quizoria/quizoria-ui.js?v=quizoria-menu-20261109c"></script>
+<script src="./quizoria/million.js?v=quizoria-million-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
@@ -1767,6 +1828,7 @@
     $('soloRefresh').textContent=T('soloRefresh');
     renderSoloModes();
     window.QUIZORIA_UI?.setLocale(lang);
+    window.QUIZORIA_MILLION?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
     // History is optional UI; never let it abort bootstrap/authentication.
     // Previously this ran before getSession() had even finished.
@@ -1777,6 +1839,7 @@
     if(game&&current)renderQuestion();
   }
   function modeScreen(){
+    window.QUIZORIA_MILLION?.onMenu?.();
     game=null;current=null;pending=null;busy=false;
     document.body?.classList?.remove('quiz-playing','quiz-finished');
     visible('achievementsButton',!!me);
@@ -1969,6 +2032,7 @@
     const {data,error}=await api.auth.getSession();
     const priorUser=me?.id||null;
     me=!error&&data?.session?.user||null;
+    window.QUIZORIA_MILLION?.connect?.(api,me);
     // Same secured friend-only mini chat in the standalone game.
     window.FOXEY_MINI_CHAT?.connect?.(api,me);
     window.FOXEY_MINI_CHAT?.onPage?.('play');
