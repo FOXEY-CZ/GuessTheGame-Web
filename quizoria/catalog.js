@@ -15,7 +15,7 @@
     {id:'movies',icon:'🎬',state:'available',allowedModes:['classic','films','series','easy','medium','hard','daily','friend'],
       cs:{name:'Filmy a seriály',description:'Poznávej filmy, seriály, postavy a filmové světy.'},
       en:{name:'Movies & Series',description:'Recognize movies, shows, characters and fictional worlds.'}},
-    {id:'music',icon:'🎵',state:'planned',allowedModes:[],
+    {id:'music',icon:'🎵',state:'available',allowedModes:['classic','czsk','world','easy','medium','hard','daily','friend'],
       cs:{name:'Hudba',description:'Interpreti, hudební zajímavosti a alba.'},
       en:{name:'Music',description:'Artists, music trivia and albums.'}},
     {id:'general',icon:'🌍',state:'planned',allowedModes:[],
@@ -29,7 +29,7 @@
   }));
   const frozen=Object.freeze(categories);
   window.QUIZORIA_CATALOG=Object.freeze({
-    version:'1.4',
+    version:'1.5',
     categories:frozen,
     defaultCategory:'video-games',
     getCategory(id){return frozen.find(item=>item.id===id)||null;},
