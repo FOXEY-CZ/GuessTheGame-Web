@@ -392,6 +392,7 @@
 <link rel="stylesheet" href="./quizoria/general.css?v=quizoria-general-20261109b">
 <link rel="stylesheet" href="./quizoria/polish.css?v=quizoria-polish-20261109a">
 <link rel="stylesheet" href="./quizoria/coach.css?v=quizoria-20-20261109b">
+<link rel="stylesheet" href="./quizoria/survival.css?v=quizoria-survival-21-20261109a">
 </head>
 <body>
 <main class="wrap">
@@ -528,17 +529,18 @@
         </div>
         <button id="quizoriaGeneralFeatureLaunch" type="button" class="primary quizoria-general-launch">▶ Hrát znalosti</button>
       </article>
+      <article class="mode-choice quizoria-survival-feature" aria-labelledby="quizoriaSurvivalTitle">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">❤️</span>
+          <span class="mode-copy"><strong id="quizoriaSurvivalTitle">Přežití · Survival</strong>
+            <small id="quizoriaSurvivalSubtitle">3 životy · 60 otázek · rostoucí obtížnost · rekordy</small></span>
+          <span class="quizoria-mode-badge live" id="quizoriaSurvivalBadge">HRÁT</span>
+        </div>
+        <button id="quizoriaSurvivalLaunch" class="primary quizoria-survival-launch" type="button">❤️ Spustit Přežití</button>
+      </article>
     <details class="quizoria-future-drawer" id="quizoriaFutureDrawer">
       <summary id="quizoriaFutureSummary">✨ Další připravované režimy</summary>
       <div class="quizoria-featured-modes quizoria-future-grid">
-        <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaSurvivalTitle">
-        <div class="mode-choice-head">
-          <span class="mode-icon" aria-hidden="true">❤️</span>
-          <span class="mode-copy"><strong id="quizoriaSurvivalTitle">Přežití</strong>
-            <small id="quizoriaSurvivalSubtitle">Odpovídej bez chyb a překonávej své rekordy.</small></span>
-          <span class="quizoria-mode-badge" id="quizoriaSurvivalBadge">BRZY</span>
-        </div>
-      </article>
         <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaEndlessTitle">
         <div class="mode-choice-head">
           <span class="mode-icon" aria-hidden="true">♾️</span>
@@ -1288,6 +1290,74 @@
     </div>
   </section>
 
+  <section id="quizoriaSurvivalPanel" class="panel quizoria-survival-panel hidden" aria-labelledby="survivalTitle">
+    <div class="survival-header">
+      <button id="survivalBack" class="secondary" type="button">← Zpět do Quizorie</button>
+      <span class="survival-mark">❤️ QUIZORIA · SURVIVAL</span>
+      <h2 id="survivalTitle">Přežití</h2>
+      <p id="survivalIntro">Tři životy, otázky od snadných po těžké a rekord na 60 otázek. Každá odpověď se ukládá na server.</p>
+    </div>
+    <p id="survivalStatus" class="survival-status" role="status" aria-live="polite"></p>
+    <div id="survivalLobby">
+      <h3 id="survivalCategoryTitle">🎮 Vyber tematický svět</h3>
+      <div id="survivalCategories" class="survival-categories" role="group" aria-label="Kategorie Přežití"></div>
+      <div class="survival-best-grid">
+        <div><span id="survivalBestStageLabel">🧭 Rekord otázek</span><strong id="survivalBestStage">—</strong></div>
+        <div><span id="survivalBestScoreLabel">🏆 Nejvíc bodů</span><strong id="survivalBestScore">—</strong></div>
+        <div><span id="survivalBestStreakLabel">🔥 Nejdelší série</span><strong id="survivalBestStreak">—</strong></div>
+      </div>
+      <div class="survival-lobby-actions">
+        <button class="primary" id="survivalStart" type="button">▶ Spustit novou partii</button>
+        <button id="survivalResume" type="button" class="secondary hidden">⏯ Pokračovat v rozehrané</button>
+      </div>
+      <p id="survivalRules" class="survival-rules">❤️ 3 životy · 🟢 1–20 snadné · 🟠 21–40 střední · 🔥 41–60 těžké. Po třetí chybě konec. Ověřené odměny po dohrání podléhají limitům.</p>
+      <div class="survival-lobby-columns">
+        <section class="survival-lobby-box" aria-labelledby="survivalLeaderboardTitle">
+          <h3 id="survivalLeaderboardTitle">🏆 Žebříček hráčů</h3>
+          <ol id="survivalLeaderboard" class="survival-list"></ol>
+        </section>
+        <section class="survival-lobby-box" aria-labelledby="survivalHistoryTitle">
+          <h3 id="survivalHistoryTitle">💾 Moje partie</h3>
+          <div id="survivalHistory" class="survival-history"></div>
+        </section>
+      </div>
+    </div>
+    <div id="survivalPlay" class="hidden">
+      <div class="survival-hud">
+        <div><span id="survivalStageLabel">Otázka</span> <strong id="survivalStage">1 / 60</strong></div>
+        <div><span id="survivalHeartsLabel">Životy</span> <strong id="survivalHearts" aria-label="Zbývající životy">❤️❤️❤️</strong></div>
+        <div><span id="survivalScoreLabel">Body</span> <strong id="survivalScore">0</strong></div>
+        <div><span id="survivalStreakLabel">Série</span> <strong id="survivalStreak">0</strong></div>
+      </div>
+      <div id="survivalProgressTrack" class="survival-progress" role="progressbar" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0" aria-label="Postup v režimu Přežití">
+        <span id="survivalProgressFill"></span>
+      </div>
+      <div id="survivalQuestionArea">
+        <div class="survival-question-head">
+          <span id="survivalCategoryHint">🎮 Videohry</span>
+          <span id="survivalDifficulty">🟢 Snadné</span>
+        </div>
+        <h3 id="survivalPrompt">Načítám otázku…</h3>
+        <p id="survivalClue" class="survival-clue"></p>
+        <div id="survivalVisual" class="survival-visual hidden"></div>
+        <a id="survivalSource" class="survival-source hidden" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/">Zdroj obrázku</a>
+        <div id="survivalOptions" class="survival-options"></div>
+        <p id="survivalFeedback" class="survival-feedback hidden" role="status" aria-live="polite"></p>
+        <div class="survival-answer-actions">
+          <button type="button" id="survivalRetry" class="secondary hidden">↻ Opakovat požadavek</button>
+          <button type="button" id="survivalNext" class="primary hidden">Další otázka →</button>
+        </div>
+      </div>
+      <div id="survivalFinal" class="survival-final hidden">
+        <div class="survival-final-icon" id="survivalFinalIcon" aria-hidden="true">🏆</div>
+        <h3 id="survivalFinalTitle">Konec Přežití</h3>
+        <p id="survivalFinalSummary">Výsledek byl uložen na server.</p>
+        <p id="survivalReward" class="survival-reward"></p>
+        <button id="survivalPlayAgain" type="button" class="primary">🎮 Znovu do výběru kategorií</button>
+      </div>
+    </div>
+  </section>
+
   <section id="resultPanel" class="panel hidden">
     <div id="resultArt" class="result-art" aria-hidden="true">🏆</div>
     <div class="label" id="resultLabel">OVĚŘENÝ VÝSLEDEK</div>
@@ -1427,6 +1497,7 @@
 <script src="./quizoria/movies.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/music.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/general.js?v=quizoria-general-20261109b"></script>
+<script src="./quizoria/survival.js?v=quizoria-survival-21-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
@@ -2394,6 +2465,7 @@
     window.QUIZORIA_MOVIES?.setLocale(lang);
     window.QUIZORIA_MUSIC?.setLocale(lang);
     window.QUIZORIA_GENERAL?.setLocale(lang);
+    window.QUIZORIA_SURVIVAL?.setLocale(lang);
     window.QUIZORIA_PROGRESS?.setLocale(lang);
     window.QUIZORIA_COACH?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
@@ -2605,6 +2677,7 @@
     window.QUIZORIA_MOVIES?.connect?.(api,me);
     window.QUIZORIA_MUSIC?.connect?.(api,me);
     window.QUIZORIA_GENERAL?.connect?.(api,me);
+    window.QUIZORIA_SURVIVAL?.connect?.(api,me);
     window.QUIZORIA_PROGRESS?.connect?.(api,me);
     // Same secured friend-only mini chat in the standalone game.
     window.FOXEY_MINI_CHAT?.connect?.(api,me);
@@ -2632,6 +2705,7 @@
     window.QUIZORIA_MOVIES?.afterAuth?.();
     window.QUIZORIA_MUSIC?.afterAuth?.();
     window.QUIZORIA_GENERAL?.afterAuth?.();
+    window.QUIZORIA_SURVIVAL?.afterAuth?.();
     try{
       const urlParams=new URL(window.location.href).searchParams;
       if(urlParams.get('view')==='challenges')showChallengesAfterAuth=true;
@@ -3908,6 +3982,7 @@
   $('quizoriaMovieFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MOVIES?.openCategory?.());
   $('quizoriaMusicFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MUSIC?.openCategory?.());
   $('quizoriaGeneralFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_GENERAL?.openCategory?.());
+  $('quizoriaSurvivalLaunch')?.addEventListener('click',()=>window.QUIZORIA_SURVIVAL?.open?.());
   window.QUIZORIA_PROGRESS?.setAfterClaim?.(()=>{
     void refreshLiveRewards();
     void refreshGameAchievements();
