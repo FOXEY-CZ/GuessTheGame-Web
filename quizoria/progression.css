@@ -63,3 +63,11 @@
 .qp-stat-card.qp-music{border-color:#b26fbc;background:linear-gradient(145deg,#392b59,#20324d)}
 @media(min-width:761px){.qp-stat-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.qp-stat-card.qp-music{grid-column:auto}}
+
+/* Verified whole-Quizoria overview; summary derives exclusively from signed-in RPC data. */
+.qp-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:13px 0 15px}
+.qp-overview-card{padding:12px 9px;border:1px solid #526a91;border-radius:12px;background:linear-gradient(145deg,#273b5a,#1e2b4b);display:flex;flex-direction:column;gap:5px;min-width:0}
+.qp-overview-icon{font-size:1.12rem}
+.qp-overview-caption{font-size:.65rem;color:#b2c8e3;line-height:1.3}
+.qp-overview-value{font-size:clamp(.75rem,2vw,1.13rem);color:#f4f8ff;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+@media(max-width:670px){.qp-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
