@@ -21,6 +21,10 @@ CREATE TABLE IF NOT EXISTS arcade_private.quizoria_general_questions(
 );
 ALTER TABLE arcade_private.quizoria_general_questions ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON arcade_private.quizoria_general_questions FROM PUBLIC,anon,authenticated;
+ALTER TABLE arcade_private.quizoria_general_questions
+ ADD COLUMN IF NOT EXISTS clue_cs text NOT NULL DEFAULT '',
+ ADD COLUMN IF NOT EXISTS clue_en text NOT NULL DEFAULT '';
+
 
 CREATE TABLE IF NOT EXISTS arcade_private.quizoria_general_runs(
   run_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -320,6 +324,7 @@ BEGIN
   END IF;
   SELECT * INTO r FROM arcade_private.quizoria_general_runs
     WHERE user_id=uid AND mode=p_mode AND finished=false AND expires_at>now()
+      AND (p_mode<>'daily' OR (started_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date)
       ORDER BY started_at DESC LIMIT 1 FOR UPDATE;
   IF FOUND THEN RETURN arcade_private.quizoria_general_view(r);END IF;
   SELECT count(*) INTO v_count FROM arcade_private.quizoria_general_runs
