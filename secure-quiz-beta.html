@@ -389,6 +389,7 @@
 <link rel="stylesheet" href="./quizoria/progression.css?v=quizoria-music-20261109g">
 <link rel="stylesheet" href="./quizoria/movies.css?v=quizoria-music-20261109g">
 <link rel="stylesheet" href="./quizoria/music.css?v=quizoria-music-20261109g">
+<link rel="stylesheet" href="./quizoria/general.css?v=quizoria-general-20261109a">
 </head>
 <body>
 <main class="wrap">
@@ -411,7 +412,7 @@
       <span class="hero-spark hero-spark-b">◆</span><span class="hero-spark hero-spark-c">✧</span>
     </div>
     <h1 id="heroTitle">QUIZORIA</h1>
-    <p class="lead" id="heroLead">Už čtyři světy: Videohry, Memy, Filmy a Hudba. Vyber si!</p>
+    <p class="lead" id="heroLead">Všech pět kvízových světů je otevřených. Který zkusíš dnes?</p>
   </div>
   <div class="status" id="status" role="status" aria-live="polite"></div>
 
@@ -504,6 +505,14 @@
         </div>
         <button id="quizoriaMusicFeatureLaunch" type="button" class="primary quizoria-music-launch">▶ Hrát hudbu</button>
       </article>
+      <article class="mode-choice quizoria-general-feature">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">🌍</span>
+          <span class="mode-copy"><strong id="quizoriaGeneralFeatureTitle">Všeobecné znalosti</strong>
+          <small id="quizoriaGeneralFeatureDescription">120 otázek · zeměpis, historie, věda, technologie</small></span>
+        </div>
+        <button id="quizoriaGeneralFeatureLaunch" type="button" class="primary quizoria-general-launch">▶ Hrát znalosti</button>
+      </article>
     <details class="quizoria-future-drawer" id="quizoriaFutureDrawer">
       <summary id="quizoriaFutureSummary">✨ Další připravované režimy</summary>
       <div class="quizoria-featured-modes quizoria-future-grid">
@@ -577,21 +586,21 @@
     <div class="quizoria-category-section-heading" id="quizoriaCategorySection">
       <span class="quizoria-section-eyebrow">02 · OTÁZKY</span>
       <h3 id="quizoriaCategorySectionTitle">🎮 Kategorie</h3>
-      <p id="quizoriaCategorySectionDescription">Čtyři hratelné kategorie: Videohry, Memy, Filmy a Hudba.</p>
+      <p id="quizoriaCategorySectionDescription">Všech pět kategorií je hratelných — včetně Všeobecných znalostí.</p>
     </div>
     <section id="quizoriaCategoriesZone" class="quizoria-categories-zone" aria-labelledby="quizoriaCategoriesTitle">
       <div class="quizoria-categories-top">
         <div>
           <div class="label">QUIZORIA · KATEGORIE & POSTUP</div>
           <h3 id="quizoriaCategoriesTitle">Vyber si svůj kvízový svět</h3>
-          <p id="quizoriaCategoriesIntro">Čtyři kvízové světy — Videohry, Memy, Filmy a Hudba.</p>
+          <p id="quizoriaCategoriesIntro">Pět kvízových světů: Videohry, Memy, Filmy, Hudba a Vědomosti.</p>
         </div>
-        <span class="quizoria-category-count">4 / 5 LIVE</span>
+        <span class="quizoria-category-count">5 / 5 LIVE</span>
       </div>
       <div id="quizoriaCategories" class="quizoria-category-list" aria-label="Kategorie Quizoria">
         <button class="quizoria-category selected" type="button" disabled>🎮 Videohry · Hratelné</button>
       </div>
-      <p id="quizoriaCategoryNote" class="quizoria-category-note">Čtyři kategorie s vlastními ověřenými otázkami, postupem a společnými měnami.</p>
+      <p id="quizoriaCategoryNote" class="quizoria-category-note">Pět hratelných kategorií se zabezpečenými otázkami, savy a společnými měnami.</p>
     </section>
     <section id="quizoriaProgression" class="qp-section" aria-labelledby="quizoriaProgressTitle">
       <div class="qp-section-header">
@@ -1391,6 +1400,7 @@
 <script src="./quizoria/progression.js?v=quizoria-music-20261109g"></script>
 <script src="./quizoria/movies.js?v=quizoria-music-20261109g"></script>
 <script src="./quizoria/music.js?v=quizoria-music-20261109g"></script>
+<script src="./quizoria/general.js?v=quizoria-general-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
@@ -1403,7 +1413,7 @@
     cs:{
       eyebrow:'A FOXEY ARCADE GAME · KVÍZOVÝ SVĚT',
       title:'QUIZORIA',
-      lead:'Už čtyři světy: Videohry, Memy, Filmy a Hudba. Vyber si!',
+      lead:'Všech pět kvízových světů je otevřených. Který zkusíš dnes?',
       loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'QUIZORIA · KATEGORIE A REŽIMY',
@@ -1584,7 +1594,7 @@
     en:{
       eyebrow:'A FOXEY ARCADE GAME · QUIZ UNIVERSE',
       title:'QUIZORIA',
-      lead:'Four playable quiz worlds: Video Games, Memes, Movies and Music!',
+      lead:'All five Quizoria categories are ready to play. Choose your world!',
       loginTitle:'Sign in to FOXEY Arcade first',
       loginText:'This beta requires an account. The original guest and offline game is still available.',
       loginLink:'Open FOXEY Arcade',modeEyebrow:'QUIZORIA · CATEGORIES & MODES',
@@ -2357,6 +2367,7 @@
     window.QUIZORIA_MEMES?.setLocale(lang);
     window.QUIZORIA_MOVIES?.setLocale(lang);
     window.QUIZORIA_MUSIC?.setLocale(lang);
+    window.QUIZORIA_GENERAL?.setLocale(lang);
     window.QUIZORIA_PROGRESS?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
     // History is optional UI; never let it abort bootstrap/authentication.
@@ -2566,6 +2577,7 @@
     window.QUIZORIA_MEMES?.connect?.(api,me);
     window.QUIZORIA_MOVIES?.connect?.(api,me);
     window.QUIZORIA_MUSIC?.connect?.(api,me);
+    window.QUIZORIA_GENERAL?.connect?.(api,me);
     window.QUIZORIA_PROGRESS?.connect?.(api,me);
     // Same secured friend-only mini chat in the standalone game.
     window.FOXEY_MINI_CHAT?.connect?.(api,me);
@@ -2592,6 +2604,7 @@
     window.QUIZORIA_MEMES?.afterAuth?.();
     window.QUIZORIA_MOVIES?.afterAuth?.();
     window.QUIZORIA_MUSIC?.afterAuth?.();
+    window.QUIZORIA_GENERAL?.afterAuth?.();
     try{
       const urlParams=new URL(window.location.href).searchParams;
       if(urlParams.get('view')==='challenges')showChallengesAfterAuth=true;
@@ -3864,6 +3877,7 @@
   $('quizoriaMemeFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MEMES?.openCategory?.());
   $('quizoriaMovieFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MOVIES?.openCategory?.());
   $('quizoriaMusicFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MUSIC?.openCategory?.());
+  $('quizoriaGeneralFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_GENERAL?.openCategory?.());
   window.QUIZORIA_PROGRESS?.setAfterClaim?.(()=>{
     void refreshLiveRewards();
     void refreshGameAchievements();
@@ -3879,6 +3893,10 @@
     }
     if(category==='music'){
       window.QUIZORIA_MUSIC?.openCategory?.();
+      return;
+    }
+    if(category==='general'){
+      window.QUIZORIA_GENERAL?.openCategory?.();
       return;
     }
     selectGameHub('solo');
