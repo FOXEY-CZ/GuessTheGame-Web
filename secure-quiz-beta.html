@@ -935,6 +935,118 @@
     </p>
   </section>
 
+  <section id="quizoriaMusicPanel" class="panel music-panel hidden" aria-labelledby="musicTitle">
+    <div class="music-nav">
+      <button id="musicBack" type="button">← Zpět do Quizorie</button>
+      <span class="music-studio">QUIZORIA · MUSIC & RAP</span>
+    </div>
+    <div class="music-brand">
+      <div class="music-logo" aria-hidden="true">🎵</div>
+      <div>
+        <div class="label" id="musicCategory">🎵 Hudba a rap</div>
+        <h2 id="musicTitle">Hudební kvíz</h2>
+        <p id="musicSubtitle">Poznáš interpreta, skladbu nebo album podle indicií?</p>
+      </div>
+    </div>
+    <p id="musicStatus" class="music-status" role="status" aria-live="polite"></p>
+    <div id="musicLobby">
+      <p class="music-intro" id="musicIntro">Vyber režim a poznej interpreta nebo album. Odpověď ověřuje server.</p>
+      <div class="music-mode-grid">
+        <button type="button" class="music-mode-card" data-music-mode="classic">
+          <strong id="musicMode_classic">🎵 Hudební mix</strong>
+          <small id="musicModeSub_classic">5 CZ/SK a 5 zahraničních interpretů</small>
+        </button>
+        <button type="button" class="music-mode-card" data-music-mode="czsk">
+          <strong id="musicMode_czsk">🇨🇿 CZ/SK rap</strong>
+          <small id="musicModeSub_czsk">10 otázek o české a slovenské scéně</small>
+        </button>
+        <button type="button" class="music-mode-card" data-music-mode="world">
+          <strong id="musicMode_world">🌍 Zahraniční hudba</strong>
+          <small id="musicModeSub_world">10 otázek o světové hudbě</small>
+        </button>
+        <button type="button" class="music-mode-card" data-music-mode="easy">
+          <strong id="musicMode_easy">🟢 Nováček</strong>
+          <small id="musicModeSub_easy">10 jednodušších otázek</small>
+        </button>
+        <button type="button" class="music-mode-card" data-music-mode="medium">
+          <strong id="musicMode_medium">🟠 Hudební znalec</strong>
+          <small id="musicModeSub_medium">10 středně těžkých otázek</small>
+        </button>
+        <button type="button" class="music-mode-card" data-music-mode="hard">
+          <strong id="musicMode_hard">🔥 Expert</strong>
+          <small id="musicModeSub_hard">10 náročných otázek o hudbě</small>
+        </button>
+        <button type="button" class="music-mode-card music-daily" data-music-mode="daily">
+          <strong id="musicMode_daily">📅 Denní playlist</strong>
+          <small id="musicModeSub_daily">Denně 3 CZ/SK a 2 světové otázky (UTC)</small>
+        </button>
+      </div>
+      <p id="musicDailyNote" class="music-help">Denní otázky se mění každý den podle UTC.</p>
+      <details class="music-saves" open>
+        <summary id="musicSavedTitle">💾 Rozehrané a nedávné hry</summary>
+        <div id="musicSavedList"></div>
+      </details>
+      <section class="music-challenge" aria-labelledby="musicChallengeTitle">
+        <h3 id="musicChallengeTitle">⚔️ Hudební výzva s kamarádem</h3>
+        <p id="musicChallengeDesc">Vytvoř výzvu, pošli odkaz a oba odehrajete stejných 10 otázek. Skóre se porovná po dohrání obou.</p>
+        <button id="musicChallengeCreate" class="music-create-button" type="button">⚔️ Vytvořit výzvu</button>
+        <div class="music-invite-display hidden" id="musicInviteDisplay">
+          <input type="text" id="musicInviteLink" readonly aria-label="Odkaz na music výzvu" />
+          <button id="musicInviteCopy" type="button">📋 Kopírovat</button>
+        </div>
+        <div class="music-join-controls">
+          <input type="text" id="musicInviteInput" maxlength="280" autocomplete="off"
+            placeholder="Odkaz nebo ID výzvy…" aria-label="Vlož odkaz nebo ID music výzvy" />
+          <button id="musicChallengeJoin" type="button">🎮 Přijmout odkaz / ID</button>
+        </div>
+        <button id="musicMatchCheck" class="music-match-check" type="button">🏆 Zkontrolovat souboj</button>
+        <p id="musicMatchStatus" class="music-help" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+    <div id="musicPlay" class="hidden">
+      <div id="musicTopShare" class="music-top-share hidden">
+        <p>⚔️ <span id="musicTopShareText">Hraješ výzvu s kamarádem. Pošli mu odkaz.</span></p>
+        <button id="musicTopShareCopy" type="button">📋 Zkopírovat odkaz</button>
+      </div>
+      <div class="music-scoreline">
+        <strong id="musicStage">Otázka 1 / 10</strong>
+        <span id="musicScore">Body: 0</span>
+      </div>
+      <div id="musicProgressTrack" class="music-progress" role="progressbar"
+        aria-label="Dokončené otázky" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+        <span id="musicProgressFill"></span>
+      </div>
+      <section id="musicQuestionArea" class="music-question-box" aria-labelledby="musicPrompt">
+        <div class="music-image-frame music-clue-frame">
+          <span id="musicMediaType" class="music-media-type">🎵 HUDBA</span>
+          <div id="musicVisual" class="music-clue-emoji" role="img" aria-label="Originální emoji indicie">🎬</div>
+          <p id="musicClue" class="music-clue-text"></p>
+          <p id="musicImageError" class="hidden"></p>
+          <a id="musicImageOpen" class="music-open-original hidden" href="https://musicbrainz.org/" target="_blank" rel="noopener noreferrer">Informace o interpretovi</a>
+        </div>
+        <a id="musicImageCredit" href="https://musicbrainz.org/" target="_blank"
+          rel="noopener noreferrer" class="music-image-credit hidden">Informace o interpretovi</a>
+        <h3 id="musicPrompt">Načítám otázku…</h3>
+        <div id="musicOptions" class="music-options" role="group" aria-label="Možnosti odpovědi"></div>
+      </section>
+      <p id="musicFeedback" class="music-feedback hidden" role="status" aria-live="polite"></p>
+      <div class="music-actions">
+        <button id="musicRetry" type="button" class="hidden">↻ Opakovat požadavek</button>
+        <button id="musicNext" class="primary hidden" type="button">Další otázka →</button>
+      </div>
+      <section id="musicFinal" class="music-result hidden" aria-labelledby="musicFinalTitle">
+        <h3 id="musicFinalTitle">🏆 Konec kvízu!</h3>
+        <strong id="musicFinalScore">Tvůj výsledek: 0</strong>
+        <p id="musicReward"></p>
+        <p id="musicFinalMatch" class="music-final-match hidden"></p>
+        <button id="musicAnother" type="button" class="primary">🎮 Další kvíz</button>
+      </section>
+    </div>
+    <p id="musicLegal" class="music-legal">
+      Původní hudební otázky bez nahrávek a textů písní. Body nejsou peníze.
+    </p>
+  </section>
+
   <section id="gamePanel" class="panel hidden">
     <div class="line">
       <div class="label" id="gameLabel">SERVEROVÝ KVÍZ</div>
