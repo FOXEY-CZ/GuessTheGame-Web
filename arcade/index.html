@@ -19,6 +19,7 @@
   </script>
   <link rel="stylesheet" href="./styles.css?v=quizoria-general-20261109b">
   <link rel="stylesheet" href="./nextgen.css?v=foxey-nextgen-22-20261109a">
+  <link rel="stylesheet" href="./social-hub.css?v=foxey-social-23-20261109a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -329,21 +330,21 @@
     </section>
 
     <section class="page hidden" id="page-challenges">
-      <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
+      <header class="social-hub-hero" aria-label="Moje výzvy FOXEY Arcade">
+        <div class="social-hub-heading"><span class="eyebrow">⚔️ FOXEY ARCADE · SOCIAL HUB</span>
+          <h1>Moje výzvy</h1><p>Pokračuj v rozehraných partiích, zkontroluj soupeře a prohlédni své výsledky.</p>
+        </div>
+        <div class="social-hub-actions challenge-page-actions">
+          <a class="primary arcade-standalone-link" id="launchChallenge" href="../secure-quiz-beta.html?v=quizoria-polish-20261109a&amp;view=challenges" target="_blank" rel="noopener noreferrer">➕ Nová výzva</a>
+          <button class="secondary" id="challengeInboxButton" type="button">🔔 Oznámení</button>
+        </div>
+      </header>
+      <nav class="arcade-social-tabs social-hub-tabs" aria-label="Sekce Social Hub FOXEY Arcade">
         <button type="button" data-page="community" data-friends-view="people" class="arcade-social-tab">👥 Přátelé</button>
         <button type="button" data-social-chat class="arcade-social-tab">💬 Chat <span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
         <button type="button" data-social-live class="arcade-social-tab">⚡ Souboje</button>
         <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy</button>
       </nav>
-      <div class="page-intro challenge-page-intro">
-        <div><span class="eyebrow">FOXEY ARCADE · SOUBOJE</span><h1>⚔️ Moje výzvy</h1>
-          <p>Rychlý přehled, co máš rozehrané, na koho čekáš a jak dopadly poslední zápasy.</p>
-        </div>
-        <div class="challenge-page-actions">
-          <a class="primary arcade-standalone-link" id="launchChallenge" href="../secure-quiz-beta.html?v=quizoria-polish-20261109a&amp;view=challenges" target="_blank" rel="noopener noreferrer">➕ Vytvořit / přijmout výzvu</a>
-          <button class="secondary" id="challengeInboxButton" type="button">🔔 Oznámení</button>
-        </div>
-      </div>
       <div class="challenge-dashboard-stats" aria-label="Přehled výzev">
         <div><span>▶️ K hraní</span><strong id="challengeCountPlay">—</strong></div>
         <div><span>⏳ Čeká se</span><strong id="challengeCountWaiting">—</strong></div>
@@ -371,21 +372,30 @@
     </section>
 
     <section class="page hidden" id="page-community">
-      <nav class="arcade-social-tabs" aria-label="Přátelé a výzvy">
+      <header class="social-hub-hero" aria-label="Komunita FOXEY Arcade">
+        <div class="social-hub-heading"><span class="eyebrow">🦊 FOXEY ARCADE · SOCIAL HUB</span>
+          <h1>👥 Komunita</h1>
+          <p>Kamarádi, zprávy, živé souboje a společné výzvy. Všechno na jednom místě.</p>
+        </div>
+        <div class="social-hub-actions">
+          <button id="socialRequestsButton" type="button" class="primary">📩 Žádosti o přátelství</button>
+          <button id="friendsRefresh" class="secondary" type="button">↻ Obnovit přátele</button>
+        </div>
+      </header>
+      <div class="social-hub-activity" aria-label="Přehled komunity">
+        <div class="social-hub-metric"><span class="social-hub-metric-icon" aria-hidden="true">🤝</span><span class="social-hub-metric-label"><small>Moji přátelé</small><strong id="socialFriendsMetric">—</strong></span></div>
+        <div class="social-hub-metric"><span class="social-hub-metric-icon" aria-hidden="true">💬</span><span class="social-hub-metric-label"><small>Nepřečtené zprávy</small><strong id="socialUnreadMetric">—</strong></span></div>
+        <div class="social-hub-metric"><span class="social-hub-metric-icon" aria-hidden="true">📩</span><span class="social-hub-metric-label"><small>Čekající žádosti</small><strong id="socialRequestsMetric">—</strong></span></div>
+      </div>
+      <nav class="arcade-social-tabs social-hub-tabs" aria-label="Sekce Social Hub FOXEY Arcade">
         <button type="button" data-page="community" data-friends-view="people" class="arcade-social-tab">👥 Přátelé</button>
         <button type="button" data-social-chat class="arcade-social-tab">💬 Chat <span class="arcade-chat-unread hidden" aria-label="Nepřečtené zprávy">0</span></button>
         <button type="button" data-social-live class="arcade-social-tab">⚡ Souboje</button>
         <button type="button" data-page="challenges" class="arcade-social-tab">⚔️ Výzvy</button>
       </nav>
-      <div class="page-intro">
-        <div><span class="eyebrow">FOXEY ARCADE · KOMUNITA</span>
-          <h1>👥 Přátelé a výzvy</h1>
-          <p>Najdi hráče, pošli žádost a vyzvi přátele na stejnou sadu otázek. Všechno je propojené s tvým Arcade účtem.</p>
-        </div>
-        <button id="friendsRefresh" class="secondary" type="button">↻ Obnovit přátele</button>
-      </div>
-      <p class="small" id="friendsStatus" role="status" aria-live="polite">Pro přátele se přihlas.</p>
       <div id="friendsPanePeople" class="friends-view-pane">
+      <p class="small" id="friendsStatus" role="status" aria-live="polite">Pro přátele se přihlas.</p>
+      <div class="social-people-grid">
       <section class="friends-section" aria-labelledby="friendsFindTitle">
         <div class="sectionline"><h2 id="friendsFindTitle">➕ Přidat přítele podle nicku</h2></div>
         <form id="friendsSearchForm" class="friends-search-form">
@@ -400,6 +410,7 @@
         <div class="sectionline"><h2 id="friendsListTitle">🤝 Moji přátelé</h2><span id="friendsCount">0</span></div>
         <div class="friends-grid" id="friendsList"></div>
       </section>
+      </div>
       <section id="friendProfilePanel" class="friends-public-profile hidden" aria-labelledby="friendProfileTitle">
         <div class="friends-public-head">
           <h2 id="friendProfileTitle">👤 Hráčský profil</h2>
