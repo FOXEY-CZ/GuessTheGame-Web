@@ -408,7 +408,7 @@
       <span class="hero-spark hero-spark-b">◆</span><span class="hero-spark hero-spark-c">✧</span>
     </div>
     <h1 id="heroTitle">QUIZORIA</h1>
-    <p class="lead" id="heroLead">Jeden kvízový svět, stále více témat. Začni s Videohry a postupně objevuj další kategorie.</p>
+    <p class="lead" id="heroLead">Jeden kvízový svět, stále více témat. Videohry i obrázkové memy už můžeš hrát!</p>
   </div>
   <div class="status" id="status" role="status" aria-live="polite"></div>
 
@@ -477,6 +477,14 @@
         <button id="quizoriaMillionLaunch" class="primary quizoria-million-launch" type="button">▶ Spustit Milionovou výzvu</button>
       </article>
     </div>
+      <article class="mode-choice quizoria-meme-feature">
+        <div class="mode-choice-head">
+          <span class="mode-icon" aria-hidden="true">😂</span>
+          <span class="mode-copy"><strong id="quizoriaMemeFeatureTitle">Guess the Meme</strong>
+          <small id="quizoriaMemeFeatureDescription">Obrázkové otázky, denní kvíz a výzvy s přáteli</small></span>
+        </div>
+        <button id="quizoriaMemeFeatureLaunch" type="button" class="primary quizoria-meme-launch">▶ Hrát memy</button>
+      </article>
     <details class="quizoria-future-drawer" id="quizoriaFutureDrawer">
       <summary id="quizoriaFutureSummary">✨ Další připravované režimy</summary>
       <div class="quizoria-featured-modes quizoria-future-grid">
@@ -550,21 +558,21 @@
     <div class="quizoria-category-section-heading" id="quizoriaCategorySection">
       <span class="quizoria-section-eyebrow">02 · OTÁZKY</span>
       <h3 id="quizoriaCategorySectionTitle">🎮 Kategorie</h3>
-      <p id="quizoriaCategorySectionDescription">Stejné herní režimy, různá témata. Zatím jsou hratelné Videohry.</p>
+      <p id="quizoriaCategorySectionDescription">Dvě hratelné kategorie: Videohry a Memy. Další přibudou.</p>
     </div>
     <section id="quizoriaCategoriesZone" class="quizoria-categories-zone" aria-labelledby="quizoriaCategoriesTitle">
       <div class="quizoria-categories-top">
         <div>
           <div class="label">QUIZORIA · 1.0 FOUNDATION</div>
           <h3 id="quizoriaCategoriesTitle">Vyber si svůj kvízový svět</h3>
-          <p id="quizoriaCategoriesIntro">Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.</p>
+          <p id="quizoriaCategoriesIntro">Hraj Videohry nebo poznávej internetové memy podle obrázků.</p>
         </div>
-        <span class="quizoria-category-count">1 / 5 LIVE</span>
+        <span class="quizoria-category-count">2 / 5 LIVE</span>
       </div>
       <div id="quizoriaCategories" class="quizoria-category-list" aria-label="Kategorie Quizoria">
         <button class="quizoria-category selected" type="button" disabled>🎮 Videohry · Hratelné</button>
       </div>
-      <p id="quizoriaCategoryNote" class="quizoria-category-note">Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.</p>
+      <p id="quizoriaCategoryNote" class="quizoria-category-note">Videohry i Memy mají své samostatné serverově ověřované otázky, ukládání a odměny.</p>
     </section>
 
     </div>
@@ -984,7 +992,7 @@
     cs:{
       eyebrow:'A FOXEY ARCADE GAME · KVÍZOVÝ SVĚT',
       title:'QUIZORIA',
-      lead:'Jeden kvízový svět, stále více témat. Začni s Videohry a postupně objevuj další kategorie.',
+      lead:'Jeden kvízový svět, stále více témat. Videohry i obrázkové memy už můžeš hrát!',
       loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'QUIZORIA · KATEGORIE A REŽIMY',
@@ -1165,7 +1173,7 @@
     en:{
       eyebrow:'A FOXEY ARCADE GAME · QUIZ UNIVERSE',
       title:'QUIZORIA',
-      lead:'One quiz universe with more and more topics. Begin with Video Games and explore new categories as they arrive.',
+      lead:'One quiz universe with more topics. Video Games and picture memes are playable now!',
       loginTitle:'Sign in to FOXEY Arcade first',
       loginText:'This beta requires an account. The original guest and offline game is still available.',
       loginLink:'Open FOXEY Arcade',modeEyebrow:'QUIZORIA · CATEGORIES & MODES',
@@ -3429,6 +3437,7 @@
   window.setInterval?.(()=>{
     if(me&&document.visibilityState!=='hidden')void refreshHistory();
   },45000);
+  $('quizoriaMemeFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MEMES?.openCategory?.());
   window.QUIZORIA_UI?.setOpenModes(category=>{
     if(category==='memes'){
       window.QUIZORIA_MEMES?.openCategory?.();
