@@ -1,0 +1,152 @@
+/* Quizoria 1.7 — visual polish only. No persistence, economy or quiz rules. */
+:root {
+  --polish-ink:#eef7ff;
+  --polish-edge:#4d668d;
+  --polish-soft:#b8cbe5;
+}
+html { scroll-padding-top:112px; }
+body { background:
+  radial-gradient(ellipse at 49% -12%,rgba(101,87,183,.34),transparent 54%),
+  radial-gradient(ellipse at 98% 84%,rgba(29,116,137,.16),transparent 45%),
+  linear-gradient(180deg,#10182e,#0c1529 62%,#0c2634); }
+.wrap { width:min(940px,100%); }
+.header { box-shadow:0 12px 32px rgba(3,9,24,.22); }
+.header-actions { min-width:0; }
+.header-actions button { transition:transform .16s ease,background-color .16s ease,border-color .16s ease; }
+.header-actions button:hover:not(:disabled) { transform:translateY(-1px); }
+:where(.panel,.mode-choice,.quizoria-category,.quizoria-quickzone) { border-color:var(--polish-edge); }
+#modePanel { padding:clamp(17px,3.8vw,32px); }
+#modePanel #modeTitle { letter-spacing:-.03em;line-height:1.2;margin:7px 0 13px; }
+#modePanel .quizoria-hub-nav { gap:8px; padding:6px; border-radius:16px; background:#101e38; }
+#modePanel .quizoria-hub-nav .game-hub-tab { border-radius:11px;font-weight:800;letter-spacing:.005em; }
+#modePanel .quizoria-hub-nav .game-hub-tab[aria-selected="true"] {
+  background:linear-gradient(125deg,#6865c7,#304c88);
+  border:1px solid #bbb2ff;
+  box-shadow:0 3px 15px rgba(100,105,218,.22);
+}
+#modePanel #gameHubDescription { margin:7px 4px 15px;color:#c3d2e9; }
+#modePanel .quizoria-quickzone {
+  border-radius:18px; background:linear-gradient(128deg,#253a68,#202951);
+  box-shadow:inset 0 1px rgba(226,242,255,.08);
+}
+#modePanel .quizoria-quick-actions button { min-height:46px; }
+#modePanel .quizoria-mode-top { margin-top:17px; }
+#modePanel #gameHubSolo .quizoria-featured-modes:not(.quizoria-future-grid) { margin-top:10px; }
+/* Categories are navigated from the actual Categories tab, not repeated as four tiles. */
+#gameHubSolo .quizoria-meme-feature,
+#gameHubSolo .quizoria-movie-feature,
+#gameHubSolo .quizoria-music-feature,
+#gameHubSolo .quizoria-general-feature { display:none!important; }
+#modePanel .quizoria-million-feature {
+  border-color:#8674b8;
+  background:linear-gradient(120deg,#39305b,#242c55);
+  box-shadow:inset 0 1px rgba(255,255,255,.07);
+}
+#modePanel .quizoria-million-feature .primary { min-height:46px; }
+#modePanel #gameHubSolo #modes { gap:10px; }
+#modePanel #gameHubSolo #modes .mode-choice {
+  border:1px solid #45648d;
+  background:linear-gradient(145deg,#1f3354,#182b47);
+  transition:transform .16s ease,border-color .16s ease,background-color .16s ease;
+}
+#modePanel #gameHubSolo #modes .mode-choice:hover { border-color:#8c9ced;transform:translateY(-1px); }
+#modePanel #gameHubSolo #modes .mode-choice-actions { gap:8px; }
+#modePanel #gameHubSolo #modes .mode-choice-actions button { min-height:44px; }
+#modePanel #gameHubCategories .quizoria-category-list { gap:12px; }
+#modePanel #gameHubCategories .quizoria-category {
+  border-radius:16px; min-height:92px; align-items:center; gap:11px;
+  background:linear-gradient(135deg,#1d3454,#1a2a49);
+  transition:transform .16s ease,border-color .16s ease;
+}
+#modePanel #gameHubCategories .quizoria-category:hover:not(:disabled) { transform:translateY(-2px); }
+#modePanel #gameHubCategories .quizoria-category.selected {
+  background:linear-gradient(128deg,#31596b,#343b75);
+  border-color:#8bd8e5;box-shadow:inset 0 0 0 1px rgba(157,242,239,.13);
+}
+#modePanel #gameHubCategories .quizoria-category-info small { color:#c9d7ef; }
+#modePanel .qp-section { margin-top:18px; }
+#modePanel .quizoria-category-note { margin-top:15px; }
+#modePanel .game-hub-context { margin:12px 0 17px; }
+/* Keep all five quiz families visually consistent during play and on the result screen. */
+:is(#gamePanel,#quizoriaMillionPanel,#quizoriaMemePanel,#quizoriaMoviePanel,#quizoriaMusicPanel,#quizoriaGeneralPanel) {
+  scroll-margin-top:115px;
+}
+:is(.meme-question-box,.movie-question-box,.music-question-box,.general-question-box,.questionbox) {
+  border-radius:20px; box-shadow:inset 0 1px rgba(237,251,255,.06);
+}
+:is(.meme-options,.movie-options,.music-options,.general-options,.options) button {
+  min-height:54px; border-radius:14px;
+  transition:border-color .16s ease,background-color .16s ease,transform .16s ease;
+}
+:is(.meme-options,.movie-options,.music-options,.general-options,.options) button:hover:not(:disabled) { transform:translateY(-1px); }
+:is(.meme-actions,.movie-actions,.music-actions,.general-actions,.tools) button.primary {
+  min-height:48px;
+}
+:is(#resultPanel,.million-result,.meme-result,.movie-result,.music-result,.general-result) {
+  border-radius:21px;
+  overflow-wrap:anywhere;
+}
+:is(.million-result,.meme-result,.movie-result,.music-result,.general-result) {
+  border:1px solid #6b94b1;
+  background:linear-gradient(145deg,#254568,#1b3154);
+  box-shadow:0 12px 36px rgba(0,0,0,.23),inset 0 1px rgba(255,255,255,.08);
+  padding:clamp(20px,4vw,29px);
+  margin-top:18px;
+}
+:is(.meme-result,.movie-result,.music-result,.general-result) h3 { color:#f6e9b3;font-size:clamp(1.45rem,4vw,1.95rem);line-height:1.2; }
+:is(.meme-result,.movie-result,.music-result,.general-result) strong { color:#f5fdff;font-size:clamp(1.3rem,4vw,1.65rem); }
+:is(.meme-result,.movie-result,.music-result,.general-result) button.primary { width:min(100%,320px);margin-top:7px; }
+#resultPanel .result-art { box-shadow:0 9px 32px rgba(137,131,255,.2); }
+#resultPanel .statgrid { gap:11px; }
+#resultPanel .stat { background:linear-gradient(150deg,#1a3451,#18294b); }
+#resultPanel .tools { justify-content:center; }
+#resultPanel .tools button { flex:1 1 170px;max-width:350px; }
+:is(.achievements-panel,.game-missions-panel,.history-panel,.inbox-box) { overscroll-behavior:contain; }
+:where(button,a,input,textarea,select):focus-visible { outline:3px solid #8cefe0;outline-offset:2px; }
+@media(max-width:600px) {
+  html { scroll-padding-top:140px; }
+  .wrap { padding:12px 12px calc(40px + env(safe-area-inset-bottom,0px)); }
+  .header { top:max(0px,env(safe-area-inset-top,0px));margin:0 0 12px;padding:8px 9px;gap:5px;border-radius:13px; }
+  .header .quizoria-brand { flex:1 1 115px; }
+  .header .platform-return { order:9;flex:1 1 100%;margin-top:3px;min-height:38px;justify-content:center; }
+  .header-actions #historyBell,.header-actions #achievementsButton,.header-actions #missionsButton,
+  .header-actions #gameShopButton,.header-actions #lang { min-width:40px;min-height:42px;padding:6px; }
+  #modePanel { padding:15px 12px; border-radius:18px; }
+  #modePanel #modeTitle { font-size:clamp(1.3rem,5.5vw,1.7rem); }
+  /* Four fully visible destinations instead of cramped scrolling tabs. */
+  #modePanel .quizoria-hub-nav { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px; }
+  #modePanel .quizoria-hub-nav .game-hub-tab { min-width:0;min-height:45px;padding:9px 5px;font-size:.84rem; }
+  #modePanel .quizoria-quickzone { padding:13px;gap:9px; }
+  #modePanel .quizoria-quick-actions { flex:1 1 100%; }
+  #modePanel .quizoria-quick-actions button { flex:1 1 140px; }
+  #modePanel #gameHubSolo #modes .mode-choice { padding:13px; }
+  #modePanel #gameHubSolo #modes .mode-choice-actions button { min-height:44px;font-size:.79rem; }
+  #modePanel #gameHubCategories .quizoria-category-list { grid-template-columns:1fr; }
+  #modePanel #gameHubCategories .quizoria-category { min-height:84px;padding:12px; }
+  #modePanel #gameHubCategories .quizoria-category.selected { grid-column:auto; }
+  #gamePanel,.meme-panel,.movie-panel,.music-panel,.general-panel,.million-panel { padding:16px 12px; border-radius:18px; }
+  :is(.meme-options,.movie-options,.music-options,.general-options,.options) button { min-height:54px; }
+  :is(.meme-result,.movie-result,.music-result,.general-result) { padding:19px 14px; }
+  :is(.meme-result,.movie-result,.music-result,.general-result) button.primary { width:100%; }
+  #resultPanel .statgrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #resultPanel .tools button { flex-basis:100%;max-width:none; }
+}
+@media(max-width:370px) {
+  .header .brand { font-size:.79rem; }
+  #modePanel .quizoria-hub-nav .game-hub-tab { font-size:.78rem; }
+  #modePanel .quizoria-quick-actions { flex-direction:column; }
+}
+@media(prefers-reduced-motion:no-preference) {
+  :is(#resultPanel,.million-result,.meme-result,.movie-result,.music-result,.general-result):not(.hidden) {
+    animation:quizoria-polish-arrive .28s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes quizoria-polish-arrive {
+    from { opacity:.76; transform:translateY(7px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #modePanel .mode-choice,#modePanel .quizoria-category,
+  :is(.meme-options,.movie-options,.music-options,.general-options,.options) button,
+  .header-actions button { transition:none!important; animation:none!important; }
+}
