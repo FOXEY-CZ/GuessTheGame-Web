@@ -389,6 +389,7 @@ function renderArena(){
   const arena=$('liveArena'),controls=$('liveArenaControls'),question=$('liveQuestion'),options=$('liveOptions');
   if(!arena||!controls||!question||!options)return;
   const m=active;
+  window.FOXEY_MINI_CHAT?.setLiveMatch?.(m?.opponent?.user_id||null,m?.state||null);
   // Keep the arena visible while its participant-only state is loading.
   arena.classList.toggle('hidden',!m&&!activeId);
   controls.replaceChildren();question.replaceChildren();options.replaceChildren();
@@ -525,6 +526,10 @@ function renderArena(){
     controls.append(btn(tr('⛔ Ukončit zápas','⛔ End match'),()=>void cancelMatch(),
       'secondary',busy));
   }
+  if(UUID.test(m.opponent?.user_id||'') && ['invited','lobby','running'].includes(m.state)){
+    controls.append(btn(tr('💬 Chat se soupeřem','💬 Chat with opponent'),
+      ()=>window.FOXEY_MINI_CHAT?.openTo?.(m.opponent.user_id),'secondary'));
+  }
   controls.append(btn(tr('← Zpět na přátele','← Back to friends'),()=>{
     activeId=null;active=null;
     try{window.sessionStorage.removeItem(storageKey(uid));}catch(_){}
@@ -542,6 +547,7 @@ async function refreshDashboard(force=false){
     if(!isCurrent(owner,stamp))return;
     const previousMatches=matches();
     snapshot=result;lastDashboard=Date.now();
+    try{window.dispatchEvent(new CustomEvent('foxey-arcade:presence'));}catch(_){}
     const newlyRejected=matches().some(m=>m.rematch_of&&m.role==='host'&&
       m.state==='declined'&&previousMatches.some(x=>
         x.match_id===m.match_id&&x.state==='invited'));
@@ -825,7 +831,12 @@ window.addEventListener('foxey-arcade:locale-changed',()=>{
 });
 window.FOXEY_ARCADE_LIVE=Object.freeze({
   connect,onPage,setNavigation,invite,openMatch,refresh:refreshDashboard,
-  refreshStats,viewHeadToHead
+  refreshStats,viewHeadToHead,
+  getFriendPresence(friendId){
+    if(!snapshot||!UUID.test(friendId||''))return null;
+    const match=people().find(x=>x?.profile?.user_id===friendId);
+    return match?match.online===true:null;
+  }
 });
 renderList();renderArena();renderStats();renderHeadToHead();
 })();
