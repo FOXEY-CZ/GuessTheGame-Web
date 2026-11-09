@@ -19,7 +19,7 @@
       badges:'🎖️ Milníky Quizorie',claimed:'Vyzvednuto',ready:'Vyzvednout',locked:'Zamčeno',
       games:'Kvízů',accuracy:'Úspěšnost',best:'Nejlepší skóre',
       perfect:'Bez chyby',wins:'Výhry',skill:'Úroveň znalostí',
-      video:'🎮 Videohry',memes:'😂 Memy',movies:'🎬 Filmy a seriály',million:'💰 Milionová výzva',
+      video:'🎮 Videohry',memes:'😂 Memy',movies:'🎬 Filmy a seriály',music:'🎵 Hudba',million:'💰 Milionová výzva',
       checkpoint:'Nejvyšší otázka',outOf:'z',completed:'splněno',
       reward:'Odměna',claiming:'Vyzvedávám ověřenou odměnu…',
       granted:'✅ Odměna připsána do FOXEY Arcade:',duplicate:'Tento odznak už máš vyzvednutý.',
@@ -35,7 +35,7 @@
       badges:'🎖️ Quizoria Milestones',claimed:'Claimed',ready:'Claim reward',locked:'Locked',
       games:'Quizzes',accuracy:'Accuracy',best:'Best Score',
       perfect:'Perfect',wins:'Wins',skill:'Knowledge level',
-      video:'🎮 Video Games',memes:'😂 Memes',movies:'🎬 Movies & Series',million:'💰 Million Challenge',
+      video:'🎮 Video Games',memes:'😂 Memes',movies:'🎬 Movies & Series',music:'🎵 Music',million:'💰 Million Challenge',
       checkpoint:'Highest Question',outOf:'of',completed:'completed',
       reward:'Reward',claiming:'Claiming your verified reward…',
       granted:'✅ Reward added to FOXEY Arcade:',duplicate:'This milestone was already claimed.',
@@ -60,6 +60,7 @@
       {id:'video_games',label:'video',theme:'video'},
       {id:'memes',label:'memes',theme:'memes'},
       {id:'movies',label:'movies',theme:'movies'},
+      {id:'music',label:'music',theme:'music'},
       {id:'million',label:'million',theme:'million'}
     ];
     for(const item of catalog){
