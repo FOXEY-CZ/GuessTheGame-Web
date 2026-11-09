@@ -29,7 +29,7 @@
   }));
   const frozen=Object.freeze(categories);
   window.QUIZORIA_CATALOG=Object.freeze({
-    version:'1.2',
+    version:'1.3',
     categories:frozen,
     defaultCategory:'video-games',
     getCategory(id){return frozen.find(item=>item.id===id)||null;},
