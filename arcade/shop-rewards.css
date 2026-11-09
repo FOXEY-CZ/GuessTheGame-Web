@@ -1,0 +1,167 @@
+/* FOXEY Arcade 2.4 – Shop & Rewards presentation layer.
+ * Rewards, prices, inventory, auth and currency remain server-authoritative. */
+#page-shop{--sr-edge:#435b80;--sr-surface:#172640;--sr-purple:#a994ff;--sr-aqua:#8be3e4;--sr-muted:#b9c8df;min-width:0}
+#page-shop .sr-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:225px;margin:8px 0 17px;padding:clamp(22px,4vw,38px);border:1px solid #8170c2;border-radius:24px;background:radial-gradient(circle at 89% 9%,#8760c47d,transparent 47%),linear-gradient(120deg,#323061,#242b58 56%,#173b50);box-shadow:0 18px 40px #03081644}
+#page-shop .sr-hero:before{position:absolute;inset:0;z-index:-1;content:"";pointer-events:none;background:radial-gradient(circle at 18% 102%,#50d2c521,transparent 50%)}
+#page-shop .sr-hero-copy{max-width:680px;min-width:0;position:relative;z-index:1}
+#page-shop .sr-hero .eyebrow{color:#a6fff2}
+#page-shop .sr-hero h1{margin:8px 0 10px;font-size:clamp(1.9rem,4.3vw,3.1rem);letter-spacing:-.045em;line-height:1.15;color:#fff}
+#page-shop .sr-hero h1 span{color:#e4caff}
+#page-shop .sr-hero p{margin:0;font-size:clamp(.85rem,1.7vw,1.01rem);color:#d7e1f7;line-height:1.55;max-width:530px}
+#page-shop .sr-hero-flags{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}
+#page-shop .sr-hero-flags span{display:inline-flex;align-items:center;border:1px solid #96a0d17f;background:#121b394c;border-radius:100px;padding:6px 10px;color:#e7edff;font-size:.73rem;font-weight:760}
+#page-shop .sr-hero-art{position:relative;display:grid;place-items:center;flex:0 0 clamp(145px,22vw,215px);min-height:185px}
+#page-shop .sr-hero-orbit{position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid #ddd0ff62;box-shadow:0 0 38px #9083ec38,inset 0 0 38px #88ebff1b}
+#page-shop .sr-hero-orbit:after{content:"";position:absolute;inset:19px;border-radius:50%;border:1px dashed #a8e8ec7b;transform:rotate(20deg)}
+#page-shop .sr-hero-icon{position:relative;font-size:clamp(80px,11vw,120px);filter:drop-shadow(0 15px 22px #080b2f9c);transform:rotate(-8deg)}
+#page-shop .sr-hero-spark{position:absolute;color:#b7fff3;text-shadow:0 0 15px #55c5e2;font-size:30px}
+#page-shop .sr-hero-spark.s1{top:6px;right:7px}
+#page-shop .sr-hero-spark.s2{bottom:4px;left:0;color:#ffe5bc}
+#page-shop .sr-section-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:23px 0 12px}
+#page-shop .sr-section-head h2{margin:0;font-size:clamp(1.05rem,2.3vw,1.35rem);letter-spacing:-.02em}
+#page-shop .sr-section-head p{margin:0;color:#a6b9d8;font-size:.75rem}
+#page-shop .sr-wallet-head{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#page-shop .sr-wallet-head .sr-section-head{margin:5px 0 11px}
+#page-shop .sr-wallet-head #shopRefresh{min-height:40px;border-radius:10px;padding:9px 13px;font-size:.8rem}
+#page-shop .shared-shop-wallet{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 8px}
+#page-shop .shared-shop-wallet>div{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:97px;padding:16px 19px;border:1px solid #465b80;border-radius:16px;background:linear-gradient(135deg,#1c2c4b,#17243c);box-shadow:inset 0 1px #ffffff0c}
+#page-shop .shared-shop-wallet>div:nth-child(2){background:linear-gradient(135deg,#28264c,#1b2744);border-color:#61558a}
+#page-shop .shared-shop-wallet>div:nth-child(3){background:linear-gradient(135deg,#352d47,#242945);border-color:#766087}
+#page-shop .shared-shop-wallet>div span{font-size:.84rem;color:#d0dbef;font-weight:720}
+#page-shop .shared-shop-wallet>div strong{display:block;margin-top:8px;font-size:clamp(1.45rem,3.2vw,2rem);line-height:1.12;color:#fff;font-weight:900;font-variant-numeric:tabular-nums}
+#page-shop #shopStatus{margin:9px 0 12px;color:#bcd0e9;font-size:.79rem;line-height:1.5;min-height:0}
+#page-shop .sr-collection{margin:15px 0 18px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:15px;padding:16px 18px;border:1px solid #556287;border-radius:17px;background:linear-gradient(120deg,#28294f,#182947)}
+#page-shop .sr-collection-icon{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:14px;background:linear-gradient(130deg,#6157a4,#32618c);font-size:26px}
+#page-shop .sr-collection-info{min-width:0}
+#page-shop .sr-collection-info strong{display:block;margin-bottom:3px;font-size:.95rem;color:#f6f6ff}
+#page-shop .sr-collection-info small{display:block;margin:3px 0 10px;font-size:.73rem;color:#b9c8df;line-height:1.35}
+#page-shop .sr-collection-count{font-size:1.34rem;color:#e7e0ff;font-weight:850;white-space:nowrap;font-variant-numeric:tabular-nums}
+#page-shop .sr-progress{height:8px;border:1px solid #51618c;border-radius:99px;background:#0e1931;overflow:hidden}
+#page-shop .sr-progress>span{display:block;height:100%;width:0%;background:linear-gradient(90deg,#6bbfc6,#b99aff);border-radius:inherit;transition:width .4s ease}
+#page-shop #shopTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:20px 0 19px;padding:7px;border-radius:17px;background:#121e35;border-color:#3c5075}
+#page-shop #shopTabs .arcade-subtab{min-height:49px;min-width:0;flex:none;border-radius:11px;font-weight:820;font-size:.86rem}
+#page-shop #shopTabs .arcade-subtab.is-active{background:linear-gradient(115deg,#5e52ad,#38558c);border-color:#aba2eb}
+#page-shop .sr-chests-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 10px}
+#page-shop .sr-chests-heading h2{margin:0;font-size:1.28rem}
+#page-shop .sr-chests-heading #shopPreviewChest{min-height:39px;padding:8px 12px;border-radius:11px;font-size:.78rem}
+#page-shop .sr-free-hint{display:flex;align-items:center;gap:8px;padding:11px 14px;margin:0 0 15px;border:1px solid #4a6488;border-radius:12px;background:#172844;color:#cddbf0;font-size:.8rem;line-height:1.45}
+#page-shop .sr-free-hint.has-free{border-color:#378d7a;background:#163d40;color:#b8fae6}
+#page-shop .sr-free-hint.is-locked{border-color:#5b4a6e;background:#2d2543;color:#dfd2ff}
+#page-shop .reward-chest-grid{gap:15px;align-items:stretch}
+#page-shop .reward-chest{position:relative;display:grid;grid-template-columns:1fr;gap:0;align-content:start;padding:21px;min-width:0;border-radius:20px;overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s}
+#page-shop .reward-chest:hover{transform:translateY(-2px);box-shadow:0 13px 28px #03071b66;border-color:#77b3e0}
+#page-shop .reward-chest.epic:hover{border-color:#bf8af5}
+#page-shop .reward-chest .chestshop-icon{width:100%;min-height:133px;display:grid;place-items:center;font-size:clamp(4.1rem,8vw,6rem);filter:drop-shadow(0 8px 17px #040c2b66)}
+#page-shop .reward-chest .chestshop-icon:before{content:"";position:absolute;width:123px;height:123px;border:1px solid #7bd7f04b;border-radius:50%;z-index:0}
+#page-shop .reward-chest.epic .chestshop-icon:before{border-color:#c58bf566}
+#page-shop .reward-chest .rarity-label{font-size:.64rem;letter-spacing:.09em}
+#page-shop .reward-chest h3{font-size:1.3rem;margin:9px 0 7px;letter-spacing:-.025em}
+#page-shop .reward-chest p{font-size:.8rem;line-height:1.57;min-height:68px;margin:5px 0 12px;color:#bcd0e8}
+#page-shop .reward-chest .chest-price{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:32px;font-size:1.13rem}
+#page-shop .reward-chest .chest-price span{font-size:.72rem}
+#page-shop .reward-chest button.primary{min-height:49px;border-radius:11px;margin-top:13px}
+#page-shop .reward-chest button.primary:disabled{opacity:.6;transform:none}
+#page-shop .sr-tier-collection{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:.75rem;color:#bfdbef}
+#page-shop .sr-tier-collection strong{font-variant-numeric:tabular-nums;color:#e8f7ff;font-size:.8rem}
+#page-shop .sr-tier-progress{height:7px;background:#0d1d35;border:1px solid #496281;border-radius:99px;overflow:hidden;margin:8px 0 3px}
+#page-shop .sr-tier-progress>span{display:block;height:100%;width:0%;background:linear-gradient(90deg,#53cbd6,#b7fff7);border-radius:inherit;transition:width .4s ease}
+#page-shop .reward-chest.epic .sr-tier-progress>span{background:linear-gradient(90deg,#9b69d8,#e1b1fc)}
+#page-shop #shopChestResult{border-radius:10px;font-size:.84rem;line-height:1.5;margin:2px 0 10px}
+#page-shop #shopChestResult:not(:empty){padding:10px 12px;background:#263451;border:1px solid #52668a}
+#page-shop .shopitems .tile{background:linear-gradient(145deg,#1e2d49,#17243c);border:1px solid #4a6285;transition:border-color .18s,transform .18s}
+#page-shop .shopitems .tile:hover{border-color:#9294db;transform:translateY(-2px)}
+#page-shop .shopitems .tile:nth-child(2){background:linear-gradient(145deg,#3d2945,#1b263e)}
+#page-shop .shopitems .tile:nth-child(3){background:linear-gradient(145deg,#483c31,#1b273f)}
+#page-shop .shopitems .tile:nth-child(4){background:linear-gradient(145deg,#15475c,#16293d)}
+#page-shop .shopitems .tile .tileicon{font-size:2.8rem}
+#page-shop .shopitems .tile button{margin-top:auto}
+#page-shop #shopThemeOwnedSummary{margin:0 0 12px;padding:10px 13px;border:1px solid #455d7f;border-radius:11px;background:#1a2b47;color:#b8cbe4;font-size:.78rem}
+#page-shop .avatar-catalog{margin:16px 0 24px}
+#page-shop .avatar-item{background:linear-gradient(150deg,#1f2f4d,#131f37);border-color:#456082;transition:transform .16s,border-color .16s}
+#page-shop .avatar-item:hover{transform:translateY(-2px);border-color:#8f8ccd}
+#page-shop .avatar-item.owned{border-color:#58b8ab;box-shadow:0 0 0 1px #58b8ab33}
+#page-shop .avatar-item.epic{background:linear-gradient(150deg,#35264f,#181f39)}
+#page-shop .avatar-item.legendary{background:linear-gradient(150deg,#4d3b2a,#1a253a)}
+#page-shop .avatar-item button{border-radius:10px}
+#page-shop .prestige-panel{border-radius:19px;box-shadow:0 10px 25px #02071640}
+/* Full-screen reward overlay: clear server-pending state and powerful final reveal. */
+.shop-reward-overlay{isolation:isolate;z-index:25000}
+.shop-reward-overlay:not(.hidden){display:grid}
+.shop-reward-overlay .shop-reward-modal{position:relative;isolation:isolate;width:min(460px,100%);border:2px solid #b49df2;border-radius:27px;padding:clamp(22px,4vw,36px);overflow:hidden;box-shadow:0 22px 75px #000d,0 0 45px #7364be44;background:radial-gradient(circle at 50% -12%,#665d9e,#302c62 43%,#131d36 100%)}
+.shop-reward-overlay .shop-reward-modal:before{content:"";position:absolute;z-index:-1;width:330px;height:330px;border:1px solid #d2d4fc35;border-radius:50%;top:18px;left:50%;transform:translateX(-50%);box-shadow:0 0 65px #a29cf038,inset 0 0 45px #c2c9ff18}
+.shop-reward-overlay .shop-reward-modal:after{content:"✦  ✧  ✦";position:absolute;z-index:-1;top:45px;left:0;right:0;text-align:center;font-size:42px;letter-spacing:45px;color:#d1faff67;pointer-events:none}
+.shop-reward-overlay .shop-reward-celebration{font-size:1.65rem;letter-spacing:.11em;margin-bottom:2px}
+.shop-reward-overlay .reward-reveal-art{display:grid;place-items:center;width:clamp(143px,30vw,188px);height:clamp(143px,30vw,188px);min-height:0;aspect-ratio:1;border:2px solid #ffffff44;border-radius:31px;padding:12px;background:linear-gradient(145deg,#7871c0,#394d82);box-shadow:0 14px 35px #070c267a,inset 0 2px 10px #dbeaff33;filter:none;font-size:4.7rem;animation:sr-reward-art-arrive .46s cubic-bezier(.18,.87,.25,1.18) both}
+.shop-reward-overlay .reward-reveal-art .custom-icon{width:100%;height:100%}
+.shop-reward-overlay .reward-reveal-art svg{width:100%;height:100%;max-width:100%;max-height:100%}
+.shop-reward-overlay #shopRewardRarity{font-size:.67rem;letter-spacing:.12em}
+.shop-reward-overlay #shopRewardTitle{font-size:clamp(1.35rem,4vw,1.95rem);line-height:1.25;margin:0;color:#f7f4ff}
+.shop-reward-overlay #shopRewardName{font-size:clamp(1.3rem,4.5vw,1.85rem);color:#ffe9b9;margin:9px 0}
+.shop-reward-overlay #shopRewardCaption{font-size:.85rem;color:#d4def4;line-height:1.5}
+.shop-reward-overlay .shop-reward-actions{margin-top:7px}
+.shop-reward-overlay .shop-reward-actions button{border-radius:12px;min-height:47px}
+.shop-reward-overlay .shop-reward-modal.is-opening .reward-reveal-art{animation:sr-chest-pulse .95s ease-in-out infinite alternate;background:linear-gradient(145deg,#645aa4,#263b6a)}
+.shop-reward-overlay .shop-reward-modal.is-opening #shopRewardName{color:#c6d8fa}
+.shop-reward-overlay .shop-reward-modal.is-epic{border-color:#c486fc;background:radial-gradient(circle at 50% -12%,#8857aa,#402a67 45%,#181d38)}
+.shop-reward-overlay .shop-reward-modal.is-epic .reward-reveal-art{background:linear-gradient(145deg,#ae72cb,#51447d)}
+.shop-reward-overlay .shop-reward-modal.is-demo{border-color:#6ca4bd}
+.shop-reward-overlay .shop-reward-modal.is-demo .reward-reveal-art{background:linear-gradient(145deg,#3c6a83,#303f70)}
+@keyframes sr-reward-art-arrive{from{opacity:.4;transform:scale(.65) rotate(-12deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes sr-chest-pulse{from{transform:scale(.9) rotate(-7deg);filter:brightness(.8)}to{transform:scale(1.07) rotate(7deg);filter:brightness(1.35)}}
+@media(max-width:800px){
+ #page-shop .sr-hero{min-height:190px}
+ #page-shop .sr-hero-art{min-height:143px;flex-basis:140px}
+ #page-shop .sr-hero-orbit{width:139px;height:139px}
+ #page-shop .sr-wallet-head{gap:3px}
+ #page-shop .reward-chest-grid{gap:11px}
+ #page-shop .reward-chest{padding:16px}
+ #page-shop .reward-chest .chestshop-icon{min-height:105px}
+}
+@media(max-width:620px){
+ #page-shop .sr-hero{padding:18px;min-height:190px}
+ #page-shop .sr-hero h1{font-size:1.84rem}
+ #page-shop .sr-hero-art{flex-basis:95px;min-height:120px}
+ #page-shop .sr-hero-icon{font-size:75px}
+ #page-shop .sr-hero-orbit{width:106px;height:106px}
+ #page-shop .sr-hero-orbit:after{inset:14px}
+ #page-shop .sr-hero-spark{font-size:20px}
+ #page-shop .shared-shop-wallet{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ #page-shop .shared-shop-wallet>div{min-height:82px;padding:12px 9px}
+ #page-shop .shared-shop-wallet>div span{font-size:.71rem}
+ #page-shop .shared-shop-wallet>div strong{font-size:1.45rem}
+ #page-shop .sr-collection{gap:9px;padding:12px}
+ #page-shop .sr-collection-icon{width:41px;height:41px;flex-basis:41px;font-size:22px}
+ #page-shop .sr-collection-info strong{font-size:.84rem}
+ #page-shop .sr-collection-count{font-size:1.02rem}
+ #page-shop .reward-chest-grid{grid-template-columns:1fr}
+ #page-shop .reward-chest{padding:17px;grid-template-columns:108px minmax(0,1fr);gap:12px;align-items:center}
+ #page-shop .reward-chest .chestshop-icon{width:108px;min-height:116px;font-size:4.5rem}
+ #page-shop .reward-chest .chestshop-icon:before{width:100px;height:100px}
+ #page-shop .reward-chest p{min-height:0}
+ #page-shop #shopTabs .arcade-subtab{font-size:.79rem;padding:10px 5px;min-height:45px}
+}
+@media(max-width:420px){
+ #page-shop .sr-hero{gap:8px}
+ #page-shop .sr-hero h1{font-size:1.57rem}
+ #page-shop .sr-hero p{font-size:.79rem}
+ #page-shop .sr-hero-flags{gap:5px}
+ #page-shop .sr-hero-flags span{padding:5px 8px;font-size:.66rem}
+ #page-shop .sr-hero-art{flex-basis:65px;min-height:100px}
+ #page-shop .sr-hero-icon{font-size:57px}
+ #page-shop .sr-hero-orbit{width:80px;height:80px}
+ #page-shop .sr-hero-spark{display:none}
+ #page-shop .sr-collection{grid-template-columns:38px minmax(0,1fr) auto}
+ #page-shop .sr-collection-icon{width:38px;height:38px;flex-basis:38px}
+ #page-shop .reward-chest{grid-template-columns:1fr;gap:4px}
+ #page-shop .reward-chest .chestshop-icon{width:100%;min-height:105px}
+ #page-shop .reward-chest h3{font-size:1.18rem}
+ #page-shop .sr-chests-heading #shopPreviewChest{width:100%}
+ #page-shop .shopitems .tile{min-height:175px}
+ .shop-reward-overlay .shop-reward-modal{gap:10px;padding:24px 17px}
+}
+@media(prefers-reduced-motion:reduce){
+ #page-shop .reward-chest,#page-shop .shopitems .tile,#page-shop .avatar-item{transition:none!important;transform:none!important}
+ .shop-reward-overlay .shop-reward-modal.is-opening .reward-reveal-art,
+ .shop-reward-overlay .reward-reveal-art{animation:none!important}
+ #page-shop .sr-progress>span,#page-shop .sr-tier-progress>span{transition:none!important}
+}
