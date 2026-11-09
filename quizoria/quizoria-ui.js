@@ -25,8 +25,8 @@
       active:'HRATELNÉ',planned:'PŘIPRAVUJEME',selected:'Vybraná kategorie',
       modeIntro:'🎯 Další režimy · Videohry',
       note:'Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.',
-      millionaire:'💰 Milionová výzva',millionaireSub:'15 otázek, záchytné body a nápovědy. Brzy v Quizorii.',
-      future:'BRZY',button:'🎮 Vybrat režim'},
+      millionaire:'💰 Milionová výzva',millionaireSub:'15 otázek · záchytné body · tři nápovědy',
+      future:'BRZY',play:'HRÁT',button:'🎮 Vybrat režim'},
     en:{quickTitle:'Quick Game',quickDesc:'Jump straight into 10 video game questions. Your rules and existing progress stay the same.',
       quickStart:'▶ Play now',quickResume:'⏯ Resume',
       futureSummary:'✨ More coming modes',rewardsSummary:'💎 XP, rewards & sync',
@@ -39,8 +39,8 @@
       active:'PLAYABLE',planned:'COMING SOON',selected:'Selected category',
       modeIntro:'🎯 More modes · Video Games',
       note:'More categories are in development. For now, the original Guess the Game questions remain securely verified by the server.',
-      millionaire:'💰 Million Challenge',millionaireSub:'15 questions, checkpoints and lifelines. Coming to Quizoria.',
-      future:'SOON',button:'🎮 Choose a mode'}
+      millionaire:'💰 Million Challenge',millionaireSub:'15 questions · checkpoints · three lifelines',
+      future:'SOON',play:'PLAY',button:'🎮 Choose a mode'}
   };
   function render(){
     const t=words[lang];
@@ -67,7 +67,7 @@
     $('quizoriaModeIntro').textContent=t.modeIntro;
     $('quizoriaMillionTitle').textContent=t.millionaire;
     $('quizoriaMillionSubtitle').textContent=t.millionaireSub;
-    $('quizoriaMillionBadge').textContent=t.future;
+    $('quizoriaMillionBadge').textContent=t.play;
     root.replaceChildren();
     for(const category of catalog.categories){
       const available=category.state==='available',selected=available&&category.id===active;
