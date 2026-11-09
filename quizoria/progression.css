@@ -1,0 +1,61 @@
+/* Quizoria 1.3 · Progression Dashboard inside Categories tab */
+.qp-section{margin:18px 0 6px;padding:18px;border:1px solid #526d96;
+ border-radius:19px;background:linear-gradient(148deg,#202f50 0%,#171f3c 65%,#1b2642 100%)}
+.qp-section-header{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.qp-section-title h3{margin:2px 0 5px;font-size:clamp(1.12rem,3vw,1.37rem)}
+.qp-section-title p{margin:0;color:#b7cbe4;font-size:.8rem;line-height:1.55}
+.qp-section-header button{flex:none;border:1px solid #526d95;background:#273b62;
+ min-height:37px;padding:7px 10px;font-size:.76rem;border-radius:10px}
+.qp-status{margin:9px 0 12px;min-height:0;color:#a6ebd4;font-size:.79rem;line-height:1.5}
+.qp-status:empty{display:none}.qp-status.error{color:#ffbbc8}
+.qp-stat-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.qp-stat-card{padding:13px;border-radius:14px;border:1px solid #506994;
+ background:linear-gradient(142deg,#243454,#182746);min-width:0}
+.qp-stat-card.qp-memes{border-color:#936f9f;background:linear-gradient(145deg,#383052,#242341)}
+.qp-stat-card.qp-million{border-color:#a2875b;background:linear-gradient(145deg,#40354a,#272b49)}
+.qp-stat-title{display:flex;align-items:start;flex-wrap:wrap;justify-content:space-between;gap:7px;margin-bottom:12px}
+.qp-stat-title strong{font-size:.9rem;line-height:1.4}
+.qp-level{font-size:.62rem;color:#aeebdb;padding:5px 7px;border:1px solid #4f8190;
+ border-radius:9px;background:#192e46;font-weight:850}
+.qp-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.qp-stat-cell{padding:8px;border-radius:9px;background:#0e192d70;min-width:0;
+ display:flex;flex-direction:column;gap:3px}
+.qp-stat-cell>span{font-size:.67rem;color:#aebed8;line-height:1.3}
+.qp-stat-cell>b{font-size:clamp(.83rem,2vw,1.1rem);color:#f7f9ff;font-variant-numeric:tabular-nums}
+.qp-milestones-head{margin:21px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:9px}
+.qp-milestones-head h4{margin:0;font-size:1.07rem}
+.qp-milestones-head>span{font-size:.73rem;color:#c4d5eb;padding:5px 8px;
+ border-radius:30px;background:#1e3352}
+.qp-milestones{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.qp-milestone{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+ padding:12px;border:1px solid #475e81;border-radius:13px;background:#1e2b47;min-width:0}
+.qp-milestone.is-ready{border-color:#c9a771;background:linear-gradient(110deg,#454258,#263650)}
+.qp-milestone.is-claimed{border-color:#488d7c;background:linear-gradient(110deg,#214c4a,#1c3346)}
+.qp-badge-icon{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;
+ font-size:1.35rem;background:#ffffff17;border-radius:11px}
+.qp-badge-body{min-width:0;flex:1 1 140px;display:flex;flex-direction:column;gap:5px}
+.qp-badge-body strong{font-size:.85rem;line-height:1.3}
+.qp-badge-body small{color:#b9c9e2;font-size:.72rem;line-height:1.4}
+.qp-badge-progress{display:flex;align-items:center;gap:8px}
+.qp-badge-track{height:6px;flex:1;background:#101c33;border-radius:12px;overflow:hidden}
+.qp-badge-track>span{display:block;height:100%;background:linear-gradient(90deg,#7ce4d2,#deb97b);
+ border-radius:12px;transition:width .15s}
+.qp-badge-progress>span{font-size:.68rem;color:#dde8f5;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qp-badge-reward{color:#fae0a3!important}
+.qp-badge-action{width:100%;min-height:36px;padding:6px 8px;font-size:.74rem;border-radius:9px}
+.qp-milestone.is-ready .qp-badge-action{background:linear-gradient(115deg,#7462c5,#586bbc);border-color:#b5a6e5}
+.qp-foot{font-size:.71rem;color:#a5b5d0;line-height:1.6;margin:13px 0 0}
+@media(max-width:760px){.qp-stat-list{grid-template-columns:1fr 1fr}.qp-stat-card.qp-million{grid-column:1/-1}
+ .qp-milestones{grid-template-columns:1fr}}
+@media(max-width:485px){.qp-section{padding:12px;margin:13px 0}
+ .qp-section-header{gap:7px;align-items:center}.qp-section-header button{font-size:.69rem}
+ .qp-section-title p{font-size:.73rem}
+ .qp-stat-list{grid-template-columns:1fr}
+ .qp-stat-card.qp-million{grid-column:auto}
+ .qp-stat-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+ .qp-stat-cell{padding:7px 5px}
+ .qp-stat-cell>span{font-size:.62rem}
+ .qp-stat-cell>b{font-size:.82rem}
+ .qp-level{font-size:.62rem}
+}
+@media(prefers-reduced-motion:reduce){.qp-badge-track>span{transition:none}}
