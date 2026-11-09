@@ -143,6 +143,60 @@
       :walletStatus==='ready'?'✅ Jedna společná peněženka pro všechny hry.'
       :'☁️ Peněženka zatím není načtená.';
     el('shopStatus').textContent=status;
+    // Shop 2.4: all counters derive exclusively from the authenticated wallet
+    // and server-provided inventory; placeholders are displayed until both load.
+    const fresh=ready&&walletStatus==='ready';
+    const unlocked=new Set(fresh?ownedAvatars():[]);
+    const special=['pixel-fox','neon-ghost','space-cat',
+      'cyber-fox','arcade-dragon','legend-fox'];
+    const specialCount=special.filter(avatar=>unlocked.has(avatar)).length;
+    const collectionCount=el('shopCollectionCount');
+    if(collectionCount)collectionCount.textContent=fresh
+      ?specialCount+' / '+special.length:'— / '+special.length;
+    const overall=el('shopCollectionFill');
+    if(overall?.style)overall.style.width=(fresh?specialCount/special.length*100:0)+'%';
+    const collectionBar=el('shopCollectionProgress');
+    if(collectionBar){
+      if(fresh)collectionBar.setAttribute('aria-valuenow',String(specialCount));
+      else collectionBar.removeAttribute('aria-valuenow');
+    }
+    for(const [tier,labelId,barId] of [
+      ['basic','shopBasicOwnedCount','shopBasicProgress'],
+      ['epic','shopEpicOwnedCount','shopEpicProgress']
+    ]){
+      const pool=CHEST_POOLS[tier],count=pool.filter(a=>unlocked.has(a)).length;
+      const label=el(labelId);
+      if(label)label.textContent=fresh?count+' / '+pool.length:'— / '+pool.length;
+      const bar=el(barId);
+      if(bar?.style)bar.style.width=(fresh?count/pool.length*100:0)+'%';
+    }
+    const themeSummary=el('shopThemeOwnedSummary');
+    if(themeSummary){
+      const themes=fresh&&Array.isArray(sharedCosmetics.owned_themes)
+        ?new Set(sharedCosmetics.owned_themes.filter(t=>THEME_IDS.has(t)))
+        :new Set();
+      const text= !user?'🔐 Přihlas se, aby se zobrazily tvoje motivy.'
+        :!fresh?'☁️ Načítám odemčené motivy…'
+        :'🎨 Odemčené motivy: '+themes.size+' / '+THEME_IDS.size+
+          ' · Zakoupené motivy zůstávají ve společném účtu.';
+      themeSummary.textContent=text;
+    }
+    const freeHint=el('shopFreeHint');
+    if(freeHint){
+      const freeCount=fresh?walletNumber(sharedWallet.free_chests):0;
+      const canUseFree=fresh&&freeCount>0&&!collectionFull('basic');
+      freeHint.classList.toggle('has-free',canUseFree);
+      freeHint.classList.toggle('is-locked',!fresh||collectionFull('basic'));
+      freeHint.textContent=!user
+        ?'🔐 Přihlas se a uvidíš své bezplatné truhly.'
+        :!fresh?'☁️ Načítám dostupné truhly z účtu…'
+        :collectionFull('basic')
+          ?'✅ Běžnou sbírku už máš kompletní — další otevírání je zablokované.'
+        :canUseFree
+          ?'🎁 Máš '+fmt(freeCount)+' '+(freeCount===1?'truhlu zdarma':'truhel zdarma')+
+            ' — nejdřív využijeme tuto odměnu, krystaly zůstanou nedotčené.'
+          :'💎 Momentálně nemáš truhlu zdarma. Běžnou lze otevřít za 100 krystalů.';
+    }
     const shopHint=el('homeShopStatus');
     if(shopHint){
       const freeCount=ready?walletNumber(sharedWallet.free_chests):0;
@@ -242,35 +296,67 @@
         ?'🔒 Je potřeba 10 dokončených kvízů.':'⚠️ Odměnu se nepodařilo vyzvednout.';
     }finally{walletBusy=false;render();}
   }
-  let shopRewardReturnFocus=null;
+  let shopRewardReturnFocus=null,chestPreviewTimer=null;
   function closeChestReward(){
+    if(chestPreviewTimer!==null){
+      clearTimeout(chestPreviewTimer);
+      chestPreviewTimer=null;
+    }
     const dialog=el('shopRewardOverlay');
     if(!dialog||dialog.classList.contains('hidden'))return;
     dialog.classList.add('hidden');
+    el('shopRewardReveal')?.classList.remove('is-opening','is-demo','is-epic');
     document.body?.classList?.remove('arcade-reward-open');
     const previous=shopRewardReturnFocus;
     shopRewardReturnFocus=null;
     if(previous?.isConnected!==false)previous?.focus?.();
   }
   function showChestReward(){
-    shopRewardReturnFocus=document.activeElement;
-    el('shopRewardOverlay').classList.remove('hidden');
+    const overlay=el('shopRewardOverlay');
+    if(overlay.classList.contains('hidden'))
+      shopRewardReturnFocus=document.activeElement;
+    overlay.classList.remove('hidden');
     document.body?.classList?.add('arcade-reward-open');
     el('shopRewardDone')?.focus?.();
   }
-  function previewChestReward(){
-    // Pure client-side visual demo: zero RPCs, zero wallet writes, no saves.
-    // Always labelled preview so no player can mistake it for a prize.
+  function beginChestOpening(tier,demo=false){
+    // Visual-only pending state. No random reward is selected in the browser.
     closeChestReward();
-    showAvatar('pixel-fox',el('shopRewardArt'));
-    el('shopRewardTitle').textContent='👀 Ukázka odměny';
-    el('shopRewardRarity').textContent='DEMO · NEZÍSKÁNO';
-    el('shopRewardName').textContent=AVATAR_CATALOG['pixel-fox'].name;
-    el('shopRewardCaption').textContent=
-      'Jen ukázka zobrazení. Žádný avatar nebyl připsán a nic se neodečetlo.';
+    const reveal=el('shopRewardReveal');
+    reveal.classList.add('is-opening');
+    reveal.classList.toggle('is-epic',tier==='epic');
+    reveal.classList.toggle('is-demo',demo);
+    el('shopRewardArt').textContent=tier==='epic'?'💜':'🎁';
+    el('shopRewardTitle').textContent=demo
+      ?'👀 Ukázka otevření truhly':'🎁 Otevírám truhlu…';
+    el('shopRewardRarity').textContent=demo
+      ?'DEMO · BEZ NÁKUPU':tier==='epic'?'EPICKÁ TRUHLA':'BĚŽNÁ TRUHLA';
+    el('shopRewardName').textContent=demo?'Ukázková animace':'Čekám na potvrzení';
+    el('shopRewardCaption').textContent=demo
+      ?'Tato animace je zdarma. Nic nedostaneš a nic se ti neodečte.'
+      :'Odměnu přidělí až server. Na účet se připíše pouze ověřený výsledek.';
     el('shopRewardInventory').classList.add('hidden');
-    el('shopRewardDone').textContent='✓ Zavřít ukázku';
+    el('shopRewardDone').textContent='✕ Zavřít';
     showChestReward();
+  }
+  function previewChestReward(){
+    // Animation preview: no RPC, no wallet writes, no avatar unlock.
+    if(walletBusy)return;
+    beginChestOpening('basic',true);
+    chestPreviewTimer=setTimeout(()=>{
+      chestPreviewTimer=null;
+      const reveal=el('shopRewardReveal');
+      if(el('shopRewardOverlay').classList.contains('hidden')||
+         !reveal.classList.contains('is-demo'))return;
+      reveal.classList.remove('is-opening');
+      showAvatar('pixel-fox',el('shopRewardArt'));
+      el('shopRewardTitle').textContent='👀 Ukázka odměny';
+      el('shopRewardRarity').textContent='DEMO · NEZÍSKÁNO';
+      el('shopRewardName').textContent=AVATAR_CATALOG['pixel-fox'].name;
+      el('shopRewardCaption').textContent=
+        'Jen ukázka zobrazení. Žádný avatar nebyl připsán a nic se neodečetlo.';
+      el('shopRewardDone').textContent='✓ Zavřít ukázku';
+    },1050);
   }
   async function performShop(kind,theme){
     if(!user||walletBusy||!sharedWallet||!sharedCosmetics||!supa)return;
@@ -283,7 +369,7 @@
     const messageBox=el('shopChestResult');
     if(chestKind){
       messageBox.textContent='🎁 Otevírám truhlu…';
-      closeChestReward();
+      beginChestOpening(kind==='epic-chest'?'epic':'basic');
     }
     else el('shopStatus').textContent='🔄 Provádím změnu motivu…';
     try{
@@ -300,9 +386,11 @@
         });
         if(reply.error)throw reply.error;
         try{sessionStorage.removeItem(key);}catch(_){}
-        if(user?.id!==id)return; // Never display another account's reward.
+        if(user?.id!==id){closeChestReward();return;} // Never display another account's reward.
         const avatar=reply.data?.avatar;
         if(!Object.hasOwn(AVATAR_CATALOG,avatar))throw Error('invalid_reward');
+        el('shopRewardReveal').classList.remove('is-opening','is-demo');
+        el('shopRewardReveal').classList.toggle('is-epic',tier==='epic');
         showAvatar(avatar,el('shopRewardArt'));
         el('shopRewardTitle').textContent='🎉 Získal jsi odměnu!';
         el('shopRewardInventory').classList.remove('hidden');
@@ -330,8 +418,10 @@
       const reason=raw.includes('insufficient_funds')?'Nemáš dost krystalů.'
         :raw.includes('collection_complete')?'Tuto sbírku už máš kompletní.'
         :raw.includes('not_authenticated')?'Zkus se znovu přihlásit.':'Operace se nezdařila. Zkus ji zopakovat.';
-      if(chestKind)messageBox.textContent='⚠️ '+reason;
-      else el('shopStatus').textContent='⚠️ '+reason;
+      if(chestKind){
+        closeChestReward(); // Never leave a pending overlay blocking the shop after failure.
+        messageBox.textContent='⚠️ '+reason;
+      }else el('shopStatus').textContent='⚠️ '+reason;
     }finally{
       el('shopChestVisual').classList.remove('spinning');
       el('shopEpicVisual').classList.remove('spinning');
@@ -987,9 +1077,25 @@
        event.target?.classList?.contains('shop-reward-backdrop'))closeChestReward();
   });
   document.addEventListener?.('keydown',event=>{
-    if(event.key==='Escape'&&!el('shopRewardOverlay')?.classList.contains('hidden')){
-      event.preventDefault?.();
+    const overlay=el('shopRewardOverlay');
+    if(!overlay||overlay.classList.contains('hidden'))return;
+    if(event.key==='Escape'){
+      event.preventDefault();
       closeChestReward();
+      return;
+    }
+    if(event.key!=='Tab')return;
+    // Keep keyboard navigation inside the active reward dialog.
+    const buttons=[...el('shopRewardReveal').querySelectorAll('button:not([disabled])')]
+      .filter(button=>!button.classList.contains('hidden'));
+    if(!buttons.length)return;
+    const first=buttons[0],last=buttons[buttons.length-1],active=document.activeElement;
+    if(!buttons.includes(active)){
+      event.preventDefault();first.focus();
+    }else if(event.shiftKey&&active===first){
+      event.preventDefault();last.focus();
+    }else if(!event.shiftKey&&active===last){
+      event.preventDefault();first.focus();
     }
   });
   el('shopOpenChest').addEventListener('click',()=>{void performShop('chest');});
