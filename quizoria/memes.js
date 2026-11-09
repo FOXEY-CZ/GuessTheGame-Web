@@ -40,6 +40,7 @@ const dict={
     save:'Rozehraný kvíz je na serveru a zůstane zachovaný i po zavření stránky.',
     invalid:'Server vrátil neplatnou odpověď.',playFirst:'Vyber možnost odpovědi.',
     mime:'Jména, obrázky a popisy jsou použité se zdrojovými kredity. Soutěžní body nejsou reálné peníze.',
+    sharePlaying:'Hraješ výzvu s kamarádem. Pošli mu odkaz.',shareCopy:'📋 Zkopírovat odkaz',
     copyDone:'Odkaz zkopírován.',hint:'Obrázek má vlastní licenci; pod ním najdeš autora a zdroj.',
     latest:'Nedávno dokončeno',active:'Rozehráno'
   },
@@ -72,6 +73,7 @@ const dict={
     save:'Your run is safely stored on the server, even after closing this page.',
     invalid:'The server sent an invalid response.',playFirst:'Choose an answer.',
     mime:'Images and descriptions include source credits. Game points are not real currency.',
+    sharePlaying:'You are playing a friend challenge. Share the link.',shareCopy:'📋 Copy invite link',
     copyDone:'Link copied.',hint:'Images retain their own licenses; credits appear beneath each picture.',
     latest:'Recently completed',active:'In progress'
   }
@@ -170,6 +172,7 @@ function rewardText(){
 }
 function renderGame(){
  if(!playing||!run)return;
+ hide('memeTopShare',!run.challenge_id);
  $('memeStage').textContent=t('question')+' '+Math.min(run.stage+1,run.total)+' / '+run.total;
  $('memeScore').textContent=t('points')+': '+run.score;
  $('memeProgressFill').style.width=(100*Math.min(run.total,run.stage)/Math.max(1,run.total))+'%';
@@ -249,7 +252,9 @@ async function begin(modeName){
     p_mode:modeName,p_operation:beginPending.operation
   });
   if(error||data?.ok!==true||!data.has_run)throw error||Error('begin_failed');
-  beginPending=null;run=data;mode=modeName;feedback=null;awaitNext=false;status(t('save'));
+  beginPending=null;
+  if(pending?.p_run_id!==data.run_id)pending=null;
+  run=data;mode=modeName;feedback=null;awaitNext=false;status(t('save'));
   showGame();
   void refreshRuns();
  }catch(err){status(t('loadError')+' '+(err?.message||''),true);}
@@ -261,6 +266,7 @@ async function resume(id){
  try{
   const {data,error}=await api.rpc('quizoria_meme_resume',{p_run_id:id});
   if(error||data?.ok!==true||!data.has_run)throw error||Error('resume_failed');
+  if(pending?.p_run_id!==data.run_id)pending=null;
   run=data;mode=data.mode;feedback=null;awaitNext=false;
   showGame();status(t('save'));
  }catch(err){status(t('loadError')+' '+(err?.message||''),true);}
@@ -377,7 +383,8 @@ function localize(){
   memeChallengeJoin:'join',memeInviteCopy:'copy',memeMatchCheck:'check',
   memeNext:'next',memeRetry:'retry',memeAnother:'playAgain',
   memeImageOpen:'linkImage',memeImageError:'imageError',
-  memeDailyNote:'dailyNote',memeLegal:'mime'
+  memeDailyNote:'dailyNote',memeLegal:'mime',
+  memeTopShareText:'sharePlaying',memeTopShareCopy:'shareCopy'
  };
  for(const [id,key] of Object.entries(mapping))if($(id))$(id).textContent=t(key);
  modes.forEach((m,i)=>{
@@ -400,6 +407,16 @@ $('memeInviteCopy').addEventListener('click',async()=>{
  const url=$('memeInviteLink').value;
  try{await navigator.clipboard.writeText(url);status(t('copyDone'));}
  catch(_){$('memeInviteLink').focus();$('memeInviteLink').select();}
+});
+$('memeTopShareCopy')?.addEventListener('click',async()=>{
+ const id=run?.challenge_id||challengeId;
+ if(!id)return;
+ const url=inviteUrl(id);
+ try{await navigator.clipboard.writeText(url);status(t('copyDone'));}
+ catch(_){
+   playing=false;showLobby();showInvite(id);
+   $('memeInviteLink')?.focus?.();$('memeInviteLink')?.select?.();
+ }
 });
 $('memeImage').addEventListener('error',()=>{
  $('memeImage').classList.add('hidden');hide('memeImageError',false);
