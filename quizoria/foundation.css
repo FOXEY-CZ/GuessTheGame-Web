@@ -52,3 +52,61 @@ button.quizoria-category:focus-visible{outline:2px solid #7affe8;outline-offset:
  .quizoria-category-info strong{font-size:.84rem}
 }
 @media(prefers-reduced-motion:reduce){.quizoria-category{transition:none}}
+
+/* Quizoria 1.1: Quick Play → Game Modes → Categories → Multiplayer. */
+.quizoria-quickzone{display:flex;align-items:center;gap:15px;flex-wrap:wrap;
+ margin:8px 0 26px;padding:20px;border-radius:19px;border:1px solid #71b1cc;
+ background:linear-gradient(125deg,#224866 0%,#263963 51%,#43356c 100%);
+ box-shadow:0 8px 26px #060f2488}
+.quizoria-quick-icon{display:grid;place-items:center;width:62px;height:62px;flex:0 0 62px;
+ border:1px solid #8fe4eb80;border-radius:18px;background:#ffffff12;
+ font-size:2rem;box-shadow:inset 0 0 19px #66e1e322}
+.quizoria-quick-content{flex:1 1 200px;min-width:0}
+.quizoria-quick-content h3{margin:6px 0;font-size:clamp(1.25rem,4vw,1.65rem);color:#f6fbff}
+.quizoria-quick-content p{margin:0;font-size:.85rem;line-height:1.48;color:#d0def6}
+.quizoria-quick-actions{flex:1 1 130px;display:flex;flex-direction:column;
+ gap:8px;max-width:215px;min-width:125px}
+.quizoria-quick-actions button{width:100%;min-height:44px;padding:9px 12px}
+.quizoria-mode-top,.quizoria-category-section-heading,.quizoria-social-section{
+ margin:23px 0 13px}
+.quizoria-section-eyebrow{display:block;margin-bottom:5px;color:#8de6d7;
+ font-size:.7rem;font-weight:900;letter-spacing:.12em}
+.quizoria-mode-top h3,.quizoria-category-section-heading h3,.quizoria-social-section h3{
+ margin:0 0 6px;font-size:clamp(1.15rem,3.2vw,1.45rem);line-height:1.35}
+.quizoria-mode-top p,.quizoria-category-section-heading p,.quizoria-social-section p{
+ margin:0;color:#b8cbe8;font-size:.84rem;line-height:1.55}
+.quizoria-featured-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.quizoria-featured-modes .quizoria-coming-mode{padding:14px;
+ min-height:126px;opacity:1;background:linear-gradient(150deg,#25264f,#1b2e48);
+ border:1px dashed #60618b}
+.quizoria-featured-modes .quizoria-coming-mode:first-child{
+ border-color:#cba161;background:linear-gradient(130deg,#463456,#272952,#292944)}
+.quizoria-featured-modes .mode-choice-head{gap:10px;flex-wrap:wrap}
+.quizoria-featured-modes .mode-copy{min-width:0;flex:1 1 135px}
+.quizoria-featured-modes .mode-copy strong{font-size:.99rem;line-height:1.4}
+.quizoria-featured-modes .mode-copy small{display:block;font-size:.75rem;line-height:1.5;margin-top:5px}
+.quizoria-featured-modes .mode-icon{font-size:1.45rem}
+.quizoria-featured-modes .quizoria-mode-badge{font-size:.61rem;margin-left:auto}
+.quizoria-categories-zone{margin:10px 0 17px}
+.quizoria-social-section{padding:18px;border:1px solid #5c638b;
+ border-radius:17px;background:linear-gradient(120deg,#272548,#1b3554)}
+.quizoria-social-section h3{color:#ebf0ff}
+#gameHubTabs{margin-top:10px}
+#gameHubDescription{margin-bottom:8px}
+#modePanel #gameHubSolo>.solo-head{margin-top:16px}
+@media(max-width:780px){
+ .quizoria-featured-modes{grid-template-columns:1fr 1fr}
+ .quizoria-featured-modes .quizoria-coming-mode:first-child{grid-column:1/-1}
+}
+@media(max-width:500px){
+ .quizoria-quickzone{gap:11px;padding:15px}
+ .quizoria-quick-icon{width:48px;height:48px;flex-basis:48px;font-size:1.5rem}
+ .quizoria-quick-content{flex:1 1 calc(100% - 65px)}
+ .quizoria-quick-actions{flex:1 1 100%;max-width:none;flex-direction:row}
+ .quizoria-quick-actions button{flex:1 1 50%}
+ .quizoria-featured-modes{grid-template-columns:1fr}
+ .quizoria-featured-modes .quizoria-coming-mode:first-child{grid-column:auto}
+ .quizoria-featured-modes .quizoria-coming-mode{min-height:95px}
+ .quizoria-mode-top,.quizoria-category-section-heading{margin-top:23px}
+ .quizoria-social-section{padding:14px}
+}
