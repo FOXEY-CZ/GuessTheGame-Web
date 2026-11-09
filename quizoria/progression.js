@@ -18,6 +18,7 @@
       logIn:'Přihlas se pro zobrazení statistik.',error:'⚠️ Statistiky se nepodařilo načíst.',
       badges:'🎖️ Milníky Quizorie',claimed:'Vyzvednuto',ready:'Vyzvednout',locked:'Zamčeno',
       games:'Kvízů',accuracy:'Úspěšnost',best:'Nejlepší skóre',
+      totalGames:'Dokončené kvízy',favorite:'Nejhranější téma',allAccuracy:'Celková úspěšnost',unlocked:'Vyzvednuté odznaky',
       perfect:'Bez chyby',wins:'Výhry',skill:'Úroveň znalostí',
       video:'🎮 Videohry',memes:'😂 Memy',movies:'🎬 Filmy a seriály',music:'🎵 Hudba',million:'💰 Milionová výzva',
       checkpoint:'Nejvyšší otázka',outOf:'z',completed:'splněno',
@@ -34,6 +35,7 @@
       logIn:'Sign in to view your statistics.',error:'⚠️ Could not load statistics.',
       badges:'🎖️ Quizoria Milestones',claimed:'Claimed',ready:'Claim reward',locked:'Locked',
       games:'Quizzes',accuracy:'Accuracy',best:'Best Score',
+      totalGames:'Completed quizzes',favorite:'Most played topic',allAccuracy:'Overall accuracy',unlocked:'Claimed badges',
       perfect:'Perfect',wins:'Wins',skill:'Knowledge level',
       video:'🎮 Video Games',memes:'😂 Memes',movies:'🎬 Movies & Series',music:'🎵 Music',million:'💰 Million Challenge',
       checkpoint:'Highest Question',outOf:'of',completed:'completed',
@@ -52,6 +54,32 @@
   function status(msg,error=false){
     const el=$('quizoriaProgressStatus');el.textContent=msg||'';
     el.classList.toggle('error',!!error);
+  }
+  function renderOverview(){
+    const parent=$('quizoriaOverviewStats');parent.replaceChildren();
+    if(!data?.categories)return;
+    const names={video_games:'video',memes:'memes',movies:'movies',music:'music'};
+    const entries=Object.entries(names).map(([id,label])=>
+      ({label:tr(label),...data.categories[id]}));
+    const categories=Object.values(data.categories);
+    const total=categories.reduce((sum,c)=>sum+safe(c.games),0);
+    const right=entries.reduce((sum,c)=>sum+safe(c.correct),0);
+    const answered=entries.reduce((sum,c)=>sum+safe(c.answered),0);
+    const fav=entries.filter(c=>safe(c.games)>0).sort((a,b)=>safe(b.games)-safe(a.games))[0];
+    const claimed=(data.milestones||[]).filter(x=>x.claimed).length;
+    const cells=[
+      ['🎮',tr('totalGames'),num(total)],
+      ['⭐',tr('favorite'),fav?.label||'—'],
+      ['🎯',tr('allAccuracy'),answered?Math.round(right/answered*100)+' %':'—'],
+      ['🏅',tr('unlocked'),num(claimed)+' / '+num((data.milestones||[]).length)]
+    ];
+    for(const [emoji,label,value] of cells){
+      const box=create('article','qp-overview-card');
+      box.append(create('span','qp-overview-icon',emoji),
+        create('span','qp-overview-caption',label),
+        create('strong','qp-overview-value',value));
+      parent.append(box);
+    }
   }
   function renderCategories(){
     const parent=$('quizoriaCategoryStats');parent.replaceChildren();
@@ -135,12 +163,13 @@
     $('quizoriaProgressFoot').textContent=tr('caption')+' '+tr('categoryLevel');
     $('quizoriaProgressRefresh').disabled=busy||!userId;
     if(!data){
+      $('quizoriaOverviewStats').replaceChildren();
       $('quizoriaCategoryStats').replaceChildren();
       $('quizoriaMilestones').replaceChildren();
       $('quizoriaMilestoneCount').textContent='—';
       return;
     }
-    renderCategories();renderBadges();
+    renderOverview();renderCategories();renderBadges();
   }
   async function refresh(silent=false){
     if(!api||!userId){
