@@ -13,13 +13,27 @@
   };
   let lang='cs',active=catalog.defaultCategory,onOpenModes=null;
   const words={
-    cs:{header:'Vyber si svůj kvízový svět',sub:'Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.',
+    cs:{quickTitle:'Rychlá hra',quickDesc:'Pusť se rovnou do 10 otázek z videoher. Pravidla a uložený postup zůstávají stejné.',
+      quickStart:'▶ Hrát hned',quickResume:'⏯ Pokračovat',
+      modesTitle:'🧠 Herní režimy',modesDesc:'Nejdřív vyber způsob hraní. Kategorie otázek jsou samostatně níže.',
+      categoryTitle:'🎮 Kategorie',categoryDesc:'Stejné herní režimy, různá témata. Zatím jsou hratelné Videohry.',
+      socialTitle:'⚔️ Multiplayer a historie',socialDesc:'Vyzvi kamaráda, zahraj si souboj nebo pokračuj v rozdělané výzvě.',
+      survival:'Přežití',survivalSub:'Odpovídej bez chyb a překonávej své rekordy.',
+      endless:'Nekonečný kvíz',endlessSub:'Hraj tak dlouho, jak budeš chtít.',
+      header:'Vyber si svůj kvízový svět',sub:'Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.',
       active:'HRATELNÉ',planned:'PŘIPRAVUJEME',selected:'Vybraná kategorie',
       modeIntro:'🎯 Režimy a rozehrané partie pro kategorii Videohry',
       note:'Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.',
       millionaire:'💰 Milionová výzva',millionaireSub:'15 otázek, záchytné body a nápovědy. Brzy v Quizorii.',
       future:'BRZY',button:'🎮 Vybrat režim'},
-    en:{header:'Choose your quiz world',sub:'Each category will have its own question bank. Video Games is the first playable category.',
+    en:{quickTitle:'Quick Game',quickDesc:'Jump straight into 10 video game questions. Your rules and existing progress stay the same.',
+      quickStart:'▶ Play now',quickResume:'⏯ Resume',
+      modesTitle:'🧠 Game Modes',modesDesc:'Choose how you want to play first. Question categories are listed separately below.',
+      categoryTitle:'🎮 Categories',categoryDesc:'The same game modes, different subjects. Video Games is playable now.',
+      socialTitle:'⚔️ Multiplayer & History',socialDesc:'Challenge a friend, play a duel or continue an unfinished challenge.',
+      survival:'Survival',survivalSub:'Keep answering correctly and beat your records.',
+      endless:'Endless Quiz',endlessSub:'Play for as long as you like.',
+      header:'Choose your quiz world',sub:'Each category will have its own question bank. Video Games is the first playable category.',
       active:'PLAYABLE',planned:'COMING SOON',selected:'Selected category',
       modeIntro:'🎯 Modes and saved runs for Video Games',
       note:'More categories are in development. For now, the original Guess the Game questions remain securely verified by the server.',
@@ -28,6 +42,22 @@
   };
   function render(){
     const t=words[lang];
+    for(const [id,key] of Object.entries({
+      quizoriaQuickTitle:'quickTitle',quizoriaQuickDescription:'quickDesc',
+      quizoriaQuickStart:'quickStart',quizoriaQuickContinue:'quickResume',
+      quizoriaModesTitle:'modesTitle',quizoriaModesDescription:'modesDesc',
+      quizoriaCategorySectionTitle:'categoryTitle',
+      quizoriaCategorySectionDescription:'categoryDesc',
+      quizoriaSocialTitle:'socialTitle',quizoriaSocialDescription:'socialDesc',
+      quizoriaSurvivalTitle:'survival',quizoriaSurvivalSubtitle:'survivalSub',
+      quizoriaEndlessTitle:'endless',quizoriaEndlessSubtitle:'endlessSub'
+    })){
+      const target=$(id);if(target)target.textContent=t[key];
+    }
+    for(const id of ['quizoriaMillionBadge','quizoriaSurvivalBadge',
+      'quizoriaEndlessBadge']){
+      const target=$(id);if(target)target.textContent=t.future;
+    }
     $('quizoriaCategoriesTitle').textContent=t.header;
     $('quizoriaCategoriesIntro').textContent=t.sub;
     $('quizoriaCategoryNote').textContent=t.note;
