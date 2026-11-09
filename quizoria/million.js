@@ -99,8 +99,10 @@
     node.classList.toggle('error',error);
   }
   function showPanel(show){
+    const wasOpen=opened;
     opened=show;
-    $('modePanel')?.classList.toggle('hidden',show);
+    if(show)$('modePanel')?.classList.add('hidden');
+    else if(wasOpen&&uid)$('modePanel')?.classList.remove('hidden');
     root.classList.toggle('hidden',!show);
     document.body?.classList.toggle('quiz-playing',show&&run?.status==='active');
     document.body?.classList.toggle('quiz-finished',show&&!!run&&run.status!=='active');
