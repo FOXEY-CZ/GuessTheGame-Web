@@ -11,7 +11,7 @@ const nameKey=id=>id==='video-games'?'video_games':id;
 const topics=catalog.categories.filter(c=>c.state==='available'&&
   ['video-games','memes','movies','music','general'].includes(c.id));
 const categories=new Set(topics.map(c=>c.id));
-const modes=new Set(['easy','medium','hard','daily']);
+const modes=new Set(['easy','medium','hard','daily','friend']);
 const target={
   'video-games':{start:id=>'soloStart_'+id},
   memes:{api:'QUIZORIA_MEMES',selector:'[data-meme-mode]'},
@@ -39,7 +39,7 @@ const dict={
   boardNote:'Žebříček je orientační; kategorie s méně než pěti odpověďmi se zatím nehodnotí.',
   mastered:'Silná stránka',focus:'Prostor ke zlepšení',new:'Nová oblast',
   starter:'Začátečník',learning:'Na cestě',solid:'Zkušený',excellent:'Expert',
-  difficulty:{easy:'🟢 Snadné',medium:'🟠 Střední',hard:'🔥 Těžké',daily:'📅 Denní'},
+  difficulty:{easy:'🟢 Snadné',medium:'🟠 Střední',hard:'🔥 Těžké',daily:'📅 Denní',friend:'⚔️ Vytvořit výzvu'},
   launchFail:'Tento režim se teď nepodařilo otevřít. Zkus ho vybrat přímo v kategorii.',
   gameBusy:'Nejdřív dokonči nebo opusť rozehranou partii.'
  },
@@ -62,7 +62,7 @@ const dict={
   boardNote:'This ranking is indicative; categories with fewer than five answers are not ranked.',
   mastered:'Strongest topic',focus:'Room to improve',new:'New category',
   starter:'Beginner',learning:'Learning',solid:'Skilled',excellent:'Expert',
-  difficulty:{easy:'🟢 Easy',medium:'🟠 Medium',hard:'🔥 Hard',daily:'📅 Daily'},
+  difficulty:{easy:'🟢 Easy',medium:'🟠 Medium',hard:'🔥 Hard',daily:'📅 Daily',friend:'⚔️ Create challenge'},
   launchFail:'Could not open this mode. Try selecting it from the category itself.',
   gameBusy:'Finish or leave the current quiz before starting another.'
  }
@@ -192,16 +192,22 @@ function renderBoard(){
   const fill=create('span','');
   fill.style.width=(row.accuracy||0)+'%';track.append(fill);
   const actions=create('div','q2-skill-actions');
-  for(const mode of modes)
-    if(catalog.canPlay(row.id,mode))addLauncher(actions,row.id,mode,
-      tr('difficulty')[mode],'q2-mode-'+mode);
+  for(const mode of modes){
+    if(mode==='friend'&&!catalog.canPlay(row.id,'friend')&&row.id!=='video-games')
+      continue;
+    if(mode!=='friend'&&!catalog.canPlay(row.id,mode))continue;
+    addLauncher(actions,row.id,mode,mode==='friend'&&row.id==='video-games'
+      ?(language==='en'?'⚔️ Challenge lobby':'⚔️ Herní výzvy')
+      :tr('difficulty')[mode],'q2-mode-'+mode);
+  }
   card.append(header,facts,track,actions);root.append(card);
  }
 }
 function render(){renderCoach();renderBoard();}
 function launch(category,mode){
  if(!snapshot.signedIn||!categories.has(category)||!modes.has(mode)||
-    !catalog.canPlay(category,mode))return;
+    (mode!=='friend'&&!catalog.canPlay(category,mode))||
+    (mode==='friend'&&category!=='video-games'&&!catalog.canPlay(category,'friend')))return;
  const status=$('quizoriaCoachStatus');
  const setError=message=>{if(status)status.textContent=message;};
  if(document.body.classList.contains('quiz-playing')||
@@ -210,15 +216,26 @@ function launch(category,mode){
  }
  let button;
  if(category==='video-games'){
-  document.getElementById('hubTabSolo')?.click?.();
-  button=document.getElementById('soloStart_'+mode);
+  document.getElementById(mode==='friend'?'hubTabChallenges':'hubTabSolo')?.click?.();
+  if(mode==='friend')return; // Explicitly enter existing authenticated challenge lobby.
+  // An unfinished server run should be resumed rather than abandoned.
+  const pending=document.getElementById('soloContinue_'+mode);
+  button=pending&&!pending.classList.contains('hidden')&&!pending.disabled
+    ?pending:document.getElementById('soloStart_'+mode);
  }else{
   const config=target[category],engine=window[config.api];
   if(!engine?.openCategory)return void setError(tr('launchFail'));
   engine.openCategory();
-  const buttons=document.querySelectorAll(config.selector);
-  button=[...buttons].find(x=>x.dataset[category==='memes'?'memeMode':
-    category==='movies'?'movieMode':category==='music'?'musicMode':'generalMode']===mode);
+  if(mode==='friend'){
+    button=document.getElementById({
+      memes:'memeChallengeCreate',movies:'movieChallengeCreate',
+      music:'musicChallengeCreate',general:'generalChallengeCreate'
+    }[category]);
+  }else{
+    const buttons=document.querySelectorAll(config.selector);
+    button=[...buttons].find(x=>x.dataset[category==='memes'?'memeMode':
+      category==='movies'?'movieMode':category==='music'?'musicMode':'generalMode']===mode);
+  }
  }
  if(button&&!button.disabled)button.click();
  else setError(tr('launchFail'));
