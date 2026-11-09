@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="./nextgen.css?v=foxey-nextgen-22-20261109a">
   <link rel="stylesheet" href="./social-hub.css?v=foxey-social-23-20261109b">
   <link rel="stylesheet" href="./shop-rewards.css?v=foxey-shop-24-20261109b">
+  <link rel="stylesheet" href="./profile-customization.css?v=foxey-profile-25-20261109a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -549,9 +550,13 @@
     </section>
 
     <section class="page hidden" id="page-account">
-      <span class="eyebrow">JEDEN ÚČET PRO VŠECHNY HRY</span><h1>Hráčský profil</h1>
+      <header class="pc-heading">
+        <div><span class="eyebrow">🦊 FOXEY ARCADE · PLAYER PROFILE</span><h1>Hráčský profil</h1>
+          <p>Tvůj společný postup, odměny a herní identita na jednom místě.</p>
+        </div>
+        <div class="ng-account-toolbar"><button type="button" class="secondary" data-page="missions">🎯 Moje mise</button><button type="button" class="secondary" data-page="settings">⚙️ Nastavení</button></div>
+      </header>
       <p class="small" id="accountNotice" role="status" aria-live="polite"></p>
-      <div class="ng-account-toolbar"><button type="button" class="secondary" data-page="missions">🎯 Moje mise</button><button type="button" class="secondary" data-page="settings">⚙️ Nastavení</button></div>
       <div id="guestAccount" class="accountpanel">
         <div class="tabrow"><button id="tabLogin" type="button" class="selected">Přihlásit se</button><button id="tabSignup" type="button">Vytvořit účet</button></div>
         <form id="authForm">
@@ -587,12 +592,39 @@
         </form>
       </div>
       <div id="playerAccount" class="accountpanel hidden">
-        <div class="profilehero"><div class="bigavatar" id="profileAvatar">🦊</div><div><h2 id="profileName" data-no-i18n>Hráč FOXEY Arcade</h2><p class="small" id="profileEmail" data-no-i18n></p><p class="small">Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p></div></div>
-        <div class="global-level-meter">
-          <div class="global-level-meter-label"><span>Postup do dalšího levelu</span><strong id="accountLevelProgress">—</strong></div>
-          <div class="global-level-track" role="progressbar" id="accountLevelBar" aria-label="Postup k dalšímu levelu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="global-level-fill" id="accountLevelFill"></div>
+        <div class="pc-cover">
+          <div class="profilehero">
+            <div class="bigavatar" id="profileAvatar" aria-label="Aktuální avatar hráče">🦊</div>
+            <div><span class="pc-identity-eyebrow">● FOXEY ARCADE PLAYER</span>
+              <h2 id="profileName" data-no-i18n>Hráč FOXEY Arcade</h2>
+              <p class="small" id="profileEmail" data-no-i18n></p>
+              <p class="pc-level-text">🎖️ Globální úroveň <strong id="accountArcadeLevel">—</strong> · <strong id="accountArcadeXp">—</strong> XP</p>
+            </div>
           </div>
+          <div class="pc-cover-side">
+            <div class="pc-side-tag"><span aria-hidden="true">☁️</span><span>Jeden účet, společné savy a odměny</span></div>
+            <div class="pc-side-tag"><span aria-hidden="true">🎨</span><span>Aktivní motiv: <strong id="profileCoverTheme">—</strong></span></div>
+            <button type="button" data-account-tab="overview" id="profileEditShortcut">✎ Upravit profil</button>
+          </div>
+        </div>
+        <div class="pc-progression">
+          <div class="global-level-meter">
+            <div class="global-level-meter-label"><span>Postup do dalšího levelu</span><strong id="accountLevelProgress">—</strong></div>
+            <div class="global-level-track" role="progressbar" id="accountLevelBar" aria-label="Postup k dalšímu levelu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="global-level-fill" id="accountLevelFill"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pc-stats" aria-label="Přehled hráčského postupu">
+          <div class="pc-stat"><span class="pc-stat-icon" aria-hidden="true">✨</span><div class="pc-stat-copy"><span>Globální XP</span><strong id="profileStatXp">—</strong></div></div>
+          <div class="pc-stat"><span class="pc-stat-icon" aria-hidden="true">🎖️</span><div class="pc-stat-copy"><span>Úroveň</span><strong id="profileStatLevel">—</strong></div></div>
+          <div class="pc-stat"><span class="pc-stat-icon" aria-hidden="true">🏆</span><div class="pc-stat-copy"><span>Achievementy</span><strong id="profileStatAchievements">—</strong></div></div>
+          <div class="pc-stat"><span class="pc-stat-icon" aria-hidden="true">🎒</span><div class="pc-stat-copy"><span>Avatary</span><strong id="profileStatAvatars">—</strong></div></div>
+        </div>
+        <div class="pc-shortcuts" aria-label="Rychlé akce profilu">
+          <button type="button" class="pc-shortcut" data-account-tab="overview"><span class="pc-shortcut-icon" aria-hidden="true">✏️</span><span><strong>Upravit profil</strong><small>Nick a avatar</small></span></button>
+          <button type="button" class="pc-shortcut" data-account-tab="inventory"><span class="pc-shortcut-icon" aria-hidden="true">🎒</span><span><strong>Můj inventář</strong><small>Vybavit získané avatary</small></span></button>
+          <button type="button" class="pc-shortcut" data-page="shop" data-shop-tab="themes"><span class="pc-shortcut-icon" aria-hidden="true">🎨</span><span><strong>Vzhled Arcade</strong><small>Motivy a kosmetické odměny</small></span></button>
         </div>
         <nav class="arcade-subtabs account-tabs" id="accountTabs" role="tablist" aria-label="Sekce hráčského profilu">
           <button id="accountTabOverview" class="arcade-subtab is-active" role="tab" aria-selected="true" aria-controls="accountPanelOverview" tabindex="0" data-account-tab="overview" type="button">👤 Přehled</button>
@@ -601,27 +633,55 @@
           <button id="accountTabStats" class="arcade-subtab" role="tab" aria-selected="false" aria-controls="accountPanelStats" tabindex="-1" data-account-tab="stats" type="button">📊 Statistiky</button>
         </nav>
         <section id="accountPanelOverview" class="arcade-subpanel" role="tabpanel" aria-labelledby="accountTabOverview" tabindex="0">
-          <div class="account-panel-intro"><h3>⚙️ Nastavení profilu</h3><p class="small">Přezdívka a avatar platí pro celou Arcade i všechny hry.</p></div>
+          <div class="pc-overview-grid">
+            <div><div class="account-panel-intro"><h3>✏️ Upravit herní identitu</h3><p class="small">Přezdívka a avatar platí pro celý FOXEY Arcade účet i všechny hry.</p></div>
         <form id="profileForm">
           <label for="nickname">Hráčská přezdívka</label>
           <input id="nickname" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="off" placeholder="Například FOXEY_CZ">
           <p class="note">3–20 znaků: písmena A–Z, čísla a podtržítko. Přezdívka zatím není veřejně vyhledatelná.</p>
           <label for="avatar">Společný avatar ve FOXEY Arcade a ve hrách</label>
           <select id="avatar"><option value="fox">🦊 Liška</option><option value="robot">🤖 Robot</option><option value="alien">👽 Mimozemšťan</option><option value="crown">👑 Koruna</option></select>
-          <button class="primary" id="profileSave" type="submit">Uložit profil</button>
+          <button class="primary" id="profileSave" type="submit">✓ Uložit změny profilu</button>
         </form>
+            </div>
+            <aside class="pc-customize-panel" aria-labelledby="pcCustomizeHeading">
+              <h3 id="pcCustomizeHeading">🎨 Personalizace</h3>
+              <p>Všechny odemčené kosmetické předměty jsou společné pro profil i hry.</p>
+              <div class="pc-theme-showcase">
+                <span class="pc-theme-icon" id="profileThemeIcon" aria-hidden="true">🌙</span>
+                <div><strong id="profileActiveTheme">—</strong><small>Aktivní vzhled tvého účtu</small></div>
+              </div>
+              <button class="secondary" data-page="shop" data-shop-tab="themes" type="button">🎨 Prohlédnout motivy</button>
+              <div class="pc-customize-split">
+                <strong>🦊 Moje sbírka avatarů</strong>
+                <span id="profileAvatarSummary">Načítám inventář…</span>
+                <button class="secondary" type="button" data-account-tab="inventory">🎒 Otevřít inventář</button>
+              </div>
+            </aside>
+          </div>
         </section>
         <section id="accountPanelAchievements" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="accountTabAchievements" tabindex="0">
         <section class="inventory-panel achievement-panel" aria-label="Achievementy FOXEY Arcade">
-          <div class="sectionline"><h2>🏆 Moje achievementy</h2><span class="small" id="accountAchievementCount">—</span></div>
+          <div class="pc-achievement-controls">
+            <div class="sectionline"><h2>🏆 Moje achievementy</h2><span class="small" id="accountAchievementCount">—</span></div>
+            <div class="pc-filter-group" role="group" aria-label="Filtrovat achievementy">
+              <button class="is-active" type="button" data-achievement-filter="all" aria-pressed="true">Všechny</button>
+              <button type="button" data-achievement-filter="unlocked" aria-pressed="false">Odemčené</button>
+              <button type="button" data-achievement-filter="pending" aria-pressed="false">Rozpracované</button>
+            </div>
+          </div>
           <p class="small" id="accountAchievementStatus" aria-live="polite">Načítám achievementy…</p>
+          <div class="pc-achievements-meter" aria-hidden="true"><span id="profileAchievementsFill"></span></div>
           <div class="achievement-grid" id="accountAchievementGrid"></div>
         </section>
         </section>
         <section id="accountPanelInventory" class="arcade-subpanel hidden" role="tabpanel" aria-labelledby="accountTabInventory" tabindex="0">
         <section class="inventory-panel" aria-label="Inventář odměn">
-          <div class="sectionline"><h2>🎒 Můj inventář</h2><span class="small" id="inventoryCount">Načítání…</span></div>
-          <p class="small">Tvoje vlastněné avatary. Kliknutím je nastavíš pro celý účet i Quizorii.</p>
+          <div class="pc-inventory-header">
+            <div><div class="sectionline"><h2>🎒 Můj inventář</h2><span class="small" id="inventoryCount">Načítání…</span></div>
+            <p>Odemčené avatary platí pro celý FOXEY Arcade účet. Vybav je jedním kliknutím.</p></div>
+            <button type="button" class="secondary" data-page="shop" data-shop-tab="avatars">🛍️ Sbírka avatarů</button>
+          </div>
           <div class="inventory-grid" id="inventoryGrid"></div>
         </section>
         </section>
