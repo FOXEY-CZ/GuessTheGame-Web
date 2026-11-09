@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="./social-hub.css?v=foxey-social-23-20261109b">
   <link rel="stylesheet" href="./shop-rewards.css?v=foxey-shop-24-20261109b">
   <link rel="stylesheet" href="./profile-customization.css?v=foxey-profile-25-20261109c">
+  <link rel="stylesheet" href="./settings-notifications.css?v=foxey-finish-26-20261109a">
 </head>
 <body>
 <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
@@ -700,11 +701,17 @@
     </section>
 
     <section class="page hidden" id="page-settings">
-      <div class="page-intro">
-        <div><span class="eyebrow">FOXEY ARCADE · PŘEDVOLBY</span><h1>⚙️ Nastavení</h1>
-          <p>Jen to, co opravdu potřebuješ. Jazyk se mění okamžitě, herní postup a odměny se ukládají automaticky.</p>
+      <header class="sm-hero">
+        <div class="sm-hero-copy">
+          <span class="eyebrow">🦊 FOXEY ARCADE · PŘEDVOLBY</span>
+          <h1>⚙️ Nastavení</h1>
+          <p>Všechno důležité na jednom místě. Vyber jazyk, uprav efekty, otevři upozornění a spravuj vzhled své Arcade.</p>
         </div>
-      </div>
+        <div class="sm-hero-actions">
+          <button type="button" class="secondary" data-page="account">👤 Můj profil</button>
+        </div>
+      </header>
+      <div class="sm-section-heading"><h2>Moje předvolby</h2><span>Uloženo v tomto prohlížeči</span></div>
       <div class="settings-grid">
         <section class="settings-card" aria-labelledby="languageTitle">
           <div class="settings-card-icon" aria-hidden="true">🌍</div>
@@ -715,6 +722,27 @@
             <select id="arcadeLanguage" name="arcadeLanguage" autocomplete="off">
               <option value="cs">🇨🇿 Čeština</option><option value="en">🇬🇧 English</option>
             </select>
+          </div>
+        </section>
+        <section class="settings-card sm-motion-card" aria-labelledby="settingsMotionTitle">
+          <div class="settings-card-icon" aria-hidden="true">✨</div>
+          <div class="settings-card-body">
+            <h2 id="settingsMotionTitle">Pohyby a efekty</h2>
+            <p>Vyber si plynulé animace, nebo klidnější rozhraní bez přechodových efektů.</p>
+            <label for="arcadeMotion">Animace rozhraní</label>
+            <select id="arcadeMotion" autocomplete="off">
+              <option value="system">Automaticky podle zařízení</option>
+              <option value="reduce">Omezit animace</option>
+            </select>
+            <p class="sm-option-note" id="arcadeMotionHint" role="status" aria-live="polite">Systémové nastavení sníženého pohybu je vždy respektované.</p>
+          </div>
+        </section>
+        <section class="settings-card sm-personalization-card" aria-labelledby="settingsAppearanceTitle">
+          <div class="settings-card-icon" aria-hidden="true">🎨</div>
+          <div class="settings-card-body">
+            <h2 id="settingsAppearanceTitle">Motivy a personalizace</h2>
+            <p>Vzhled aplikace se řídí motivem vybaveným ve společném účtu. Všechny odemčené motivy zůstávají v inventáři.</p>
+            <button type="button" class="secondary" data-page="shop" data-shop-tab="themes">🎨 Otevřít motivy</button>
           </div>
         </section>
         <section class="settings-card" aria-labelledby="settingsGameTitle">
@@ -769,12 +797,19 @@
 <div id="arcadeNoticeOverlay" class="arcade-notice-overlay hidden" role="presentation">
   <div id="arcadeNoticeShade" class="arcade-notice-shade"></div>
   <section class="arcade-notice-drawer" role="dialog" aria-modal="true" aria-labelledby="arcadeNoticeTitle">
-    <div class="arcade-notice-head">
-      <h2 id="arcadeNoticeTitle">🔔 Oznámení FOXEY Arcade</h2>
+    <header class="arcade-notice-head sm-bell-heading">
+      <div class="sm-bell-title"><span class="eyebrow">🦊 FOXEY ARCADE · CENTRUM UDÁLOSTÍ</span>
+        <h2 id="arcadeNoticeTitle">🔔 Oznámení FOXEY Arcade</h2>
+      </div>
       <button type="button" class="secondary" id="arcadeNoticeClose" aria-label="Zavřít oznámení">✕</button>
+    </header>
+    <div class="sm-bell-metrics" aria-label="Nepřečtené události z účtu">
+      <div class="sm-bell-metric"><span class="sm-bell-icon" aria-hidden="true">⚔️</span><div class="sm-bell-data"><strong id="noticeMetricChallenges">—</strong><span>Výzvy</span></div></div>
+      <div class="sm-bell-metric"><span class="sm-bell-icon" aria-hidden="true">🤝</span><div class="sm-bell-data"><strong id="noticeMetricSocial">—</strong><span>Přátelé</span></div></div>
+      <div class="sm-bell-metric"><span class="sm-bell-icon" aria-hidden="true">💬</span><div class="sm-bell-data"><strong id="noticeMetricChat">—</strong><span>Zprávy</span></div></div>
     </div>
     <p class="small" id="arcadeNoticeStatus" role="status" aria-live="polite"></p>
-    <button type="button" id="arcadeNoticeGoChat" class="arcade-notice-chat-link hidden">💬 Otevřít zprávy <span class="arcade-chat-unread hidden" aria-hidden="true">0</span></button>
+    <button type="button" id="arcadeNoticeGoChat" class="arcade-notice-chat-link hidden"><span id="arcadeNoticeGoChatLabel">💬 Otevřít zprávy</span> <span class="arcade-chat-unread hidden" aria-hidden="true">0</span></button>
     <details class="friends-requests-details arcade-bell-requests" id="friendsRequestsDetails">
       <summary id="friendRequestsSummary" tabindex="0">📩 Žádosti o přátelství <span id="friendsRequestSummaryCount" class="friends-request-pill">0</span></summary>
       <p id="friendRequestsHint" class="small">Přijmi nebo odmítni nové žádosti, případně zruš své odeslané žádosti.</p>
@@ -806,12 +841,14 @@
         <button class="secondary arcade-notice-more hidden" id="arcadeSocialNext" type="button">Další stránka →</button>
       </div>
     </section>
-    <div class="sectionline arcade-challenge-bell-title"><h3>⚔️ Herní výsledky a výzvy</h3></div>
-    <div id="arcadeNoticeList" class="arcade-notice-list"></div>
-    <div class="arcade-notice-pagination">
-      <button class="secondary arcade-notice-more hidden" id="arcadeNoticePrev" type="button">← Předchozí</button>
-      <button class="secondary arcade-notice-more hidden" id="arcadeNoticeMore" type="button">Další stránka →</button>
-    </div>
+    <section class="sm-challenge-notices" aria-label="Herní výsledky a výzvy">
+      <div class="sectionline arcade-challenge-bell-title"><h3>⚔️ Herní výsledky a výzvy</h3></div>
+      <div id="arcadeNoticeList" class="arcade-notice-list"></div>
+      <div class="arcade-notice-pagination">
+        <button class="secondary arcade-notice-more hidden" id="arcadeNoticePrev" type="button">← Předchozí</button>
+        <button class="secondary arcade-notice-more hidden" id="arcadeNoticeMore" type="button">Další stránka →</button>
+      </div>
+    </section>
     <p id="arcadeNoticeDetail" class="arcade-notice-detail" role="status" aria-live="polite"></p>
     <input type="text" readonly id="arcadeNoticeCopyField" class="arcade-notice-copy hidden" aria-label="Odkaz na výzvu">
   </section>
