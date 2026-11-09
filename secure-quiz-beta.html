@@ -3706,6 +3706,9 @@
     document.body?.classList?.remove('quiz-playing');
     document.body?.classList?.add('quiz-finished');
     game.resultShown=true;
+    // Quizoria 2.0 trainer only uses this server-side progress readback.
+    // An unverified/failed run cannot update the mastery dashboard.
+    if(confirmed)void window.QUIZORIA_PROGRESS?.refresh?.();
     void refreshGameAchievements();
     void refreshGameMissions();
     lock(false);
