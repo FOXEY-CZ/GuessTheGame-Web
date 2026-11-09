@@ -97,7 +97,7 @@
     $('chatFriendName').textContent=friend?.nickname||tr(
       'Vyber si kamaráda','Choose a friend');
     if(friend)$('chatFriendName').setAttribute('data-no-i18n','');
-    else $('chatFriendName').removeAttribute('data-no-i18n');
+    else $('chatFriendName').removeAttribute?.('data-no-i18n');
     $('chatFriendStatus').textContent=selectedId?tr(
       'Soukromá konverzace · jen potvrzení přátelé',
       'Private conversation · accepted friends only'):
