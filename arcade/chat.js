@@ -218,8 +218,10 @@
   }
   async function openFriend(friendId){
     if(!uid||!api||!UUID.test(friendId))return;
+    const owner=uid,stamp=epoch;
     if(!conversations.some(c=>c?.friend?.user_id===friendId)){
       await refreshInbox();
+      if(!validOwner(owner,stamp))return;
       if(!conversations.some(c=>c?.friend?.user_id===friendId)){
         setStatus(tr('Psaní je možné jen s potvrzenými přáteli.',
           'You can only message accepted friends.'));
@@ -237,7 +239,12 @@
   }
   async function send(event){
     event?.preventDefault?.();
-    if(!uid||!selectedId||!api||sending||navigator.onLine===false)return;
+    if(!uid||!selectedId||!api||sending)return;
+    if(navigator.onLine===false){
+      setStatus(tr('Jsi offline. Zpráva zatím neodešla.',
+        'You are offline. The message was not sent.'));
+      return;
+    }
     const text=$('chatMessageInput').value.trim();
     if(!text||text.length>1000){setStatus(tr('Zpráva musí mít 1 až 1 000 znaků.',
       'Messages must be between 1 and 1,000 characters.'));return;}
