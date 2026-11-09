@@ -87,7 +87,7 @@
 /* Full-screen reward overlay: clear server-pending state and powerful final reveal. */
 .shop-reward-overlay{isolation:isolate;z-index:25000}
 .shop-reward-overlay:not(.hidden){display:grid}
-.shop-reward-overlay .shop-reward-modal{position:relative;isolation:isolate;width:min(460px,100%);border:2px solid #b49df2;border-radius:27px;padding:clamp(22px,4vw,36px);overflow:hidden;box-shadow:0 22px 75px #000d,0 0 45px #7364be44;background:radial-gradient(circle at 50% -12%,#665d9e,#302c62 43%,#131d36 100%)}
+.shop-reward-overlay .shop-reward-modal{position:relative;isolation:isolate;width:min(460px,100%);border:2px solid #b49df2;border-radius:27px;padding:clamp(22px,4vw,36px);overflow-x:hidden;overflow-y:auto;box-shadow:0 22px 75px #000d,0 0 45px #7364be44;background:radial-gradient(circle at 50% -12%,#665d9e,#302c62 43%,#131d36 100%)}
 .shop-reward-overlay .shop-reward-modal:before{content:"";position:absolute;z-index:-1;width:330px;height:330px;border:1px solid #d2d4fc35;border-radius:50%;top:18px;left:50%;transform:translateX(-50%);box-shadow:0 0 65px #a29cf038,inset 0 0 45px #c2c9ff18}
 .shop-reward-overlay .shop-reward-modal:after{content:"✦  ✧  ✦";position:absolute;z-index:-1;top:45px;left:0;right:0;text-align:center;font-size:42px;letter-spacing:45px;color:#d1faff67;pointer-events:none}
 .shop-reward-overlay .shop-reward-celebration{font-size:1.65rem;letter-spacing:.11em;margin-bottom:2px}
