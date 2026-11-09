@@ -60,7 +60,7 @@ const e=id=>elements.get(id);
 const listeners={};
 let realtimeHandler=null,realtimeStatus=null,unreadEvents=[],sendCalls=0,readCalls=0;
 let notices=[{id:1,sender_id:peer,body:'Hello',created_at:'2026-11-09T00:00:00Z'}];
-let lastRead=0;
+let lastRead=0,deferPeerHistory=false,resolveDeferredPeer=null;
 const api={
  rpc:async(name,args={})=>{
    if(name==='arcade_chat_inbox'){
@@ -68,10 +68,17 @@ const api={
       return {data:{ok:true,unread:unseen,conversations:[{
         friend:{user_id:peer,nickname:'Buddy',avatar_id:'fox'},
         unread:unseen,last_message:notices.at(-1)||null
+      },{
+        friend:{user_id:other,nickname:'Another friend',avatar_id:'fox'},
+        unread:0,last_message:null
       }]},error:null};
    }
    if(name==='arcade_chat_history'){
+      if(args.p_friend_id===other)
+        return {data:{ok:true,messages:[],has_more:false},error:null};
       assert.equal(args.p_friend_id,peer);
+      if(deferPeerHistory)
+        return new Promise(resolve=>{resolveDeferredPeer=resolve;});
       const msgs=notices.filter(x=>args.p_before_id==null||x.id<args.p_before_id);
       return {data:{ok:true,messages:msgs,has_more:false},error:null};
    }
@@ -120,7 +127,7 @@ const settle=async()=>{for(let i=0;i<10;i++)await new Promise(resolve=>setImmedi
 (async()=>{
  ui.connect(api,{id:me});await settle();
  assert.equal(ui.getUnread(),1,'incoming chat must show unread badge');
- assert.equal(e('chatConversationList').children.length,1);
+ assert.equal(e('chatConversationList').children.length,2);
  assert.equal(unreadIndicators[0].textContent,'1');
  ui.onPage('community');
  ui.onPaneActive(true);
@@ -147,6 +154,24 @@ const settle=async()=>{for(let i=0;i<10;i++)await new Promise(resolve=>setImmedi
  realtimeHandler({payload:{friend_id:peer,message_id:4}});
  await settle();
  assert.equal(ui.getUnread(),1,'background messages remain unread');
+ // Slow message load for friend A may not block friend B or leak A's thread
+ // into B's view once the delayed A request finally completes.
+ ui.onPage('community');ui.onPaneActive(true);await settle();
+ deferPeerHistory=true;
+ const slow=ui.openFriend(peer);
+ await settle();
+ assert.ok(resolveDeferredPeer,'delayed friend A request must be outstanding');
+ const fast=ui.openFriend(other);
+ await fast;await settle();
+ assert.equal(e('chatFriendName').textContent,'Another friend');
+ deferPeerHistory=false;
+ resolveDeferredPeer({data:{ok:true,messages:notices,has_more:false},error:null});
+ await slow;await settle();
+ assert.equal(e('chatFriendName').textContent,'Another friend',
+   'stale friend A result must not replace B after switching');
+ assert.ok(e('chatThread').children.every(x=>
+   !x.children?.some(y=>y.textContent==='While away')),
+   'private messages from A must never display in selected B thread');
  ui.connect(null,null);await settle();
  assert.equal(ui.getUnread(),0,'signout clears account-specific unread count');
  assert.equal(e('chatConversationList').children[0].textContent,'Pro chat se přihlas.');
