@@ -2135,6 +2135,9 @@
   }
   function selectGameHub(section,focus=false){
     if(!['solo','categories','challenges','history'].includes(section))section='solo';
+    // This pane contains the original Video Games secure modes only.
+    // Other topics open dedicated category clients.
+    if(section==='solo')window.QUIZORIA_UI?.selectCategory?.('video-games');
     gameHubSection=section;
     for(const name of ['solo','categories','challenges','history']){
       const active=section===name;
@@ -2525,6 +2528,7 @@
   }
   async function start(mode){
     if(busy||!me||!api)return;
+    window.QUIZORIA_UI?.selectCategory?.('video-games');
     // The original server-owned question bank is exclusive to Video Games.
     if(window.QUIZORIA_UI?.canPlayMode && !window.QUIZORIA_UI.canPlayMode(mode))return;
     if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
