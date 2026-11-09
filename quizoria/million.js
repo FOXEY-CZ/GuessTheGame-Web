@@ -240,8 +240,19 @@
       if(opened)render();else updateLaunch();
     }catch(err){console.warn('Quizoria million state unavailable',err);}
   }
-  async function start(){
+  async function start(forceNew=false){
     if(busy||!client||!uid){writeStatus(tr('signedOut'),true);return;}
+    if(!forceNew&&run?.status==='active'){
+      showPanel(true);
+      if(pending){
+        writeStatus(tr('network'),true);
+        render();
+      }else{
+        writeStatus(tr('loading'));render();
+        await loadState();writeStatus(tr('activeHint'));
+      }
+      return;
+    }
     busy=true;pending=null;feedback=null;awaitNext=false;
     showPanel(true);writeStatus(tr('loading'));
     render();
@@ -304,7 +315,7 @@
     if(!awaitNext||pending||busy)return;
     awaitNext=false;feedback=null;render();
   });
-  $('millionAnother')?.addEventListener('click',()=>void start());
+  $('millionAnother')?.addEventListener('click',()=>void start(true));
   $('millionSound')?.addEventListener('click',()=>{
     muted=!muted;
     try{localStorage.setItem('quizoria.million.sound.v1',muted?'off':'on');}catch(_){}
