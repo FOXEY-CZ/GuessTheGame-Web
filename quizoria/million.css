@@ -138,3 +138,21 @@
 @media(prefers-reduced-motion:reduce){
  .million-feedback,.million-final,.million-option,.million-progress>span{animation:none;transition:none}
 }
+
+/* Million Challenge v1.5: choose a category without losing saved runs. */
+.million-category-picker{padding:18px;margin:12px 0;border:1px solid #725d9c;border-radius:17px;background:linear-gradient(135deg,#28274e,#1d2e50)}
+.million-category-picker h3{margin:0 0 8px;font-size:1.19rem;color:#ffdd9d}
+.million-category-picker>p{font-size:.8rem;color:#c0cfe8;line-height:1.5;margin:8px 0 14px}
+.million-category-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.million-category-choices button{padding:13px 10px;min-height:51px;border:1px solid #6477aa;border-radius:13px;background:#29375e;color:#f4f7ff;font-size:.85rem;font-weight:850}
+.million-category-choices button.is-selected{border-color:#f6cf88;color:#ffe0a2;background:linear-gradient(145deg,#58507c,#334469);box-shadow:0 0 0 2px #f4d08a22}
+.million-category-choices button:disabled{opacity:.55}
+.million-selected-state{min-height:20px;font-size:.76rem;color:#9de5d4!important;margin:13px 0 12px}
+.million-begin-selected{width:100%;min-height:45px;padding:12px;font-size:.95rem}
+.million-question-media{display:flex;align-items:center;flex-direction:column;gap:10px;margin-bottom:18px}
+.million-question-emoji{font-size:clamp(3rem,10vw,5.5rem);line-height:1.3;text-shadow:0 8px 18px #090e295e}
+.million-question-image{max-width:min(100%,440px);max-height:310px;object-fit:contain;border-radius:13px;border:1px solid #536f9e;background:#0f1c34}
+.million-question-clue{text-align:center;color:#d4e6f6;font-size:.86rem;line-height:1.5;max-width:650px;margin:0}
+.million-question-source{font-size:.69rem;color:#b5dff9;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:520px){.million-category-picker{padding:12px}.million-category-choices{grid-template-columns:1fr 1fr;gap:6px}
+.million-category-choices button{font-size:.76rem;padding:10px 4px;min-height:47px}}
