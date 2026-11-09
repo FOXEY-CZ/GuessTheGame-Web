@@ -103,6 +103,7 @@
  #page-community .friends-view-pane.has-conversation .arcade-chat-inbox{display:none}
  #page-community .friends-view-pane.has-conversation .arcade-chat-conversation{display:flex}
  #page-community .arcade-chat-back{display:inline-flex!important}
+ #page-community .arcade-chat-back.hidden{display:none!important}
  #page-community .arcade-chat-heading{flex-wrap:wrap}
  #page-community .arcade-chat-heading h2{font-size:1.15rem}
  #page-community .arcade-chat-thread{padding:12px}
