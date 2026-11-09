@@ -630,7 +630,10 @@
     // Next Gen launcher greeting is a *view* of the trusted existing profile.
     // Never cache a nickname or expose the previous identity after logout.
     const welcomeName=el('homeWelcomeName');
-    if(welcomeName)welcomeName.textContent=loggedIn?(profile?.nickname||'hráči'):'hráči';
+    if(welcomeName){
+      const fallback=window.FOXEY_I18N?.getLocale?.()==='en'?'player':'hráči';
+      welcomeName.textContent=loggedIn?(profile?.nickname||fallback):fallback;
+    }
     const welcomeAvatar=el('homeWelcomeAvatar');
     if(welcomeAvatar){
       if(loggedIn)showAvatar(profile?.avatar_id||'fox',welcomeAvatar);
@@ -932,6 +935,8 @@
     }catch(_){message('⚠️ Odhlášení se nezdařilo.');}
     finally{busy=false;render();}
   }
+  // Repaint dynamic text on language changes; all values still come from the existing account.
+  window.addEventListener('foxey-arcade:locale-changed',()=>render());
   // Explicitly connect existing SPA router to the safe mobile UI layer.
   window.FOXEY_ARCADE_UI2?.setNavigation(go);
   window.FOXEY_ARCADE_SOCIAL?.setNavigation(go);
