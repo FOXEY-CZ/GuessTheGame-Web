@@ -759,13 +759,13 @@
   const langKey='foxey.arcade.locale.v1';
   const tr = {
     cs:{
-      eyebrow:'SERVEROVÝ KVÍZ · OVĚŘENÉ ODMĚNY',
-      title:'Poznáš hru podle indicií?',
-      lead:'Otázky i správné odpovědi spravuje server. Prohlížeč dostane jen aktuální zadání a čtyři možnosti.',
+      eyebrow:'A FOXEY ARCADE GAME · KVÍZOVÝ SVĚT',
+      title:'QUIZORIA',
+      lead:'Jeden kvízový svět, stále více témat. Začni s Videohry a postupně objevuj další kategorie.',
       loginTitle:'Nejdřív se přihlas do FOXEY Arcade',
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
-      loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'SERVEROVÁ VOLBA OTÁZEK',
-      modeTitle:'Vyber režim',hubTitleSolo:'Vyber režim',hubTitleChallenges:'Soukromé výzvy',hubTitleHistory:'Historie výzev',
+      loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'QUIZORIA · KATEGORIE A REŽIMY',
+      modeTitle:'Videohry · vyber režim',hubTitleSolo:'Videohry · vyber režim',hubTitleChallenges:'Soukromé výzvy',hubTitleHistory:'Historie výzev',
       hubSolo:'🎮 Sólo režimy',hubChallenges:'⚔️ Výzvy s přáteli',
       hubHistory:'📜 Historie',hubSoloHint:'Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.',
       hubChallengesHint:'⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.',
@@ -806,7 +806,7 @@
       platformLeaveConfirm:'Rozehraná partie se ukládá na server. Po návratu můžeš pokračovat od poslední potvrzené akce. Vrátit se na platformu?',
       platformPendingConfirm:'Poslední akce ještě nemusí být potvrzená serverem. Po návratu se načte pouze potvrzený postup. Opravdu odejít?',
       platformWait:'⏳ Počkej, než server dokončí aktuální požadavek.',
-      footer:'FOXEY Arcade · Serverový kvíz · Automatické XP a odměny',
+      footer:'Quizoria · A FOXEY Arcade Game · Automatické XP a odměny',
       hearts:'Životy',
       caveat:'🛡️ Hlavní zabezpečená hra FOXEY Arcade. Staré savy jsou uložené a společná XP i měny se synchronizují automaticky.',
       challenges:'↩ Staré výzvy v původní Guess the Game',
@@ -940,13 +940,13 @@
       bootFailed:'⚠️ Spuštění se nezdařilo. Zkus obnovení připojení nebo otevři původní Arcade.'
     },
     en:{
-      eyebrow:'SERVER QUIZ · VERIFIED REWARDS',
-      title:'Can you identify the game from the clues?',
-      lead:'The server controls questions and answers. Your browser only receives the current prompt and four choices.',
+      eyebrow:'A FOXEY ARCADE GAME · QUIZ UNIVERSE',
+      title:'QUIZORIA',
+      lead:'One quiz universe with more and more topics. Begin with Video Games and explore new categories as they arrive.',
       loginTitle:'Sign in to FOXEY Arcade first',
       loginText:'This beta requires an account. The original guest and offline game is still available.',
-      loginLink:'Open FOXEY Arcade',modeEyebrow:'SERVER-SELECTED QUESTIONS',
-      modeTitle:'Choose a mode',hubTitleSolo:'Choose a mode',hubTitleChallenges:'Friend challenges',hubTitleHistory:'Challenge history',
+      loginLink:'Open FOXEY Arcade',modeEyebrow:'QUIZORIA · CATEGORIES & MODES',
+      modeTitle:'Video Games · choose a mode',hubTitleSolo:'Video Games · choose a mode',hubTitleChallenges:'Friend challenges',hubTitleHistory:'Challenge history',
       hubSolo:'🎮 Solo modes',hubChallenges:'⚔️ Friend challenges',
       hubHistory:'📜 History',hubSoloHint:'Pick a solo mode, start a new game or resume an unfinished one.',
       hubChallengesHint:'⚔️ Share private challenges with a link. Live 1v1 and BO3/BO5 series are in Arcade → Friends.',
@@ -987,7 +987,7 @@
       platformLeaveConfirm:'The server saves your progress after each confirmed action. You can continue later. Return to the Arcade platform?',
       platformPendingConfirm:'The last action may not have been confirmed by the server. Only confirmed progress will be restored. Leave anyway?',
       platformWait:'⏳ Please wait for the current server request to finish.',
-      footer:'FOXEY Arcade · Verified game · Automatic XP and rewards',
+      footer:'Quizoria · A FOXEY Arcade Game · Automatic XP and rewards',
       hearts:'Lives',
       caveat:'🛡️ The main secure FOXEY Arcade game. Old saves are preserved and shared XP and currencies sync automatically.',
       challenges:'↩ Old challenges in the original Guess the Game',
@@ -1707,6 +1707,7 @@
     });
     $('soloRefresh').textContent=T('soloRefresh');
     renderSoloModes();
+    window.QUIZORIA_UI?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
     // History is optional UI; never let it abort bootstrap/authentication.
     // Previously this ran before getSession() had even finished.
@@ -1974,6 +1975,8 @@
   }
   async function start(mode){
     if(busy||!me||!api)return;
+    // The original server-owned question bank is exclusive to Video Games.
+    if(window.QUIZORIA_UI?.canPlayMode && !window.QUIZORIA_UI.canPlayMode(mode))return;
     if(navigator.onLine===false){status(T('statusOffline'),'error');return;}
     lock(true);status(T('statusLoading'));
     try {
@@ -3178,6 +3181,10 @@
   window.setInterval?.(()=>{
     if(me&&document.visibilityState!=='hidden')void refreshHistory();
   },45000);
+  window.QUIZORIA_UI?.setOpenModes(()=>{
+    selectGameHub('solo');
+    $('gameHubTabs')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+  });
   // Bootstrap must always render at least one usable screen, even if optional
   // history widgets, browser storage, or sign-in encounter an exception.
   try{language();}
