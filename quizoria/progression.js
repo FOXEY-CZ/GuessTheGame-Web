@@ -57,7 +57,10 @@
     if(userId&&data?.categories){
       for(const key of ['video_games','memes','movies','music','general']){
         const source=data.categories[key]||{};
-        const clean=field=>Number.isSafeInteger(source[field])&&source[field]>=0?source[field]:0;
+        const clean=field=>{
+          const value=Number(source[field]);
+          return Number.isSafeInteger(value)&&value>=0?value:0;
+        };
         categories[key]=Object.freeze({
           games:clean('games'),answered:clean('answered'),correct:clean('correct'),
           best:clean('best'),skill_level:Math.max(1,clean('skill_level'))
