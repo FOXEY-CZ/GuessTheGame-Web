@@ -814,6 +814,118 @@
     </p>
   </section>
 
+  <section id="quizoriaMoviePanel" class="panel movie-panel hidden" aria-labelledby="movieTitle">
+    <div class="movie-nav">
+      <button id="movieBack" type="button">← Zpět do Quizorie</button>
+      <span class="movie-studio">QUIZORIA · CINEMA & TV</span>
+    </div>
+    <div class="movie-brand">
+      <div class="movie-logo" aria-hidden="true">🎬</div>
+      <div>
+        <div class="label" id="movieCategory">🎬 Filmy a seriály</div>
+        <h2 id="movieTitle">Filmy a seriály</h2>
+        <p id="movieSubtitle">Poznáš film či seriál podle emotikon a indicií?</p>
+      </div>
+    </div>
+    <p id="movieStatus" class="movie-status" role="status" aria-live="polite"></p>
+    <div id="movieLobby">
+      <p class="movie-intro" id="movieIntro">Vyber režim, přečti indicii a odpověz. Odpověď ověřuje server.</p>
+      <div class="movie-mode-grid">
+        <button type="button" class="movie-mode-card" data-movie-mode="classic">
+          <strong id="movieMode_classic">🎞️ Filmový a seriálový mix</strong>
+          <small id="movieModeSub_classic">5 filmů a 5 seriálů, různé obtížnosti</small>
+        </button>
+        <button type="button" class="movie-mode-card" data-movie-mode="films">
+          <strong id="movieMode_films">🎬 Jen filmy</strong>
+          <small id="movieModeSub_films">10 filmových otázek</small>
+        </button>
+        <button type="button" class="movie-mode-card" data-movie-mode="series">
+          <strong id="movieMode_series">📺 Jen seriály</strong>
+          <small id="movieModeSub_series">10 seriálových otázek</small>
+        </button>
+        <button type="button" class="movie-mode-card" data-movie-mode="easy">
+          <strong id="movieMode_easy">🟢 Nováček</strong>
+          <small id="movieModeSub_easy">10 jednodušších otázek</small>
+        </button>
+        <button type="button" class="movie-mode-card" data-movie-mode="medium">
+          <strong id="movieMode_medium">🟠 Zkušený</strong>
+          <small id="movieModeSub_medium">10 středně těžkých otázek</small>
+        </button>
+        <button type="button" class="movie-mode-card" data-movie-mode="hard">
+          <strong id="movieMode_hard">🔥 Expert</strong>
+          <small id="movieModeSub_hard">10 těžších internetových souvislostí</small>
+        </button>
+        <button type="button" class="movie-mode-card movie-daily" data-movie-mode="daily">
+          <strong id="movieMode_daily">📅 Denní kino</strong>
+          <small id="movieModeSub_daily">Denně 3 filmy a 2 seriály (UTC)</small>
+        </button>
+      </div>
+      <p id="movieDailyNote" class="movie-help">Denní otázky se mění každý den podle UTC.</p>
+      <details class="movie-saves" open>
+        <summary id="movieSavedTitle">💾 Rozehrané a nedávné hry</summary>
+        <div id="movieSavedList"></div>
+      </details>
+      <section class="movie-challenge" aria-labelledby="movieChallengeTitle">
+        <h3 id="movieChallengeTitle">⚔️ Movie výzva s kamarádem</h3>
+        <p id="movieChallengeDesc">Vytvoř výzvu, pošli odkaz a oba odehrajete stejných 10 otázek. Skóre se porovná po dohrání obou.</p>
+        <button id="movieChallengeCreate" class="movie-create-button" type="button">⚔️ Vytvořit výzvu</button>
+        <div class="movie-invite-display hidden" id="movieInviteDisplay">
+          <input type="text" id="movieInviteLink" readonly aria-label="Odkaz na movie výzvu" />
+          <button id="movieInviteCopy" type="button">📋 Kopírovat</button>
+        </div>
+        <div class="movie-join-controls">
+          <input type="text" id="movieInviteInput" maxlength="280" autocomplete="off"
+            placeholder="Odkaz nebo ID výzvy…" aria-label="Vlož odkaz nebo ID movie výzvy" />
+          <button id="movieChallengeJoin" type="button">🎮 Přijmout odkaz / ID</button>
+        </div>
+        <button id="movieMatchCheck" class="movie-match-check" type="button">🏆 Zkontrolovat souboj</button>
+        <p id="movieMatchStatus" class="movie-help" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+    <div id="moviePlay" class="hidden">
+      <div id="movieTopShare" class="movie-top-share hidden">
+        <p>⚔️ <span id="movieTopShareText">Hraješ výzvu s kamarádem. Pošli mu odkaz.</span></p>
+        <button id="movieTopShareCopy" type="button">📋 Zkopírovat odkaz</button>
+      </div>
+      <div class="movie-scoreline">
+        <strong id="movieStage">Otázka 1 / 10</strong>
+        <span id="movieScore">Body: 0</span>
+      </div>
+      <div id="movieProgressTrack" class="movie-progress" role="progressbar"
+        aria-label="Dokončené otázky" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+        <span id="movieProgressFill"></span>
+      </div>
+      <section id="movieQuestionArea" class="movie-question-box" aria-labelledby="moviePrompt">
+        <div class="movie-image-frame movie-clue-frame">
+          <span id="movieMediaType" class="movie-media-type">🎬 FILM</span>
+          <div id="movieVisual" class="movie-clue-emoji" role="img" aria-label="Originální emoji indicie">🎬</div>
+          <p id="movieClue" class="movie-clue-text"></p>
+          <p id="movieImageError" class="hidden"></p>
+          <a id="movieImageOpen" class="movie-open-original hidden" href="https://en.wikipedia.org/" target="_blank" rel="noopener noreferrer">Více o díle</a>
+        </div>
+        <a id="movieImageCredit" href="https://en.wikipedia.org/" target="_blank"
+          rel="noopener noreferrer" class="movie-image-credit hidden">Více o díle</a>
+        <h3 id="moviePrompt">Načítám otázku…</h3>
+        <div id="movieOptions" class="movie-options" role="group" aria-label="Možnosti odpovědi"></div>
+      </section>
+      <p id="movieFeedback" class="movie-feedback hidden" role="status" aria-live="polite"></p>
+      <div class="movie-actions">
+        <button id="movieRetry" type="button" class="hidden">↻ Opakovat požadavek</button>
+        <button id="movieNext" class="primary hidden" type="button">Další otázka →</button>
+      </div>
+      <section id="movieFinal" class="movie-result hidden" aria-labelledby="movieFinalTitle">
+        <h3 id="movieFinalTitle">🏆 Konec kvízu!</h3>
+        <strong id="movieFinalScore">Tvůj výsledek: 0</strong>
+        <p id="movieReward"></p>
+        <p id="movieFinalMatch" class="movie-final-match hidden"></p>
+        <button id="movieAnother" type="button" class="primary">🎮 Další kvíz</button>
+      </section>
+    </div>
+    <p id="movieLegal" class="movie-legal">
+      Vlastní otázky a emoji indicie Quizorie. Nepoužíváme filmové záběry ani plakáty. Body nejsou peníze.
+    </p>
+  </section>
+
   <section id="gamePanel" class="panel hidden">
     <div class="line">
       <div class="label" id="gameLabel">SERVEROVÝ KVÍZ</div>
