@@ -45,7 +45,7 @@
       categoryLevel:'Category knowledge levels are separate from the global Arcade level.'
     }
   };
-  let lang='cs',api=null,userId=null,data=null,requestId=0,busy=false;
+  let lang='cs',api=null,userId=null,data=null,requestId=0,busy=false,afterClaim=null;
   const tr=k=>localeText[lang][k]||k;
   const num=v=>new Intl.NumberFormat(lang==='cs'?'cs-CZ':'en-US').format(Number(v)||0);
   const safe=(v,min=0)=>Math.max(min,Number.isFinite(+v)?+v:0);
@@ -173,6 +173,7 @@
       // Refresh only verified account stats, never adjust UI wallet locally.
       await refresh(true);
       if(!receipt.already_claimed){
+        try{afterClaim?.();}catch(e){console.warn('Quizoria wallet refresh unavailable',e);}
         try{navigator.vibrate?.([30,45,30]);}catch(_){}
       }
     }catch(e){
@@ -192,7 +193,8 @@
       else status(tr('logIn'));
     },
     setLocale(next){lang=next==='en'?'en':'cs';render();},
-    refresh(){return refresh(true);}
+    refresh(){return refresh(true);},
+    setAfterClaim(callback){afterClaim=typeof callback==='function'?callback:null;}
   });
   render();
 })();
