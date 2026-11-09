@@ -914,6 +914,42 @@
     if(retry.error||!retry.data)throw retry.error||inserted.error||Error('profile_unavailable');
     return retry.data;
   }
+  function showVerifiedXpGain(previous,fresh){
+    // Only snapshots of the authenticated arcade_profiles row enter this path.
+    // The effect never grants XP or accepts client-supplied reward amounts.
+    if(!previous||!fresh)return;
+    const before=safeNum(previous.arcade_xp),after=safeNum(fresh.arcade_xp);
+    if(after<=before)return;
+    const oldLevel=1+Math.floor(before/100),level=1+Math.floor(after/100);
+    window.FOXEY_ARCADE_FX?.xpAwarded?.({
+      gain:after-before,level,levelUp:level>oldLevel
+    });
+  }
+  let xpSyncBusy=false,xpSyncLastAt=0;
+  async function syncVisualXpOnReturn(){
+    // Quizoria opens in its own tab. When the player comes back, use a
+    // read-only RLS-protected server query rather than trusting either tab.
+    const uid=user?.id;
+    if(!uid||!profile||!supa||xpSyncBusy||document.visibilityState==='hidden')return;
+    const now=Date.now();
+    if(now-xpSyncLastAt<5000)return;
+    xpSyncLastAt=now;
+    xpSyncBusy=true;
+    try{
+      const {data,error}=await supa.from('arcade_profiles')
+        .select('user_id,nickname,avatar_id,arcade_xp')
+        .eq('user_id',uid).maybeSingle();
+      if(error||!data||data.user_id!==uid||
+        !Number.isSafeInteger(data.arcade_xp)||data.arcade_xp<0||
+        user?.id!==uid||!profile)return;
+      const previous=profile;
+      if(safeNum(previous.arcade_xp)===data.arcade_xp)return;
+      profile=data;render();
+      showVerifiedXpGain(previous,data);
+    }catch(_){
+      // A failed refresh cannot block gameplay, login or navigation.
+    }finally{xpSyncBusy=false;}
+  }
   async function refresh(){
     try{
       const result=await supa.auth.getUser();
@@ -921,6 +957,7 @@
       if(result.error && result.error.name!=='AuthSessionMissingError' && !/auth session missing/i.test(result.error.message||''))throw result.error;
       const nextUser=result.error?null:(result.data?.user||null);
       if(user?.id!==nextUser?.id){
+        window.FOXEY_ARCADE_FX?.clear?.();
         ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
         ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
         ++achievementSeq;achievements=null;achievementStatus='guest';
@@ -1075,6 +1112,7 @@
       const res=await supa.auth.signOut({scope:'local'});
       if(res.error)throw res.error;
       closeChestReward();
+      window.FOXEY_ARCADE_FX?.clear?.();
       ++progressRequest;gameProgress=null;progressRevision=null;progressStatus='guest';
       ++walletRequest;sharedWallet=null;sharedCosmetics=null;walletStatus='guest';
       ++achievementSeq;achievements=null;achievementStatus='guest';
@@ -1245,9 +1283,11 @@
       // authenticated server tables under user-scoped RLS.
       void getProfile(uid).then(fresh=>{
         if(user?.id!==uid)return;
-        const previousLevel=profile?1+Math.floor(safeNum(profile.arcade_xp)/100):null;
+        const previousProfile=profile;
+        const previousLevel=previousProfile?1+Math.floor(safeNum(previousProfile.arcade_xp)/100):null;
         const currentLevel=1+Math.floor(safeNum(fresh.arcade_xp)/100);
         profile=fresh;render();
+        showVerifiedXpGain(previousProfile,fresh);
         if(previousLevel!==null&&currentLevel>previousLevel){
           celebrate(achievementsEnglish()?
             '🎖️ Level up! You reached level '+currentLevel+'!':
@@ -1266,6 +1306,10 @@
     void loadSharedWallet();
   });
   window.addEventListener('foxey-arcade:locale-changed',()=>renderAchievements());
+  window.addEventListener('focus',()=>{void syncVisualXpOnReturn();});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')void syncVisualXpOnReturn();
+  });
   // Mission status may complete a missed, already-earned award after reconnect.
   // Never trust client-reported amounts: refetch authenticated wallet data.
   window.addEventListener('foxey-arcade:missions-awarded',()=>{
