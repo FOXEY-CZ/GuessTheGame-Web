@@ -323,6 +323,7 @@
   }
   async function start(forceNew=false){
     if(busy||!client||!uid){writeStatus(tr('signedOut'),true);return;}
+    pickerOpen=false;
     if(!forceNew&&run?.status==='active'){
       showPanel(true);
       if(pending){
@@ -408,6 +409,10 @@
     awaitNext=false;feedback=null;render();
   });
   $('millionAnother')?.addEventListener('click',()=>void openPicker());
+  $('millionImage')?.addEventListener('error',()=>{
+    $('millionImage').classList.add('hidden');
+    $('millionImageCredit').classList.remove('hidden');
+  });
   $('millionSound')?.addEventListener('click',()=>{
     muted=!muted;
     try{localStorage.setItem('quizoria.million.sound.v1',muted?'off':'on');}catch(_){}
