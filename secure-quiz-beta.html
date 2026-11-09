@@ -426,12 +426,25 @@
   <section id="modePanel" class="panel hidden">
     <div class="label" id="modeEyebrow">QUIZORIA · KATEGORIE A REŽIMY</div>
     <h2 id="modeTitle">Co si dnes zahraješ?</h2>
+    <nav class="game-hub-tabs quizoria-hub-nav" id="gameHubTabs" role="tablist" aria-label="Sekce Quizorie">
+      <button id="hubTabSolo" class="game-hub-tab is-active" type="button" role="tab"
+        aria-controls="gameHubSolo" aria-selected="true" tabindex="0" data-game-hub="solo">⚡ Hrát</button>
+      <button id="hubTabCategories" class="game-hub-tab" type="button" role="tab"
+        aria-controls="gameHubCategories" aria-selected="false" tabindex="-1" data-game-hub="categories">🎮 Kategorie</button>
+      <button id="hubTabChallenges" class="game-hub-tab" type="button" role="tab"
+        aria-controls="gameHubChallenges" aria-selected="false" tabindex="-1" data-game-hub="challenges">⚔️ Výzvy</button>
+      <button id="hubTabHistory" class="game-hub-tab" type="button" role="tab"
+        aria-controls="gameHubHistory" aria-selected="false" tabindex="-1" data-game-hub="history">📜 Historie</button>
+    </nav>
+    <p id="gameHubDescription" class="game-hub-description" aria-live="polite">Vyber režim a hraj, nebo pokračuj ve své rozehrané partii.</p>
+    <div id="gameHubSolo" class="game-hub-pane" role="tabpanel" aria-labelledby="hubTabSolo">
     <section class="quizoria-quickzone" id="quizoriaQuickSection" aria-labelledby="quizoriaQuickTitle">
       <div class="quizoria-quick-icon" aria-hidden="true">⚡</div>
       <div class="quizoria-quick-content">
         <span class="label">QUIZORIA · START</span>
         <h3 id="quizoriaQuickTitle">Rychlá hra</h3>
         <p id="quizoriaQuickDescription">Pusť se rovnou do 10 otázek z videoher. Pravidla a uložený postup zůstávají stejné.</p>
+        <p id="quizoriaQuickProgress" class="quizoria-quick-progress hidden" aria-live="polite"></p>
       </div>
       <div class="quizoria-quick-actions">
         <button class="primary" id="quizoriaQuickStart" type="button">▶ Hrát hned</button>
@@ -439,7 +452,6 @@
       </div>
     </section>
 
-    <div id="gameHubSolo" class="game-hub-pane" role="tabpanel" aria-labelledby="hubTabSolo">
     <section id="resumePanel" class="async-result hidden" aria-labelledby="resumeTitle">
       <h3 id="resumeTitle">⏯️ Máš rozehranou výzvu</h3>
       <p id="resumeText" class="async-help">Server si pamatuje odpovědi a nápovědy. Můžeš bezpečně pokračovat.</p>
@@ -452,7 +464,7 @@
       <h3 id="quizoriaModesTitle">🧠 Herní režimy</h3>
       <p id="quizoriaModesDescription">Nejdřív vyber způsob hraní. Kategorie otázek jsou samostatně níže.</p>
     </div>
-    <div class="quizoria-featured-modes" aria-label="Speciální připravované režimy">
+    <div class="quizoria-featured-modes" aria-label="Připravované režimy">
       <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaMillionTitle">
         <div class="mode-choice-head">
           <span class="mode-icon" aria-hidden="true">💰</span>
@@ -461,7 +473,11 @@
           <span class="quizoria-mode-badge" id="quizoriaMillionBadge">BRZY</span>
         </div>
       </article>
-      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaSurvivalTitle">
+    </div>
+    <details class="quizoria-future-drawer" id="quizoriaFutureDrawer">
+      <summary id="quizoriaFutureSummary">✨ Další připravované režimy</summary>
+      <div class="quizoria-featured-modes quizoria-future-grid">
+        <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaSurvivalTitle">
         <div class="mode-choice-head">
           <span class="mode-icon" aria-hidden="true">❤️</span>
           <span class="mode-copy"><strong id="quizoriaSurvivalTitle">Přežití</strong>
@@ -469,7 +485,7 @@
           <span class="quizoria-mode-badge" id="quizoriaSurvivalBadge">BRZY</span>
         </div>
       </article>
-      <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaEndlessTitle">
+        <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaEndlessTitle">
         <div class="mode-choice-head">
           <span class="mode-icon" aria-hidden="true">♾️</span>
           <span class="mode-copy"><strong id="quizoriaEndlessTitle">Nekonečný kvíz</strong>
@@ -477,7 +493,8 @@
           <span class="quizoria-mode-badge" id="quizoriaEndlessBadge">BRZY</span>
         </div>
       </article>
-    </div>
+      </div>
+    </details>
     <p class="quizoria-modes-intro" id="quizoriaModeIntro">🎯 Režimy a rozehrané partie pro kategorii Videohry</p>
     <div class="modes" id="modes">
       <article class="mode-choice" data-mode-card="classic">
@@ -516,7 +533,17 @@
       🛡️ Odpovědi ověřuje server. Starý postup je zachovaný a nové XP i měny se ukládají automaticky do společného profilu.
     </p>
 
+    <details class="quizoria-rewards-drawer" id="quizoriaRewardsDrawer">
+      <summary id="quizoriaRewardsSummary">💎 XP, odměny a synchronizace <span aria-hidden="true">⌄</span></summary>
+    <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
+      <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
+      <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
+      <p id="liveRewardsLegacy" class="live-rewards-note">Postup a odměny se synchronizují automaticky.</p>
+      <p id="liveRewardsStatus" role="status" aria-live="polite"></p>
+    </section>
+    </details>
     </div>
+    <div id="gameHubCategories" class="game-hub-pane hidden" role="tabpanel" aria-labelledby="hubTabCategories">
     <div class="quizoria-category-section-heading" id="quizoriaCategorySection">
       <span class="quizoria-section-eyebrow">02 · OTÁZKY</span>
       <h3 id="quizoriaCategorySectionTitle">🎮 Kategorie</h3>
@@ -537,27 +564,13 @@
       <p id="quizoriaCategoryNote" class="quizoria-category-note">Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.</p>
     </section>
 
-    <section id="liveRewardsCard" class="live-rewards" aria-labelledby="liveRewardsTitle">
-      <h3 id="liveRewardsTitle">💎 Skutečné XP a odměny</h3>
-      <p id="liveRewardsSummary" role="status" aria-live="polite">Načítám stav odměn…</p>
-      <p id="liveRewardsLegacy" class="live-rewards-note">Postup a odměny se synchronizují automaticky.</p>
-      <p id="liveRewardsStatus" role="status" aria-live="polite"></p>
-    </section>
+    </div>
+    <div id="gameHubChallenges" class="game-hub-pane hidden" role="tabpanel" aria-labelledby="hubTabChallenges">
     <section class="quizoria-social-section" aria-labelledby="quizoriaSocialTitle" id="quizoriaSocialSection">
       <span class="quizoria-section-eyebrow">03 · SPOLEČNÉ HRANÍ</span>
       <h3 id="quizoriaSocialTitle">⚔️ Multiplayer a historie</h3>
       <p id="quizoriaSocialDescription">Vyzvi kamaráda, zahraj si souboj nebo pokračuj v rozdělané výzvě.</p>
     </section>
-    <nav class="game-hub-tabs" id="gameHubTabs" role="tablist" aria-label="Sekce hry">
-      <button id="hubTabSolo" class="game-hub-tab is-active" type="button" role="tab"
-        aria-controls="gameHubSolo" aria-selected="true" tabindex="0" data-game-hub="solo">🎮 Sólo režimy</button>
-      <button id="hubTabChallenges" class="game-hub-tab" type="button" role="tab"
-        aria-controls="gameHubChallenges" aria-selected="false" tabindex="-1" data-game-hub="challenges">⚔️ Výzvy s přáteli</button>
-      <button id="hubTabHistory" class="game-hub-tab" type="button" role="tab"
-        aria-controls="gameHubHistory" aria-selected="false" tabindex="-1" data-game-hub="history">📜 Historie</button>
-    </nav>
-    <p id="gameHubDescription" class="game-hub-description" aria-live="polite">Vyber si sólo režim, začni novou hru nebo pokračuj v rozehrané.</p>
-    <div id="gameHubChallenges" class="game-hub-pane hidden" role="tabpanel" aria-labelledby="hubTabChallenges">
       <p class="game-hub-context" id="gameHubChallengeHint">⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.</p>
     <section class="game-friend-picker" aria-labelledby="gameFriendsTitle">
       <div class="game-friends-head">
@@ -812,8 +825,8 @@
       loginText:'Tahle verze vyžaduje přihlášený účet. Původní kvíz pro hosty a offline hraní zůstává dostupný.',
       loginLink:'Přejít do FOXEY Arcade',modeEyebrow:'QUIZORIA · KATEGORIE A REŽIMY',
       modeTitle:'Co si dnes zahraješ?',hubTitleSolo:'Videohry · vyber režim',hubTitleChallenges:'Soukromé výzvy',hubTitleHistory:'Historie výzev',
-      hubSolo:'⬆️ Herní režimy',hubChallenges:'⚔️ Výzvy s přáteli',
-      hubHistory:'📜 Historie',hubSoloHint:'🎯 Herní režimy najdeš výše. Tady můžeš otevřít výzvy a historii.',
+      hubSolo:'⚡ Hrát',hubCategories:'🎮 Kategorie',hubChallenges:'⚔️ Výzvy',
+      hubHistory:'📜 Historie',hubSoloHint:'Vyber režim, spusť hru nebo pokračuj v rozehrané partii.',hubCategoriesHint:'Vyber téma otázek. Zatím jsou hratelné Videohry.',
       hubChallengesHint:'⚔️ Soukromé výzvy sdílíš odkazem. Živé 1v1 a série BO3/BO5 najdeš v Arcade → Přátelé.',
       hubHistoryHint:'📜 Rozehrané i dokončené výzvy. Starší najdeš v archivu; otevřenou výzvu můžeš obnovit.',
       hubHelp:'ℹ️ Jak funguje obnovení výzvy?',
@@ -993,8 +1006,8 @@
       loginText:'This beta requires an account. The original guest and offline game is still available.',
       loginLink:'Open FOXEY Arcade',modeEyebrow:'QUIZORIA · CATEGORIES & MODES',
       modeTitle:'What will you play today?',hubTitleSolo:'Video Games · choose a mode',hubTitleChallenges:'Friend challenges',hubTitleHistory:'Challenge history',
-      hubSolo:'⬆️ Game modes',hubChallenges:'⚔️ Friend challenges',
-      hubHistory:'📜 History',hubSoloHint:'🎯 Game modes are above. You can open friend challenges and history here.',
+      hubSolo:'⚡ Play',hubCategories:'🎮 Categories',hubChallenges:'⚔️ Challenges',
+      hubHistory:'📜 History',hubSoloHint:'Choose a mode, start a new game or resume your saved run.',hubCategoriesHint:'Choose a question topic. Video Games is currently available.',
       hubChallengesHint:'⚔️ Share private challenges with a link. Live 1v1 and BO3/BO5 series are in Arcade → Friends.',
       hubHistoryHint:'📜 Your ongoing and finished challenges. Older entries are archived; unfinished games can be resumed.',
       hubHelp:'ℹ️ How does challenge recovery work?',
@@ -1658,9 +1671,9 @@
     url.hash='community';window.location.assign(url.toString());
   }
   function selectGameHub(section,focus=false){
-    if(!['solo','challenges','history'].includes(section))section='solo';
+    if(!['solo','categories','challenges','history'].includes(section))section='solo';
     gameHubSection=section;
-    for(const name of ['solo','challenges','history']){
+    for(const name of ['solo','categories','challenges','history']){
       const active=section===name;
       const suffix=name.charAt(0).toUpperCase()+name.slice(1);
       const button=$('hubTab'+suffix),pane=$('gameHub'+suffix);
@@ -1672,7 +1685,7 @@
       if(active&&focus)button.focus?.();
     }
     const descriptions={
-      solo:'hubSoloHint',challenges:'hubChallengesHint',history:'hubHistoryHint'
+      solo:'hubSoloHint',categories:'hubCategoriesHint',challenges:'hubChallengesHint',history:'hubHistoryHint'
     };
     const box=$('gameHubDescription');
     if(box)box.textContent=T(descriptions[section]);
@@ -1700,6 +1713,7 @@
     $('legacyCaveat').textContent=T('caveat');
     $('gameHubTabs').setAttribute('aria-label',lang==='en'?'Game sections':'Sekce hry');
     $('hubTabSolo').textContent=T('hubSolo');
+    $('hubTabCategories').textContent=T('hubCategories');
     $('hubTabChallenges').textContent=T('hubChallenges');
     $('hubTabHistory').textContent=T('hubHistory');
     $('gameHubChallengeHint').textContent=T('hubChallengesHint');
@@ -1791,6 +1805,16 @@
     // Quick start and quick resume use the SAME server-owned classic run.
     // No new local save and no second reward path.
     visible('quizoriaQuickContinue',!!me&&!!soloProgressByMode.classic);
+    const quickSave=soloProgressByMode.classic;
+    const quickProgress=$('quizoriaQuickProgress');
+    if(quickProgress){
+      quickProgress.textContent=quickSave?
+        (quickSave.finished?T('soloFinishPending'):template(T('soloProgress'),{
+          index:quickSave.next_index+1,total:quickSave.question_count,
+          points:quickSave.score,lives:quickSave.lives
+        })):'';
+      quickProgress.classList.toggle('hidden',!quickSave);
+    }
     for(const mode of soloModes){
       const entry=soloProgressByMode[mode];
       visible('soloContinue_'+mode,!!me&&!!entry);
@@ -3067,13 +3091,12 @@
     const tab=event.target.closest?.('button[data-game-hub]');
     if(tab){
       selectGameHub(tab.dataset.gameHub);
-      if(tab.dataset.gameHub==='solo')
-        $('quizoriaModeSection')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+      $('gameHubTabs')?.scrollIntoView?.({behavior:'smooth',block:'start'});
     }
   });
   $('gameHubTabs').addEventListener('keydown',event=>{
     if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-    const names=['solo','challenges','history'];
+    const names=['solo','categories','challenges','history'];
     const target=event.target.closest?.('button[data-game-hub]');
     if(!target)return;
     event.preventDefault();
@@ -3081,8 +3104,7 @@
     const next=event.key==='Home'?0:event.key==='End'?names.length-1:
       (current+(event.key==='ArrowRight'?1:-1)+names.length)%names.length;
     selectGameHub(names[next],true);
-    if(names[next]==='solo')
-      $('quizoriaModeSection')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+    $('gameHubTabs')?.scrollIntoView?.({behavior:'smooth',block:'start'});
   });
   $('bootRetry').addEventListener('click',()=>void authenticate().catch(err=>{
     $('bootText').textContent=T('bootFailed')+' ('+errorText(err)+')';
@@ -3239,7 +3261,7 @@
   },45000);
   window.QUIZORIA_UI?.setOpenModes(()=>{
     selectGameHub('solo');
-    $('quizoriaModeSection')?.scrollIntoView?.({behavior:'smooth',block:'start'});
+    $('gameHubTabs')?.scrollIntoView?.({behavior:'smooth',block:'start'});
   });
   // Bootstrap must always render at least one usable screen, even if optional
   // history widgets, browser storage, or sign-in encounter an exception.
