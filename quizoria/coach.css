@@ -56,6 +56,10 @@
 .q2-skill-actions .q2-launch.q2-mode-hard{border-color:#8966ac;background:#383054}
 .q2-skill-actions .q2-launch.q2-mode-daily{border-color:#9d8172;background:#3e3648}
 .q2-skill-actions .q2-launch:hover:not(:disabled){background:#3f5787;border-color:#aeacff}
+.q2-skill-actions .q2-mode-friend{grid-column:1/-1;
+ background:linear-gradient(110deg,#3e346c,#273f62);
+ border-color:#8376b2;min-height:42px;font-size:.75rem}
+
 @media(max-width:820px){
  .q2-coach-cards{grid-template-columns:1fr 1fr}
  .q2-coach-card.q2-daily{grid-column:1/-1}
