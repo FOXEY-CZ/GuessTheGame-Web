@@ -15,30 +15,32 @@
   const words={
     cs:{quickTitle:'Rychlá hra',quickDesc:'Pusť se rovnou do 10 otázek z videoher. Pravidla a uložený postup zůstávají stejné.',
       quickStart:'▶ Hrát hned',quickResume:'⏯ Pokračovat',
+      memeFeatured:'Guess the Meme',memeFeaturedSub:'Obrázkové otázky, denní kvíz a výzvy s přáteli',memeFeaturedLaunch:'▶ Hrát memy',
       futureSummary:'✨ Další připravované režimy',rewardsSummary:'💎 XP, odměny a synchronizace',
       modesTitle:'🧠 Herní režimy',modesDesc:'Vyber si režim pro kategorii Videohry. Další režimy budeme postupně přidávat.',
-      categoryTitle:'🎮 Kategorie',categoryDesc:'Stejné herní režimy, různá témata. Zatím jsou hratelné Videohry.',
+      categoryTitle:'🎮 Kategorie',categoryDesc:'Dvě hratelné kategorie: Videohry a Memy. Další přibudou.',
       socialTitle:'⚔️ Výzvy s přáteli',socialDesc:'Pošli kamarádovi výzvu nebo ho pozvi do živého souboje.',
       survival:'Přežití',survivalSub:'Odpovídej bez chyb a překonávej své rekordy.',
       endless:'Nekonečný kvíz',endlessSub:'Hraj tak dlouho, jak budeš chtít.',
-      header:'Vyber si svůj kvízový svět',sub:'Každá kategorie dostane vlastní otázky. První hratelnou kategorií jsou Videohry.',
+      header:'Vyber si svůj kvízový svět',sub:'Hraj Videohry nebo poznávej internetové memy podle obrázků.',
       active:'HRATELNÉ',planned:'PŘIPRAVUJEME',selected:'Vybraná kategorie',
       modeIntro:'🎯 Další režimy · Videohry',
-      note:'Další kategorie připravujeme. Zatím používáme stávající bezpečně ověřované otázky z Guess the Game.',
+      note:'Videohry i Memy mají své samostatné serverově ověřované otázky, ukládání a odměny.',
       millionaire:'💰 Milionová výzva',millionaireSub:'15 otázek · záchytné body · tři nápovědy',
       future:'BRZY',play:'HRÁT',button:'🎮 Vybrat režim'},
     en:{quickTitle:'Quick Game',quickDesc:'Jump straight into 10 video game questions. Your rules and existing progress stay the same.',
       quickStart:'▶ Play now',quickResume:'⏯ Resume',
+      memeFeatured:'Guess the Meme',memeFeaturedSub:'Picture trivia, daily quizzes and friend challenges',memeFeaturedLaunch:'▶ Play Memes',
       futureSummary:'✨ More coming modes',rewardsSummary:'💎 XP, rewards & sync',
       modesTitle:'🧠 Game Modes',modesDesc:'Choose a mode for Video Games. More modes will be added over time.',
-      categoryTitle:'🎮 Categories',categoryDesc:'The same game modes, different subjects. Video Games is playable now.',
+      categoryTitle:'🎮 Categories',categoryDesc:'Two playable categories: Video Games and Memes. More to come.',
       socialTitle:'⚔️ Friend Challenges',socialDesc:'Send a friend a challenge or invite them to a live duel.',
       survival:'Survival',survivalSub:'Keep answering correctly and beat your records.',
       endless:'Endless Quiz',endlessSub:'Play for as long as you like.',
-      header:'Choose your quiz world',sub:'Each category will have its own question bank. Video Games is the first playable category.',
+      header:'Choose your quiz world',sub:'Play Video Games or recognize famous internet memes from pictures.',
       active:'PLAYABLE',planned:'COMING SOON',selected:'Selected category',
       modeIntro:'🎯 More modes · Video Games',
-      note:'More categories are in development. For now, the original Guess the Game questions remain securely verified by the server.',
+      note:'Video Games and Memes have their own securely verified questions, saved runs and rewards.',
       millionaire:'💰 Million Challenge',millionaireSub:'15 questions · checkpoints · three lifelines',
       future:'SOON',play:'PLAY',button:'🎮 Choose a mode'}
   };
@@ -53,7 +55,9 @@
       quizoriaCategorySectionDescription:'categoryDesc',
       quizoriaSocialTitle:'socialTitle',quizoriaSocialDescription:'socialDesc',
       quizoriaSurvivalTitle:'survival',quizoriaSurvivalSubtitle:'survivalSub',
-      quizoriaEndlessTitle:'endless',quizoriaEndlessSubtitle:'endlessSub'
+      quizoriaEndlessTitle:'endless',quizoriaEndlessSubtitle:'endlessSub',
+      quizoriaMemeFeatureTitle:'memeFeatured',quizoriaMemeFeatureDescription:'memeFeaturedSub',
+      quizoriaMemeFeatureLaunch:'memeFeaturedLaunch'
     })){
       const target=$(id);if(target)target.textContent=t[key];
     }
@@ -82,7 +86,7 @@
         element.addEventListener('click',()=>{
           active=category.id;
           render();
-          onOpenModes?.();
+          onOpenModes?.(category.id);
         });
       }else element.setAttribute('aria-disabled','true');
       const icon=create('span','quizoria-category-icon',category.icon);
@@ -100,6 +104,7 @@
   window.QUIZORIA_UI=Object.freeze({
     setLocale(next){lang=next==='en'?'en':'cs';render();},
     setOpenModes(fn){if(typeof fn==='function')onOpenModes=fn;},
+    selectCategory(id){if(catalog.getCategory(id)?.state==='available'){active=id;render();}},
     currentCategory(){return active;},
     canPlayMode(mode){return catalog.canPlay(active,mode);}
   });
