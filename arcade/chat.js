@@ -81,6 +81,10 @@
       const snippet=create('span','arcade-chat-preview',preview);
       if(latest?.body)snippet.setAttribute('data-no-i18n','');
       body.append(name,snippet);
+      const presence=window.FOXEY_ARCADE_LIVE?.getFriendPresence?.(f.user_id);
+      body.append(create('span','arcade-chat-presence '+(presence?'is-online':'is-offline'),
+        presence===null||presence===undefined?tr('◌ Zjišťuji…','◌ Checking…'):
+          presence?tr('🟢 Online','🟢 Online'):tr('⚪ Offline','⚪ Offline')));
       btn.append(avatar,body);
       const count=toCount(item.unread);
       if(count){const pill=create('span','arcade-chat-count',count>99?'99+':String(count));
@@ -98,9 +102,10 @@
       'Vyber si kamaráda','Choose a friend');
     if(friend)$('chatFriendName').setAttribute('data-no-i18n','');
     else $('chatFriendName').removeAttribute?.('data-no-i18n');
-    $('chatFriendStatus').textContent=selectedId?tr(
-      'Soukromá konverzace · jen potvrzení přátelé',
-      'Private conversation · accepted friends only'):
+    const presence=selectedId?window.FOXEY_ARCADE_LIVE?.getFriendPresence?.(selectedId):null;
+    $('chatFriendStatus').textContent=selectedId?
+      (presence===null||presence===undefined?tr('◌ Zjišťuji stav…','◌ Checking status…'):
+        presence?tr('🟢 Online','🟢 Online'):tr('⚪ Offline','⚪ Offline')):
       tr('Zprávy vidíte jen vy dva.','Only the two of you can see your messages.');
     const active=!!uid&&!!selectedId&&!!friend;
     $('friendsPaneChat')?.classList.toggle('has-conversation',active);
@@ -262,6 +267,7 @@
       if(!validOwner(owner,stamp)||selectedId!==friend)return;
       if($('chatMessageInput').value.trim()===text)$('chatMessageInput').value='';
       pending=null;setStatus('');
+      try{window.dispatchEvent(new CustomEvent('foxey-arcade:chat-refresh',{detail:{friendId:friend}}));}catch(_){}
       // Authoritative reread, not a locally fabricated "sent" message.
       sending=false;
       await refreshThread();
@@ -291,6 +297,7 @@
         if(!validOwner(owner,stamp))return;
         const friend=payload?.payload?.friend_id;
         if(!UUID.test(friend))return;
+        try{window.dispatchEvent(new CustomEvent('foxey-arcade:chat-refresh',{detail:{friendId:friend}}));}catch(_){}
         void refreshInbox();
         if(pageActive&&paneActive&&selectedId===friend)void refreshThread();
       }).subscribe(state=>{
@@ -353,6 +360,9 @@
       void refreshInbox();
       if(pageActive&&paneActive&&selectedId)void refreshThread();
     }
+  });
+  window.addEventListener('foxey-arcade:presence',()=>{
+    renderConversations();renderThread();
   });
   window.addEventListener('foxey-arcade:locale-changed',()=>{
     renderConversations();renderThread();badge();
