@@ -385,6 +385,7 @@
 </style>
 <link rel="stylesheet" href="./quizoria/foundation.css?v=quizoria-menu-20261109c">
 <link rel="stylesheet" href="./quizoria/million.css?v=quizoria-million-20261109e">
+<link rel="stylesheet" href="./quizoria/memes.css?v=quizoria-memes-20261109a">
 </head>
 <body>
 <main class="wrap">
@@ -683,6 +684,106 @@
     </p>
   </section>
 
+  <section id="quizoriaMemePanel" class="panel meme-panel hidden" aria-labelledby="memeTitle">
+    <div class="meme-nav">
+      <button id="memeBack" type="button">← Zpět do Quizorie</button>
+      <span class="meme-studio">QUIZORIA · PICTURE QUIZ</span>
+    </div>
+    <div class="meme-brand">
+      <div class="meme-logo" aria-hidden="true">😂</div>
+      <div>
+        <div class="label" id="memeCategory">😂 Memy a internet</div>
+        <h2 id="memeTitle">Guess the Meme</h2>
+        <p id="memeSubtitle">Poznáš internetové legendy jen podle obrázku?</p>
+      </div>
+    </div>
+    <p id="memeStatus" class="meme-status" role="status" aria-live="polite"></p>
+    <div id="memeLobby">
+      <p class="meme-intro" id="memeIntro">Vyber režim, prohlédni obrázek a odpověz. Každou odpověď ověřuje server.</p>
+      <div class="meme-mode-grid">
+        <button type="button" class="meme-mode-card" data-meme-mode="classic">
+          <strong id="memeMode_classic">🎲 Klasický mix</strong>
+          <small id="memeModeSub_classic">10 obrázků z různých obtížností</small>
+        </button>
+        <button type="button" class="meme-mode-card" data-meme-mode="easy">
+          <strong id="memeMode_easy">🟢 Nováček</strong>
+          <small id="memeModeSub_easy">10 jednodušších otázek</small>
+        </button>
+        <button type="button" class="meme-mode-card" data-meme-mode="medium">
+          <strong id="memeMode_medium">🟠 Zkušený</strong>
+          <small id="memeModeSub_medium">10 středně těžkých otázek</small>
+        </button>
+        <button type="button" class="meme-mode-card" data-meme-mode="hard">
+          <strong id="memeMode_hard">🔥 Expert</strong>
+          <small id="memeModeSub_hard">10 těžších internetových souvislostí</small>
+        </button>
+        <button type="button" class="meme-mode-card meme-daily" data-meme-mode="daily">
+          <strong id="memeMode_daily">📅 Denní mem</strong>
+          <small id="memeModeSub_daily">Stejných 5 otázek pro všechny (UTC)</small>
+        </button>
+      </div>
+      <p id="memeDailyNote" class="meme-help">Denní otázky se mění každý den podle UTC.</p>
+      <details class="meme-saves" open>
+        <summary id="memeSavedTitle">💾 Rozehrané a nedávné hry</summary>
+        <div id="memeSavedList"></div>
+      </details>
+      <section class="meme-challenge" aria-labelledby="memeChallengeTitle">
+        <h3 id="memeChallengeTitle">⚔️ Meme výzva s kamarádem</h3>
+        <p id="memeChallengeDesc">Vytvoř výzvu, pošli odkaz a oba odehrajete stejných 10 otázek. Skóre se porovná po dohrání obou.</p>
+        <button id="memeChallengeCreate" class="meme-create-button" type="button">⚔️ Vytvořit výzvu</button>
+        <div class="meme-invite-display hidden" id="memeInviteDisplay">
+          <input type="text" id="memeInviteLink" readonly aria-label="Odkaz na meme výzvu" />
+          <button id="memeInviteCopy" type="button">📋 Kopírovat</button>
+        </div>
+        <div class="meme-join-controls">
+          <input type="text" id="memeInviteInput" maxlength="280" autocomplete="off"
+            placeholder="Odkaz nebo ID výzvy…" aria-label="Vlož odkaz nebo ID meme výzvy" />
+          <button id="memeChallengeJoin" type="button">🎮 Přijmout odkaz / ID</button>
+        </div>
+        <button id="memeMatchCheck" class="meme-match-check" type="button">🏆 Zkontrolovat souboj</button>
+        <p id="memeMatchStatus" class="meme-help" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+    <div id="memePlay" class="hidden">
+      <div class="meme-scoreline">
+        <strong id="memeStage">Otázka 1 / 10</strong>
+        <span id="memeScore">Body: 0</span>
+      </div>
+      <div id="memeProgressTrack" class="meme-progress" role="progressbar"
+        aria-label="Dokončené otázky" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+        <span id="memeProgressFill"></span>
+      </div>
+      <section id="memeQuestionArea" class="meme-question-box" aria-labelledby="memePrompt">
+        <div class="meme-image-frame">
+          <img id="memeImage" alt="Obrázek internetového memu" loading="eager" decoding="async"
+            referrerpolicy="no-referrer" />
+          <p id="memeImageError" class="meme-image-error hidden" role="status">Obrázek se nepodařilo načíst. Otevři zdrojový obrázek.</p>
+          <a id="memeImageOpen" href="https://commons.wikimedia.org/" target="_blank"
+            rel="noopener noreferrer" class="meme-open-original">Otevřít obrázek na Wikimedia Commons</a>
+        </div>
+        <a id="memeImageCredit" href="https://commons.wikimedia.org/" target="_blank"
+          rel="noopener noreferrer" class="meme-image-credit">Zdroj obrázku a licence</a>
+        <h3 id="memePrompt">Načítám otázku…</h3>
+        <div id="memeOptions" class="meme-options" role="group" aria-label="Možnosti odpovědi"></div>
+      </section>
+      <p id="memeFeedback" class="meme-feedback hidden" role="status" aria-live="polite"></p>
+      <div class="meme-actions">
+        <button id="memeRetry" type="button" class="hidden">↻ Opakovat požadavek</button>
+        <button id="memeNext" class="primary hidden" type="button">Další otázka →</button>
+      </div>
+      <section id="memeFinal" class="meme-result hidden" aria-labelledby="memeFinalTitle">
+        <h3 id="memeFinalTitle">🏆 Konec kvízu!</h3>
+        <strong id="memeFinalScore">Tvůj výsledek: 0</strong>
+        <p id="memeReward"></p>
+        <p id="memeFinalMatch" class="meme-final-match hidden"></p>
+        <button id="memeAnother" type="button" class="primary">🎮 Další kvíz</button>
+      </section>
+    </div>
+    <p id="memeLegal" class="meme-legal">
+      Jména, obrázky a popisy jsou použité se zdrojovými kredity. Soutěžní body nejsou reálné peníze.
+    </p>
+  </section>
+
   <section id="gamePanel" class="panel hidden">
     <div class="line">
       <div class="label" id="gameLabel">SERVEROVÝ KVÍZ</div>
@@ -870,6 +971,7 @@
 <script src="./quizoria/catalog.js?v=quizoria-foundation-20261109a"></script>
 <script src="./quizoria/quizoria-ui.js?v=quizoria-million-20261109e"></script>
 <script src="./quizoria/million.js?v=quizoria-million-20261109e"></script>
+<script src="./quizoria/memes.js?v=quizoria-memes-20261109a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
@@ -1830,6 +1932,7 @@
     renderSoloModes();
     window.QUIZORIA_UI?.setLocale(lang);
     window.QUIZORIA_MILLION?.setLocale(lang);
+    window.QUIZORIA_MEMES?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
     // History is optional UI; never let it abort bootstrap/authentication.
     // Previously this ran before getSession() had even finished.
@@ -2034,6 +2137,7 @@
     const priorUser=me?.id||null;
     me=!error&&data?.session?.user||null;
     window.QUIZORIA_MILLION?.connect?.(api,me);
+    window.QUIZORIA_MEMES?.connect?.(api,me);
     // Same secured friend-only mini chat in the standalone game.
     window.FOXEY_MINI_CHAT?.connect?.(api,me);
     window.FOXEY_MINI_CHAT?.onPage?.('play');
@@ -2056,6 +2160,7 @@
       $('liveRewardsStatus').textContent='';
     }
     language();modeScreen();
+    window.QUIZORIA_MEMES?.afterAuth?.();
     try{
       const urlParams=new URL(window.location.href).searchParams;
       if(urlParams.get('view')==='challenges')showChallengesAfterAuth=true;
@@ -3324,7 +3429,11 @@
   window.setInterval?.(()=>{
     if(me&&document.visibilityState!=='hidden')void refreshHistory();
   },45000);
-  window.QUIZORIA_UI?.setOpenModes(()=>{
+  window.QUIZORIA_UI?.setOpenModes(category=>{
+    if(category==='memes'){
+      window.QUIZORIA_MEMES?.openCategory?.();
+      return;
+    }
     selectGameHub('solo');
     $('gameHubTabs')?.scrollIntoView?.({behavior:'smooth',block:'start'});
   });
