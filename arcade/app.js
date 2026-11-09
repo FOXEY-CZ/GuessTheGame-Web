@@ -627,6 +627,15 @@
     show('recoverAccount',authView==='request');
     show('resetAccount',authView==='reset'&&recoveryVerified);
     el('headerName').textContent=loggedIn?(profile?.nickname||(window.FOXEY_I18N?.t('Hráč')||'Hráč')):(window.FOXEY_I18N?.t('Host')||'Host');
+    // Next Gen launcher greeting is a *view* of the trusted existing profile.
+    // Never cache a nickname or expose the previous identity after logout.
+    const welcomeName=el('homeWelcomeName');
+    if(welcomeName)welcomeName.textContent=loggedIn?(profile?.nickname||'hráči'):'hráči';
+    const welcomeAvatar=el('homeWelcomeAvatar');
+    if(welcomeAvatar){
+      if(loggedIn)showAvatar(profile?.avatar_id||'fox',welcomeAvatar);
+      else welcomeAvatar.textContent='🦊';
+    }
     if(loggedIn)showAvatar(profile?.avatar_id||'fox',el('headerAvatar'));
     else el('headerAvatar').textContent='🎮';
     el('connectionStatus').textContent=loggedIn?'● Přihlášen':'○ Režim hosta';
