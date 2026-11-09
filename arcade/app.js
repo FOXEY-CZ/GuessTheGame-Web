@@ -563,7 +563,15 @@
     });
     selectSubtab(group,group==='account'?accountTab:shopTab);
   }
-  let arcadeImmersive=false,arcadeNativeFullscreen=false;
+  // The game uses REAL browser fullscreen. Never pretend a CSS viewport
+  // enlargement is fullscreen when requestFullscreen fails or is unavailable.
+  let arcadeImmersive=false,fullscreenPending=false,fullscreenAttempt=0;
+  const fullscreenNotice=(message)=>{
+    const target=el('gameFullscreenStatus');
+    if(!target)return;
+    target.textContent=message||'';
+    target.classList.toggle('hidden',!message);
+  };
   function updateImmersive(on){
     arcadeImmersive=!!on;
     document.body?.classList?.toggle('arcade-game-immersive',arcadeImmersive);
@@ -571,42 +579,67 @@
     if(exit){
       exit.textContent=arcadeImmersive?'↙ '+(window.FOXEY_I18N?.getLocale?.()==='en'?
         'Windowed mode':'Režim okna'):'⛶ '+(window.FOXEY_I18N?.getLocale?.()==='en'?
-        'Full screen':'Celá obrazovka');
+        'Real fullscreen':'Skutečný fullscreen');
       exit.setAttribute('aria-label',exit.textContent);
+      exit.disabled=fullscreenPending;
     }
   }
+  function unavailableFullscreen(){
+    fullscreenNotice(window.FOXEY_I18N?.getLocale?.()==='en'?
+      'Your browser did not allow real fullscreen. Try opening FOXEY Arcade directly in Chrome or another supported browser, then tap Real fullscreen.':
+      'Prohlížeč nepovolil skutečný fullscreen. Otevři FOXEY Arcade přímo v Chromu nebo jiném podporovaném prohlížeči a klepni na Skutečný fullscreen.');
+  }
   function enterGameFullscreen(){
-    // CSS covers the viewport immediately, including Safari/iOS where the
-    // Fullscreen API may be unavailable. Game iframe is never reloaded.
-    updateImmersive(true);
     const page=el('page-play');
-    if(typeof page?.requestFullscreen==='function'&&
-       !document.fullscreenElement){
-      try{
-        const response=page.requestFullscreen({navigationUI:'hide'});
-        if(response&&typeof response.then==='function')
-          void response.then(()=>{
-            arcadeNativeFullscreen=true;
-          }).catch(()=>{arcadeNativeFullscreen=false;});
-        else arcadeNativeFullscreen=true;
-      }catch(_){arcadeNativeFullscreen=false;}
+    if(!page||fullscreenPending)return;
+    if(document.fullscreenElement===page){
+      updateImmersive(true);fullscreenNotice('');return;
+    }
+    // Must be called synchronously from a user tap/click. Some browsers
+    // require transient user activation and block calls from auto-navigation.
+    if(!document.fullscreenEnabled||typeof page.requestFullscreen!=='function'){
+      updateImmersive(false);unavailableFullscreen();return;
+    }
+    fullscreenPending=true;
+    const attempt=++fullscreenAttempt;
+    updateImmersive(false);
+    fullscreenNotice('');
+    try{
+      const response=page.requestFullscreen({navigationUI:'hide'});
+      Promise.resolve(response).then(()=>{
+        if(attempt!==fullscreenAttempt)return;
+        fullscreenPending=false;
+        if(page.classList.contains('hidden')){
+          if(document.fullscreenElement===page)void document.exitFullscreen?.();
+          updateImmersive(false);
+          return;
+        }
+        const active=document.fullscreenElement===page;
+        updateImmersive(active);
+        if(!active)unavailableFullscreen();
+      }).catch(()=>{
+        if(attempt!==fullscreenAttempt)return;
+        fullscreenPending=false;updateImmersive(false);unavailableFullscreen();
+      });
+    }catch(_){
+      fullscreenPending=false;updateImmersive(false);unavailableFullscreen();
     }
   }
   function leaveGameFullscreen(){
-    updateImmersive(false);
-    if(document.fullscreenElement===el('page-play')&&
+    fullscreenAttempt++;fullscreenPending=false;fullscreenNotice('');
+    const page=el('page-play');
+    if(document.fullscreenElement===page&&
        typeof document.exitFullscreen==='function'){
       try{void Promise.resolve(document.exitFullscreen()).catch(()=>{});}
       catch(_){}
     }
-    arcadeNativeFullscreen=false;
+    updateImmersive(false);
   }
   document.addEventListener?.('fullscreenchange',()=>{
-    if(arcadeNativeFullscreen&&!document.fullscreenElement){
-      arcadeNativeFullscreen=false;
-      updateImmersive(false);
-    }else if(document.fullscreenElement===el('page-play'))
-      arcadeNativeFullscreen=true;
+    const native=document.fullscreenElement===el('page-play');
+    // Reconcile both explicit button and ESC/system exits with actual state.
+    updateImmersive(native);
+    if(native)fullscreenNotice('');
   });
   function go(page){
     if(!PAGES.has(page))page='home';
