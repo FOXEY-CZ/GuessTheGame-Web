@@ -169,8 +169,8 @@ BEGIN
        WHERE user_id=uid AND xp>0 AND created_at>now()-interval '1 hour')+
       (SELECT count(*) FROM arcade_private.quizoria_movie_rewards
        WHERE user_id=uid AND xp>0 AND created_at>now()-interval '1 hour')+
-      +(SELECT count(*) FROM arcade_private.quizoria_music_rewards
-       WHERE user_id=uid AND xp>0 AND created_at>now()-interval '1 hour')
+      (SELECT count(*) FROM arcade_private.quizoria_music_rewards
+       WHERE user_id=uid AND xp>0 AND created_at>now()-interval '1 hour')+
       (SELECT count(*) FROM arcade_private.quiz_reward_receipts
        WHERE user_id=uid AND xp>0 AND created_at>now()-interval '1 hour')
     INTO v_hour;
@@ -181,8 +181,8 @@ BEGIN
        WHERE user_id=uid AND xp>0 AND (created_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date)+
       (SELECT count(*) FROM arcade_private.quizoria_movie_rewards
        WHERE user_id=uid AND xp>0 AND (created_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date)+
-      +(SELECT count(*) FROM arcade_private.quizoria_music_rewards
-       WHERE user_id=uid AND xp>0 AND (created_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date)
+      (SELECT count(*) FROM arcade_private.quizoria_music_rewards
+       WHERE user_id=uid AND xp>0 AND (created_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date)+
       (SELECT count(*) FROM arcade_private.quiz_reward_receipts
        WHERE user_id=uid AND xp>0 AND (created_at AT TIME ZONE 'UTC')::date=(now() AT TIME ZONE 'UTC')::date)
     INTO v_day;
