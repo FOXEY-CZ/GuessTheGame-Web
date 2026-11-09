@@ -106,8 +106,21 @@
  #arcadeNoticeOverlay .arcade-bell-requests>summary{padding:10px 12px;font-size:.8rem}
 }
 @media(prefers-reduced-motion:reduce){#arcadeNoticeOverlay .arcade-notice-drawer{animation:none!important}}
-html.arcade-motion-minimal,html.arcade-motion-minimal *:not(.sr-progress):not(.sr-tier-progress),
-html.arcade-motion-minimal *::before,html.arcade-motion-minimal *::after{
+body.arcade-notice-open{overflow:hidden}
+html.arcade-motion-minimal{scroll-behavior:auto!important}
+html.arcade-motion-minimal *,html.arcade-motion-minimal *::before,
+html.arcade-motion-minimal *::after{
  scroll-behavior:auto!important;animation:none!important;transition:none!important}
 html.arcade-motion-minimal #page-settings .settings-card,
 html.arcade-motion-minimal #arcadeNoticeOverlay .arcade-notice-drawer{animation:none!important;transition:none!important}
+
+/* Gentle shared interaction feedback, with OS and user motion settings respected. */
+#arcadeBellCount:not(.hidden){animation:sm-unread-pulse .32s ease-out both}
+#page-settings .settings-card:hover{transform:translateY(-1px)}
+#arcadeNoticeOverlay .arcade-notice-card.unread{animation:sm-unread-reveal .25s ease-out both}
+@keyframes sm-unread-pulse{from{transform:scale(.77)}to{transform:scale(1)}}
+@keyframes sm-unread-reveal{from{opacity:.75;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+ #arcadeBellCount:not(.hidden),#arcadeNoticeOverlay .arcade-notice-card.unread{animation:none!important}
+ #page-settings .settings-card:hover{transform:none!important}
+}
