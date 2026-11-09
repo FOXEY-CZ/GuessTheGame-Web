@@ -7,6 +7,7 @@
   const choose=(cs,en)=>window.FOXEY_I18N?.getLocale?.()==='en'?en:cs;
   let api=null,userId=null,items=[],unread=0,loading=false,seq=0,opened=false;
   let archived=false,hasMore=false,pageOffset=0,socialUnread=0,chatUnread=0;
+  let noticeReturnFocus=null;
   const PAGE_SIZE=10;
   const text=(id,value)=>{const node=$(id);if(node)node.textContent=value};
   const show=(id,yes)=>{const node=$(id);if(node)node.classList.toggle('hidden',!yes)};
@@ -38,8 +39,12 @@
   function render(){
     const allUnread=unread+socialUnread+chatUnread;
     show('arcadeNoticeGoChat',chatUnread>0);
-    text('arcadeNoticeGoChat',choose('💬 Nepřečtené zprávy: ','💬 Unread messages: ')+
+    // Update label only; replacing the button text would destroy its live unread badge.
+    text('arcadeNoticeGoChatLabel',choose('💬 Nepřečtené zprávy: ','💬 Unread messages: ')+
       chatUnread);
+    text('noticeMetricChallenges',userId?String(unread):'—');
+    text('noticeMetricSocial',userId?String(socialUnread):'—');
+    text('noticeMetricChat',userId?String(chatUnread):'—');
     const count=allUnread>99?'99+':String(allUnread);
     text('arcadeBellCount',count);
     show('arcadeBellCount',allUnread>0);
@@ -242,22 +247,33 @@
     }
   }
   function open(){
+    if(!opened)noticeReturnFocus=document.activeElement;
     opened=true;
     show('arcadeNoticeOverlay',true);
+    $('arcadeBell')?.setAttribute('aria-expanded','true');
+    document.body?.classList?.add('arcade-notice-open');
     render();
     $('arcadeNoticeClose')?.focus?.();
     void refresh();
     void window.FOXEY_ARCADE_SOCIAL?.refreshInbox?.();
   }
   function close(){
+    if(!opened)return;
     opened=false;
     show('arcadeNoticeOverlay',false);
-    $('arcadeBell')?.focus?.();
+    $('arcadeBell')?.setAttribute('aria-expanded','false');
+    document.body?.classList?.remove('arcade-notice-open');
+    const target=noticeReturnFocus?.isConnected!==false
+      ?noticeReturnFocus:$('arcadeBell');
+    noticeReturnFocus=null;
+    target?.focus?.();
   }
   function connect(client,user){
     const nextId=user?.id||null;
     if(nextId!==userId){
-      seq++;items=[];unread=0;archived=false;hasMore=false;pageOffset=0;
+      if(opened)close();
+      seq++;items=[];unread=0;socialUnread=0;chatUnread=0;
+      archived=false;hasMore=false;pageOffset=0;
       text('arcadeNoticeDetail','');
       show('arcadeNoticeCopyField',false);
     }
@@ -281,7 +297,30 @@
     void refresh();
   });
   document.addEventListener('keydown',event=>{
-    if(event.key==='Escape'&&opened)close();
+    if(!opened)return;
+    if(event.key==='Escape'){
+      event.preventDefault();
+      close();
+      return;
+    }
+    if(event.key!=='Tab')return;
+    // Keep keyboard navigation within the open notification drawer.
+    const drawer=$('arcadeNoticeOverlay')?.querySelector?.('[role="dialog"]');
+    if(!drawer)return;
+    const targets=[...drawer.querySelectorAll(
+      'button:not([disabled]),a[href],summary,input:not([disabled]),select:not([disabled])'
+    )].filter(e=>!e.closest('.hidden')&&
+      (typeof e.getClientRects!=='function'||e.getClientRects().length>0));
+    if(!targets.length)return;
+    const first=targets[0],last=targets[targets.length-1];
+    if(!drawer.contains(document.activeElement)){
+      event.preventDefault();
+      first.focus();
+    }else if(event.shiftKey&&document.activeElement===first){
+      event.preventDefault();last.focus();
+    }else if(!event.shiftKey&&document.activeElement===last){
+      event.preventDefault();first.focus();
+    }
   });
   window.addEventListener('focus',()=>{if(userId)void refresh();});
   window.addEventListener('foxey-arcade:locale-changed',render);
