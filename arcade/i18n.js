@@ -500,6 +500,10 @@
   "Tvoje vlastněné avatary. Kliknutím je nastavíš pro celý účet i Quizorii.": "Your owned avatars. Click to equip one for your entire account and Quizoria.",
   "🎮 Vlastní postup · Videohry": "🎮 My progress · Video Games",
   "Platí pro Arcade i Quizorii. Volba se uloží pro tento prohlížeč.": "Applies to Arcade and Quizoria. Your choice is saved in this browser.",
+  "😂 Memy · hratelné": "😂 Memes · playable",
+  "Začni ve Videohrách nebo hádej internetové memy podle obrázků. Původní postup z Guess the Game zůstává zachovaný.": "Start with Video Games or guess internet memes from pictures. Your original Guess the Game progress remains intact.",
+  "Jedna velká kvízová hra s kategoriemi, výzvami a různými herními režimy. Začni ve Videohrách nebo hádej internetové memy podle obrázků. Původní postup z Guess the Game zůstává zachovaný.": "One big quiz game with categories, challenges and different modes. Play Video Games or picture memes. Your original progress stays intact.",
+  "🛡️ Videohry i Memy fungují se serverově ověřovanými otázkami, účty, savy a společnými měnami. Nové kategorie budeme přidávat postupně.": "🛡️ Video Games and Memes both use server-verified questions, accounts, saved progress and shared currencies. More categories will arrive over time.",
   "⚔️ Otevírám zabezpečené výzvy…": "⚔️ Opening secure challenges…"
 });
   const supported=new Set(['cs','en']);
