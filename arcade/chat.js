@@ -10,7 +10,8 @@
   const safeText=(value,max=1000)=>String(value??'').slice(0,max);
   const toCount=x=>Math.max(0,Math.min(9999,Number.isFinite(Number(x))?Math.floor(Number(x)):0));
   let api=null,uid=null,epoch=0,selectedId=null,conversations=[],messages=[];
-  let paneActive=false,pageActive=false,loadingInbox=false,loadingThread=false;
+  let paneActive=false,pageActive=false,loadingInbox=false,loadingThread=false,
+      threadLoadingFriend=null;
   let sending=false,hasMore=false,unread=0,pending=null,lastRead=new Map();
   let channel=null,channelClient=null,online=false,threadRevision=0;
   const nowTime=iso=>{
@@ -170,12 +171,14 @@
     }catch(_){/* Keep it unread and retry on the next refresh. */}
   }
   async function refreshThread(older=false){
-    if(!uid||!api||!selectedId||loadingThread)return;
+    if(!uid||!api||!selectedId)return;
+    // A slow request for friend A must not block opening friend B.
+    if(loadingThread&&threadLoadingFriend===selectedId)return;
     const owner=uid,stamp=epoch,friend=selectedId,revision=threadRevision;
     const cursor=older&&messages.length?Number(messages[0].id):null;
     const oldHeight=$('chatThread')?.scrollHeight||0;
     const oldTop=$('chatThread')?.scrollTop||0;
-    loadingThread=true;
+    loadingThread=true;threadLoadingFriend=friend;
     if(!older&&!messages.length)renderThread();
     try{
       const {data,error}=await api.rpc('arcade_chat_history',{
@@ -201,8 +204,9 @@
         setStatus(friendlyError(err));renderThread();
       }
     }finally{
-      if(validOwner(owner,stamp)&&friend===selectedId&&revision===threadRevision)
-        loadingThread=false;
+      if(validOwner(owner,stamp)&&threadLoadingFriend===friend){
+        loadingThread=false;threadLoadingFriend=null;
+      }
     }
   }
   async function openFriend(friendId){
@@ -289,6 +293,7 @@
       ++epoch;disconnectRealtime();
       uid=newId;api=client||null;conversations=[];unread=0;selectedId=null;
       paneActive=false;pageActive=false;loadingInbox=false;loadingThread=false;
+      threadLoadingFriend=null;
       sending=false;messages=[];hasMore=false;pending=null;lastRead.clear();
       threadRevision++;
       $('chatMessageInput').value='';
