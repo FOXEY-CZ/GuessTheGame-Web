@@ -253,10 +253,9 @@ BEGIN
   IF r.category<>p_category THEN RAISE EXCEPTION 'operation_conflict';END IF;
   RETURN arcade_private.quizoria_survival_view(r);
  END IF;
- SELECT * INTO r FROM arcade_private.quizoria_survival_runs
-  WHERE user_id=uid AND category=p_category AND NOT finished AND expires_at>now()
-  ORDER BY started_at DESC LIMIT 1 FOR UPDATE;
- IF FOUND THEN RETURN arcade_private.quizoria_survival_view(r);END IF;
+ -- A new operation UUID always starts a NEW run. Never silently return an
+ -- unrelated active save. Those remain available via resume/history.
+ -- Retrying the SAME operation UUID is still idempotent above.
  SELECT count(*) INTO run_count FROM arcade_private.quizoria_survival_runs
   WHERE user_id=uid AND started_at>now()-interval '1 hour';
  IF run_count>=10 THEN RAISE EXCEPTION 'rate_limited';END IF;
