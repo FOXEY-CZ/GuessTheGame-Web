@@ -1080,12 +1080,12 @@
               "Rolling in the Deep"
             ],
             [
-              "Locked Out of Heaven (Katy Perry version)",
-              "Locked Out of Heaven (Katy Perry version)"
+              "Happy",
+              "Happy"
             ],
             [
-              "Happy (Daft Punk version)",
-              "Happy (Daft Punk version)"
+              "Firework",
+              "Firework"
             ]
           ]
         }
@@ -1876,11 +1876,11 @@
         "medium": {
           "prompt": [
             "Které album skupiny Elán obsahuje skladbu Kaskadér?",
-            "Which Elán album features Kaskadér?"
+            "Which Elán album contains the track Kaskadér?"
           ],
           "correct": [
-            "Nie sme zlí",
-            "Nie sme zlí"
+            "Ôsmy svetadiel",
+            "Ôsmy svetadiel"
           ],
           "wrong": [
             [
@@ -1888,12 +1888,12 @@
               "Hodina slovenčiny"
             ],
             [
-              "Ôsmy svetadiel",
-              "Ôsmy svetadiel"
-            ],
-            [
               "Detektívka",
               "Detektívka"
+            ],
+            [
+              "Nie sme zlí",
+              "Nie sme zlí"
             ]
           ]
         },
