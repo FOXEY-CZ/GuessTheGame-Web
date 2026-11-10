@@ -186,7 +186,7 @@ BEGIN
    count(*) FILTER (WHERE (created_at AT TIME ZONE 'UTC')::date=
      (now() AT TIME ZONE 'UTC')::date)
   INTO hourly,daily FROM arcade_private.quizoria_endless_rewards
-  WHERE user_id=uid AND xp>0;
+  WHERE user_id=uid AND arcade_private.quizoria_endless_rewards.xp>0;
   -- At most one funded Endless run per hour and two per UTC day.
   IF hourly>=1 OR daily>=2 THEN reason:='daily_limit';
   ELSIF w.crowns+v_crowns>1000000000 THEN reason:='wallet_limit';
