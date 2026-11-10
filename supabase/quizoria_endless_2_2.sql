@@ -363,11 +363,15 @@ BEGIN
  INTO leaderboard
  FROM(
   SELECT coalesce(nullif(p.nickname,''),'Hráč') nickname,
-   max(r.score) score,max(r.answered) stage,max(r.best_streak) streak
-  FROM arcade_private.quizoria_endless_runs r
+   r.score AS score,r.answered AS stage,r.best_streak AS streak
+  FROM (
+   SELECT DISTINCT ON (user_id) user_id,score,answered,best_streak
+   FROM arcade_private.quizoria_endless_runs
+   WHERE category=p_category AND finished
+   ORDER BY user_id,score DESC,answered DESC,started_at DESC
+  ) r
   JOIN public.arcade_profiles p ON p.user_id=r.user_id
-  WHERE r.category=p_category AND r.finished
-  GROUP BY r.user_id,p.nickname ORDER BY score DESC,stage DESC LIMIT 10
+  ORDER BY r.score DESC,r.answered DESC LIMIT 10
  )l;
  RETURN pg_catalog.jsonb_build_object('ok',true,'category',p_category,
   'active',CASE WHEN active.run_id IS NULL THEN NULL ELSE arcade_private.quizoria_endless_view(active) END,
