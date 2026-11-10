@@ -1,0 +1,201 @@
+/* Quizoria 2.1.1 — Survival Effects, visual-only.
+ * Never changes question data, saves, scoring or rewards.
+ * Respect operating system and Arcade accessibility preferences. */
+
+#quizoriaSurvivalPanel{
+ --svfx-heart:#ff87aa;--svfx-fire:#ffc975;
+ --svfx-tier:#75f3e4;--svfx-record:#ffe3a3;
+}
+#survivalFxToast{
+ position:fixed;z-index:410;top:calc(env(safe-area-inset-top,0px) + 93px);
+ right:max(14px,env(safe-area-inset-right,0px));
+ width:min(345px,calc(100vw - 28px));
+ display:flex;align-items:center;gap:12px;min-height:74px;padding:13px 16px;
+ background:linear-gradient(120deg,#432d58ed,#192f4cf7);
+ border:1px solid #b88cce;border-radius:17px;
+ box-shadow:0 17px 48px #020b21c7,0 0 31px #ac76e54c;
+ color:#fff;pointer-events:none;isolation:isolate;
+ animation:svfx-toast-enter .42s cubic-bezier(.17,.8,.2,1.2) both;
+}
+#survivalFxToast.hidden{display:none!important}
+#survivalFxToast .svfx-toast-symbol{
+ flex:0 0 48px;height:48px;width:48px;display:grid;place-items:center;
+ font-size:1.7rem;border-radius:14px;
+ border:1px solid #d7bef6b0;background:#6960a25e;
+ filter:drop-shadow(0 2px 5px #090d2766);
+}
+#survivalFxToast .svfx-toast-copy{min-width:0;display:grid;gap:4px}
+#survivalFxToast .svfx-toast-copy strong{
+ display:block;line-height:1.25;letter-spacing:-.015em;
+ font-size:clamp(.95rem,2.4vw,1.12rem);color:#fcf6ff;
+}
+#survivalFxToast .svfx-toast-copy small{
+ display:block;font-size:.75rem;line-height:1.4;font-weight:680;color:#e7dff1;
+ overflow-wrap:anywhere;
+}
+#survivalFxToast.svfx-heart{border-color:#eb86a5;background:linear-gradient(125deg,#763755f2,#322543f8);
+ box-shadow:0 15px 41px #030817b8,0 0 30px #ed799458}
+#survivalFxToast.svfx-streak{border-color:#ffd07d;background:linear-gradient(125deg,#72452df2,#33264bfa);
+ box-shadow:0 15px 41px #030817b8,0 0 34px #f5a34c50}
+#survivalFxToast.svfx-tier{border-color:#89faed;background:linear-gradient(125deg,#155d65f5,#243d75f8);
+ box-shadow:0 16px 41px #030817bf,0 0 37px #59e3eb60}
+#survivalFxToast.svfx-record,#survivalFxToast.svfx-reward{
+ border-color:#f5dc92;background:linear-gradient(125deg,#64502cf5,#42305cf8);
+ box-shadow:0 15px 41px #030817b8,0 0 37px #f6cf8261
+}
+@keyframes svfx-toast-enter{
+ from{opacity:0;transform:translate3d(24px,-13px,0) scale(.88)}
+ to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+/* Heart animation: the HUD updates from the confirmed result,
+   while a decorative broken heart rises out of it. */
+#survivalHearts{position:relative;display:inline-block;transform-origin:center}
+#survivalHearts.svfx-heart-loss{animation:svfx-heart-shudder .75s ease-out both}
+#survivalHearts.svfx-heart-loss::after{
+ content:"💔";position:absolute;z-index:5;right:16%;top:-13px;
+ font-size:clamp(1.6rem,4vw,2.2rem);pointer-events:none;
+ filter:drop-shadow(0 0 11px #ff688e9d);
+ animation:svfx-heart-fragment 1.25s cubic-bezier(.15,.6,.22,1) both;
+}
+@keyframes svfx-heart-shudder{
+ 0%,100%{transform:translateX(0) scale(1)}
+ 12%,35%{transform:translateX(-5px) scale(1.12)}
+ 23%,48%{transform:translateX(5px) scale(1.06)}
+ 65%{transform:translateX(0) scale(.96)}
+}
+@keyframes svfx-heart-fragment{
+ 0%{opacity:0;transform:translateY(18px) rotate(-12deg) scale(.48)}
+ 20%{opacity:1;transform:translateY(-2px) rotate(8deg) scale(1.18)}
+ 70%{opacity:.95}
+ 100%{opacity:0;transform:translateY(-85px) rotate(28deg) scale(.8)}
+}
+/* The streak counter briefly lights up at actual milestones. */
+#survivalStreak.svfx-streak-rise{
+ color:#ffe6a3!important;text-shadow:0 0 20px #ffc461;
+ animation:svfx-streak-pop 1.05s ease-out both;
+}
+@keyframes svfx-streak-pop{
+ 0%,100%{transform:scale(1)}
+ 20%{transform:scale(1.36) rotate(-6deg)}
+ 60%{transform:scale(1.13) rotate(4deg)}
+}
+/* Difficulty transitions are displayed only after the Next button
+   reveals the newly verified question. */
+#survivalQuestionArea{position:relative;isolation:isolate}
+#survivalQuestionArea.svfx-tier-change::before{
+ content:"";position:absolute;z-index:-1;inset:-15px;border-radius:19px;pointer-events:none;
+ border:1px solid #88f9e9a8;
+ background:linear-gradient(115deg,transparent 14%,#84f8eb25 38%,transparent 68%);
+ box-shadow:0 0 35px #64e7da40;
+ animation:svfx-tier-sweep 1.25s ease-out both;
+}
+#survivalDifficulty.svfx-tier-badge{
+ box-shadow:0 0 0 2px #b6fff0b0,0 0 25px #56eee38c;
+ animation:svfx-tier-tag 1.15s ease-out both;
+}
+@keyframes svfx-tier-sweep{
+ 0%{opacity:0;transform:translateX(-18px)}
+ 30%{opacity:1}
+ 100%{opacity:0;transform:translateX(22px)}
+}
+@keyframes svfx-tier-tag{
+ 0%,100%{transform:scale(1)}
+ 33%{transform:scale(1.1)}
+}
+/* Persistent new-best badge, for a verifiably finished run only. */
+#survivalNewRecord{
+ display:flex;justify-content:center;align-items:center;gap:8px;
+ margin:13px auto 12px;padding:13px 14px;max-width:500px;
+ font-weight:870;font-size:.9rem;line-height:1.42;letter-spacing:-.01em;
+ color:#ffe7ad;background:linear-gradient(130deg,#534227,#3a2d53);
+ border:1px solid #ddbf76;border-radius:13px;
+ box-shadow:0 8px 27px #090f256b,0 0 23px #cda44a38;
+ animation:svfx-record-reveal .8s cubic-bezier(.21,.85,.26,1.1) both;
+}
+#survivalNewRecord.hidden{display:none!important}
+#survivalFinal.svfx-new-record{
+ border-color:#e5c77f;
+ box-shadow:0 10px 38px #080e2f99,0 0 36px #ecca6c50;
+}
+#survivalFinal.svfx-new-record .survival-final-icon{
+ animation:svfx-record-trophy 1.1s ease-out both;
+ filter:drop-shadow(0 0 20px #ffdb87);
+}
+@keyframes svfx-record-reveal{
+ from{opacity:0;transform:translateY(16px) scale(.9)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes svfx-record-trophy{
+ 0%,100%{transform:scale(1) rotate(0)}
+ 25%{transform:scale(1.3) rotate(-12deg)}
+ 65%{transform:scale(1.14) rotate(9deg)}
+}
+/* Reward only animates when server confirms reason=credited. */
+#survivalReward.svfx-reward-reveal{
+ position:relative;overflow:hidden;border:1px solid #b8e8b5;
+ color:#e8fff1!important;background:linear-gradient(125deg,#1c5148,#353a62);
+ box-shadow:0 0 0 1px #9bffb339,0 0 32px #68f2bd4a;
+ animation:svfx-reward-bloom 1.25s ease-out both;
+}
+#survivalReward.svfx-reward-reveal::after{
+ content:"✦    ✧     ✦      ✧     ✦";position:absolute;inset:0;
+ display:grid;place-items:center;font-size:1.36rem;letter-spacing:.5rem;
+ pointer-events:none;color:#ecffb0;
+ text-shadow:0 0 10px #9cf9cb;
+ animation:svfx-reward-sparkle 2.25s ease-out both;
+}
+@keyframes svfx-reward-bloom{
+ from{transform:scale(.96);filter:brightness(.85)}
+ 35%{transform:scale(1.04);filter:brightness(1.3)}
+ to{transform:scale(1);filter:brightness(1)}
+}
+@keyframes svfx-reward-sparkle{
+ 0%{opacity:0;transform:translateY(18px) scale(.7)}
+ 22%{opacity:1;transform:translateY(-9px) scale(1.12)}
+ 100%{opacity:0;transform:translateY(-40px) scale(1)}
+}
+@media(max-width:730px){
+ #survivalFxToast{
+  top:calc(env(safe-area-inset-top,0px) + 86px);right:10px;left:10px;
+  width:auto;max-width:420px;margin:0 auto;min-height:66px;padding:10px 12px;
+ }
+ #survivalFxToast .svfx-toast-symbol{flex-basis:43px;width:43px;height:43px;font-size:1.47rem}
+ #survivalFxToast .svfx-toast-copy strong{font-size:.96rem}
+ #survivalFxToast .svfx-toast-copy small{font-size:.71rem}
+ #survivalNewRecord{font-size:.81rem}
+}
+@media(max-height:540px) and (orientation:landscape){
+ #survivalFxToast{top:calc(env(safe-area-inset-top,0px) + 14px);min-height:53px}
+}
+/* All effects are accessible with system- and user-controlled reduced motion.
+   Keep important status and reward text visible even when animation is off. */
+@media(prefers-reduced-motion:reduce){
+ #quizoriaSurvivalPanel .svfx-heart-loss,
+ #quizoriaSurvivalPanel .svfx-heart-loss::after,
+ #quizoriaSurvivalPanel .svfx-streak-rise,
+ #quizoriaSurvivalPanel .svfx-tier-change::before,
+ #quizoriaSurvivalPanel .svfx-tier-badge,
+ #quizoriaSurvivalPanel .svfx-new-record .survival-final-icon,
+ #survivalNewRecord,#survivalFxToast,
+ #survivalReward.svfx-reward-reveal,
+ #survivalReward.svfx-reward-reveal::after{
+  animation:none!important;transition:none!important;
+ }
+ #survivalHearts.svfx-heart-loss::after,#survivalReward.svfx-reward-reveal::after{
+  content:none!important;
+ }
+}
+html.arcade-motion-minimal #quizoriaSurvivalPanel .svfx-heart-loss,
+html.arcade-motion-minimal #quizoriaSurvivalPanel .svfx-heart-loss::after,
+html.arcade-motion-minimal #quizoriaSurvivalPanel .svfx-streak-rise,
+html.arcade-motion-minimal #quizoriaSurvivalPanel .svfx-tier-change::before,
+html.arcade-motion-minimal #quizoriaSurvivalPanel .svfx-tier-badge,
+html.arcade-motion-minimal #quizoriaSurvivalPanel .svfx-new-record .survival-final-icon,
+html.arcade-motion-minimal #survivalNewRecord,
+html.arcade-motion-minimal #survivalFxToast,
+html.arcade-motion-minimal #survivalReward.svfx-reward-reveal,
+html.arcade-motion-minimal #survivalReward.svfx-reward-reveal::after{
+ animation:none!important;transition:none!important
+}
+html.arcade-motion-minimal #survivalHearts.svfx-heart-loss::after,
+html.arcade-motion-minimal #survivalReward.svfx-reward-reveal::after{content:none!important}
