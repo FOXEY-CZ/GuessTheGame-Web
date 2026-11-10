@@ -145,7 +145,8 @@ BEGIN
  RETURN pg_catalog.jsonb_build_object(
   'ok',true,'has_run',true,'run_id',p_run.run_id,'category',p_run.category,
   'stage',p_run.answered,'correct',p_run.correct,'score',p_run.score,
-  'streak',p_run.streak,'best_streak',p_run.best_streak,'rating',p_run.rating,
+  'streak',p_run.streak,'multiplier',1+least(p_run.streak/3,4),
+  'best_streak',p_run.best_streak,'rating',p_run.rating,
   'cycles',p_run.cycles,'finished',p_run.finished,'question',public_q,'reward',reward);
 END;
 $fn$;
@@ -282,8 +283,8 @@ BEGIN
   r.correct:=r.correct+1;
   r.streak:=r.streak+1;r.best_streak:=greatest(r.best_streak,r.streak);
   r.rating:=least(100,r.rating+CASE current_difficulty WHEN 'easy' THEN 10 WHEN 'medium' THEN 7 ELSE 4 END);
-  score_increment:=CASE current_difficulty WHEN 'easy' THEN 10 WHEN 'medium' THEN 20 ELSE 30 END
-   +least(r.streak,10)*3;
+  score_increment:=(CASE current_difficulty WHEN 'easy' THEN 10 WHEN 'medium' THEN 20 ELSE 30 END)
+   *(1+least(r.streak/3,4));
   r.score:=r.score+score_increment;
  ELSE
   r.streak:=0;r.rating:=greatest(0,r.rating-
