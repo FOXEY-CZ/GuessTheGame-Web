@@ -60,8 +60,8 @@
       quizoriaCategorySectionTitle:'categoryTitle',
       quizoriaCategorySectionDescription:'categoryDesc',
       quizoriaSocialTitle:'socialTitle',quizoriaSocialDescription:'socialDesc',
-      // Survival 2.1 owns its localized live title and subtitle.
-      quizoriaEndlessTitle:'endless',quizoriaEndlessSubtitle:'endlessSub',
+      // Survival and Endless own their localized live labels.
+      // Keep both controls playable during the category shell rerender.
       quizoriaMemeFeatureTitle:'memeFeatured',quizoriaMemeFeatureDescription:'memeFeaturedSub',
       quizoriaMemeFeatureLaunch:'memeFeaturedLaunch',
       quizoriaMovieFeatureTitle:'moviesFeatured',quizoriaMovieFeatureDescription:'moviesFeaturedSub',
@@ -71,9 +71,9 @@
     })){
       const target=$(id);if(target)target.textContent=t[key];
     }
-    // Only Endless is pending; Million and Survival are fully playable.
+    // Both Survival and Endless are live, including after switching languages.
     $('quizoriaSurvivalBadge').textContent=t.play;
-    $('quizoriaEndlessBadge').textContent=t.future;
+    $('quizoriaEndlessBadge').textContent=t.play;
     $('quizoriaCategoriesTitle').textContent=t.header;
     $('quizoriaCategoriesIntro').textContent=t.sub;
     $('quizoriaCategoryNote').textContent=t.note;
