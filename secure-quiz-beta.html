@@ -394,6 +394,7 @@
 <link rel="stylesheet" href="./quizoria/coach.css?v=quizoria-20-20261109b">
 <link rel="stylesheet" href="./quizoria/survival.css?v=quizoria-new-run-212-20261110a">
 <link rel="stylesheet" href="./quizoria/survival-effects.css?v=quizoria-survival-effects-211-20261110a">
+<link rel="stylesheet" href="./quizoria/endless.css?v=quizoria-endless-22-20261110a">
 </head>
 <body>
 <main class="wrap">
@@ -539,19 +540,15 @@
         </div>
         <button id="quizoriaSurvivalLaunch" class="primary quizoria-survival-launch" type="button">❤️ Spustit Přežití</button>
       </article>
-    <details class="quizoria-future-drawer" id="quizoriaFutureDrawer">
-      <summary id="quizoriaFutureSummary">✨ Další připravované režimy</summary>
-      <div class="quizoria-featured-modes quizoria-future-grid">
-        <article class="mode-choice quizoria-coming-mode" aria-disabled="true" aria-labelledby="quizoriaEndlessTitle">
+      <article class="mode-choice quizoria-endless-feature" aria-labelledby="quizoriaEndlessTitle">
         <div class="mode-choice-head">
           <span class="mode-icon" aria-hidden="true">♾️</span>
-          <span class="mode-copy"><strong id="quizoriaEndlessTitle">Nekonečný kvíz</strong>
-            <small id="quizoriaEndlessSubtitle">Hraj tak dlouho, jak budeš chtít.</small></span>
-          <span class="quizoria-mode-badge" id="quizoriaEndlessBadge">BRZY</span>
+          <span class="mode-copy"><strong id="quizoriaEndlessTitle">Nekonečný kvíz · Endless</strong>
+            <small id="quizoriaEndlessSubtitle">Bez životů · adaptivní obtížnost · série · ukládání</small></span>
+          <span class="quizoria-mode-badge live" id="quizoriaEndlessBadge">HRÁT</span>
         </div>
+        <button id="quizoriaEndlessLaunch" type="button" class="primary quizoria-endless-launch">♾️ Spustit nekonečný kvíz</button>
       </article>
-      </div>
-    </details>
     <p class="quizoria-modes-intro" id="quizoriaModeIntro">🎯 Režimy a rozehrané partie pro kategorii Videohry</p>
     <div class="modes" id="modes">
       <article class="mode-choice" data-mode-card="classic">
@@ -1369,6 +1366,83 @@
     </div>
   </section>
 
+  <section id="quizoriaEndlessPanel" class="panel quizoria-endless-panel hidden" aria-labelledby="endlessTitle">
+    <header class="endless-hero">
+      <button id="endlessBack" class="secondary" type="button">← Zpět do Quizorie</button>
+      <span class="endless-eyebrow">♾️ QUIZORIA · ENDLESS</span>
+      <h2 id="endlessTitle">Nekonečný kvíz</h2>
+      <p id="endlessIntro">Bez životů a časového limitu. Obtížnost se přizpůsobuje tvým odpovědím. Každá odpověď se uloží na server.</p>
+    </header>
+    <p id="endlessStatus" class="endless-status" role="status" aria-live="polite"></p>
+    <div id="endlessLobby">
+      <h3 id="endlessCategoryTitle">🎮 Vyber si kategorii</h3>
+      <div id="endlessCategories" class="endless-categories" role="group" aria-label="Kategorie Nekonečného kvízu"></div>
+      <div class="endless-best">
+        <div><span id="endlessBestStageLabel">🧠 Nejvíc otázek</span><strong id="endlessBestStage">—</strong></div>
+        <div><span id="endlessBestScoreLabel">🏆 Rekord bodů</span><strong id="endlessBestScore">—</strong></div>
+        <div><span id="endlessBestStreakLabel">🔥 Nejdelší série</span><strong id="endlessBestStreak">—</strong></div>
+      </div>
+      <div class="endless-lobby-actions">
+        <button type="button" class="primary" id="endlessStart">♾️ Nová partie od začátku</button>
+        <button type="button" class="secondary hidden" id="endlessResume">▶️ Pokračovat v rozehrané</button>
+      </div>
+      <p id="endlessActiveHint" class="endless-active-hint hidden">💾 Nová partie nesmaže rozehranou. Starou můžeš kdykoliv otevřít v Moje partie.</p>
+      <p id="endlessRules" class="endless-rules">🟢 / 🟠 / 🔥 obtížnost podle úspěšnosti · 🔥 vyšší násobič za sérii · 💾 automatické ukládání. Za dokončenou partii od 20 otázek a 12 správných můžeš získat 15 XP, od 50 a 30 správných až 30 XP + 1 korunku (serverové limity).</p>
+      <div class="endless-history-layout">
+        <section class="endless-list-card" aria-labelledby="endlessLeaderboardTitle">
+          <h3 id="endlessLeaderboardTitle">🏆 Žebříček dokončených partií</h3>
+          <ol id="endlessLeaderboard" class="endless-leaderboard"></ol>
+        </section>
+        <section class="endless-list-card" aria-labelledby="endlessHistoryTitle">
+          <h3 id="endlessHistoryTitle">💾 Moje partie</h3>
+          <div id="endlessHistory" class="endless-history"></div>
+        </section>
+      </div>
+    </div>
+    <div id="endlessPlay" class="hidden">
+      <div class="endless-hud">
+        <div><small id="endlessStageLabel">Otázka</small><strong id="endlessStage">1</strong></div>
+        <div><small id="endlessScoreLabel">Body</small><strong id="endlessScore">0</strong></div>
+        <div><small id="endlessStreakLabel">🔥 Série</small><strong id="endlessStreak">0</strong></div>
+        <div><small id="endlessAccuracyLabel">Úspěšnost</small><strong id="endlessAccuracy">—</strong></div>
+      </div>
+      <div class="endless-rating">
+        <span id="endlessDifficulty">🟢 Snadné</span>
+        <span id="endlessRatingLabel">Adaptivní obtížnost</span>
+        <div class="endless-rating-track" role="progressbar" aria-label="Aktuální obtížnost" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" id="endlessRatingTrack">
+          <span id="endlessRatingFill"></span>
+        </div>
+      </div>
+      <div id="endlessQuestionArea">
+        <div class="endless-question-header">
+          <span id="endlessCategoryHint">🎮 Videohry</span>
+          <span id="endlessQuestionLevel">🟢 Snadné</span>
+        </div>
+        <h3 id="endlessPrompt">Načítám otázku…</h3>
+        <p id="endlessClue" class="endless-clue"></p>
+        <div id="endlessVisual" class="endless-visual hidden"></div>
+        <a id="endlessSource" class="endless-source hidden" href="https://commons.wikimedia.org/" rel="noopener noreferrer" target="_blank">Zdroj obrázku</a>
+        <div id="endlessOptions" class="endless-options"></div>
+        <p id="endlessFeedback" class="endless-feedback hidden" role="status" aria-live="polite"></p>
+        <div class="endless-actions">
+          <button id="endlessRetry" type="button" class="secondary hidden">↻ Opakovat požadavek</button>
+          <button id="endlessNext" type="button" class="primary hidden">Další otázka →</button>
+        </div>
+      </div>
+      <div class="endless-control-footer">
+        <button type="button" id="endlessSaveExit" class="secondary">💾 Uložit a odejít</button>
+        <button type="button" id="endlessFinish" class="secondary endless-finish">🏁 Ukončit a vyhodnotit</button>
+      </div>
+      <div id="endlessFinal" class="endless-final hidden">
+        <span id="endlessFinalIcon" class="endless-final-icon" aria-hidden="true">🏆</span>
+        <h3 id="endlessFinalTitle">Partie dokončena!</h3>
+        <p id="endlessFinalSummary">Výsledek bezpečně ověřil server.</p>
+        <p id="endlessReward" class="endless-reward"></p>
+        <button type="button" id="endlessAgain" class="primary">♾️ Zpět k výběru kategorií</button>
+      </div>
+    </div>
+  </section>
+
   <section id="resultPanel" class="panel hidden">
     <div id="resultArt" class="result-art" aria-hidden="true">🏆</div>
     <div class="label" id="resultLabel">OVĚŘENÝ VÝSLEDEK</div>
@@ -1510,6 +1584,7 @@
 <script src="./quizoria/general.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/survival-effects.js?v=quizoria-survival-effects-211-20261110a"></script>
 <script src="./quizoria/survival.js?v=quizoria-new-run-212-20261110a"></script>
+<script src="./quizoria/endless.js?v=quizoria-endless-22-20261110a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
@@ -2478,6 +2553,7 @@
     window.QUIZORIA_MUSIC?.setLocale(lang);
     window.QUIZORIA_GENERAL?.setLocale(lang);
     window.QUIZORIA_SURVIVAL?.setLocale(lang);
+    window.QUIZORIA_ENDLESS?.setLocale(lang);
     window.QUIZORIA_PROGRESS?.setLocale(lang);
     window.QUIZORIA_COACH?.setLocale(lang);
     $('lang').textContent=lang==='cs'?'EN':'CZ';
@@ -2690,6 +2766,7 @@
     window.QUIZORIA_MUSIC?.connect?.(api,me);
     window.QUIZORIA_GENERAL?.connect?.(api,me);
     window.QUIZORIA_SURVIVAL?.connect?.(api,me);
+    window.QUIZORIA_ENDLESS?.connect?.(api,me);
     window.QUIZORIA_PROGRESS?.connect?.(api,me);
     // Same secured friend-only mini chat in the standalone game.
     window.FOXEY_MINI_CHAT?.connect?.(api,me);
@@ -2718,6 +2795,7 @@
     window.QUIZORIA_MUSIC?.afterAuth?.();
     window.QUIZORIA_GENERAL?.afterAuth?.();
     window.QUIZORIA_SURVIVAL?.afterAuth?.();
+    window.QUIZORIA_ENDLESS?.afterAuth?.();
     try{
       const urlParams=new URL(window.location.href).searchParams;
       if(urlParams.get('view')==='challenges')showChallengesAfterAuth=true;
@@ -3995,6 +4073,7 @@
   $('quizoriaMusicFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_MUSIC?.openCategory?.());
   $('quizoriaGeneralFeatureLaunch')?.addEventListener('click',()=>window.QUIZORIA_GENERAL?.openCategory?.());
   $('quizoriaSurvivalLaunch')?.addEventListener('click',()=>window.QUIZORIA_SURVIVAL?.open?.());
+  $('quizoriaEndlessLaunch')?.addEventListener('click',()=>window.QUIZORIA_ENDLESS?.open?.());
   window.QUIZORIA_PROGRESS?.setAfterClaim?.(()=>{
     void refreshLiveRewards();
     void refreshGameAchievements();
