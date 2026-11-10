@@ -393,6 +393,7 @@
 <link rel="stylesheet" href="./quizoria/polish.css?v=quizoria-polish-20261109a">
 <link rel="stylesheet" href="./quizoria/coach.css?v=quizoria-20-20261109b">
 <link rel="stylesheet" href="./quizoria/survival.css?v=quizoria-survival-21-20261109b">
+<link rel="stylesheet" href="./quizoria/survival-effects.css?v=quizoria-survival-effects-211-20261110a">
 </head>
 <body>
 <main class="wrap">
@@ -1298,6 +1299,14 @@
       <p id="survivalIntro">Tři životy, otázky od snadných po těžké a rekord na 60 otázek. Každá odpověď se ukládá na server.</p>
     </div>
     <p id="survivalStatus" class="survival-status" role="status" aria-live="polite"></p>
+    <div class="survival-fx-toast hidden" id="survivalFxToast"
+      role="status" aria-live="polite" aria-atomic="true">
+      <span class="svfx-toast-symbol" id="survivalFxIcon" aria-hidden="true">🔥</span>
+      <span class="svfx-toast-copy">
+        <strong id="survivalFxTitle">Skvělá série!</strong>
+        <small id="survivalFxSubtitle">Ověřený herní úspěch</small>
+      </span>
+    </div>
     <div id="survivalLobby">
       <h3 id="survivalCategoryTitle">🎮 Vyber tematický svět</h3>
       <div id="survivalCategories" class="survival-categories" role="group" aria-label="Kategorie Přežití"></div>
@@ -1352,6 +1361,7 @@
         <div class="survival-final-icon" id="survivalFinalIcon" aria-hidden="true">🏆</div>
         <h3 id="survivalFinalTitle">Konec Přežití</h3>
         <p id="survivalFinalSummary">Výsledek byl uložen na server.</p>
+        <p id="survivalNewRecord" class="survival-new-record hidden" role="status" aria-live="polite"></p>
         <p id="survivalReward" class="survival-reward"></p>
         <button id="survivalPlayAgain" type="button" class="primary">🎮 Znovu do výběru kategorií</button>
       </div>
@@ -1497,7 +1507,8 @@
 <script src="./quizoria/movies.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/music.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/general.js?v=quizoria-general-20261109b"></script>
-<script src="./quizoria/survival.js?v=quizoria-survival-21-20261109b"></script>
+<script src="./quizoria/survival-effects.js?v=quizoria-survival-effects-211-20261110a"></script>
+<script src="./quizoria/survival.js?v=quizoria-survival-effects-211-20261110a"></script>
 <link rel="stylesheet" href="./arcade/mini-chat-standalone.css?v=standalone-launch-20261109a">
 <script src="./arcade/mini-chat.js?v=standalone-launch-20261109a"></script>
 <script>
