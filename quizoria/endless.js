@@ -40,6 +40,11 @@ cs:{
  credited:'🎁 Připsáno:',limit:'🎁 Limit odměn byl dosažen; rekord zůstává uložený.',
  noActivation:'🎁 Odměny nejsou aktivované; rekord je uložený.',
  threshold:'🎁 Pro odměnu potřebuješ alespoň 20 otázek a 12 správných.',
+ milestoneFirst:'🎯 První milník · 15 XP',milestoneSecond:'👑 Druhý milník · 30 XP + 1 korunka',
+ milestoneComplete:'🏆 Oba odměnové milníky splněny',
+ milestoneCounts:(stage,goal,correct,needed)=>stage+'/'+goal+' otázek · '+correct+'/'+needed+' správně',
+ milestoneHelp:'Odměnu server vyhodnotí a případně připíše až při ukončení partie. Platí aktivace a hodinové/denní limity.',
+ milestoneReady:'Oba milníky splněny! Odměnu musí server potvrdit při ukončení.',
  source:'Zdroj obrázku',unit:'bodů',answered:'odpovědí'
 },
 en:{
@@ -66,6 +71,11 @@ en:{
  credited:'🎁 Credited:',limit:'🎁 Reward limit reached; your record still counts.',
  noActivation:'🎁 Rewards are not activated; your record still counts.',
  threshold:'🎁 Answer at least 20 questions with 12 correct to earn a reward.',
+ milestoneFirst:'🎯 First milestone · 15 XP',milestoneSecond:'👑 Second milestone · 30 XP + 1 Crown',
+ milestoneComplete:'🏆 Both reward milestones achieved',
+ milestoneCounts:(stage,goal,correct,needed)=>stage+'/'+goal+' questions · '+correct+'/'+needed+' correct',
+ milestoneHelp:'The server evaluates and may credit rewards only when you finish the run. Activation and hourly/daily limits apply.',
+ milestoneReady:'Both milestones met! Rewards still require verification when you finish.',
  source:'Image source',unit:'points',answered:'answers'
 }
 };
@@ -189,11 +199,29 @@ function renderQuestion(){
  hide('endlessRetry',!pending);hide('endlessNext',!advance);
  $('endlessRetry').disabled=busy;$('endlessNext').disabled=busy;
 }
+function renderMilestone(){
+ if(!run)return;
+ const stage=safe(run.stage),correct=safe(run.correct);
+ const first=stage>=20&&correct>=12,second=stage>=50&&correct>=30;
+ const goal=second?null:first?{stage:50,correct:30}:{stage:20,correct:12};
+ const progress=goal?Math.min(100,Math.round(100*Math.min(stage/goal.stage,
+    correct/goal.correct))):100;
+ $('endlessMilestoneTitle').textContent=second?t('milestoneComplete'):
+   first?t('milestoneSecond'):t('milestoneFirst');
+ $('endlessMilestoneCounts').textContent=t('milestoneCounts')(
+   stage,goal?.stage||50,correct,goal?.correct||30);
+ $('endlessMilestoneFill').style.width=progress+'%';
+ $('endlessMilestoneTrack').setAttribute('aria-valuenow',String(progress));
+ $('endlessMilestone').classList.toggle('is-ready',second);
+ $('endlessMilestoneHelp').textContent=second?t('milestoneReady'):t('milestoneHelp');
+}
 function renderPlay(){
  if(!run)return;
  hide('endlessLobby',true);hide('endlessPlay',false);
  hide('endlessFinal',!run.finished);hide('endlessQuestionArea',run.finished);
  hide('endlessSaveExit',run.finished);hide('endlessFinish',run.finished);
+ hide('endlessMilestone',run.finished);
+ renderMilestone();
  $('endlessStage').textContent=fmt(safe(run.stage)+(run.finished?0:1));
  $('endlessScore').textContent=fmt(safe(run.score));
  const multiplier=Number.isSafeInteger(run.multiplier)&&run.multiplier>=1&&run.multiplier<=5
