@@ -1,0 +1,535 @@
+{
+  "version": "2.3",
+  "category": "video-games",
+  "questions": [
+    {
+      "slug": "sleepingdogs",
+      "title": "Sleeping Dogs",
+      "difficulty": "easy",
+      "genre": "akční adventura",
+      "clue": [
+        "Policista v utajení proniká do triád v otevřeném Hongkongu.",
+        "An undercover cop infiltrates the triads in an open-world Hong Kong."
+      ],
+      "hint": [
+        "Příběh sleduje Weie Shena.",
+        "The story follows Wei Shen."
+      ],
+      "detail": [
+        "Městská akce s bojovým uměním, jízdou a policií.",
+        "Urban action with martial arts, driving and police work."
+      ],
+      "wrong": [
+        "Watch Dogs",
+        "Saints Row: The Third",
+        "Grand Theft Auto IV"
+      ]
+    },
+    {
+      "slug": "lanoire",
+      "title": "L.A. Noire",
+      "difficulty": "easy",
+      "genre": "detektivní adventura",
+      "clue": [
+        "Detektiv Cole Phelps vyslýchá svědky v Los Angeles čtyřicátých let.",
+        "Detective Cole Phelps interrogates witnesses in 1940s Los Angeles."
+      ],
+      "hint": [
+        "Vyšetřování vyžaduje čtení výrazů obličeje.",
+        "Investigations involve reading facial expressions."
+      ],
+      "detail": [
+        "Noirová detektivka od Team Bondi vydaná Rockstar Games.",
+        "A noir detective game by Team Bondi published by Rockstar Games."
+      ],
+      "wrong": [
+        "Mafia II",
+        "The Saboteur",
+        "Heavy Rain"
+      ]
+    },
+    {
+      "slug": "alienisolation",
+      "title": "Alien: Isolation",
+      "difficulty": "easy",
+      "genre": "survival horor",
+      "clue": [
+        "Amanda Ripley se ukrývá před xenomorfem na stanici Sevastopol.",
+        "Amanda Ripley hides from a xenomorph aboard Sevastopol station."
+      ],
+      "hint": [
+        "Vetřelec reaguje na hluk a pohyb.",
+        "The alien responds to noise and movement."
+      ],
+      "detail": [
+        "Sci-fi horor z pohledu první osoby v univerzu filmového Vetřelce.",
+        "A first-person sci-fi horror set in the Alien movie universe."
+      ],
+      "wrong": [
+        "Dead Space",
+        "SOMA",
+        "The Evil Within"
+      ]
+    },
+    {
+      "slug": "dishonored",
+      "title": "Dishonored",
+      "difficulty": "easy",
+      "genre": "stealth akce",
+      "clue": [
+        "Corvo Attano využívá nadpřirozené schopnosti ve městě Dunwall.",
+        "Corvo Attano uses supernatural abilities in the city of Dunwall."
+      ],
+      "hint": [
+        "Věrnost císařovně a teleportace Blink.",
+        "Loyalty to an empress and the Blink teleport ability."
+      ],
+      "detail": [
+        "Stealth hra od Arkane Studios, ve které záleží na míře chaosu.",
+        "A stealth game by Arkane Studios whose chaos system tracks your actions."
+      ],
+      "wrong": [
+        "Thief",
+        "Deus Ex: Human Revolution",
+        "BioShock Infinite"
+      ]
+    },
+    {
+      "slug": "subnautica",
+      "title": "Subnautica",
+      "difficulty": "easy",
+      "genre": "survival adventura",
+      "clue": [
+        "Přeživší z kosmické lodi prozkoumává oceán planety 4546B.",
+        "A spaceship survivor explores the ocean planet 4546B."
+      ],
+      "hint": [
+        "Ponorka Cyclops a hlubinští leviatani.",
+        "Cyclops submarine and deep-sea leviathans."
+      ],
+      "detail": [
+        "Podvodní survival s výrobou vybavení a stavbou základen.",
+        "Underwater survival with crafting and base building."
+      ],
+      "wrong": [
+        "Raft",
+        "Stranded Deep",
+        "The Forest"
+      ]
+    },
+    {
+      "slug": "firewatch",
+      "title": "Firewatch",
+      "difficulty": "easy",
+      "genre": "příběhová adventura",
+      "clue": [
+        "Henry pracuje jako požární hlídač v americké divočině.",
+        "Henry works as a fire lookout in the American wilderness."
+      ],
+      "hint": [
+        "Důležitá je radiová komunikace s Delilah.",
+        "Radio communication with Delilah is central."
+      ],
+      "detail": [
+        "Příběhová hra studia Campo Santo ve Wyomingu.",
+        "A narrative game by Campo Santo set in Wyoming."
+      ],
+      "wrong": [
+        "What Remains of Edith Finch",
+        "Gone Home",
+        "Everybody's Gone to the Rapture"
+      ]
+    },
+    {
+      "slug": "deathstranding",
+      "title": "Death Stranding",
+      "difficulty": "easy",
+      "genre": "akční adventura",
+      "clue": [
+        "Sam Porter Bridges propojuje osady rozvozem zásilek v rozpadlé Americe.",
+        "Sam Porter Bridges reconnects settlements by delivering cargo in fractured America."
+      ],
+      "hint": [
+        "Důležitá je rovnováha nákladu a stavba cest.",
+        "Balancing cargo and building roads are important."
+      ],
+      "detail": [
+        "Hra Hidea Kodžimy se systémem propojení hráčů napříč světem.",
+        "A Hideo Kojima game with indirect connections between players."
+      ],
+      "wrong": [
+        "Metal Gear Solid V: The Phantom Pain",
+        "Days Gone",
+        "Horizon Zero Dawn"
+      ]
+    },
+    {
+      "slug": "enslaved",
+      "title": "Enslaved: Odyssey to the West",
+      "difficulty": "medium",
+      "genre": "akční adventura",
+      "clue": [
+        "Monkey a Trip utíkají ze zajetí v postapokalyptickém světě.",
+        "Monkey and Trip escape captivity in a post-apocalyptic world."
+      ],
+      "hint": [
+        "Dvojici propojuje elektronická čelenka.",
+        "An electronic headband binds the pair together."
+      ],
+      "detail": [
+        "Akční dobrodružství Ninja Theory inspirované Cestou na západ.",
+        "Ninja Theory action adventure inspired by Journey to the West."
+      ],
+      "wrong": [
+        "Prince of Persia (2008)",
+        "Darksiders",
+        "Heavenly Sword"
+      ]
+    },
+    {
+      "slug": "control",
+      "title": "Control",
+      "difficulty": "medium",
+      "genre": "akční adventura",
+      "clue": [
+        "Jesse Faden hledá bratra v nadpřirozené budově Oldest House.",
+        "Jesse Faden searches for her brother in the supernatural Oldest House."
+      ],
+      "hint": [
+        "Federální úřad kontroluje paranormální jevy.",
+        "A federal agency handles paranormal phenomena."
+      ],
+      "detail": [
+        "Remedy hra s telekinezí a proměnlivou služební zbraní.",
+        "A Remedy game with telekinesis and a transforming Service Weapon."
+      ],
+      "wrong": [
+        "Quantum Break",
+        "Alan Wake",
+        "Returnal"
+      ]
+    },
+    {
+      "slug": "prey2017",
+      "title": "Prey (2017)",
+      "difficulty": "medium",
+      "genre": "immersive sim",
+      "clue": [
+        "Morgan Yu se probouzí na stanici Talos I plné bytostí Typhon.",
+        "Morgan Yu wakes aboard Talos I, overrun by Typhon creatures."
+      ],
+      "hint": [
+        "Mimici napodobují běžné předměty.",
+        "Mimics disguise themselves as everyday objects."
+      ],
+      "detail": [
+        "Immersive sim od Arkane se schopností proměny v předměty.",
+        "An Arkane immersive sim with the ability to mimic objects."
+      ],
+      "wrong": [
+        "System Shock",
+        "BioShock",
+        "Dead Space"
+      ]
+    },
+    {
+      "slug": "specops",
+      "title": "Spec Ops: The Line",
+      "difficulty": "medium",
+      "genre": "válečná střílečka",
+      "clue": [
+        "Kapitán Walker vede tým skrz katastrofou zničenou Dubaj.",
+        "Captain Walker leads a squad through a disaster-stricken Dubai."
+      ],
+      "hint": [
+        "Písečné bouře a morální rozhodnutí.",
+        "Sandstorms and moral decisions."
+      ],
+      "detail": [
+        "Psychologicky laděná vojenská TPS od Yager Development.",
+        "A psychological military third-person shooter by Yager Development."
+      ],
+      "wrong": [
+        "Call of Duty: Modern Warfare 3",
+        "Battlefield 3",
+        "Ghost Recon: Future Soldier"
+      ]
+    },
+    {
+      "slug": "plaguetale",
+      "title": "A Plague Tale: Innocence",
+      "difficulty": "medium",
+      "genre": "příběhová adventura",
+      "clue": [
+        "Amicia chrání bratra Huga před inkvizicí a hejny krys.",
+        "Amicia protects her brother Hugo from the Inquisition and swarms of rats."
+      ],
+      "hint": [
+        "Středověká Francie a morové krysy.",
+        "Medieval France and plague rats."
+      ],
+      "detail": [
+        "Příběhové dobrodružství studia Asobo z pohledu třetí osoby.",
+        "A third-person narrative adventure by Asobo Studio."
+      ],
+      "wrong": [
+        "Hellblade: Senua's Sacrifice",
+        "Brothers: A Tale of Two Sons",
+        "The Last of Us"
+      ]
+    },
+    {
+      "slug": "outerwilds",
+      "title": "Outer Wilds",
+      "difficulty": "medium",
+      "genre": "průzkumná adventura",
+      "clue": [
+        "Astronaut z druhu Hearthian zkoumá sluneční soustavu v časové smyčce.",
+        "A Hearthian astronaut explores a solar system trapped in a time loop."
+      ],
+      "hint": [
+        "Opakuje se přibližně 22 minut před zánikem slunce.",
+        "A roughly 22-minute cycle repeats before the sun's demise."
+      ],
+      "detail": [
+        "Znalost nových informací je hlavní formou postupu hrou.",
+        "Learning new information is the key form of progression."
+      ],
+      "wrong": [
+        "No Man's Sky",
+        "The Witness",
+        "The Talos Principle"
+      ]
+    },
+    {
+      "slug": "edithfinch",
+      "title": "What Remains of Edith Finch",
+      "difficulty": "medium",
+      "genre": "příběhová adventura",
+      "clue": [
+        "Edith se vrací do rodinného domu a odkrývá osudy příbuzných.",
+        "Edith returns to the family house and uncovers her relatives' fates."
+      ],
+      "hint": [
+        "Každý člen rodiny má jiný herní příběh.",
+        "Each family member has a distinct playable story."
+      ],
+      "detail": [
+        "Krátká narativní hra studia Giant Sparrow o rodině Finchových.",
+        "A short narrative game from Giant Sparrow about the Finch family."
+      ],
+      "wrong": [
+        "Gone Home",
+        "Firewatch",
+        "The Vanishing of Ethan Carter"
+      ]
+    },
+    {
+      "slug": "hellblade",
+      "title": "Hellblade: Senua's Sacrifice",
+      "difficulty": "medium",
+      "genre": "akční adventura",
+      "clue": [
+        "Keltská válečnice Senua sestupuje do světa severských mýtů.",
+        "Celtic warrior Senua descends into a world of Norse mythology."
+      ],
+      "hint": [
+        "Binaurální hlasy a psychologická témata.",
+        "Binaural voices and psychological themes."
+      ],
+      "detail": [
+        "Akční hra Ninja Theory zpracovávající psychózu.",
+        "A Ninja Theory action game exploring psychosis."
+      ],
+      "wrong": [
+        "God of War (2018)",
+        "Ryse: Son of Rome",
+        "A Plague Tale: Innocence"
+      ]
+    },
+    {
+      "slug": "obradinn",
+      "title": "Return of the Obra Dinn",
+      "difficulty": "hard",
+      "genre": "detektivní adventura",
+      "clue": [
+        "Pojišťovací vyšetřovatel odhaluje osudy posádky zmizelé lodi.",
+        "An insurance investigator reconstructs the fates of a missing ship's crew."
+      ],
+      "hint": [
+        "Kapesní hodinky umožňují vidět okamžiky úmrtí.",
+        "A pocket watch lets you witness moments of death."
+      ],
+      "detail": [
+        "Jednobarevná detektivní hra Lucase Popea s lodním seznamem.",
+        "A monochrome Lucas Pope detective game built around a ship's manifest."
+      ],
+      "wrong": [
+        "Papers, Please",
+        "The Case of the Golden Idol",
+        "Her Story"
+      ]
+    },
+    {
+      "slug": "talos",
+      "title": "The Talos Principle",
+      "difficulty": "hard",
+      "genre": "logická adventura",
+      "clue": [
+        "Android řeší prostorové hádanky v ruinách pod dohledem hlasu Elohim.",
+        "An android solves spatial puzzles among ruins under the voice of Elohim."
+      ],
+      "hint": [
+        "Lasery, spojky a filozofické texty.",
+        "Lasers, connectors and philosophical texts."
+      ],
+      "detail": [
+        "Filozofická logická hra studia Croteam.",
+        "A philosophical puzzle game by Croteam."
+      ],
+      "wrong": [
+        "The Witness",
+        "Portal 2",
+        "Q.U.B.E."
+      ]
+    },
+    {
+      "slug": "forgottencity",
+      "title": "The Forgotten City",
+      "difficulty": "hard",
+      "genre": "příběhová adventura",
+      "clue": [
+        "V římském městě časová smyčka trestá porušení Zlatého pravidla.",
+        "A time loop in a Roman city punishes violations of the Golden Rule."
+      ],
+      "hint": [
+        "Jediný hřích přivolá trest pro všechny.",
+        "One person's sin brings punishment for everyone."
+      ],
+      "detail": [
+        "Detektivní hra vycházející původně z modu pro Skyrim.",
+        "A mystery game that originated as a Skyrim mod."
+      ],
+      "wrong": [
+        "Outer Wilds",
+        "Pentiment",
+        "The Talos Principle"
+      ]
+    },
+    {
+      "slug": "stanley",
+      "title": "The Stanley Parable",
+      "difficulty": "hard",
+      "genre": "metanarativní adventura",
+      "clue": [
+        "Úředník Stanley se v kanceláři rozhoduje v rozporu s vypravěčem.",
+        "Office worker Stanley makes choices against a narrator's instructions."
+      ],
+      "hint": [
+        "Vypravěč komentuje hráčova rozhodnutí.",
+        "A narrator comments on the player's decisions."
+      ],
+      "detail": [
+        "Experimentální příběhová hra o volbě a volné vůli.",
+        "An experimental narrative game about choice and free will."
+      ],
+      "wrong": [
+        "The Beginner's Guide",
+        "Superliminal",
+        "There Is No Game: Wrong Dimension"
+      ]
+    },
+    {
+      "slug": "oxenfree",
+      "title": "Oxenfree",
+      "difficulty": "hard",
+      "genre": "příběhová adventura",
+      "clue": [
+        "Alex a přátelé se na ostrově setkávají s neobvyklými radiovými signály.",
+        "Alex and her friends encounter strange radio signals on an island."
+      ],
+      "hint": [
+        "Důležité jsou radiové frekvence a rozhovory.",
+        "Radio frequencies and conversations are central."
+      ],
+      "detail": [
+        "Nadpřirozená dospívající adventura studia Night School.",
+        "A supernatural coming-of-age adventure by Night School Studio."
+      ],
+      "wrong": [
+        "Afterparty",
+        "Night in the Woods",
+        "Kentucky Route Zero"
+      ]
+    },
+    {
+      "slug": "brothers",
+      "title": "Brothers: A Tale of Two Sons",
+      "difficulty": "hard",
+      "genre": "logická adventura",
+      "clue": [
+        "Dva bratři putují za lékem pro nemocného otce.",
+        "Two brothers journey in search of a cure for their sick father."
+      ],
+      "hint": [
+        "Každého bratra lze řídit jinou páčkou ovladače.",
+        "Each brother can be controlled by a different stick."
+      ],
+      "detail": [
+        "Příběhová kooperativně působící hra Josefa Farese.",
+        "A story-driven game directed by Josef Fares."
+      ],
+      "wrong": [
+        "A Way Out",
+        "It Takes Two",
+        "Never Alone"
+      ]
+    },
+    {
+      "slug": "tunic",
+      "title": "Tunic",
+      "difficulty": "hard",
+      "genre": "akční adventura",
+      "clue": [
+        "Malá liška zkoumá izometrický svět a skládá stránky herního manuálu.",
+        "A small fox explores an isometric world and collects manual pages."
+      ],
+      "hint": [
+        "Herní návod s tajným písmem je součástí hádanek.",
+        "An in-game manual with a mysterious script is part of the puzzles."
+      ],
+      "detail": [
+        "Indie akční adventura ovlivněná staršími hrami Zelda.",
+        "An indie action adventure influenced by classic Zelda games."
+      ],
+      "wrong": [
+        "Death's Door",
+        "Hyper Light Drifter",
+        "Hob"
+      ]
+    },
+    {
+      "slug": "witness",
+      "title": "The Witness",
+      "difficulty": "hard",
+      "genre": "logická adventura",
+      "clue": [
+        "Hráč řeší stovky kreslených čárových hlavolamů na tajemném ostrově.",
+        "A player solves hundreds of line-drawing puzzles on a mysterious island."
+      ],
+      "hint": [
+        "Panely propojují body jedinou čarou.",
+        "Panels connect points with a single line."
+      ],
+      "detail": [
+        "Logická hra Jonathana Blowa s otevřeným ostrovem.",
+        "An open-island puzzle game by Jonathan Blow."
+      ],
+      "wrong": [
+        "The Talos Principle",
+        "Myst",
+        "The Room"
+      ]
+    }
+  ]
+}
