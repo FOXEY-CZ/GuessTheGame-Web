@@ -136,7 +136,7 @@ RETURNS jsonb LANGUAGE plpgsql STABLE SET search_path=''
 AS $fn$
 DECLARE reward jsonb; public_q jsonb;
 BEGIN
- SELECT pg_catalog.jsonb_build_object('xp',xp,'crowns',v_crowns,'reason',reason)
+ SELECT pg_catalog.jsonb_build_object('xp',xp,'crowns',crowns,'reason',reason)
  INTO reward FROM arcade_private.quizoria_endless_rewards WHERE run_id=p_run.run_id;
  IF NOT p_run.finished THEN
   -- Strip private question_key and correct answer BEFORE returning the RPC.
