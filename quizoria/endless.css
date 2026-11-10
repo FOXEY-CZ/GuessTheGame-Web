@@ -154,3 +154,24 @@
 html.arcade-motion-minimal #quizoriaEndlessPanel *,
 html.arcade-motion-minimal #quizoriaEndlessPanel *:before,
 html.arcade-motion-minimal #quizoriaEndlessPanel *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+
+/* Endless 2.2.1 — in-run, server-sourced reward milestone progress. */
+.endless-milestone{
+ margin:13px 0 18px;padding:14px 16px;border:1px solid #7e86c0;
+ border-radius:15px;background:linear-gradient(125deg,#26365a,#202c4e 65%,#223e54);
+ box-shadow:inset 0 1px #ffffff0c;
+}
+.endless-milestone-head{display:flex;align-items:center;justify-content:space-between;gap:8px 14px;flex-wrap:wrap;margin-bottom:11px}
+.endless-milestone-head strong{font-size:.85rem;line-height:1.4;color:#f7eeff;letter-spacing:-.01em}
+.endless-milestone-head span{font-size:.73rem;line-height:1.45;color:#c7dcf1;font-variant-numeric:tabular-nums}
+.endless-milestone-track{height:10px;background:#0d1c33;border:1px solid #546e9a;border-radius:999px;overflow:hidden;margin:0 0 9px}
+.endless-milestone-track>span{display:block;height:100%;width:0%;border-radius:inherit;
+ background:linear-gradient(90deg,#58d8de,#91a8fa,#d2b5ff);transition:width .22s ease}
+.endless-milestone small{font-size:.69rem;line-height:1.5;color:#a9c2da;display:block}
+.endless-milestone.is-ready{border-color:#d9b976;
+ background:linear-gradient(120deg,#403b54,#35445a);box-shadow:0 0 26px #ecca6d2e}
+.endless-milestone.is-ready .endless-milestone-track>span{background:linear-gradient(90deg,#87d8b2,#e4d68c)}
+@media(max-width:560px){.endless-milestone{padding:12px;margin:11px 0 15px}
+ .endless-milestone-head strong{font-size:.81rem}.endless-milestone-head span{font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){.endless-milestone-track>span{transition:none!important}}
+html.arcade-motion-minimal .endless-milestone-track>span{transition:none!important}
