@@ -1,0 +1,156 @@
+/* Quizoria 2.2 — Endless Quiz; server-owned results, client-only presentation. */
+#quizoriaEndlessPanel{--e-line:#5b6da2;--e-accent:#8df5ea;--e-purple:#bda5ff;
+ max-width:1060px;min-width:0;margin:14px auto 22px;
+ background:radial-gradient(circle at 95% -3%,#6c54bf3c,transparent 48%),
+ linear-gradient(145deg,#1b2851,#182846 65%,#173d4b);
+ border:1px solid #7969b9;border-radius:22px;
+ box-shadow:0 18px 55px #03091975}
+.quizoria-endless-feature{background:linear-gradient(135deg,#26265b,#1b3a5a)!important;border:1px solid #807ce6!important}
+.quizoria-endless-feature .mode-icon{font-size:2rem;filter:drop-shadow(0 0 13px #b1a2ff)}
+.quizoria-endless-feature .quizoria-mode-badge.live{color:#d7fffa;border:1px solid #4dc9b0;background:#204a56}
+.quizoria-endless-feature .quizoria-endless-launch{width:100%;margin-top:11px;min-height:44px;
+ border:1px solid #b0a0ed;border-radius:11px;
+ background:linear-gradient(110deg,#6751b2,#356996);color:#fff;font-weight:850}
+.quizoria-endless-feature .quizoria-endless-launch:hover{background:linear-gradient(115deg,#876dd3,#4788ae)}
+.endless-hero{position:relative;overflow:hidden;isolation:isolate;margin:0 0 16px;padding:clamp(17px,3vw,27px);
+ border-radius:18px;border:1px solid #867bb5;
+ background:linear-gradient(120deg,#39306c,#26395b 65%,#19545a)}
+.endless-hero:before{content:"∞";position:absolute;right:26px;top:-44px;
+ font-size:clamp(160px,22vw,255px);font-weight:900;line-height:1;color:#c5e3ff13;z-index:-1;pointer-events:none}
+.endless-hero button{min-height:41px;padding:9px 13px;font-size:.78rem;border-radius:11px;
+ background:#2e325b;color:#e9f3ff;border:1px solid #6f7db4;margin:0 0 12px}
+.endless-eyebrow{display:block;font-size:.7rem;font-weight:900;color:#91f4e8;letter-spacing:.12em}
+.endless-hero h2{margin:7px 0;font-size:clamp(1.55rem,4vw,2.3rem);color:#fff;letter-spacing:-.035em}
+.endless-hero p{max-width:700px;margin:0;line-height:1.55;font-size:.81rem;color:#c9ddf0}
+.endless-status{margin:12px 0;color:#9dffdb;font-size:.78rem;line-height:1.5;overflow-wrap:anywhere}
+.endless-status:empty{display:none}.endless-status.error{color:#ffbac5}
+#endlessLobby>h3{font-size:1.15rem;margin:18px 0 11px}
+.endless-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.endless-category{display:grid;place-items:center;text-align:center;min-height:58px;
+ padding:10px 8px;font-size:.81rem;font-weight:800;line-height:1.4;
+ border:1px solid #5a709b;border-radius:12px;color:#e0eeff;
+ background:linear-gradient(130deg,#233656,#192942);cursor:pointer}
+.endless-category:hover:not(:disabled){background:#324570;border-color:#9ba8f5}
+.endless-category.is-active{background:linear-gradient(135deg,#5051a1,#256875);border-color:#a8fff0;box-shadow:inset 0 1px #c2fff942}
+.endless-category:focus-visible,.endless-option:focus-visible{outline:2px solid #a7ffee;outline-offset:3px}
+.endless-best{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0 12px}
+.endless-best>div{display:flex;flex-direction:column;justify-content:center;gap:7px;
+ padding:13px;min-height:86px;border:1px solid #4c658e;border-radius:14px;
+ background:linear-gradient(145deg,#28395c,#172a46)}
+.endless-best span{font-size:.72rem;color:#b6c8e6;line-height:1.4;font-weight:760}
+.endless-best strong{font-size:1.5rem;color:#fff;font-variant-numeric:tabular-nums}
+.endless-lobby-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.endless-lobby-actions button{flex:1 1 225px;min-height:48px;padding:10px 13px;
+ font-size:.84rem;font-weight:840;border-radius:11px}
+#endlessStart{border:1px solid #ab9ae9;background:linear-gradient(115deg,#6f59c4,#3b6c98)}
+#endlessResume{border:1px solid #71d2c4;background:linear-gradient(115deg,#225d68,#2b6864)}
+.endless-active-hint{font-size:.76rem;line-height:1.55;padding:12px;border:1px solid #44888b;
+ border-radius:11px;background:#173e4a;color:#c2f7e9;margin:9px 0}
+.endless-rules{padding:13px 14px;font-size:.77rem;line-height:1.58;
+ color:#c7d8ef;background:#132640;border:1px solid #465e81;border-radius:12px;margin:12px 0 18px}
+.endless-history-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.endless-list-card{min-width:0;min-height:190px;padding:15px;
+ background:linear-gradient(145deg,#243654,#15243c);border:1px solid #496184;border-radius:15px}
+.endless-list-card h3{font-size:1rem;margin:0 0 12px}
+.endless-leaderboard{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.endless-leader{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:7px;
+ align-items:center;padding:9px;background:#101f37;border:1px solid #384f75;border-radius:10px;font-size:.76rem}
+.endless-leader b{color:#e8d09c}
+.endless-leader span{min-width:0;overflow-wrap:anywhere}
+.endless-leader strong{color:#b3fcec;white-space:nowrap;font-variant-numeric:tabular-nums}
+.endless-history{display:grid;gap:8px}
+.endless-saved{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 8px;
+ align-items:center;padding:10px;border:1px solid #475c82;border-radius:11px;background:#122440}
+.endless-saved strong{font-size:.82rem}
+.endless-saved span{grid-column:1;font-size:.7rem;color:#bbcbe2;line-height:1.4}
+.endless-saved button{grid-column:2;grid-row:1/3;min-height:41px;padding:8px 11px;border-radius:10px;font-size:.75rem}
+.endless-empty{color:#bdcee6;font-size:.78rem;line-height:1.52;padding:10px 0}
+.endless-hud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:8px 0 14px}
+.endless-hud>div{display:flex;flex-direction:column;justify-content:center;align-items:center;
+ gap:8px;min-height:81px;padding:10px 6px;border-radius:14px;border:1px solid #526a97;
+ background:linear-gradient(135deg,#27385b,#172740)}
+.endless-hud>div:nth-child(3){border-color:#9277aa;background:linear-gradient(145deg,#402f5c,#1e2d4c)}
+.endless-hud small{font-size:.72rem;color:#b8cee7;font-weight:820}
+.endless-hud strong{font-size:clamp(1.1rem,3vw,1.55rem);color:#f3fcff;font-variant-numeric:tabular-nums}
+.endless-rating{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center;margin:0 0 20px}
+.endless-rating>span{font-size:.77rem;font-weight:820;color:#c2e9f2}
+#endlessRatingLabel{font-size:.69rem;color:#a5bbdb;font-weight:750}
+.endless-rating-track{grid-column:1/-1;height:10px;border:1px solid #556ca2;border-radius:99px;background:#0e1c39;overflow:hidden}
+.endless-rating-track>span{display:block;width:25%;height:100%;border-radius:99px;
+ background:linear-gradient(90deg,#61cbcd,#b3a6fa,#f7b479);transition:width .25s ease}
+.endless-question-header{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:0 0 11px}
+.endless-question-header span{font-size:.78rem;font-weight:820;background:#203450;
+ color:#ddf0fc;border-radius:9px;border:1px solid #536a94;padding:8px 11px}
+.endless-question-header #endlessQuestionLevel{color:#c4ffeb;border-color:#4f9e9a}
+#endlessPrompt{color:#fff;font-size:clamp(1.16rem,3vw,1.7rem);margin:12px 0;line-height:1.4}
+.endless-clue{font-size:.84rem;color:#bfd1e9;line-height:1.54;margin:0 0 12px}
+.endless-visual{min-height:110px;max-height:330px;display:grid;place-items:center;
+ padding:12px;border-radius:15px;border:1px solid #566da3;
+ background:radial-gradient(circle,#37416a,#121d35);margin:12px 0}
+.endless-image{max-width:100%;max-height:310px;object-fit:contain}
+.endless-emoji{font-size:clamp(3rem,8vw,5.8rem);text-align:center;overflow-wrap:anywhere}
+.endless-source{display:inline-block;font-size:.7rem;color:#b4f1fa;margin:0 0 11px;text-decoration:underline;overflow-wrap:anywhere}
+.endless-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.endless-option{min-height:66px;display:flex;gap:12px;align-items:center;text-align:left;
+ padding:12px;border-radius:13px;border:1px solid #56729c;background:linear-gradient(120deg,#253a60,#182b49);
+ color:#ecf8ff;font-size:.87rem;line-height:1.43;cursor:pointer}
+.endless-option b{display:grid;place-items:center;flex:0 0 37px;width:37px;height:37px;
+ color:#fff;border-radius:10px;border:1px solid #8d9ad2;background:#414f88}
+.endless-option span{flex:1;min-width:0;overflow-wrap:anywhere}
+.endless-option:hover:not(:disabled){background:#2d4570;border-color:#a3bef9}
+.endless-option.is-correct{border-color:#5dd8b1;background:#205746}
+.endless-option.is-wrong{border-color:#f094a7;background:#562b46}
+.endless-option:disabled{cursor:default;opacity:1}
+.endless-feedback{padding:12px 15px;margin:12px 0;font-size:.86rem;line-height:1.45;font-weight:830;border-radius:11px}
+.endless-feedback.good{border:1px solid #4cb78f;color:#c7ffe6;background:#21483e}
+.endless-feedback.bad{border:1px solid #ca6b83;color:#ffd1db;background:#4c2943}
+.endless-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.endless-actions button{min-height:45px;padding:9px 18px;border-radius:11px;font-weight:850}
+.endless-control-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+ margin:20px 0 5px;padding-top:15px;border-top:1px solid #475a83}
+.endless-control-footer button{min-height:45px;padding:10px 16px;font-size:.78rem;border-radius:11px}
+#endlessSaveExit{border:1px solid #65aa9b;background:#244b55}
+#endlessFinish{border:1px solid #c49f70;background:#4d354d}
+.endless-final{text-align:center;padding:clamp(19px,4vw,36px);margin:14px 0;border-radius:18px;
+ border:1px solid #a9a0d6;background:radial-gradient(circle at 50% 0%,#715cba55,transparent 65%),#222c4d}
+.endless-final-icon{font-size:clamp(3.4rem,9vw,5rem);display:block;filter:drop-shadow(0 0 16px #dac6ff)}
+.endless-final h3{font-size:clamp(1.35rem,3vw,1.85rem);margin:12px 0}
+.endless-final p{font-size:.82rem;line-height:1.6;color:#c6d9f0}
+.endless-reward{padding:14px;background:#283659;border:1px solid #8081b3;color:#e5edff!important;border-radius:12px}
+.endless-final button{min-height:49px;padding:11px 19px;margin-top:10px;border-radius:11px}
+@media(max-width:790px){
+ .endless-categories{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .endless-history-layout{grid-template-columns:1fr}
+}
+@media(max-width:550px){
+ #quizoriaEndlessPanel{padding:12px;border-radius:16px}
+ .endless-hero{padding:16px;border-radius:14px}
+ .endless-hero h2{font-size:1.55rem}
+ .endless-hero p{font-size:.78rem}
+ .endless-categories{gap:7px}
+ .endless-category{font-size:.75rem;min-height:54px}
+ .endless-best{gap:6px}
+ .endless-best>div{padding:10px 7px;min-height:78px}
+ .endless-best span{font-size:.65rem}
+ .endless-best strong{font-size:1.1rem}
+ .endless-lobby-actions{flex-direction:column}
+ .endless-lobby-actions button{flex:1 1 auto;width:100%}
+ .endless-list-card{padding:12px;min-height:0}
+ .endless-hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .endless-hud>div{min-height:66px}
+ .endless-options{grid-template-columns:1fr;gap:8px}
+ .endless-option{min-height:58px;padding:10px}
+ .endless-option b{flex-basis:34px;width:34px;height:34px}
+ .endless-visual{max-height:260px}
+ .endless-image{max-height:230px}
+ .endless-actions button,.endless-control-footer button{width:100%}
+ .endless-leader{grid-template-columns:24px minmax(0,1fr)}
+ .endless-leader strong{grid-column:2;white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+ #quizoriaEndlessPanel *,#quizoriaEndlessPanel *:before,
+ #quizoriaEndlessPanel *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+html.arcade-motion-minimal #quizoriaEndlessPanel *,
+html.arcade-motion-minimal #quizoriaEndlessPanel *:before,
+html.arcade-motion-minimal #quizoriaEndlessPanel *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
