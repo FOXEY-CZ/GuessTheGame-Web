@@ -24,7 +24,7 @@ cs:{
  start:'♾️ Nová partie od začátku',resume:'▶️ Pokračovat v rozehrané',
  activeHint:'💾 Nová partie nesmaže rozehranou. Starou můžeš kdykoliv otevřít v Moje partie.',
  rules:'🟢 / 🟠 / 🔥 Obtížnost se automaticky mění. Za sérii získáváš více bodů. Uložení je po každé odpovědi. Pokud partii dobrovolně ukončíš po alespoň 20 otázkách a 12 správných, můžeš získat 15 XP; od 50 otázek a 30 správných až 30 XP + 1 korunku. Platí serverové limity.',
- leaderboard:'🏆 Žebříček dokončených partií',history:'💾 Moje partie',stage:'Otázka',score:'Body',streak:'🔥 Série',accuracy:'Úspěšnost',
+ leaderboard:'🏆 Žebříček dokončených partií',history:'💾 Moje partie',stage:'Otázka',score:'Body',streak:'🔥 Série / násobič',accuracy:'Úspěšnost',
  rating:'Adaptivní obtížnost',easy:'🟢 Snadné',medium:'🟠 Střední',hard:'🔥 Těžké',
  retry:'↻ Opakovat požadavek',next:'Další otázka →',correct:'✅ Správně!',wrong:'❌ Špatně.',correctWas:'Správná odpověď:',
  saved:'💾 Odpověď uložena na server.',loading:'☁️ Načítám data ze serveru…',bad:'⚠️ Server vrátil neplatnou odpověď.',
@@ -50,7 +50,7 @@ en:{
  start:'♾️ New run from question one',resume:'▶️ Resume saved run',
  activeHint:'💾 A new run will not delete the previous one. You can resume it under My saved runs.',
  rules:'🟢 / 🟠 / 🔥 Difficulty changes automatically. Correct streaks increase your points. Each answer is saved. Finish after at least 20 questions and 12 correct for up to 15 XP; after 50 questions and 30 correct, up to 30 XP + 1 crown. Server reward caps apply.',
- leaderboard:'🏆 Completed-run leaderboard',history:'💾 My saved runs',stage:'Question',score:'Score',streak:'🔥 Streak',accuracy:'Accuracy',
+ leaderboard:'🏆 Completed-run leaderboard',history:'💾 My saved runs',stage:'Question',score:'Score',streak:'🔥 Streak / multiplier',accuracy:'Accuracy',
  rating:'Adaptive difficulty',easy:'🟢 Easy',medium:'🟠 Medium',hard:'🔥 Hard',
  retry:'↻ Retry request',next:'Next question →',correct:'✅ Correct!',wrong:'❌ Incorrect.',correctWas:'Correct answer:',
  saved:'💾 Answer saved to the server.',loading:'☁️ Loading verified data…',bad:'⚠️ Invalid server response.',
@@ -196,7 +196,9 @@ function renderPlay(){
  hide('endlessSaveExit',run.finished);hide('endlessFinish',run.finished);
  $('endlessStage').textContent=fmt(safe(run.stage)+(run.finished?0:1));
  $('endlessScore').textContent=fmt(safe(run.score));
- $('endlessStreak').textContent=fmt(safe(run.streak));
+ const multiplier=Number.isSafeInteger(run.multiplier)&&run.multiplier>=1&&run.multiplier<=5
+    ?run.multiplier:1+Math.min(4,Math.floor(safe(run.streak)/3));
+ $('endlessStreak').textContent=fmt(safe(run.streak))+' · ×'+multiplier;
  $('endlessAccuracy').textContent=safe(run.stage)?Math.round(safe(run.correct)*100/safe(run.stage))+' %':'—';
  $('endlessRatingFill').style.width=safe(run.rating)+'%';
  $('endlessRatingTrack').setAttribute('aria-valuenow',String(safe(run.rating)));
