@@ -1,0 +1,16 @@
+/* Quizoria 2.3: bilingual question library release notice. */
+.quizoria-question-expansion{
+ position:relative;margin:8px 0 17px;padding:15px 18px;
+ border:1px solid #4a918b;border-radius:14px;
+ background:linear-gradient(105deg,#163d47,#263d56 55%,#302d5a);
+ box-shadow:0 7px 29px #07142b55,inset 0 1px #a6f8dd16;
+ color:#d8fff2;font-size:.81rem;line-height:1.55;font-weight:750;
+ letter-spacing:-.005em;overflow-wrap:anywhere;
+}
+.quizoria-question-expansion::before{
+ content:"";position:absolute;inset:0;width:4px;background:linear-gradient(#72dec3,#8f93f7);
+ border-radius:14px 0 0 14px;pointer-events:none;
+}
+@media(max-width:620px){
+ .quizoria-question-expansion{padding:12px 14px;font-size:.75rem;margin:7px 0 13px}
+}
