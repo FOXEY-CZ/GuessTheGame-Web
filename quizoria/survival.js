@@ -19,7 +19,8 @@ const dictionary={
  cs:{
   back:'← Zpět do Quizorie',title:'❤️ Přežití',intro:'3 životy, 60 otázek a stále těžší otázky. Po každé odpovědi se postup bezpečně uloží na server.',
   category:'🎮 Vyber tematický svět',bestStage:'🧭 Rekord otázek',bestScore:'🏆 Nejvíc bodů',bestStreak:'🔥 Nejdelší série',
-  start:'▶ Spustit novou partii',resume:'⏯ Pokračovat v rozehrané',
+  start:'▶ Nová partie od začátku',resume:'⏯ Pokračovat v rozehrané',
+  newRunHint:'ℹ️ Nová partie začne od první otázky. Původní hra zůstane v sekci Moje partie.',
   rules:'❤️ 3 životy · 🟢 1–20 snadné · 🟠 21–40 střední · 🔥 41–60 těžké. Třetí chyba končí hru. Odměny se ověřují až při skončení.',
   leaderboard:'🏆 Žebříček hráčů',history:'💾 Moje partie',question:'Otázka',hearts:'Životy',score:'Body',streak:'Série',
   correct:'✅ Správná odpověď!',wrong:'❌ Špatná odpověď.',right:'Správně bylo:',
@@ -45,7 +46,8 @@ const dictionary={
  en:{
   back:'← Back to Quizoria',title:'❤️ Survival',intro:'3 lives, 60 questions, increasing difficulty. Each answer is safely saved on the server.',
   category:'🎮 Choose your quiz world',bestStage:'🧭 Best stage',bestScore:'🏆 Highest score',bestStreak:'🔥 Longest streak',
-  start:'▶ Start a new run',resume:'⏯ Resume saved run',
+  start:'▶ Start fresh from question 1',resume:'⏯ Resume saved run',
+  newRunHint:'ℹ️ A new run starts at question one. Your previous save remains in My saved runs.',
   rules:'❤️ 3 lives · 🟢 1–20 easy · 🟠 21–40 medium · 🔥 41–60 hard. Your third mistake ends the run. Rewards are verified at the end.',
   leaderboard:'🏆 Leaderboard',history:'💾 My saved runs',question:'Question',hearts:'Lives',score:'Points',streak:'Streak',
   correct:'✅ Correct answer!',wrong:'❌ Wrong answer.',right:'Correct answer:',
@@ -138,7 +140,9 @@ function renderLobby(){
  $('survivalBestScore').textContent=best?fmt(safe(best.score)):'—';
  $('survivalBestStreak').textContent=best?fmt(safe(best.streak)):'—';
  const active=lobby?.active;
- hide('survivalResume',!isValidRun(active)||active.expired||active.finished);
+ const canResume=isValidRun(active)&&!active.expired&&!active.finished;
+ hide('survivalResume',!canResume);
+ hide('survivalNewRunHint',!canResume);
  $('survivalStart').disabled=locked||!uid;
  $('survivalResume').disabled=locked||!uid;
  const board=$('survivalLeaderboard');board.replaceChildren();
@@ -405,6 +409,7 @@ function localize(){
  for(const [id,key] of Object.entries({
   survivalBestStageLabel:'bestStage',survivalBestScoreLabel:'bestScore',
   survivalBestStreakLabel:'bestStreak',survivalStart:'start',survivalResume:'resume',
+  survivalNewRunHint:'newRunHint',
   survivalRules:'rules',survivalLeaderboardTitle:'leaderboard',
   survivalHistoryTitle:'history',survivalStageLabel:'question',
   survivalHeartsLabel:'hearts',survivalScoreLabel:'score',
