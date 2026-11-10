@@ -1,0 +1,2055 @@
+{
+  "version": "2.3",
+  "category": "music",
+  "topicCount": 32,
+  "topics": [
+    {
+      "slug": "abba",
+      "media": "world",
+      "title": [
+        "ABBA",
+        "ABBA"
+      ],
+      "visual": "🇸🇪🎤",
+      "clue": [
+        "Švédská popová čtveřice známá skladbami Waterloo a Dancing Queen.",
+        "Swedish pop quartet known for Waterloo and Dancing Queen."
+      ],
+      "source": "ABBA",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album vydala skupina ABBA v roce 1976?",
+            "Which album did ABBA release in 1976?"
+          ],
+          "correct": [
+            "Arrival",
+            "Arrival"
+          ],
+          "wrong": [
+            [
+              "Rumours",
+              "Rumours"
+            ],
+            [
+              "Hotel California",
+              "Hotel California"
+            ],
+            [
+              "Thriller",
+              "Thriller"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "S jakou písní ABBA vyhrála Eurovizi 1974?",
+            "With which song did ABBA win Eurovision in 1974?"
+          ],
+          "correct": [
+            "Waterloo",
+            "Waterloo"
+          ],
+          "wrong": [
+            [
+              "Fernando",
+              "Fernando"
+            ],
+            [
+              "Mamma Mia",
+              "Mamma Mia"
+            ],
+            [
+              "Chiquitita",
+              "Chiquitita"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "beatles",
+      "media": "world",
+      "title": [
+        "The Beatles",
+        "The Beatles"
+      ],
+      "visual": "🎸🇬🇧",
+      "clue": [
+        "Liverpoolská čtveřice zásadně ovlivnila populární hudbu.",
+        "A Liverpool quartet profoundly influenced popular music."
+      ],
+      "source": "The Beatles",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje album Beatles s přechodem přes zebru na obalu?",
+            "Which Beatles album features a zebra crossing on its cover?"
+          ],
+          "correct": [
+            "Abbey Road",
+            "Abbey Road"
+          ],
+          "wrong": [
+            [
+              "Let It Be",
+              "Let It Be"
+            ],
+            [
+              "Rubber Soul",
+              "Rubber Soul"
+            ],
+            [
+              "Revolver",
+              "Revolver"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Který člen Beatles byl bubeníkem skupiny?",
+            "Which Beatle was the group's drummer?"
+          ],
+          "correct": [
+            "Ringo Starr",
+            "Ringo Starr"
+          ],
+          "wrong": [
+            [
+              "George Harrison",
+              "George Harrison"
+            ],
+            [
+              "John Lennon",
+              "John Lennon"
+            ],
+            [
+              "Paul McCartney",
+              "Paul McCartney"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "metallica",
+      "media": "world",
+      "title": [
+        "Metallica",
+        "Metallica"
+      ],
+      "visual": "🤘⚡",
+      "clue": [
+        "Americká metalová skupina známá skladbou Enter Sandman.",
+        "An American metal band known for Enter Sandman."
+      ],
+      "source": "Metallica",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album obsahuje skladbu Battery?",
+            "Which album contains the track Battery?"
+          ],
+          "correct": [
+            "Master of Puppets",
+            "Master of Puppets"
+          ],
+          "wrong": [
+            [
+              "Ride the Lightning",
+              "Ride the Lightning"
+            ],
+            [
+              "Metallica (Black Album)",
+              "Metallica (Black Album)"
+            ],
+            [
+              "Load",
+              "Load"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je dlouholetým sólovým kytaristou Metallicy?",
+            "Who is Metallica's longtime lead guitarist?"
+          ],
+          "correct": [
+            "Kirk Hammett",
+            "Kirk Hammett"
+          ],
+          "wrong": [
+            [
+              "Dave Mustaine",
+              "Dave Mustaine"
+            ],
+            [
+              "Dimebag Darrell",
+              "Dimebag Darrell"
+            ],
+            [
+              "Tom Morello",
+              "Tom Morello"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "pinkfloyd",
+      "media": "world",
+      "title": [
+        "Pink Floyd",
+        "Pink Floyd"
+      ],
+      "visual": "🌈🌘",
+      "clue": [
+        "Britská progresivní rocková skupina s ikonickým hranolem na obalu.",
+        "British progressive rock band with an iconic prism album cover."
+      ],
+      "source": "Pink Floyd",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album má na obalu hranol rozkládající světlo?",
+            "Which album cover shows a prism splitting light?"
+          ],
+          "correct": [
+            "The Dark Side of the Moon",
+            "The Dark Side of the Moon"
+          ],
+          "wrong": [
+            [
+              "The Wall",
+              "The Wall"
+            ],
+            [
+              "Wish You Were Here",
+              "Wish You Were Here"
+            ],
+            [
+              "Animals",
+              "Animals"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Který člen Pink Floyd hrál na bicí?",
+            "Which Pink Floyd member played drums?"
+          ],
+          "correct": [
+            "Nick Mason",
+            "Nick Mason"
+          ],
+          "wrong": [
+            [
+              "Roger Waters",
+              "Roger Waters"
+            ],
+            [
+              "David Gilmour",
+              "David Gilmour"
+            ],
+            [
+              "Richard Wright",
+              "Richard Wright"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "rollingstones",
+      "media": "world",
+      "title": [
+        "The Rolling Stones",
+        "The Rolling Stones"
+      ],
+      "visual": "👅🎸",
+      "clue": [
+        "Legendární britská rocková kapela s logem vyplazeného jazyka.",
+        "Legendary British rock band with a tongue-and-lips logo."
+      ],
+      "source": "The Rolling Stones",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Rolling Stones obsahuje skladbu Brown Sugar?",
+            "Which Rolling Stones album includes Brown Sugar?"
+          ],
+          "correct": [
+            "Sticky Fingers",
+            "Sticky Fingers"
+          ],
+          "wrong": [
+            [
+              "Exile on Main St.",
+              "Exile on Main St."
+            ],
+            [
+              "Let It Bleed",
+              "Let It Bleed"
+            ],
+            [
+              "Beggars Banquet",
+              "Beggars Banquet"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je dlouholetým hlavním zpěvákem Rolling Stones?",
+            "Who is the Rolling Stones' longtime lead singer?"
+          ],
+          "correct": [
+            "Mick Jagger",
+            "Mick Jagger"
+          ],
+          "wrong": [
+            [
+              "Keith Richards",
+              "Keith Richards"
+            ],
+            [
+              "Charlie Watts",
+              "Charlie Watts"
+            ],
+            [
+              "Ronnie Wood",
+              "Ronnie Wood"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "radiohead",
+      "media": "world",
+      "title": [
+        "Radiohead",
+        "Radiohead"
+      ],
+      "visual": "📻🌀",
+      "clue": [
+        "Britská alternativní kapela známá skladbami Creep a Karma Police.",
+        "British alternative band known for Creep and Karma Police."
+      ],
+      "source": "Radiohead",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu vyšla skladba Paranoid Android?",
+            "Which album includes Paranoid Android?"
+          ],
+          "correct": [
+            "OK Computer",
+            "OK Computer"
+          ],
+          "wrong": [
+            [
+              "Kid A",
+              "Kid A"
+            ],
+            [
+              "The Bends",
+              "The Bends"
+            ],
+            [
+              "In Rainbows",
+              "In Rainbows"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je zpěvákem Radiohead?",
+            "Who is the singer of Radiohead?"
+          ],
+          "correct": [
+            "Thom Yorke",
+            "Thom Yorke"
+          ],
+          "wrong": [
+            [
+              "Jonny Greenwood",
+              "Jonny Greenwood"
+            ],
+            [
+              "Chris Martin",
+              "Chris Martin"
+            ],
+            [
+              "Matt Bellamy",
+              "Matt Bellamy"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "depeche",
+      "media": "world",
+      "title": [
+        "Depeche Mode",
+        "Depeche Mode"
+      ],
+      "visual": "🎹🖤",
+      "clue": [
+        "Britská elektronická kapela s hity Enjoy the Silence a Personal Jesus.",
+        "British electronic band known for Enjoy the Silence and Personal Jesus."
+      ],
+      "source": "Depeche Mode",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu jsou Enjoy the Silence i Personal Jesus?",
+            "Which album features both Enjoy the Silence and Personal Jesus?"
+          ],
+          "correct": [
+            "Violator",
+            "Violator"
+          ],
+          "wrong": [
+            [
+              "Music for the Masses",
+              "Music for the Masses"
+            ],
+            [
+              "Ultra",
+              "Ultra"
+            ],
+            [
+              "Songs of Faith and Devotion",
+              "Songs of Faith and Devotion"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je zpěvákem Depeche Mode?",
+            "Who is the lead singer of Depeche Mode?"
+          ],
+          "correct": [
+            "Dave Gahan",
+            "Dave Gahan"
+          ],
+          "wrong": [
+            [
+              "Martin Gore",
+              "Martin Gore"
+            ],
+            [
+              "Andy Fletcher",
+              "Andy Fletcher"
+            ],
+            [
+              "Vince Clarke",
+              "Vince Clarke"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "muse",
+      "media": "world",
+      "title": [
+        "Muse",
+        "Muse"
+      ],
+      "visual": "🎸🚀",
+      "clue": [
+        "Britské rockové trio kombinuje klavír, kytary a sci-fi témata.",
+        "A British rock trio combines piano, guitars and sci-fi themes."
+      ],
+      "source": "Muse",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Muse obsahuje skladbu Supermassive Black Hole?",
+            "Which Muse album includes Supermassive Black Hole?"
+          ],
+          "correct": [
+            "Black Holes and Revelations",
+            "Black Holes and Revelations"
+          ],
+          "wrong": [
+            [
+              "Origin of Symmetry",
+              "Origin of Symmetry"
+            ],
+            [
+              "Absolution",
+              "Absolution"
+            ],
+            [
+              "Drones",
+              "Drones"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je zpěvák a kytarista Muse?",
+            "Who is Muse's lead singer and guitarist?"
+          ],
+          "correct": [
+            "Matt Bellamy",
+            "Matt Bellamy"
+          ],
+          "wrong": [
+            [
+              "Chris Wolstenholme",
+              "Chris Wolstenholme"
+            ],
+            [
+              "Dom Howard",
+              "Dom Howard"
+            ],
+            [
+              "Brandon Flowers",
+              "Brandon Flowers"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "greenday",
+      "media": "world",
+      "title": [
+        "Green Day",
+        "Green Day"
+      ],
+      "visual": "💚🎸",
+      "clue": [
+        "Punkrocková kapela se skladbou Boulevard of Broken Dreams.",
+        "Punk rock band known for Boulevard of Broken Dreams."
+      ],
+      "source": "Green Day",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Green Day vyšlo jako rocková opera v roce 2004?",
+            "Which Green Day album was released as a rock opera in 2004?"
+          ],
+          "correct": [
+            "American Idiot",
+            "American Idiot"
+          ],
+          "wrong": [
+            [
+              "Dookie",
+              "Dookie"
+            ],
+            [
+              "Nimrod",
+              "Nimrod"
+            ],
+            [
+              "Warning",
+              "Warning"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je hlavním zpěvákem Green Day?",
+            "Who is Green Day's lead singer?"
+          ],
+          "correct": [
+            "Billie Joe Armstrong",
+            "Billie Joe Armstrong"
+          ],
+          "wrong": [
+            [
+              "Mike Dirnt",
+              "Mike Dirnt"
+            ],
+            [
+              "Tré Cool",
+              "Tré Cool"
+            ],
+            [
+              "Mark Hoppus",
+              "Mark Hoppus"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "blink182",
+      "media": "world",
+      "title": [
+        "blink-182",
+        "blink-182"
+      ],
+      "visual": "🛹🥁",
+      "clue": [
+        "Kalifornská poppunková kapela se skladbami All the Small Things a What's My Age Again?.",
+        "Californian pop-punk band known for All the Small Things and What's My Age Again?."
+      ],
+      "source": "blink-182",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu blink-182 vyšla skladba All the Small Things?",
+            "Which blink-182 album features All the Small Things?"
+          ],
+          "correct": [
+            "Enema of the State",
+            "Enema of the State"
+          ],
+          "wrong": [
+            [
+              "Dude Ranch",
+              "Dude Ranch"
+            ],
+            [
+              "Take Off Your Pants and Jacket",
+              "Take Off Your Pants and Jacket"
+            ],
+            [
+              "Neighborhoods",
+              "Neighborhoods"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je bubeník blink-182, známý i ze spoluprací s rappery?",
+            "Who is the blink-182 drummer also known for collaborations with rappers?"
+          ],
+          "correct": [
+            "Travis Barker",
+            "Travis Barker"
+          ],
+          "wrong": [
+            [
+              "Tom DeLonge",
+              "Tom DeLonge"
+            ],
+            [
+              "Mark Hoppus",
+              "Mark Hoppus"
+            ],
+            [
+              "Chad Smith",
+              "Chad Smith"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "gorillaz",
+      "media": "world",
+      "title": [
+        "Gorillaz",
+        "Gorillaz"
+      ],
+      "visual": "🐒🎧",
+      "clue": [
+        "Virtuální kapela s kreslenými členy a hitem Feel Good Inc.",
+        "Virtual band with animated members and the hit Feel Good Inc."
+      ],
+      "source": "Gorillaz",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu vyšla Feel Good Inc.?",
+            "Which album features Feel Good Inc.?"
+          ],
+          "correct": [
+            "Demon Days",
+            "Demon Days"
+          ],
+          "wrong": [
+            [
+              "Plastic Beach",
+              "Plastic Beach"
+            ],
+            [
+              "Gorillaz",
+              "Gorillaz"
+            ],
+            [
+              "Humanz",
+              "Humanz"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje animovaný hlavní zpěvák Gorillaz?",
+            "What is the name of Gorillaz's animated lead singer?"
+          ],
+          "correct": [
+            "2-D",
+            "2-D"
+          ],
+          "wrong": [
+            [
+              "Murdoc Niccals",
+              "Murdoc Niccals"
+            ],
+            [
+              "Russel Hobbs",
+              "Russel Hobbs"
+            ],
+            [
+              "Noodle",
+              "Noodle"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "foofighters",
+      "media": "world",
+      "title": [
+        "Foo Fighters",
+        "Foo Fighters"
+      ],
+      "visual": "🎸🛩️",
+      "clue": [
+        "Rocková kapela založená bývalým bubeníkem Nirvany.",
+        "Rock band founded by Nirvana's former drummer."
+      ],
+      "source": "Foo Fighters",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Foo Fighters obsahuje skladbu Everlong?",
+            "Which Foo Fighters album includes Everlong?"
+          ],
+          "correct": [
+            "The Colour and the Shape",
+            "The Colour and the Shape"
+          ],
+          "wrong": [
+            [
+              "One by One",
+              "One by One"
+            ],
+            [
+              "Wasting Light",
+              "Wasting Light"
+            ],
+            [
+              "Echoes, Silence, Patience & Grace",
+              "Echoes, Silence, Patience & Grace"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo založil Foo Fighters po rozpadu Nirvany?",
+            "Who founded Foo Fighters after Nirvana broke up?"
+          ],
+          "correct": [
+            "Dave Grohl",
+            "Dave Grohl"
+          ],
+          "wrong": [
+            [
+              "Kurt Cobain",
+              "Kurt Cobain"
+            ],
+            [
+              "Krist Novoselic",
+              "Krist Novoselic"
+            ],
+            [
+              "Taylor Hawkins",
+              "Taylor Hawkins"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "arctic",
+      "media": "world",
+      "title": [
+        "Arctic Monkeys",
+        "Arctic Monkeys"
+      ],
+      "visual": "🐒🎸",
+      "clue": [
+        "Sheffieldská indie rocková skupina se skladbou Do I Wanna Know?.",
+        "Sheffield indie rock band with the song Do I Wanna Know?."
+      ],
+      "source": "Arctic Monkeys",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu vyšla Do I Wanna Know??",
+            "Which album contains Do I Wanna Know?"
+          ],
+          "correct": [
+            "AM",
+            "AM"
+          ],
+          "wrong": [
+            [
+              "Favourite Worst Nightmare",
+              "Favourite Worst Nightmare"
+            ],
+            [
+              "Humbug",
+              "Humbug"
+            ],
+            [
+              "Tranquility Base Hotel & Casino",
+              "Tranquility Base Hotel & Casino"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje zpěvák Arctic Monkeys?",
+            "What is the name of Arctic Monkeys' singer?"
+          ],
+          "correct": [
+            "Alex Turner",
+            "Alex Turner"
+          ],
+          "wrong": [
+            [
+              "Jamie Cook",
+              "Jamie Cook"
+            ],
+            [
+              "Matt Helders",
+              "Matt Helders"
+            ],
+            [
+              "Nick O'Malley",
+              "Nick O'Malley"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "imaginedragons",
+      "media": "world",
+      "title": [
+        "Imagine Dragons",
+        "Imagine Dragons"
+      ],
+      "visual": "🐉🎸",
+      "clue": [
+        "Americká skupina známá písněmi Radioactive a Demons.",
+        "American band known for Radioactive and Demons."
+      ],
+      "source": "Imagine Dragons",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu vyšly Radioactive i Demons?",
+            "Which album includes Radioactive and Demons?"
+          ],
+          "correct": [
+            "Night Visions",
+            "Night Visions"
+          ],
+          "wrong": [
+            [
+              "Evolve",
+              "Evolve"
+            ],
+            [
+              "Smoke + Mirrors",
+              "Smoke + Mirrors"
+            ],
+            [
+              "Origins",
+              "Origins"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je hlavním zpěvákem Imagine Dragons?",
+            "Who is Imagine Dragons' lead singer?"
+          ],
+          "correct": [
+            "Dan Reynolds",
+            "Dan Reynolds"
+          ],
+          "wrong": [
+            [
+              "Wayne Sermon",
+              "Wayne Sermon"
+            ],
+            [
+              "Ben McKee",
+              "Ben McKee"
+            ],
+            [
+              "Daniel Platzman",
+              "Daniel Platzman"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "twentyone",
+      "media": "world",
+      "title": [
+        "Twenty One Pilots",
+        "Twenty One Pilots"
+      ],
+      "visual": "🎭🥁",
+      "clue": [
+        "Americké duo kombinující alternativní rock, rap a elektroniku.",
+        "American duo blending alternative rock, rap and electronics."
+      ],
+      "source": "Twenty One Pilots",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album obsahuje skladbu Stressed Out?",
+            "Which album features Stressed Out?"
+          ],
+          "correct": [
+            "Blurryface",
+            "Blurryface"
+          ],
+          "wrong": [
+            [
+              "Trench",
+              "Trench"
+            ],
+            [
+              "Vessel",
+              "Vessel"
+            ],
+            [
+              "Scaled and Icy",
+              "Scaled and Icy"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje bubeník dua Twenty One Pilots?",
+            "Who is the drummer of Twenty One Pilots?"
+          ],
+          "correct": [
+            "Josh Dun",
+            "Josh Dun"
+          ],
+          "wrong": [
+            [
+              "Tyler Joseph",
+              "Tyler Joseph"
+            ],
+            [
+              "Brendon Urie",
+              "Brendon Urie"
+            ],
+            [
+              "Travis Barker",
+              "Travis Barker"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "edsheeran",
+      "media": "world",
+      "title": [
+        "Ed Sheeran",
+        "Ed Sheeran"
+      ],
+      "visual": "🎸🧡",
+      "clue": [
+        "Britský písničkář známý skladbami Shape of You a Perfect.",
+        "British singer-songwriter known for Shape of You and Perfect."
+      ],
+      "source": "Ed Sheeran",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Eda Sheerana má symbol ÷?",
+            "Which Ed Sheeran album is represented by ÷?"
+          ],
+          "correct": [
+            "Divide (÷)",
+            "Divide (÷)"
+          ],
+          "wrong": [
+            [
+              "Multiply (×)",
+              "Multiply (×)"
+            ],
+            [
+              "Plus (+)",
+              "Plus (+)"
+            ],
+            [
+              "Subtract (−)",
+              "Subtract (−)"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Která skladba Eda Sheerana vyšla na albu Divide?",
+            "Which Ed Sheeran track appears on Divide?"
+          ],
+          "correct": [
+            "Shape of You",
+            "Shape of You"
+          ],
+          "wrong": [
+            [
+              "Thinking Out Loud",
+              "Thinking Out Loud"
+            ],
+            [
+              "The A Team",
+              "The A Team"
+            ],
+            [
+              "Lego House",
+              "Lego House"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "bruno",
+      "media": "world",
+      "title": [
+        "Bruno Mars",
+        "Bruno Mars"
+      ],
+      "visual": "🎤✨",
+      "clue": [
+        "Americký popový a funkový zpěvák s hitem Uptown Funk.",
+        "American pop and funk singer associated with Uptown Funk."
+      ],
+      "source": "Bruno Mars",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jaké album Bruno Mars vydal v roce 2016?",
+            "Which album did Bruno Mars release in 2016?"
+          ],
+          "correct": [
+            "24K Magic",
+            "24K Magic"
+          ],
+          "wrong": [
+            [
+              "Doo-Wops & Hooligans",
+              "Doo-Wops & Hooligans"
+            ],
+            [
+              "Unorthodox Jukebox",
+              "Unorthodox Jukebox"
+            ],
+            [
+              "Future Nostalgia",
+              "Future Nostalgia"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Která skladba je hitem Bruna Marse?",
+            "Which song is a Bruno Mars hit?"
+          ],
+          "correct": [
+            "Just the Way You Are",
+            "Just the Way You Are"
+          ],
+          "wrong": [
+            [
+              "Rolling in the Deep",
+              "Rolling in the Deep"
+            ],
+            [
+              "Locked Out of Heaven (Katy Perry version)",
+              "Locked Out of Heaven (Katy Perry version)"
+            ],
+            [
+              "Happy (Daft Punk version)",
+              "Happy (Daft Punk version)"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "rihanna",
+      "media": "world",
+      "title": [
+        "Rihanna",
+        "Rihanna"
+      ],
+      "visual": "☂️🎤",
+      "clue": [
+        "Barbadoská zpěvačka proslavená skladbou Umbrella.",
+        "Barbadian singer who rose to fame with Umbrella."
+      ],
+      "source": "Rihanna",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Rihanny obsahuje skladbu Work?",
+            "Which Rihanna album features Work?"
+          ],
+          "correct": [
+            "Anti",
+            "Anti"
+          ],
+          "wrong": [
+            [
+              "Good Girl Gone Bad",
+              "Good Girl Gone Bad"
+            ],
+            [
+              "Loud",
+              "Loud"
+            ],
+            [
+              "Unapologetic",
+              "Unapologetic"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo hostuje na hitu Umbrella od Rihanny?",
+            "Who features on Rihanna's hit Umbrella?"
+          ],
+          "correct": [
+            "Jay-Z",
+            "Jay-Z"
+          ],
+          "wrong": [
+            [
+              "Drake",
+              "Drake"
+            ],
+            [
+              "Eminem",
+              "Eminem"
+            ],
+            [
+              "Kanye West",
+              "Kanye West"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "shakira",
+      "media": "world",
+      "title": [
+        "Shakira",
+        "Shakira"
+      ],
+      "visual": "💃🌎",
+      "clue": [
+        "Kolumbijská zpěvačka známá hitem Hips Don't Lie.",
+        "Colombian singer known for Hips Don't Lie."
+      ],
+      "source": "Shakira",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Shakiry obsahuje Whenever, Wherever?",
+            "Which Shakira album contains Whenever, Wherever?"
+          ],
+          "correct": [
+            "Laundry Service",
+            "Laundry Service"
+          ],
+          "wrong": [
+            [
+              "Oral Fixation, Vol. 2",
+              "Oral Fixation, Vol. 2"
+            ],
+            [
+              "Sale el Sol",
+              "Sale el Sol"
+            ],
+            [
+              "El Dorado",
+              "El Dorado"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo hostuje na skladbě Hips Don't Lie?",
+            "Who features on Hips Don't Lie?"
+          ],
+          "correct": [
+            "Wyclef Jean",
+            "Wyclef Jean"
+          ],
+          "wrong": [
+            [
+              "Pitbull",
+              "Pitbull"
+            ],
+            [
+              "Maluma",
+              "Maluma"
+            ],
+            [
+              "Daddy Yankee",
+              "Daddy Yankee"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "beyonce",
+      "media": "world",
+      "title": [
+        "Beyoncé",
+        "Beyoncé"
+      ],
+      "visual": "👑🎙️",
+      "clue": [
+        "Americká popová a R&B zpěvačka, dříve členka Destiny's Child.",
+        "American pop and R&B singer formerly of Destiny's Child."
+      ],
+      "source": "Beyoncé",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které vizuální album Beyoncé vyšlo v roce 2016?",
+            "Which Beyoncé visual album was released in 2016?"
+          ],
+          "correct": [
+            "Lemonade",
+            "Lemonade"
+          ],
+          "wrong": [
+            [
+              "4",
+              "4"
+            ],
+            [
+              "Renaissance",
+              "Renaissance"
+            ],
+            [
+              "B'Day",
+              "B'Day"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "S jakou dívčí skupinou Beyoncé vystupovala před sólovou kariérou?",
+            "Which girl group did Beyoncé perform with before her solo career?"
+          ],
+          "correct": [
+            "Destiny's Child",
+            "Destiny's Child"
+          ],
+          "wrong": [
+            [
+              "TLC",
+              "TLC"
+            ],
+            [
+              "Spice Girls",
+              "Spice Girls"
+            ],
+            [
+              "The Supremes",
+              "The Supremes"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "bowie",
+      "media": "world",
+      "title": [
+        "David Bowie",
+        "David Bowie"
+      ],
+      "visual": "⚡🎤",
+      "clue": [
+        "Britský umělec známý měnícími se pódiovými identitami.",
+        "British musician known for his changing stage personas."
+      ],
+      "source": "David Bowie",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje Bowieho album z roku 1972 s postavou Ziggy?",
+            "What is Bowie's 1972 album featuring the Ziggy character?"
+          ],
+          "correct": [
+            "The Rise and Fall of Ziggy Stardust and the Spiders from Mars",
+            "The Rise and Fall of Ziggy Stardust and the Spiders from Mars"
+          ],
+          "wrong": [
+            [
+              "Heroes",
+              "Heroes"
+            ],
+            [
+              "Low",
+              "Low"
+            ],
+            [
+              "Aladdin Sane",
+              "Aladdin Sane"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenovalo slavné Bowieho mimozemské alter ego?",
+            "What was Bowie's famous alien stage persona?"
+          ],
+          "correct": [
+            "Ziggy Stardust",
+            "Ziggy Stardust"
+          ],
+          "wrong": [
+            [
+              "Major Tom",
+              "Major Tom"
+            ],
+            [
+              "Thin White Duke",
+              "Thin White Duke"
+            ],
+            [
+              "Starman",
+              "Starman"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "bobmarley",
+      "media": "world",
+      "title": [
+        "Bob Marley",
+        "Bob Marley"
+      ],
+      "visual": "🇯🇲🎶",
+      "clue": [
+        "Jamajská reggae legenda s písněmi Three Little Birds a Redemption Song.",
+        "Jamaican reggae legend known for Three Little Birds and Redemption Song."
+      ],
+      "source": "Bob Marley",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Boba Marleyho & The Wailers obsahuje Jamming?",
+            "Which Bob Marley & The Wailers album contains Jamming?"
+          ],
+          "correct": [
+            "Exodus",
+            "Exodus"
+          ],
+          "wrong": [
+            [
+              "Kaya",
+              "Kaya"
+            ],
+            [
+              "Burnin'",
+              "Burnin'"
+            ],
+            [
+              "Natty Dread",
+              "Natty Dread"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenovala kapela, se kterou Bob Marley většinu kariéry vystupoval?",
+            "What was the band Bob Marley performed with for much of his career?"
+          ],
+          "correct": [
+            "The Wailers",
+            "The Wailers"
+          ],
+          "wrong": [
+            [
+              "The Upsetters",
+              "The Upsetters"
+            ],
+            [
+              "The Skatalites",
+              "The Skatalites"
+            ],
+            [
+              "Toots and the Maytals",
+              "Toots and the Maytals"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "fleetwood",
+      "media": "world",
+      "title": [
+        "Fleetwood Mac",
+        "Fleetwood Mac"
+      ],
+      "visual": "🌙🎸",
+      "clue": [
+        "Britsko-americká rocková skupina známá skladbou Dreams.",
+        "British-American rock group known for Dreams."
+      ],
+      "source": "Fleetwood Mac",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu Fleetwood Mac vyšla skladba Dreams?",
+            "Which Fleetwood Mac album includes Dreams?"
+          ],
+          "correct": [
+            "Rumours",
+            "Rumours"
+          ],
+          "wrong": [
+            [
+              "Tusk",
+              "Tusk"
+            ],
+            [
+              "Mirage",
+              "Mirage"
+            ],
+            [
+              "Tango in the Night",
+              "Tango in the Night"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Která členka Fleetwood Mac napsala a nazpívala Dreams?",
+            "Which Fleetwood Mac member wrote and sang Dreams?"
+          ],
+          "correct": [
+            "Stevie Nicks",
+            "Stevie Nicks"
+          ],
+          "wrong": [
+            [
+              "Christine McVie",
+              "Christine McVie"
+            ],
+            [
+              "Debbie Harry",
+              "Debbie Harry"
+            ],
+            [
+              "Janis Joplin",
+              "Janis Joplin"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "system",
+      "media": "world",
+      "title": [
+        "System of a Down",
+        "System of a Down"
+      ],
+      "visual": "⚡🤘",
+      "clue": [
+        "Metalová skupina s hity Chop Suey! a Toxicity.",
+        "Metal band known for Chop Suey! and Toxicity."
+      ],
+      "source": "System of a Down",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album obsahuje Chop Suey!?",
+            "Which album contains Chop Suey!?"
+          ],
+          "correct": [
+            "Toxicity",
+            "Toxicity"
+          ],
+          "wrong": [
+            [
+              "Mezmerize",
+              "Mezmerize"
+            ],
+            [
+              "Hypnotize",
+              "Hypnotize"
+            ],
+            [
+              "Steal This Album!",
+              "Steal This Album!"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je hlavním zpěvákem System of a Down?",
+            "Who is System of a Down's lead vocalist?"
+          ],
+          "correct": [
+            "Serj Tankian",
+            "Serj Tankian"
+          ],
+          "wrong": [
+            [
+              "Daron Malakian",
+              "Daron Malakian"
+            ],
+            [
+              "Shavo Odadjian",
+              "Shavo Odadjian"
+            ],
+            [
+              "John Dolmayan",
+              "John Dolmayan"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "prodigy",
+      "media": "world",
+      "title": [
+        "The Prodigy",
+        "The Prodigy"
+      ],
+      "visual": "🔥🎛️",
+      "clue": [
+        "Britská elektronická skupina známá skladbami Firestarter a Breathe.",
+        "British electronic group known for Firestarter and Breathe."
+      ],
+      "source": "The Prodigy",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album obsahuje Firestarter a Breathe?",
+            "Which album features Firestarter and Breathe?"
+          ],
+          "correct": [
+            "The Fat of the Land",
+            "The Fat of the Land"
+          ],
+          "wrong": [
+            [
+              "Music for the Jilted Generation",
+              "Music for the Jilted Generation"
+            ],
+            [
+              "Experience",
+              "Experience"
+            ],
+            [
+              "Invaders Must Die",
+              "Invaders Must Die"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je známý jako zakladatel a hlavní hudební tvůrce The Prodigy?",
+            "Who is known as The Prodigy's founder and principal music producer?"
+          ],
+          "correct": [
+            "Liam Howlett",
+            "Liam Howlett"
+          ],
+          "wrong": [
+            [
+              "Keith Flint",
+              "Keith Flint"
+            ],
+            [
+              "Maxim Reality",
+              "Maxim Reality"
+            ],
+            [
+              "Fatboy Slim",
+              "Fatboy Slim"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "lucie",
+      "media": "czsk",
+      "title": [
+        "Lucie",
+        "Lucie"
+      ],
+      "visual": "🎸🇨🇿",
+      "clue": [
+        "Česká rocková kapela známá hity Chci zas v tobě spát a Amerika.",
+        "Czech rock band known for Chci zas v tobě spát and Amerika."
+      ],
+      "source": "Lucie",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album vydala skupina Lucie v roce 1994?",
+            "Which album did Lucie release in 1994?"
+          ],
+          "correct": [
+            "Černý kočky mokrý žáby",
+            "Černý kočky mokrý žáby"
+          ],
+          "wrong": [
+            [
+              "Evolucie",
+              "Evolucie"
+            ],
+            [
+              "Větší než malé množství lásky",
+              "Větší než malé množství lásky"
+            ],
+            [
+              "Dobrá kočzka která nemlsá",
+              "Dobrá kočzka která nemlsá"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Který zpěvák a bubeník je dlouhodobě spojen s Lucií?",
+            "Which singer and drummer has long been associated with Lucie?"
+          ],
+          "correct": [
+            "David Koller",
+            "David Koller"
+          ],
+          "wrong": [
+            [
+              "Daniel Landa",
+              "Daniel Landa"
+            ],
+            [
+              "Richard Krajčo",
+              "Richard Krajčo"
+            ],
+            [
+              "Michal Malátný",
+              "Michal Malátný"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "kabat",
+      "media": "czsk",
+      "title": [
+        "Kabát",
+        "Kabát"
+      ],
+      "visual": "🤘🇨🇿",
+      "clue": [
+        "Česká hardrocková kapela známá skladbami Burlaci a Malá dáma.",
+        "Czech hard-rock band known for Burlaci and Malá dáma."
+      ],
+      "source": "Kabát",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Kabátu obsahuje skladbu Malá dáma?",
+            "Which Kabát album contains Malá dáma?"
+          ],
+          "correct": [
+            "Corrida",
+            "Corrida"
+          ],
+          "wrong": [
+            [
+              "Dole v dole",
+              "Dole v dole"
+            ],
+            [
+              "Banditi di Praga",
+              "Banditi di Praga"
+            ],
+            [
+              "Colorado",
+              "Colorado"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je dlouholetým hlavním zpěvákem Kabátu?",
+            "Who has long been Kabát's lead singer?"
+          ],
+          "correct": [
+            "Josef Vojtek",
+            "Josef Vojtek"
+          ],
+          "wrong": [
+            [
+              "David Koller",
+              "David Koller"
+            ],
+            [
+              "Daniel Landa",
+              "Daniel Landa"
+            ],
+            [
+              "Petr Kolář",
+              "Petr Kolář"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "krystof",
+      "media": "czsk",
+      "title": [
+        "Kryštof",
+        "Kryštof"
+      ],
+      "visual": "🌟🇨🇿",
+      "clue": [
+        "Česká poprocková skupina s hity Cesta a Ty a já.",
+        "Czech pop-rock band known for Cesta and Ty a já."
+      ],
+      "source": "Kryštof",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Kryštofu vyšlo v roce 2015?",
+            "Which Kryštof album was released in 2015?"
+          ],
+          "correct": [
+            "Srdcebeat",
+            "Srdcebeat"
+          ],
+          "wrong": [
+            [
+              "Inzerát",
+              "Inzerát"
+            ],
+            [
+              "Jeviště",
+              "Jeviště"
+            ],
+            [
+              "Mikrokosmos",
+              "Mikrokosmos"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je zpěvák a frontman Kryštofu?",
+            "Who is Kryštof's singer and frontman?"
+          ],
+          "correct": [
+            "Richard Krajčo",
+            "Richard Krajčo"
+          ],
+          "wrong": [
+            [
+              "Michal Malátný",
+              "Michal Malátný"
+            ],
+            [
+              "David Koller",
+              "David Koller"
+            ],
+            [
+              "Tomáš Klus",
+              "Tomáš Klus"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "chinaski",
+      "media": "czsk",
+      "title": [
+        "Chinaski",
+        "Chinaski"
+      ],
+      "visual": "🎶🇨🇿",
+      "clue": [
+        "Česká poprocková kapela se skladbami Tabáček a 1. signální.",
+        "Czech pop-rock band known for Tabáček and 1. signální."
+      ],
+      "source": "Chinaski",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album Chinaski obsahuje skladbu Tabáček?",
+            "Which Chinaski album includes Tabáček?"
+          ],
+          "correct": [
+            "Music Bar",
+            "Music Bar"
+          ],
+          "wrong": [
+            [
+              "Něco se děje",
+              "Něco se děje"
+            ],
+            [
+              "St. hadrián",
+              "St. hadrián"
+            ],
+            [
+              "Rockfield",
+              "Rockfield"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je dlouholetým zpěvákem skupiny Chinaski?",
+            "Who is Chinaski's longtime lead singer?"
+          ],
+          "correct": [
+            "Michal Malátný",
+            "Michal Malátný"
+          ],
+          "wrong": [
+            [
+              "Richard Krajčo",
+              "Richard Krajčo"
+            ],
+            [
+              "David Koller",
+              "David Koller"
+            ],
+            [
+              "Petr Janda",
+              "Petr Janda"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "elán",
+      "media": "czsk",
+      "title": [
+        "Elán",
+        "Elán"
+      ],
+      "visual": "🇸🇰🎤",
+      "clue": [
+        "Slovenská poprocková skupina s hitem Voda, čo ma drží nad vodou.",
+        "Slovak pop-rock group known for Voda, čo ma drží nad vodou."
+      ],
+      "source": "Elán",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album skupiny Elán obsahuje skladbu Kaskadér?",
+            "Which Elán album features Kaskadér?"
+          ],
+          "correct": [
+            "Nie sme zlí",
+            "Nie sme zlí"
+          ],
+          "wrong": [
+            [
+              "Hodina slovenčiny",
+              "Hodina slovenčiny"
+            ],
+            [
+              "Ôsmy svetadiel",
+              "Ôsmy svetadiel"
+            ],
+            [
+              "Detektívka",
+              "Detektívka"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je dlouholetým zpěvákem skupiny Elán?",
+            "Who is Elán's longtime frontman?"
+          ],
+          "correct": [
+            "Jožo Ráž",
+            "Jožo Ráž"
+          ],
+          "wrong": [
+            [
+              "Vašo Patejdl",
+              "Vašo Patejdl"
+            ],
+            [
+              "Richard Müller",
+              "Richard Müller"
+            ],
+            [
+              "Peter Nagy",
+              "Peter Nagy"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "wohnout",
+      "media": "czsk",
+      "title": [
+        "Wohnout",
+        "Wohnout"
+      ],
+      "visual": "🎸🎭",
+      "clue": [
+        "Česká alternativně rocková skupina známá hitem Svaz českých bohémů.",
+        "Czech alternative-rock band known for Svaz českých bohémů."
+      ],
+      "source": "Wohnout",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Na kterém albu Wohnoutu vyšla skladba Svaz českých bohémů?",
+            "Which Wohnout album includes Svaz českých bohémů?"
+          ],
+          "correct": [
+            "Našim klientům",
+            "Našim klientům"
+          ],
+          "wrong": [
+            [
+              "Polib si dědu",
+              "Polib si dědu"
+            ],
+            [
+              "Rande s panem Bendou",
+              "Rande s panem Bendou"
+            ],
+            [
+              "Pedro se vrací",
+              "Pedro se vrací"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo z bratrů Homolových působí ve Wohnoutu?",
+            "Which Homola brothers perform in Wohnout?"
+          ],
+          "correct": [
+            "Matěj a Jan",
+            "Matěj and Jan"
+          ],
+          "wrong": [
+            [
+              "Petr a Pavel",
+              "Petr and Pavel"
+            ],
+            [
+              "Josef a Jiří",
+              "Josef and Jiří"
+            ],
+            [
+              "Jakub a Martin",
+              "Jakub and Martin"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "noname",
+      "media": "czsk",
+      "title": [
+        "No Name",
+        "No Name"
+      ],
+      "visual": "🇸🇰🎸",
+      "clue": [
+        "Slovenská poprocková skupina známá skladbami Čím to je? a Ty a tvoja sestra.",
+        "Slovak pop-rock band known for Čím to je? and Ty a tvoja sestra."
+      ],
+      "source": "No Name",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Které album No Name nese stejný název jako jejich hit Čím to je??",
+            "Which No Name album shares its title with the hit Čím to je??"
+          ],
+          "correct": [
+            "Čím to je?",
+            "Čím to je?"
+          ],
+          "wrong": [
+            [
+              "Počkám si na zázrak",
+              "Počkám si na zázrak"
+            ],
+            [
+              "Slová do tmy",
+              "Slová do tmy"
+            ],
+            [
+              "Nový album",
+              "Nový album"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo je hlavním zpěvákem skupiny No Name?",
+            "Who is No Name's lead singer?"
+          ],
+          "correct": [
+            "Igor Timko",
+            "Igor Timko"
+          ],
+          "wrong": [
+            [
+              "Jožo Ráž",
+              "Jožo Ráž"
+            ],
+            [
+              "Peter Nagy",
+              "Peter Nagy"
+            ],
+            [
+              "Richard Müller",
+              "Richard Müller"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
