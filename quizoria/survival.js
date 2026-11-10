@@ -72,6 +72,14 @@ const dictionary={
 let lang='cs',api=null,uid=null,selected='mix',opened=false;
 let lobby=null,run=null,locked=false,lobbySeq=0,actionSeq=0;
 let feedback=null,shownQuestion=null,advance=false,pending=null,beginOperation=null;
+let recordBaseline=null;
+const fx=()=>window.QUIZORIA_SURVIVAL_FX;
+function bestSnapshot(){
+ const best=lobby?.best;
+ if(!best||!['score','stage','streak'].every(key=>
+   Number.isSafeInteger(best[key])&&best[key]>=0))return null;
+ return {score:best.score,stage:best.stage,streak:best.streak};
+}
 const t=key=>dictionary[lang][key]||key;
 const fmt=n=>new Intl.NumberFormat(lang==='cs'?'cs-CZ':'en-US').format(Number(n)||0);
 const safe=n=>Number.isSafeInteger(n)&&n>=0?n:0;
@@ -264,7 +272,8 @@ async function refreshLobby(silent=false){
 }
 function selectCategory(category){
  if(locked||run||!allowed.has(category))return;
- selected=category;lobby=null;beginOperation=null;render();
+ selected=category;lobby=null;beginOperation=null;recordBaseline=null;
+ fx()?.clear?.();render();
  void refreshLobby();
 }
 async function begin(){
@@ -280,6 +289,8 @@ async function begin(){
   });
   if(error||!isValidRun(data)||data.category!==cat)throw error||Error('invalid_run');
   if(uid!==mine||serial!==actionSeq)return;
+  recordBaseline=bestSnapshot();
+  fx()?.clear?.();
   run=data;beginOperation=null;feedback=null;shownQuestion=null;advance=false;
   status(t('saved'));
  }catch(err){
@@ -295,6 +306,8 @@ async function resume(id){
   const {data,error}=await api.rpc('quizoria_survival_resume',{p_run_id:id});
   if(error||!isValidRun(data)||data.category!==selected)throw error||Error('invalid_run');
   if(uid!==mine||serial!==actionSeq)return;
+  recordBaseline=bestSnapshot();
+  fx()?.clear?.();
   run=data;feedback=null;shownQuestion=null;advance=false;pending=null;
   status(t('saved'));
  }catch(err){
@@ -307,6 +320,8 @@ async function answer(choice,retry=false){
  if(!Number.isSafeInteger(choice)||choice<0||choice>3)return;
  if(pending&&!retry)return;
  const mine=uid,runId=run.run_id,serial=++actionSeq;
+ const beforeAnswer=run;
+ let confirmedFx=null;
  if(!retry)pending={choice,event:crypto.randomUUID(),question:run.question};
  locked=true;render();
  status(t('loading'));
@@ -321,6 +336,8 @@ async function answer(choice,retry=false){
   shownQuestion=pending.question;
   feedback={ok:data.was_correct,correctIndex:data.correct_option,choice:pending.choice};
   run=data;pending=null;advance=!run.finished&&!run.expired;
+  confirmedFx={before:beforeAnswer,after:data,wasCorrect:data.was_correct,
+    baseline:recordBaseline};
   status(run.finished?t('final'):t('saved'));
   try{navigator.vibrate?.(data.was_correct?[25]:[55,30,55]);}catch(_){}
   if(run.finished){
@@ -335,15 +352,27 @@ async function answer(choice,retry=false){
  }catch(err){
   if(uid===mine&&serial===actionSeq)
    status(t('error')+' ('+String(err?.message||'network')+')',true);
- }finally{locked=false;render();}
+ }finally{
+  locked=false;render();
+  // Graphics are triggered only after a matching, successful server receipt.
+  // Retried requests reuse the original event ID; errors never cause effects.
+  if(confirmedFx&&uid===mine&&serial===actionSeq&&run?.run_id===runId){
+   fx()?.answerConfirmed?.(confirmedFx);
+   if(confirmedFx.after.finished)
+    fx()?.finishConfirmed?.({result:confirmedFx.after,baseline:confirmedFx.baseline});
+  }
+ }
 }
 function next(){
  if(!advance||locked||!run)return;
+ const stage=run.stage;
  advance=false;feedback=null;shownQuestion=null;render();
+ fx()?.questionAdvanced?.({stage});
 }
 function close(){
  if(locked)return;
  opened=false;run=null;pending=null;feedback=null;advance=false;shownQuestion=null;
+ recordBaseline=null;fx()?.clear?.();
  root.classList.add('hidden');document.body.classList.remove('quiz-survival-active');
  $('modePanel')?.classList.remove('hidden');
  $('quizoriaSurvivalLaunch')?.focus?.();
@@ -354,6 +383,7 @@ function open(){
  // The menu owns the active source of game navigation.
  if($('modePanel')?.classList.contains('hidden'))return;
  opened=true;run=null;pending=null;feedback=null;advance=false;shownQuestion=null;
+ recordBaseline=null;fx()?.clear?.();
  root.classList.remove('hidden');$('modePanel')?.classList.add('hidden');
  document.body.classList.remove('quiz-playing','quiz-finished');
  document.body.classList.add('quiz-survival-active');
@@ -380,6 +410,7 @@ function localize(){
   survivalHeartsLabel:'hearts',survivalScoreLabel:'score',
   survivalStreakLabel:'streak',survivalRetry:'retry',
   survivalNext:'next',survivalPlayAgain:'playAgain'}))$(id).textContent=t(key);
+ fx()?.setLocale?.(lang);
  render();
 }
 $('survivalBack')?.addEventListener('click',close);
@@ -405,6 +436,7 @@ $('survivalRetry')?.addEventListener('click',()=>{
 $('survivalNext')?.addEventListener('click',next);
 $('survivalPlayAgain')?.addEventListener('click',()=>{
  run=null;pending=null;feedback=null;advance=false;shownQuestion=null;
+ recordBaseline=null;fx()?.clear?.();
  render();void refreshLobby();
 });
 // The shared Arcade motion preference also applies to Quizoria standalone.
@@ -425,6 +457,7 @@ window.QUIZORIA_SURVIVAL=Object.freeze({
   const nextUid=user?.id||null;
   if(uid===nextUid&&api===client)return;
   uid=nextUid;api=client;run=null;lobby=null;pending=null;
+  recordBaseline=null;fx()?.clear?.();
   locked=false;opened=false;feedback=null;advance=false;shownQuestion=null;
   beginOperation=null;lobbySeq++;actionSeq++;
   root.classList.add('hidden');
