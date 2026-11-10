@@ -1,0 +1,1607 @@
+{
+  "version": "2.3",
+  "category": "movies",
+  "topicCount": 25,
+  "topics": [
+    {
+      "slug": "arrival",
+      "media": "film",
+      "title": [
+        "Arrival",
+        "Arrival"
+      ],
+      "visual": "👽🔤",
+      "clue": [
+        "Lingvistka se snaží porozumět návštěvníkům z vesmíru.",
+        "A linguist tries to understand extraterrestrial visitors."
+      ],
+      "source": "Arrival_(film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval film Arrival?",
+            "Who directed Arrival?"
+          ],
+          "correct": [
+            "Denis Villeneuve",
+            "Denis Villeneuve"
+          ],
+          "wrong": [
+            [
+              "Christopher Nolan",
+              "Christopher Nolan"
+            ],
+            [
+              "Alfonso Cuarón",
+              "Alfonso Cuarón"
+            ],
+            [
+              "James Cameron",
+              "James Cameron"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje hlavní lingvistka filmu?",
+            "What is the name of the film's lead linguist?"
+          ],
+          "correct": [
+            "Louise Banks",
+            "Louise Banks"
+          ],
+          "wrong": [
+            [
+              "Ellie Arroway",
+              "Ellie Arroway"
+            ],
+            [
+              "Murph Cooper",
+              "Murph Cooper"
+            ],
+            [
+              "Sarah Connor",
+              "Sarah Connor"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "whiplash",
+      "media": "film",
+      "title": [
+        "Whiplash",
+        "Whiplash"
+      ],
+      "visual": "🥁🎼",
+      "clue": [
+        "Mladý jazzový bubeník čelí neúprosnému učiteli.",
+        "A young jazz drummer faces a relentless teacher."
+      ],
+      "source": "Whiplash_(2014_film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval Whiplash?",
+            "Who directed Whiplash?"
+          ],
+          "correct": [
+            "Damien Chazelle",
+            "Damien Chazelle"
+          ],
+          "wrong": [
+            [
+              "Denis Villeneuve",
+              "Denis Villeneuve"
+            ],
+            [
+              "David Fincher",
+              "David Fincher"
+            ],
+            [
+              "Martin Scorsese",
+              "Martin Scorsese"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje náročný učitel hudby ve filmu?",
+            "What is the name of the harsh music instructor?"
+          ],
+          "correct": [
+            "Terence Fletcher",
+            "Terence Fletcher"
+          ],
+          "wrong": [
+            [
+              "Andrew Neiman",
+              "Andrew Neiman"
+            ],
+            [
+              "Walter White",
+              "Walter White"
+            ],
+            [
+              "Gustave H.",
+              "Gustave H."
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "parasite",
+      "media": "film",
+      "title": [
+        "Parazit",
+        "Parasite"
+      ],
+      "visual": "🏠🪜",
+      "clue": [
+        "Chudá rodina pronikne do života bohaté domácnosti.",
+        "A poor family infiltrates a wealthy household."
+      ],
+      "source": "Parasite_(2019_film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Z jaké země pochází film Parazit?",
+            "Which country produced Parasite?"
+          ],
+          "correct": [
+            "Jižní Korea",
+            "South Korea"
+          ],
+          "wrong": [
+            [
+              "Japonsko",
+              "Japan"
+            ],
+            [
+              "Čína",
+              "China"
+            ],
+            [
+              "Thajsko",
+              "Thailand"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo film režíroval?",
+            "Who directed the film?"
+          ],
+          "correct": [
+            "Bong Joon-ho",
+            "Bong Joon-ho"
+          ],
+          "wrong": [
+            [
+              "Park Chan-wook",
+              "Park Chan-wook"
+            ],
+            [
+              "Hirokazu Kore-eda",
+              "Hirokazu Kore-eda"
+            ],
+            [
+              "Lee Chang-dong",
+              "Lee Chang-dong"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "prestige",
+      "media": "film",
+      "title": [
+        "Dokonalý trik",
+        "The Prestige"
+      ],
+      "visual": "🎩🔐",
+      "clue": [
+        "Dva kouzelníci vedou nebezpečnou rivalitu.",
+        "Two stage magicians pursue a dangerous rivalry."
+      ],
+      "source": "The_Prestige_(film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval Dokonalý trik?",
+            "Who directed The Prestige?"
+          ],
+          "correct": [
+            "Christopher Nolan",
+            "Christopher Nolan"
+          ],
+          "wrong": [
+            [
+              "David Fincher",
+              "David Fincher"
+            ],
+            [
+              "Wes Anderson",
+              "Wes Anderson"
+            ],
+            [
+              "Guillermo del Toro",
+              "Guillermo del Toro"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje iluzionista ztvárněný Hughem Jackmanem?",
+            "Which illusionist is played by Hugh Jackman?"
+          ],
+          "correct": [
+            "Robert Angier",
+            "Robert Angier"
+          ],
+          "wrong": [
+            [
+              "Alfred Borden",
+              "Alfred Borden"
+            ],
+            [
+              "John Cutter",
+              "John Cutter"
+            ],
+            [
+              "Nikola Tesla",
+              "Nikola Tesla"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "greenmile",
+      "media": "film",
+      "title": [
+        "Zelená míle",
+        "The Green Mile"
+      ],
+      "visual": "⚡🟩",
+      "clue": [
+        "Dozorci ve věznici poznají neobyčejného odsouzence.",
+        "Prison guards encounter an extraordinary death-row inmate."
+      ],
+      "source": "The_Green_Mile_(film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Podle čího románu vznikla Zelená míle?",
+            "Whose novel was adapted into The Green Mile?"
+          ],
+          "correct": [
+            "Stephen King",
+            "Stephen King"
+          ],
+          "wrong": [
+            [
+              "John Grisham",
+              "John Grisham"
+            ],
+            [
+              "Michael Crichton",
+              "Michael Crichton"
+            ],
+            [
+              "Dean Koontz",
+              "Dean Koontz"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje odsouzenec s nadpřirozeným darem?",
+            "What is the name of the inmate with supernatural abilities?"
+          ],
+          "correct": [
+            "John Coffey",
+            "John Coffey"
+          ],
+          "wrong": [
+            [
+              "Paul Edgecomb",
+              "Paul Edgecomb"
+            ],
+            [
+              "Percy Wetmore",
+              "Percy Wetmore"
+            ],
+            [
+              "Brutus Howell",
+              "Brutus Howell"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "se7en",
+      "media": "film",
+      "title": [
+        "Se7en",
+        "Se7en"
+      ],
+      "visual": "📦7️⃣",
+      "clue": [
+        "Dva detektivové sledují vraha posedlého morálními hříchy.",
+        "Two detectives pursue a killer obsessed with moral sins."
+      ],
+      "source": "Seven_(1995_film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval thriller Se7en?",
+            "Who directed Se7en?"
+          ],
+          "correct": [
+            "David Fincher",
+            "David Fincher"
+          ],
+          "wrong": [
+            [
+              "Michael Mann",
+              "Michael Mann"
+            ],
+            [
+              "Christopher Nolan",
+              "Christopher Nolan"
+            ],
+            [
+              "Brian De Palma",
+              "Brian De Palma"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jaký motiv spojuje vraždy ve filmu?",
+            "What connects the murders in the film?"
+          ],
+          "correct": [
+            "Sedm smrtelných hříchů",
+            "The seven deadly sins"
+          ],
+          "wrong": [
+            [
+              "Sedm divů světa",
+              "Seven wonders of the world"
+            ],
+            [
+              "Sedm dní týdne",
+              "Seven days of the week"
+            ],
+            [
+              "Sedm oceánů",
+              "Seven oceans"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "shutter",
+      "media": "film",
+      "title": [
+        "Prokletý ostrov",
+        "Shutter Island"
+      ],
+      "visual": "🏝️🕵️",
+      "clue": [
+        "Federální maršál vyšetřuje zmizení v ostrovním ústavu.",
+        "A U.S. marshal investigates a disappearance at an island asylum."
+      ],
+      "source": "Shutter_Island_(film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval Prokletý ostrov?",
+            "Who directed Shutter Island?"
+          ],
+          "correct": [
+            "Martin Scorsese",
+            "Martin Scorsese"
+          ],
+          "wrong": [
+            [
+              "David Fincher",
+              "David Fincher"
+            ],
+            [
+              "Christopher Nolan",
+              "Christopher Nolan"
+            ],
+            [
+              "Ridley Scott",
+              "Ridley Scott"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jakou postavu na začátku filmu představuje Leonardo DiCaprio?",
+            "Which identity does Leonardo DiCaprio's character initially present?"
+          ],
+          "correct": [
+            "Teddy Daniels",
+            "Teddy Daniels"
+          ],
+          "wrong": [
+            [
+              "Andrew Neiman",
+              "Andrew Neiman"
+            ],
+            [
+              "Robert Angier",
+              "Robert Angier"
+            ],
+            [
+              "Jimmy McGill",
+              "Jimmy McGill"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "sixthsense",
+      "media": "film",
+      "title": [
+        "Šestý smysl",
+        "The Sixth Sense"
+      ],
+      "visual": "👻🧒",
+      "clue": [
+        "Chlapec tvrdí, že dokáže vidět mrtvé.",
+        "A boy claims he can see dead people."
+      ],
+      "source": "The_Sixth_Sense",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval Šestý smysl?",
+            "Who directed The Sixth Sense?"
+          ],
+          "correct": [
+            "M. Night Shyamalan",
+            "M. Night Shyamalan"
+          ],
+          "wrong": [
+            [
+              "Steven Spielberg",
+              "Steven Spielberg"
+            ],
+            [
+              "Tim Burton",
+              "Tim Burton"
+            ],
+            [
+              "James Wan",
+              "James Wan"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje chlapec, kterého hraje Haley Joel Osment?",
+            "What is the name of the boy played by Haley Joel Osment?"
+          ],
+          "correct": [
+            "Cole Sear",
+            "Cole Sear"
+          ],
+          "wrong": [
+            [
+              "Danny Torrance",
+              "Danny Torrance"
+            ],
+            [
+              "Elliot Alderson",
+              "Elliot Alderson"
+            ],
+            [
+              "Billy Batson",
+              "Billy Batson"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "silence",
+      "media": "film",
+      "title": [
+        "Mlčení jehňátek",
+        "The Silence of the Lambs"
+      ],
+      "visual": "🦋🔒",
+      "clue": [
+        "Mladá vyšetřovatelka FBI se radí s vězněným psychiatrem.",
+        "An FBI trainee consults an imprisoned psychiatrist."
+      ],
+      "source": "The_Silence_of_the_Lambs_(film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo ztvárnil Hannibala Lectera?",
+            "Who played Hannibal Lecter?"
+          ],
+          "correct": [
+            "Anthony Hopkins",
+            "Anthony Hopkins"
+          ],
+          "wrong": [
+            [
+              "Brian Cox",
+              "Brian Cox"
+            ],
+            [
+              "Ralph Fiennes",
+              "Ralph Fiennes"
+            ],
+            [
+              "Gary Oldman",
+              "Gary Oldman"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje agentka FBI, která s Lecterem hovoří?",
+            "What is the name of the FBI trainee who speaks to Lecter?"
+          ],
+          "correct": [
+            "Clarice Starling",
+            "Clarice Starling"
+          ],
+          "wrong": [
+            [
+              "Dana Scully",
+              "Dana Scully"
+            ],
+            [
+              "Sarah Connor",
+              "Sarah Connor"
+            ],
+            [
+              "Marge Gunderson",
+              "Marge Gunderson"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "blade2049",
+      "media": "film",
+      "title": [
+        "Blade Runner 2049",
+        "Blade Runner 2049"
+      ],
+      "visual": "🤖🌆",
+      "clue": [
+        "Replikant pracující jako lovec pátrá po skrytém tajemství.",
+        "A replicant working as a blade runner uncovers a secret."
+      ],
+      "source": "Blade_Runner_2049",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo režíroval Blade Runner 2049?",
+            "Who directed Blade Runner 2049?"
+          ],
+          "correct": [
+            "Denis Villeneuve",
+            "Denis Villeneuve"
+          ],
+          "wrong": [
+            [
+              "Ridley Scott",
+              "Ridley Scott"
+            ],
+            [
+              "Neill Blomkamp",
+              "Neill Blomkamp"
+            ],
+            [
+              "Alex Garland",
+              "Alex Garland"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jaké označení má hlavní postava Ryana Goslinga?",
+            "What designation is used for Ryan Gosling's protagonist?"
+          ],
+          "correct": [
+            "K",
+            "K"
+          ],
+          "wrong": [
+            [
+              "Deckard",
+              "Deckard"
+            ],
+            [
+              "Rachael",
+              "Rachael"
+            ],
+            [
+              "Gaff",
+              "Gaff"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "socialnetwork",
+      "media": "film",
+      "title": [
+        "Sociální síť",
+        "The Social Network"
+      ],
+      "visual": "💻⚖️",
+      "clue": [
+        "Vznik online platformy provází spory a soudní žaloby.",
+        "The creation of an online platform leads to disputes and lawsuits."
+      ],
+      "source": "The_Social_Network",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kterou sociální síť film zachycuje při vzniku?",
+            "Which social network does the film depict during its founding?"
+          ],
+          "correct": [
+            "Facebook",
+            "Facebook"
+          ],
+          "wrong": [
+            [
+              "Twitter",
+              "Twitter"
+            ],
+            [
+              "MySpace",
+              "MySpace"
+            ],
+            [
+              "Reddit",
+              "Reddit"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo ztvárnil Marka Zuckerberga?",
+            "Who portrayed Mark Zuckerberg?"
+          ],
+          "correct": [
+            "Jesse Eisenberg",
+            "Jesse Eisenberg"
+          ],
+          "wrong": [
+            [
+              "Andrew Garfield",
+              "Andrew Garfield"
+            ],
+            [
+              "Aaron Sorkin",
+              "Aaron Sorkin"
+            ],
+            [
+              "Justin Timberlake",
+              "Justin Timberlake"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "edge",
+      "media": "film",
+      "title": [
+        "Na hraně zítřka",
+        "Edge of Tomorrow"
+      ],
+      "visual": "⏳⚔️",
+      "clue": [
+        "Voják opakovaně prožívá stejný den boje s mimozemšťany.",
+        "A soldier relives the same day fighting aliens."
+      ],
+      "source": "Edge_of_Tomorrow",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo hraje hlavní roli Williama Cage?",
+            "Who plays William Cage?"
+          ],
+          "correct": [
+            "Tom Cruise",
+            "Tom Cruise"
+          ],
+          "wrong": [
+            [
+              "Matt Damon",
+              "Matt Damon"
+            ],
+            [
+              "Chris Pratt",
+              "Chris Pratt"
+            ],
+            [
+              "Brad Pitt",
+              "Brad Pitt"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jaká mechanika se ve filmu opakuje?",
+            "Which mechanism repeatedly drives the plot?"
+          ],
+          "correct": [
+            "Časová smyčka po smrti",
+            "A time loop after death"
+          ],
+          "wrong": [
+            [
+              "Cestování mezi dimenzemi",
+              "Travel between dimensions"
+            ],
+            [
+              "Klonování bez vzpomínek",
+              "Memoryless cloning"
+            ],
+            [
+              "Změna gravitace",
+              "Changing gravity"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "insideout",
+      "media": "film",
+      "title": [
+        "V hlavě",
+        "Inside Out"
+      ],
+      "visual": "🧠😊",
+      "clue": [
+        "Animovaný příběh personifikovaných emocí mladé dívky.",
+        "An animated story about a girl's personified emotions."
+      ],
+      "source": "Inside_Out_(2015_film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje dívka, v jejíž mysli se film odehrává?",
+            "What is the name of the girl whose mind is explored?"
+          ],
+          "correct": [
+            "Riley",
+            "Riley"
+          ],
+          "wrong": [
+            [
+              "Ellie",
+              "Ellie"
+            ],
+            [
+              "Moana",
+              "Moana"
+            ],
+            [
+              "Mei",
+              "Mei"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Která dvojice emocí putuje v prvním filmu mimo hlavní řídicí centrum?",
+            "Which pair of emotions travels outside headquarters in the first film?"
+          ],
+          "correct": [
+            "Radost a Smutek",
+            "Joy and Sadness"
+          ],
+          "wrong": [
+            [
+              "Strach a Vztek",
+              "Fear and Anger"
+            ],
+            [
+              "Znechucení a Vztek",
+              "Disgust and Anger"
+            ],
+            [
+              "Radost a Strach",
+              "Joy and Fear"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "coco",
+      "media": "film",
+      "title": [
+        "Coco",
+        "Coco"
+      ],
+      "visual": "🎸💀",
+      "clue": [
+        "Chlapec navštíví svět zesnulých během mexického svátku.",
+        "A boy visits the Land of the Dead during a Mexican holiday."
+      ],
+      "source": "Coco_(2017_film)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje hlavní hrdina filmu Coco?",
+            "What is the name of Coco's young protagonist?"
+          ],
+          "correct": [
+            "Miguel",
+            "Miguel"
+          ],
+          "wrong": [
+            [
+              "Héctor",
+              "Héctor"
+            ],
+            [
+              "Ernesto",
+              "Ernesto"
+            ],
+            [
+              "Dante",
+              "Dante"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "S kterým mexickým svátkem je příběh spojen?",
+            "Which Mexican holiday is central to the story?"
+          ],
+          "correct": [
+            "Día de Muertos",
+            "Día de Muertos"
+          ],
+          "wrong": [
+            [
+              "Cinco de Mayo",
+              "Cinco de Mayo"
+            ],
+            [
+              "Las Posadas",
+              "Las Posadas"
+            ],
+            [
+              "Día de la Independencia",
+              "Día de la Independencia"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "walle",
+      "media": "film",
+      "title": [
+        "WALL-E",
+        "WALL-E"
+      ],
+      "visual": "🤖🌱",
+      "clue": [
+        "Osamělý robot uklízí opuštěnou planetu.",
+        "A lonely robot cleans an abandoned planet."
+      ],
+      "source": "WALL-E",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje robotka, se kterou se WALL-E setká?",
+            "What is the name of the robot WALL-E meets?"
+          ],
+          "correct": [
+            "EVE",
+            "EVE"
+          ],
+          "wrong": [
+            [
+              "AUTO",
+              "AUTO"
+            ],
+            [
+              "M-O",
+              "M-O"
+            ],
+            [
+              "BURN-E",
+              "BURN-E"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Na jaké planetě WALL-E původně pracuje?",
+            "Which planet does WALL-E originally work on?"
+          ],
+          "correct": [
+            "Země",
+            "Earth"
+          ],
+          "wrong": [
+            [
+              "Mars",
+              "Mars"
+            ],
+            [
+              "Venuše",
+              "Venus"
+            ],
+            [
+              "Titan",
+              "Titan"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "budapest",
+      "media": "film",
+      "title": [
+        "Grandhotel Budapešť",
+        "The Grand Budapest Hotel"
+      ],
+      "visual": "🏨🗝️",
+      "clue": [
+        "Výstřední hotelový concierge prožívá nečekané dobrodružství.",
+        "An eccentric hotel concierge gets swept into an adventure."
+      ],
+      "source": "The_Grand_Budapest_Hotel",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo film režíroval?",
+            "Who directed the film?"
+          ],
+          "correct": [
+            "Wes Anderson",
+            "Wes Anderson"
+          ],
+          "wrong": [
+            [
+              "Paul Thomas Anderson",
+              "Paul Thomas Anderson"
+            ],
+            [
+              "David Fincher",
+              "David Fincher"
+            ],
+            [
+              "Tim Burton",
+              "Tim Burton"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje concierge, kterého hraje Ralph Fiennes?",
+            "What is the name of the concierge played by Ralph Fiennes?"
+          ],
+          "correct": [
+            "Monsieur Gustave H.",
+            "Monsieur Gustave H."
+          ],
+          "wrong": [
+            [
+              "Zero Moustafa",
+              "Zero Moustafa"
+            ],
+            [
+              "Dmitri Desgoffe-und-Taxis",
+              "Dmitri Desgoffe-und-Taxis"
+            ],
+            [
+              "Jopling",
+              "Jopling"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "bcs",
+      "media": "series",
+      "title": [
+        "Better Call Saul",
+        "Better Call Saul"
+      ],
+      "visual": "⚖️📞",
+      "clue": [
+        "Advokát s pochybnou minulostí začíná svou právnickou dráhu.",
+        "A morally flexible lawyer builds his legal career."
+      ],
+      "source": "Better_Call_Saul",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Která série je příběhovým předchůdcem Better Call Saul?",
+            "Which series is Better Call Saul a prequel to?"
+          ],
+          "correct": [
+            "Breaking Bad",
+            "Breaking Bad"
+          ],
+          "wrong": [
+            [
+              "Ozark",
+              "Ozark"
+            ],
+            [
+              "The Wire",
+              "The Wire"
+            ],
+            [
+              "Fargo",
+              "Fargo"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jaké je původní jméno právníka Saula Goodmana?",
+            "What is Saul Goodman's original name?"
+          ],
+          "correct": [
+            "Jimmy McGill",
+            "Jimmy McGill"
+          ],
+          "wrong": [
+            [
+              "Chuck McGill",
+              "Chuck McGill"
+            ],
+            [
+              "Howard Hamlin",
+              "Howard Hamlin"
+            ],
+            [
+              "Mike Ehrmantraut",
+              "Mike Ehrmantraut"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "sopranos",
+      "media": "series",
+      "title": [
+        "Rodina Sopránů",
+        "The Sopranos"
+      ],
+      "visual": "🍝🕴️",
+      "clue": [
+        "Mafiánský boss kombinuje rodinný život a terapii.",
+        "A mob boss balances family life with therapy."
+      ],
+      "source": "The_Sopranos",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo hraje Tonyho Soprana?",
+            "Who plays Tony Soprano?"
+          ],
+          "correct": [
+            "James Gandolfini",
+            "James Gandolfini"
+          ],
+          "wrong": [
+            [
+              "Bryan Cranston",
+              "Bryan Cranston"
+            ],
+            [
+              "Steve Buscemi",
+              "Steve Buscemi"
+            ],
+            [
+              "Michael Imperioli",
+              "Michael Imperioli"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jaká profesní oblast přivede Tonyho do pravidelných sezení?",
+            "Which professional field provides Tony's regular sessions?"
+          ],
+          "correct": [
+            "Psychoterapie",
+            "Psychotherapy"
+          ],
+          "wrong": [
+            [
+              "Právo",
+              "Law"
+            ],
+            [
+              "Žurnalistika",
+              "Journalism"
+            ],
+            [
+              "Architektura",
+              "Architecture"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "mrrobot",
+      "media": "series",
+      "title": [
+        "Mr. Robot",
+        "Mr. Robot"
+      ],
+      "visual": "💻🎭",
+      "clue": [
+        "Hacker se zaplete do boje proti velké korporaci.",
+        "A hacker becomes involved in a fight against a major corporation."
+      ],
+      "source": "Mr._Robot",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje hlavní hacker seriálu?",
+            "What is the name of the show's central hacker?"
+          ],
+          "correct": [
+            "Elliot Alderson",
+            "Elliot Alderson"
+          ],
+          "wrong": [
+            [
+              "Elliot Stabler",
+              "Elliot Stabler"
+            ],
+            [
+              "Walter Bishop",
+              "Walter Bishop"
+            ],
+            [
+              "Richard Hendricks",
+              "Richard Hendricks"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje hackerská skupina v seriálu?",
+            "What is the name of the hacker group in the show?"
+          ],
+          "correct": [
+            "fsociety",
+            "fsociety"
+          ],
+          "wrong": [
+            [
+              "Anonymous",
+              "Anonymous"
+            ],
+            [
+              "DedSec",
+              "DedSec"
+            ],
+            [
+              "The Dark Army",
+              "The Dark Army"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "expanse",
+      "media": "series",
+      "title": [
+        "Expanze",
+        "The Expanse"
+      ],
+      "visual": "🚀🪐",
+      "clue": [
+        "Napětí mezi Zemí, Marsem a pásem asteroidů přeroste v krizi.",
+        "Tensions among Earth, Mars and the asteroid belt grow into a crisis."
+      ],
+      "source": "The_Expanse_(TV_series)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje loď posádky Jamese Holdena?",
+            "What is the name of James Holden's crew ship?"
+          ],
+          "correct": [
+            "Rocinante",
+            "Rocinante"
+          ],
+          "wrong": [
+            [
+              "Serenity",
+              "Serenity"
+            ],
+            [
+              "Nostromo",
+              "Nostromo"
+            ],
+            [
+              "Discovery One",
+              "Discovery One"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Pod jakým společným pseudonymem vyšla knižní předloha?",
+            "Under which shared pen name was the source book series published?"
+          ],
+          "correct": [
+            "James S. A. Corey",
+            "James S. A. Corey"
+          ],
+          "wrong": [
+            [
+              "Isaac Asimov",
+              "Isaac Asimov"
+            ],
+            [
+              "Arthur C. Clarke",
+              "Arthur C. Clarke"
+            ],
+            [
+              "Frank Herbert",
+              "Frank Herbert"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "succession",
+      "media": "series",
+      "title": [
+        "Boj o moc",
+        "Succession"
+      ],
+      "visual": "📺👔",
+      "clue": [
+        "Sourozenci soupeří o vliv nad rodinným mediálním impériem.",
+        "Siblings compete for power in a family media empire."
+      ],
+      "source": "Succession_(TV_series)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jaké příjmení nese hlavní rodina?",
+            "What is the surname of the central family?"
+          ],
+          "correct": [
+            "Roy",
+            "Roy"
+          ],
+          "wrong": [
+            [
+              "Soprano",
+              "Soprano"
+            ],
+            [
+              "Shelby",
+              "Shelby"
+            ],
+            [
+              "Dutton",
+              "Dutton"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Jak se jmenuje patriarcha této rodiny?",
+            "What is the first name of the family's patriarch?"
+          ],
+          "correct": [
+            "Logan",
+            "Logan"
+          ],
+          "wrong": [
+            [
+              "Kendall",
+              "Kendall"
+            ],
+            [
+              "Roman",
+              "Roman"
+            ],
+            [
+              "Connor",
+              "Connor"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "peaky",
+      "media": "series",
+      "title": [
+        "Peaky Blinders",
+        "Peaky Blinders"
+      ],
+      "visual": "🎩🏭",
+      "clue": [
+        "Birminghamský gang se snaží ovládnout podsvětí po válce.",
+        "A Birmingham gang rises through the underworld after the war."
+      ],
+      "source": "Peaky_Blinders_(TV_series)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo je hlavou rodiny Shelbyových v seriálu?",
+            "Who leads the Shelby family in the series?"
+          ],
+          "correct": [
+            "Tommy Shelby",
+            "Tommy Shelby"
+          ],
+          "wrong": [
+            [
+              "Arthur Shelby",
+              "Arthur Shelby"
+            ],
+            [
+              "John Shelby",
+              "John Shelby"
+            ],
+            [
+              "Michael Gray",
+              "Michael Gray"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Ve kterém anglickém městě začíná hlavní děj?",
+            "In which English city does the central story begin?"
+          ],
+          "correct": [
+            "Birmingham",
+            "Birmingham"
+          ],
+          "wrong": [
+            [
+              "Manchester",
+              "Manchester"
+            ],
+            [
+              "Liverpool",
+              "Liverpool"
+            ],
+            [
+              "Leeds",
+              "Leeds"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "housemd",
+      "media": "series",
+      "title": [
+        "Dr. House",
+        "House"
+      ],
+      "visual": "🏥🩺",
+      "clue": [
+        "Geniální, ale nesnesitelný lékař řeší záhadné diagnózy.",
+        "A brilliant but abrasive doctor solves medical mysteries."
+      ],
+      "source": "House_(TV_series)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Kdo ztvárnil doktora Gregoryho House?",
+            "Who portrayed Dr. Gregory House?"
+          ],
+          "correct": [
+            "Hugh Laurie",
+            "Hugh Laurie"
+          ],
+          "wrong": [
+            [
+              "David Tennant",
+              "David Tennant"
+            ],
+            [
+              "Benedict Cumberbatch",
+              "Benedict Cumberbatch"
+            ],
+            [
+              "Bryan Cranston",
+              "Bryan Cranston"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Ve které fiktivní nemocnici seriál převážně probíhá?",
+            "Which fictional hospital is the primary setting?"
+          ],
+          "correct": [
+            "Princeton–Plainsboro Teaching Hospital",
+            "Princeton–Plainsboro Teaching Hospital"
+          ],
+          "wrong": [
+            [
+              "Seattle Grace Hospital",
+              "Seattle Grace Hospital"
+            ],
+            [
+              "Sacred Heart Hospital",
+              "Sacred Heart Hospital"
+            ],
+            [
+              "County General Hospital",
+              "County General Hospital"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "queensgambit",
+      "media": "series",
+      "title": [
+        "Dámský gambit",
+        "The Queen's Gambit"
+      ],
+      "visual": "♟️👩",
+      "clue": [
+        "Nadaná mladá šachistka míří mezi světovou elitu.",
+        "A gifted young chess player rises toward the world elite."
+      ],
+      "source": "The_Queen%27s_Gambit_(miniseries)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje šachistka v hlavní roli?",
+            "What is the name of the central chess player?"
+          ],
+          "correct": [
+            "Beth Harmon",
+            "Beth Harmon"
+          ],
+          "wrong": [
+            [
+              "Judit Polgár",
+              "Judit Polgár"
+            ],
+            [
+              "Vera Menchik",
+              "Vera Menchik"
+            ],
+            [
+              "Elizabeth Bennet",
+              "Elizabeth Bennet"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Která herečka hraje Beth Harmon?",
+            "Which actress plays Beth Harmon?"
+          ],
+          "correct": [
+            "Anya Taylor-Joy",
+            "Anya Taylor-Joy"
+          ],
+          "wrong": [
+            [
+              "Saoirse Ronan",
+              "Saoirse Ronan"
+            ],
+            [
+              "Emma Stone",
+              "Emma Stone"
+            ],
+            [
+              "Florence Pugh",
+              "Florence Pugh"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "lastkingdom",
+      "media": "series",
+      "title": [
+        "Poslední království",
+        "The Last Kingdom"
+      ],
+      "visual": "⚔️🏰",
+      "clue": [
+        "Saský šlechtic vyrůstající mezi Dány hledá své dědictví.",
+        "A Saxon noble raised among Danes seeks his inheritance."
+      ],
+      "source": "The_Last_Kingdom_(TV_series)",
+      "questions": {
+        "medium": {
+          "prompt": [
+            "Jak se jmenuje hlavní hrdina seriálu?",
+            "What is the series' main character called?"
+          ],
+          "correct": [
+            "Uhtred of Bebbanburg",
+            "Uhtred of Bebbanburg"
+          ],
+          "wrong": [
+            [
+              "Ragnar Lothbrok",
+              "Ragnar Lothbrok"
+            ],
+            [
+              "Alfred the Great",
+              "Alfred the Great"
+            ],
+            [
+              "Ivar the Boneless",
+              "Ivar the Boneless"
+            ]
+          ]
+        },
+        "hard": {
+          "prompt": [
+            "Kdo napsal knižní sérii, z níž seriál vychází?",
+            "Who wrote the novel series behind the show?"
+          ],
+          "correct": [
+            "Bernard Cornwell",
+            "Bernard Cornwell"
+          ],
+          "wrong": [
+            [
+              "Ken Follett",
+              "Ken Follett"
+            ],
+            [
+              "George R. R. Martin",
+              "George R. R. Martin"
+            ],
+            [
+              "Hilary Mantel",
+              "Hilary Mantel"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
