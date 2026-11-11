@@ -385,7 +385,7 @@
 </style>
 <link rel="stylesheet" href="./quizoria/foundation.css?v=quizoria-general-20261109b">
 <link rel="stylesheet" href="./quizoria/million.css?v=quizoria-general-20261109b">
-<link rel="stylesheet" href="./quizoria/memes.css?v=quizoria-general-20261109b">
+<link rel="stylesheet" href="./quizoria/memes.css?v=foxey-media-library-10-20261111a">
 <link rel="stylesheet" href="./quizoria/progression.css?v=quizoria-general-20261109b">
 <link rel="stylesheet" href="./quizoria/movies.css?v=quizoria-general-20261109b">
 <link rel="stylesheet" href="./quizoria/music.css?v=quizoria-general-20261109b">
@@ -403,6 +403,7 @@
     <a id="brandLink" class="brand quizoria-brand" href="./arcade/" target="_top"><span class="brand-mark">🧠</span><span><b>QUIZORIA</b><small class="quizoria-studio">A FOXEY Arcade Game</small></span></a>
     <div class="header-actions">
       <a id="backToPlatform" class="platform-return" href="./arcade/" target="_top">← Zpět do Arcade</a>
+      <a class="platform-return" id="mediaLibraryShortcut" href="./arcade/media-library.html" target="_blank" rel="noopener noreferrer" title="Zdroje a licence obrázků" aria-label="Knihovna mediálních licencí">© Média</a>
       <button id="historyBell" class="lang hidden" type="button" aria-label="Moje výzvy" title="Moje výzvy">🔔 <span id="historyBellCount" class="notification-count hidden">0</span></button>
       <button id="achievementsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="achievementsOverlay" aria-label="Achievementy" title="Achievementy">🏆 <span id="achievementHeaderCount" class="achievements-small-count">—</span></button>
       <button id="missionsButton" class="lang achievement-shortcut hidden" type="button" aria-haspopup="dialog" aria-controls="missionsOverlay" aria-label="Mise" title="Mise">🎯 <span id="missionHeaderCount" class="achievements-small-count">—</span></button>
@@ -870,11 +871,14 @@
         </div>
         <a id="memeImageCredit" href="https://commons.wikimedia.org/" target="_blank"
           rel="noopener noreferrer" class="meme-image-credit">Zdroj obrázku a licence</a>
+        <a id="memeLicenseLink" href="./arcade/media-library.html" target="_blank"
+          rel="noopener noreferrer" class="meme-image-credit hidden">📜 Znění licence</a>
         <h3 id="memePrompt">Načítám otázku…</h3>
         <div id="memeOptions" class="meme-options" role="group" aria-label="Možnosti odpovědi"></div>
       </section>
       <p id="memeFeedback" class="meme-feedback hidden" role="status" aria-live="polite"></p>
       <div class="meme-actions">
+        <button id="memeSkipCopyright" type="button" class="secondary hidden">⏭️ Přeskočit otázku bez ztráty bodů</button>
         <button id="memeRetry" type="button" class="hidden">↻ Opakovat požadavek</button>
         <button id="memeNext" class="primary hidden" type="button">Další otázka →</button>
       </div>
@@ -1589,7 +1593,7 @@
 <script src="./quizoria/quizoria-ui.js?v=quizoria-question-23-20261111a"></script>
 <script src="./quizoria/million.js?v=quizoria-general-20261109b"></script>
 <script src="./quizoria/category-engine.js?v=quizoria-general-20261109b"></script>
-<script src="./quizoria/memes.js?v=quizoria-general-20261109b"></script>
+<script src="./quizoria/memes.js?v=foxey-media-library-10-20261111a"></script>
 <script src="./quizoria/progression.js?v=quizoria-20-20261109b"></script>
 <script src="./quizoria/coach.js?v=quizoria-20-20261109b"></script>
 <script src="./quizoria/movies.js?v=quizoria-general-20261109b"></script>
