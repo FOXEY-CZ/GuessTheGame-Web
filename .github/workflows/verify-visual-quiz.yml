@@ -1,0 +1,47 @@
+name: Verify Visual Quiz 1.0 originals
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'quizoria/media/**'
+      - 'quizoria/memes.js'
+      - 'quizoria/survival.js'
+      - 'quizoria/endless.js'
+      - 'quizoria/memes.css'
+      - 'arcade/media-library.html'
+      - 'arcade/index.html'
+      - 'secure-quiz-beta.html'
+      - 'supabase/quizoria_visual_quiz_1_0_original_art_20261111.sql'
+      - 'tests/visual-quiz-originals.cjs'
+      - '.github/workflows/verify-visual-quiz.yml'
+  pull_request:
+    paths:
+      - 'quizoria/media/**'
+      - 'quizoria/memes.js'
+      - 'quizoria/survival.js'
+      - 'quizoria/endless.js'
+      - 'quizoria/memes.css'
+      - 'arcade/media-library.html'
+      - 'arcade/index.html'
+      - 'secure-quiz-beta.html'
+      - 'supabase/quizoria_visual_quiz_1_0_original_art_20261111.sql'
+      - 'tests/visual-quiz-originals.cjs'
+      - '.github/workflows/verify-visual-quiz.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-quiz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate original SVG assets, rights, server data and client renderers
+        run: |
+          node --check quizoria/memes.js
+          node --check quizoria/survival.js
+          node --check quizoria/endless.js
+          node tests/visual-quiz-originals.cjs
