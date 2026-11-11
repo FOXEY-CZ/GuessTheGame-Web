@@ -32,7 +32,7 @@ AS $function$
       'author',author,'license',license
     ) ORDER BY position)
   FROM selected
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_meme_pick_recent(p_mode text, p_seed text, p_user uuid)
@@ -74,7 +74,7 @@ AS $function$
     'answer_index',answer_index,'image_url',image_url,
     'source_url',source_url,'author',author,'license',license
   ) ORDER BY ord) FROM picked
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_survival_pick(p_category text, p_operation uuid)
@@ -147,7 +147,7 @@ WITH all_questions AS (
 SELECT coalesce(pg_catalog.jsonb_agg(payload ORDER BY
  CASE difficulty WHEN 'easy' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,slot),'[]'::jsonb)
 FROM ordered WHERE difficulty IN ('easy','medium','hard') AND slot<=20;
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_endless_pool(p_category text, p_difficulty text, p_seed text)
@@ -201,7 +201,7 @@ FROM all_questions a
 WHERE (p_category='mix' OR a.category=p_category) AND a.difficulty=p_difficulty
 AND pg_catalog.jsonb_array_length(a.question->'options')=4
 AND (a.question->>'answer_index')::integer BETWEEN 0 AND 3;
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_meme_view(p_run arcade_private.quizoria_meme_runs)
@@ -235,7 +235,7 @@ BEGIN
     'reward',reward
   );
 END
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_survival_view(p_run arcade_private.quizoria_survival_runs)
@@ -269,7 +269,7 @@ BEGIN
   )) END
  );
 END;
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_endless_view(p_run arcade_private.quizoria_endless_runs)
@@ -294,7 +294,7 @@ BEGIN
   'best_streak',p_run.best_streak,'rating',p_run.rating,
   'cycles',p_run.cycles,'finished',p_run.finished,'question',public_q,'reward',reward);
 END;
-$function$
+$function$;
 
 REVOKE ALL ON FUNCTION arcade_private.quizoria_meme_pick(text,text) FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON FUNCTION arcade_private.quizoria_meme_pick_recent(text,text,uuid) FROM PUBLIC,anon,authenticated;
