@@ -63,7 +63,7 @@ const scope=vm.runInNewContext(`(function(){
   const clearTimeout=globalThis.clearTimeout;
   let user={id:'test-user'},profile={arcade_xp:390};
   let achievements=null,achievementStatus='guest',
-      achievementSeq=0,achToastTimer=null;
+      achievementSeq=0,achToastTimer=null,achievementFilter='all';
   ${extracted}
   return {loadAchievements,renderAchievements,
     setXp:x=>{profile.arcade_xp=x;},
