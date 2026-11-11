@@ -7,10 +7,10 @@ This is a practical editorial/source audit, **not a legal opinion or warranty**.
 
 | Asset type | Approved | Under review | Blocked |
 |---|---:|---:|---:|
-| Images | 19 | 10 | 2 |
+| Images | 18 | 11 | 2 |
 | Original emoji-based quiz visuals | 12 | 0 | 0 |
 
-There are **129** meme questions: **93** eligible and **36** quarantined. All **12** original emoji-based quiz visuals remained unchanged. The six new image approvals account for **18** additional questions. Saved rounds, challenge history, users, rewards, balances, and question IDs were not changed in this follow-up.
+There are **129** meme questions: **90** eligible and **39** quarantined after second-pass review. All **12** original emoji-based quiz visuals remained unchanged. The six new image approvals initially restored **18** questions; a later second-pass quarantine of one previously approved image removed **3**, resulting in a net improvement of **15** playable questions. Saved rounds, challenge history, users, rewards, balances, and question IDs were not changed in this follow-up.
 
 ## Six newly approved works
 
@@ -40,6 +40,20 @@ The application only scales the Commons images responsively; no new derivative g
 | `vim` | Screenshot includes Stack Overflow UI and underlying contributors' text | Original text UI mock-up about exiting a fictional editor, not a copied screenshot |
 | `wojak` | CC0 claim by vectorizer does not confirm rights to original Wojak design | Independently illustrated original reaction character |
 
+### Second-pass check of previously approved media (2026-11-11)
+
+The original 13 approved images were also re-examined. One earlier approval was conservatively revoked:
+
+- `q23meme-replaying-prince`: **approved → review**. The author Nicky Case explicitly dedicates their own work to CC0 ([source](https://commons.wikimedia.org/wiki/File:REPLAYING_the_game_Fresh_Prince_of_Memes.jpg)), but this particular screenshot includes a Fresh Prince of Bel-Air parody and Team Fortress 2 character references. Their own CC0 dedication cannot automatically waive third-party copyrights or relevant likeness rights. Three questions are now withheld. No game progress, original question IDs, saved rounds or scores were erased.
+
+One approved attribution was corrected without changing status:
+
+- `doge`: likeaduck created the underlying CC BY 2.0 photograph and Belbury added/cropped/edited the meme typography according to the [Commons file history](https://commons.wikimedia.org/wiki/File:Doge_meme_example.jpg). The public media register now credits both.
+
+The [original artwork](https://commons.wikimedia.org/wiki/File:Reimer_Librarian.jpg) underlying [Open access meme.gif](https://commons.wikimedia.org/wiki/File:Open_access_meme.gif) is an 1850–1866 painting by Georg Reimer, with public-domain art status. This resolved the specific underlying copyright concern for that previously approved derivative; image reproduction conditions may still warrant jurisdiction-specific review.
+
+Current totals after this second pass: **18 approved images, 12 approved original emoji motifs, 11 images under review, 2 blocked images**; **90 eligible and 39 held quiz questions**. The 20-seed quiz selection smoke test must be rerun for these totals (and the public register updated).
+
 ### Two existing blocked images remain blocked
 
 - `fine`: derived from KC Green's protected **This Is Fine** comic; an unrelated CC license cannot clear the original comic.
@@ -54,7 +68,7 @@ Do **not** replace these with near-identical redraws of the protected characters
 - Added exactly **6** corresponding `foxey_media_audit_log` records.
 - Updated the existing ten unapproved rows with individual reason notes and added **10** audit-log entries retaining `review`; no change to their effective rights status.
 - The previous two blocked rows and all approved/emoji assets were untouched.
-- Smoke query over `arcade_private.quizoria_meme_pick('classic', seed)` with 20 distinct seeds returned **200** questions across 20 full sets of 10, **0 unapproved selections**, **31 distinct approved asset keys**.
+- Smoke query over `arcade_private.quizoria_meme_pick('classic', seed)` with 20 distinct seeds returned **200** questions across 20 full sets of 10, **0 unapproved selections**, **30 distinct approved asset keys**.
 - Web register `arcade/media-library.html` updated to correspond to live totals and show approved author/license/source metadata.
 - **No changes** to account identity, saved games, progress, XP, wallet, achievement logic, reward functions, or question IDs.
 
