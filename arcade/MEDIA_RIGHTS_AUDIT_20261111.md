@@ -52,7 +52,7 @@ One approved attribution was corrected without changing status:
 
 The [original artwork](https://commons.wikimedia.org/wiki/File:Reimer_Librarian.jpg) underlying [Open access meme.gif](https://commons.wikimedia.org/wiki/File:Open_access_meme.gif) is an 1850–1866 painting by Georg Reimer, with public-domain art status. This resolved the specific underlying copyright concern for that previously approved derivative; image reproduction conditions may still warrant jurisdiction-specific review.
 
-Current totals after this second pass: **18 approved images, 12 approved original emoji motifs, 11 images under review, 2 blocked images**; **90 eligible and 39 held quiz questions**. The 20-seed quiz selection smoke test must be rerun for these totals (and the public register updated).
+Current totals after this second pass: **18 approved images, 12 approved original emoji motifs, 11 images under review, 2 blocked images**; **90 eligible and 39 held quiz questions**. The 20-seed quiz selection smoke test was rerun after this change: 200 of 200 selected questions were eligible, all 20 runs contained 10 questions, and no quarantined asset was selected. The public register was updated to match the live totals.
 
 ### Two existing blocked images remain blocked
 
