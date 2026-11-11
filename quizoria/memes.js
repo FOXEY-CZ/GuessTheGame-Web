@@ -12,7 +12,7 @@ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const modes=engine.config('memes').modes.filter(mode=>mode!=='friend');
 const dict={
   cs:{
-    title:'😂 Guess the Meme',sub:'Poznáš internetové legendy jen podle obrázku?',
+    title:'😂 Guess the Meme',sub:'Poznáš memy, internetové situace a naše nové originální ilustrace?',
     back:'← Zpět do Quizorie',intro:'Vyber režim, prohlédni obrázek a odpověz. Každou odpověď ověřuje server.',
     category:'😂 Memy a internet',new:'▶ Hrát',resume:'⏯ Pokračovat',
     modes:['🎲 Klasický mix','🟢 Nováček','🟠 Zkušený','🔥 Expert','📅 Denní mem'],
@@ -29,7 +29,7 @@ const dict={
     waitingCopyright:'Původní obrázek čeká na ověření autorských práv.',
     skipMedia:'⏭️ Přeskočit otázku bez ztráty bodů',skippedMedia:'⚖️ Obrázek čeká na ověření. Otázka přeskočena bez bodové ztráty.',
     licenseLink:'📜 Znění licence',emojiCredit:'FOXEY Arcade · vlastní emoji otázka',
-    linkImage:'Otevřít obrázek na Wikimedia Commons',
+    linkImage:'Otevřít původní obrázek',
     correct:'✅ Správně!',wrong:'❌ To není správně.',right:'Správná odpověď:',
     next:'Další otázka →',finished:'🏆 Konec kvízu!',
     result:'Tvůj výsledek',score:'bodů',playAgain:'🎮 Další kvíz',
@@ -41,7 +41,7 @@ const dict={
     win:'🏆 Vyhrál zakladatel!',lose:'🏆 Vyhrál soupeř!',tie:'🤝 Remíza!',
     noChallenge:'Zatím nemáš vybranou výzvu.',emptyInvite:'Vlož odkaz nebo ID výzvy.',
     signedOut:'Nejdřív se přihlas do FOXEY Arcade.',
-    dailyNote:'Denní otázky se mění každý den podle UTC.',
+    dailyNote:'Denní otázky se mění každý den podle UTC.',visualNote:'🎨 Visual Quiz 1.0 · 13 nových originálních ilustrací',
     save:'Rozehraný kvíz je na serveru a zůstane zachovaný i po zavření stránky.',
     invalid:'Server vrátil neplatnou odpověď.',playFirst:'Vyber možnost odpovědi.',
     mime:'Jména, obrázky a popisy jsou použité se zdrojovými kredity. Soutěžní body nejsou reálné peníze.',
@@ -50,7 +50,7 @@ const dict={
     latest:'Nedávno dokončeno',active:'Rozehráno'
   },
   en:{
-    title:'😂 Guess the Meme',sub:'Can you recognize legendary memes from pictures?',
+    title:'😂 Guess the Meme',sub:'Recognize memes, internet culture and our new original illustrations!',
     back:'← Back to Quizoria',intro:'Choose a mode, inspect the image and answer. The server verifies each choice.',
     category:'😂 Memes & Internet',new:'▶ Play',resume:'⏯ Resume',
     modes:['🎲 Classic Mix','🟢 Beginner','🟠 Experienced','🔥 Expert','📅 Daily Meme'],
@@ -66,7 +66,7 @@ const dict={
     waitingCopyright:'This image is temporarily held for copyright review.',
     skipMedia:'⏭️ Skip this question without losing points',skippedMedia:'⚖️ Image under rights review. Question skipped without losing points.',
     licenseLink:'📜 License terms',emojiCredit:'FOXEY Arcade · original emoji question',
-    linkImage:'Open the image on Wikimedia Commons',
+    linkImage:'Open original image',
     correct:'✅ Correct!',wrong:'❌ Not quite.',right:'Correct answer:',
     next:'Next question →',finished:'🏆 Quiz finished!',
     result:'Your result',score:'points',playAgain:'🎮 Another quiz',
@@ -77,7 +77,7 @@ const dict={
     battle:'Match result',creator:'Creator',challenger:'Challenger',
     win:'🏆 Creator wins!',lose:'🏆 Challenger wins!',tie:'🤝 Tie!',
     noChallenge:'No challenge selected yet.',emptyInvite:'Paste an invitation link or ID.',
-    signedOut:'Sign in to FOXEY Arcade first.',dailyNote:'Daily questions reset each UTC day.',
+    signedOut:'Sign in to FOXEY Arcade first.',dailyNote:'Daily questions reset each UTC day.',visualNote:'🎨 Visual Quiz 1.0 · 13 new original illustrations',
     save:'Your run is safely stored on the server, even after closing this page.',
     invalid:'The server sent an invalid response.',playFirst:'Choose an answer.',
     mime:'Images and descriptions include source credits. Game points are not real currency.',
@@ -420,6 +420,7 @@ async function pollChallenge(silent=false){
 function localize(){
  const mapping={
   memeTitle:'title',memeSubtitle:'sub',memeBack:'back',memeIntro:'intro',
+  memeVisualNote:'visualNote',
   memeCategory:'category',memeSavedTitle:'saves',memeChallengeTitle:'challenge',
   memeChallengeDesc:'challengeDesc',memeChallengeCreate:'create',
   memeChallengeJoin:'join',memeInviteCopy:'copy',memeMatchCheck:'check',
