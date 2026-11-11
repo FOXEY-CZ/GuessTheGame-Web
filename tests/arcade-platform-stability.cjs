@@ -38,7 +38,7 @@ for(const [,page] of arcadeHtml.matchAll(/\bdata-page="([^"]+)"/g))
 // The next-generation home layout separates quick actions from the featured
 // game button and shop spotlight. All destinations must still work.
 const homeStart=arcadeHtml.indexOf('<section class="page" id="page-home">');
-const homeEnd=arcadeHtml.indexOf('<section class="page" id="page-games">',homeStart);
+const homeEnd=arcadeHtml.indexOf('id="page-games"',homeStart);
 assert.ok(homeStart>=0&&homeEnd>homeStart,'global home page must exist');
 const homeHtml=arcadeHtml.slice(homeStart,homeEnd);
 const homeQuickGrid=homeHtml.match(/<div class="ng-quick-grid"[\s\S]*?<\/div>/)?.[0];
