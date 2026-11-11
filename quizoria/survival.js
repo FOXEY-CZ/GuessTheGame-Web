@@ -190,9 +190,11 @@ function renderVisual(q){
   hide('survivalVisual',false);
  }
  const url=String(q?.source_url||'');
- if(url.startsWith('https://commons.wikimedia.org/')){
+ if(url.startsWith('https://commons.wikimedia.org/')||
+    url==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html'){
   source.href=url;source.textContent=t('source')+
-   (q.author?' · '+String(q.author).slice(0,50):'');
+    (q.author?' · '+String(q.author).slice(0,50):'')+
+    (q.license?' · '+String(q.license).slice(0,50):'');
   hide('survivalSource',false);
  }
 }
