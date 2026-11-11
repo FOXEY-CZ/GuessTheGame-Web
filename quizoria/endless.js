@@ -158,7 +158,8 @@ function visual(q){
  const view=$('endlessVisual'),link=$('endlessSource');
  view.replaceChildren();hide('endlessVisual',true);hide('endlessSource',true);
  const value=String(q?.visual||'');
- if(value.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/')){
+ if(value.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/')||
+    /^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(value)){
   const img=make('img','endless-image');img.src=value;img.loading='eager';
   img.alt=String(q?.['prompt_'+lang]||t('title'));
   img.referrerPolicy='no-referrer';
@@ -170,6 +171,7 @@ function visual(q){
  }
  const source=String(q?.source_url||'');
  if(source.startsWith('https://commons.wikimedia.org/')||
+    /^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(source)||
     source==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html'){
   link.href=source;link.textContent=t('source')+
     (q.author?' · '+String(q.author).slice(0,40):'')+
