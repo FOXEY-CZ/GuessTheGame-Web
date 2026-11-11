@@ -27,7 +27,7 @@ const dict={
     retry:'↻ Opakovat požadavek',question:'Otázka',points:'Body',
     credits:'Zdroj obrázku a licence',imageError:'Obrázek se nepodařilo načíst. Otevři zdrojový obrázek.',
     waitingCopyright:'Původní obrázek čeká na ověření autorských práv.',
-    skipMedia:'⏭️ Přeskočit otázku bez ztráty bodů',skippedMedia:'⚖️ Obrázek čeká na ověření. Otázka přeskočena bez bodové ztráty.',
+    skipMedia:'⏭️ Přeskočit (za tuto otázku 0 bodů)',skippedMedia:'⏭️ Otázka přeskočena za 0 bodů. Získané skóre zůstalo zachované.',repairMedia:'🖼️ Opravit obrázek a zachovat skóre',
     licenseLink:'📜 Znění licence',emojiCredit:'FOXEY Arcade · vlastní emoji otázka',
     linkImage:'Otevřít původní obrázek',
     correct:'✅ Správně!',wrong:'❌ To není správně.',right:'Správná odpověď:',
@@ -64,7 +64,7 @@ const dict={
     retry:'↻ Retry request',question:'Question',points:'Points',
     credits:'Image credit and license',imageError:'Image failed to load. Open the source image.',
     waitingCopyright:'This image is temporarily held for copyright review.',
-    skipMedia:'⏭️ Skip this question without losing points',skippedMedia:'⚖️ Image under rights review. Question skipped without losing points.',
+    skipMedia:'⏭️ Skip (0 points for this question)',skippedMedia:'⏭️ Question skipped for 0 points. Your earned score is preserved.',repairMedia:'🖼️ Fix this image and keep the score',
     licenseLink:'📜 License terms',emojiCredit:'FOXEY Arcade · original emoji question',
     linkImage:'Open original image',
     correct:'✅ Correct!',wrong:'❌ Not quite.',right:'Correct answer:',
@@ -89,7 +89,7 @@ const dict={
 let lang='cs',api=null,uid=null,runs=[],run=null,pending=null,
     locked=false,opened=false,playing=false,feedback=null,awaitNext=false,
     mode=null,challenge=null,challengeId=null,lastQuestion=null,
-    beginPending=null,serial=0,autoHandled=null;
+    beginPending=null,serial=0,autoHandled=null,brokenVisual=null;
 const t=k=>dict[lang][k]||k;
 // Only our versioned artwork directory is accepted; arbitrary image hosts stay blocked.
 const originalVisual=url=>/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(String(url||''));
@@ -228,7 +228,9 @@ function renderGame(){
  const selfArt=originalVisual(src);
  const emoji=src.startsWith('emoji:');
  const reviewed=q.media_review_pending===true;
- if((commons||selfArt)&&!reviewed){
+ const broken=(commons||selfArt)&&brokenVisual===src;
+ const unavailable=reviewed||broken||(!emoji&&!commons&&!selfArt);
+ if((commons||selfArt)&&!unavailable){
   if(img.dataset.src!==src){img.dataset.src=src;img.src=src;}
   img.classList.remove('hidden');
   img.alt=selfArt?(lang==='en'?'Original FOXEY Arcade illustration':'Originální ilustrace FOXEY Arcade'):(lang==='en'?'Internet meme':'Internetový mem');
@@ -242,12 +244,15 @@ function renderGame(){
    emoji?src.slice(6):t('imageError');
   hide('memeImageError',false);
  }
- hide('memeSkipCopyright',!reviewed||awaitNext||run.finished);
+ hide('memeSkipCopyright',!unavailable||awaitNext||run.finished);
  $('memeSkipCopyright').disabled=locked||!!pending;
+ const soloRepair=unavailable&&!run.challenge_id&&run.mode!=='daily'&&!awaitNext&&!run.finished;
+ hide('memeRepairMedia',!soloRepair);
+ $('memeRepairMedia').disabled=locked||!!pending;
  sourceLink(q);
  const grid=$('memeOptions');grid.replaceChildren();
  const opts=Array.isArray(q.options)?q.options:[];
- opts.forEach((option,index)=>{
+ if(!unavailable)opts.forEach((option,index)=>{
   const button=make('button','meme-option');
   button.type='button';
   button.append(make('b','meme-letter','ABCD'[index]||'?'),
@@ -427,6 +432,7 @@ function localize(){
   memeNext:'next',memeRetry:'retry',memeAnother:'playAgain',
   memeImageOpen:'linkImage',memeImageError:'imageError',
   memeSkipCopyright:'skipMedia',memeLicenseLink:'licenseLink',
+  memeRepairMedia:'repairMedia',
   memeDailyNote:'dailyNote',memeLegal:'mime',
   memeTopShareText:'sharePlaying',memeTopShareCopy:'shareCopy'
  };
@@ -465,21 +471,22 @@ $('memeTopShareCopy')?.addEventListener('click',async()=>{
 $('memeImage').addEventListener('error',()=>{
  if(!$('memeImage').dataset.src?.startsWith('https://commons.wikimedia.org/') &&
    !originalVisual($('memeImage').dataset.src))return;
- $('memeImage').classList.add('hidden');
- $('memeImageError').classList.remove('meme-image-emoji');
- $('memeImageError').textContent=t('imageError');
- hide('memeImageError',false);
+ brokenVisual=$('memeImage').dataset.src;
+ renderGame();
 });
 $('memeSkipCopyright').addEventListener('click',()=>{
- if(run?.question?.media_review_pending===true&&!awaitNext&&!locked&&!pending)
-  void answer(4);
+ if(run&&!run.finished&&!awaitNext&&!locked&&!pending)void answer(4);
+});
+$('memeRepairMedia').addEventListener('click',()=>{
+ if(!run||run.finished||run.challenge_id||run.mode==='daily'||locked||pending||awaitNext)return;
+ void resume(run.run_id);
 });
 window.QUIZORIA_MEMES=Object.freeze({
  connect(client,user){
   const next=user?.id||null;
   if(uid===next&&api===client)return;
   uid=next;api=client;run=null;pending=null;runs=[];feedback=null;
-  locked=false;playing=false;opened=false;serial++;autoHandled=null;
+  locked=false;playing=false;opened=false;serial++;autoHandled=null;brokenVisual=null;
   root.classList.add('hidden');
   if(uid)void refreshRuns();
  },
