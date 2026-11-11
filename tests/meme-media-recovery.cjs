@@ -35,6 +35,7 @@ for(const p of [
  'supabase/quizoria_media_visibility_fix_1_1_3_survival_pool.sql']){
   assert.ok(fs.existsSync(p),'Missing migration: '+p);
 }
-assert.ok(js.includes('foxey-cz.github.io/GuessTheGame-Web/quizoria/media/'),
+assert.ok(js.includes('const originalVisual=url=>') &&
+ js.includes('const selfArt=originalVisual(src);'),
  'First-party image renderer must remain in place');
 console.log('PASS: missing pictures hide answer options, repair/skip visible on mobile, server-owned scores and four SQL migrations present');
