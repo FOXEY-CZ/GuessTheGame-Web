@@ -48,7 +48,7 @@ for(const route of ['community','missions','challenges'])
    'home quick actions missing valid platform route: '+route);
 assert.ok(/class="ng-feature-actions"[\s\S]*?data-page="games"/.test(homeHtml),
  'featured game must link to game library');
-assert.ok(/class="arcade-shop-spotlight-action" data-page="shop"/.test(homeHtml),
+assert.ok(/class="[^"]*arcade-shop-spotlight-action[^"]*" data-page="shop"/.test(homeHtml),
  'shop spotlight must link to shared shop');
 assert.ok(arcadeHtml.includes('class="gamegrid arcade-library-live"')&&
   arcadeHtml.includes('class="gamegrid arcade-upcoming-grid"'),
