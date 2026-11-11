@@ -45,6 +45,9 @@ cs:{
  milestoneCounts:(stage,goal,correct,needed)=>stage+'/'+goal+' otázek · '+correct+'/'+needed+' správně',
  milestoneHelp:'Odměnu server vyhodnotí a případně připíše až při ukončení partie. Platí aktivace a hodinové/denní limity.',
  milestoneReady:'Oba milníky splněny! Odměnu musí server potvrdit při ukončení.',
+ mediaHold:'⚖️ Obrázek čeká na prověření autorských práv.',
+ mediaSkip:'⏭️ Přeskočit bez postihu',
+ mediaSkipped:'⚖️ Otázka s neověřeným obrázkem přeskočena bez postihu.',
  source:'Zdroj obrázku',unit:'bodů',answered:'odpovědí'
 },
 en:{
@@ -76,6 +79,9 @@ en:{
  milestoneCounts:(stage,goal,correct,needed)=>stage+'/'+goal+' questions · '+correct+'/'+needed+' correct',
  milestoneHelp:'The server evaluates and may credit rewards only when you finish the run. Activation and hourly/daily limits apply.',
  milestoneReady:'Both milestones met! Rewards still require verification when you finish.',
+ mediaHold:'⚖️ Original image is held for copyright review.',
+ mediaSkip:'⏭️ Skip without penalty',
+ mediaSkipped:'⚖️ Image question skipped without penalty while under rights review.',
  source:'Image source',unit:'points',answered:'answers'
 }
 };
@@ -159,7 +165,7 @@ function visual(q){
   img.addEventListener('error',()=>{img.classList.add('hidden');});
   view.append(img);hide('endlessVisual',false);
  }else if(value&&!value.startsWith('https://')&&!value.startsWith('http://')){
-  view.append(make('span','endless-emoji',value.slice(0,100)));
+  view.append(make('span','endless-emoji',(value.startsWith('emoji:')?value.slice(6):value).slice(0,100)));
   hide('endlessVisual',false);
  }
  const source=String(q?.source_url||'');
@@ -176,6 +182,9 @@ function renderQuestion(){
  $('endlessPrompt').textContent=String(q['prompt_'+lang]||q.prompt_cs||'');
  $('endlessClue').textContent=String(q['clue_'+lang]||'');
  visual(q);
+ if(q.media_review_pending===true) $('endlessClue').textContent=t('mediaHold');
+ hide('endlessSkipCopyright',q.media_review_pending!==true||advance);
+ $('endlessSkipCopyright').disabled=busy||!!pending;
  const options=$('endlessOptions');options.replaceChildren();
  for(const [i,answer] of q.options.entries()){
   const button=make('button','endless-option');
@@ -191,10 +200,11 @@ function renderQuestion(){
  hide('endlessFeedback',!feedback);
  if(feedback){
   const answer=shown?.options?.[feedback.correct];
-  $('endlessFeedback').textContent=t(feedback.ok?'correct':'wrong')+
-   (feedback.ok?'':' '+t('correctWas')+' '+String(answer?.[lang]||answer?.cs||''));
-  $('endlessFeedback').classList.toggle('good',feedback.ok);
-  $('endlessFeedback').classList.toggle('bad',!feedback.ok);
+  $('endlessFeedback').textContent=feedback.mediaSkipped?t('mediaSkipped'):
+    t(feedback.ok?'correct':'wrong')+
+    (feedback.ok?'':' '+t('correctWas')+' '+String(answer?.[lang]||answer?.cs||''));
+  $('endlessFeedback').classList.toggle('good',feedback.ok||feedback.mediaSkipped);
+  $('endlessFeedback').classList.toggle('bad',!feedback.ok&&!feedback.mediaSkipped);
  }
  hide('endlessRetry',!pending);hide('endlessNext',!advance);
  $('endlessRetry').disabled=busy;$('endlessNext').disabled=busy;
@@ -283,7 +293,8 @@ async function resume(runId){
 }
 async function answer(choice,retry=false){
  if(!run||run.finished||busy||advance||!uid||!api||(!retry&&pending))return;
- if(!Number.isSafeInteger(choice)||choice<0||choice>3)return;
+ if(!Number.isSafeInteger(choice)||choice<0||choice>4)return;
+ if(choice===4&&run?.question?.media_review_pending!==true&&!retry)return;
  if(retry&&!pending)return;
  if(!retry)pending={choice,event:crypto.randomUUID(),question:run.question};
  busy=true;render();status(t('loading'));
@@ -293,13 +304,15 @@ async function answer(choice,retry=false){
    p_run_id:runId,p_event_id:pending.event,p_choice:pending.choice
   });
   if(error||!validRun(data)||typeof data.was_correct!=='boolean'||
-      !Number.isSafeInteger(data.correct_option)||data.correct_option<0||data.correct_option>3)
+      (data.media_skipped!==true&&(!Number.isSafeInteger(data.correct_option)||data.correct_option<0||data.correct_option>3))||
+      (data.media_skipped===true&&data.correct_option!==null))
    throw error||Error('invalid_answer');
   if(uid!==owner||serial!==actionSeq)return;
   shown=pending.question;
-  feedback={ok:data.was_correct,correct:data.correct_option,choice:pending.choice};
+  feedback={ok:data.was_correct,correct:data.correct_option,choice:pending.choice,
+   mediaSkipped:data.media_skipped===true};
   run=data;pending=null;advance=true;status(t('saved'));
-  try{navigator.vibrate?.(data.was_correct?[20]:[50]);}catch(_){}
+  if(!data.media_skipped)try{navigator.vibrate?.(data.was_correct?[20]:[50]);}catch(_){}
  }catch(e){if(uid===owner&&serial===actionSeq)status(t('error')+' ('+String(e?.message||'network')+')',true);}
  finally{busy=false;render();}
 }
@@ -360,6 +373,7 @@ function locale(){
   endlessScoreLabel:'score',endlessStreakLabel:'streak',
   endlessAccuracyLabel:'accuracy',endlessRatingLabel:'rating',
   endlessRetry:'retry',endlessNext:'next',endlessSaveExit:'saveExit',
+  endlessSkipCopyright:'mediaSkip',
   endlessFinish:'finish',endlessFinalTitle:'finalTitle',endlessAgain:'again'
  }))$(id).textContent=t(key);
  render();
@@ -381,6 +395,10 @@ $('endlessOptions').addEventListener('click',event=>{
 });
 $('endlessRetry').addEventListener('click',()=>{if(pending)void answer(pending.choice,true);});
 $('endlessNext').addEventListener('click',next);
+$('endlessSkipCopyright').addEventListener('click',()=>{
+ if(run?.question?.media_review_pending===true&&!advance&&!busy&&!pending)
+  void answer(4);
+});
 $('endlessSaveExit').addEventListener('click',close);
 $('endlessFinish').addEventListener('click',()=>void finish());
 $('endlessAgain').addEventListener('click',()=>{
