@@ -72,6 +72,16 @@ class Node{
  replaceChildren(...xs){this.children=[...xs];}
  addEventListener(k,fn){this.events[k]=fn;}
  setAttribute(k,v){this.attrs[k]=v;}
+ querySelector(selector){
+  if(!selector.startsWith('.'))return null;
+  const cls=selector.slice(1);
+  const walk=n=>{
+   if(typeof n.className==='string'&&n.className.split(/\s+/).includes(cls))return n;
+   for(const child of n.children||[]){const hit=walk(child);if(hit)return hit;}
+   return null;
+  };
+  return walk(this);
+ }
  scrollIntoView(){}
 }
 const nodes=new Map(ids.map(id=>[id,new Node(id)]));
