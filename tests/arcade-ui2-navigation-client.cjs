@@ -67,11 +67,16 @@ const elements=new Map(ids.map(id=>[id,new Element(id)]));
 const dock=html.match(/<nav class="arcade-mobile-dock"[\s\S]*?<\/nav>/)?.[0];
 assert.ok(dock,'mobile dock missing');
 assert.ok(dock.includes('data-page="community"'),'Friends must be a primary bottom nav item');
-assert.ok(dock.includes('data-page="shop"'),'Shop must be a visible bottom navigation item');
+assert.ok(dock.includes('data-page="account"'),'Profile must be a visible bottom navigation item');
+assert.ok(!dock.includes('data-page="shop"'),'Shop should be in More/header, not duplicated in the dock');
+assert.ok(html.includes('<button data-page="shop" type="button">🛍️ Obchod'),
+  'Shop must remain accessible through More on mobile');
+assert.ok(html.includes('id="arcadeStoreShortcut"'),
+  'Shop must remain accessible through the header');
 assert.ok(!dock.includes('data-page="challenges"'),'Challenges share the Friends dock entry');
 assert.ok(html.includes('<button data-page="challenges" type="button">⚔️ Moje výzvy'),
   'older direct Challenges route stays accessible under More');
-const mobile=['home','games','community','shop'].map(x=>{
+const mobile=['home','games','community','account'].map(x=>{
   const e=new Element('mobile-'+x);e.dataset.page=x;return e;
 });
 const document={
@@ -183,6 +188,9 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
   assert.equal(mobile[2].attrs['aria-current'],'page');
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],undefined);
   ui.onPage('shop');
+  assert.equal(mobile[3].attrs['aria-current'],undefined);
+  assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],'page');
+  ui.onPage('account');
   assert.equal(mobile[3].attrs['aria-current'],'page');
   assert.equal(elements.get('mobileMoreToggle').attrs['aria-current'],undefined);
   ui.onPage('challenges');
@@ -224,5 +232,5 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
     'arcade_async_challenge_mark_seen','arcade_async_challenge_cancel',
     'arcade_async_challenge_archive'
   ].includes(name)));
-  console.log('PASS: Shop+Friends dock, combined challenges, RPC cancel+hide, resume, results, account isolation.');
+  console.log('PASS: Profile+Friends dock, Shop in More/header, challenges, RPC cancel+hide, resume, results, account isolation.');
 })().catch(err=>{console.error(err);process.exitCode=1;});
