@@ -12,7 +12,7 @@ assert.ok(arcade.includes('<iframe id="gameFrame" title="Legacy Game Frame" hidd
  'obsolete iframe should not be populated with a signed-in game');
 assert.ok(app.includes("if(page==='play'){location.assign(standaloneGameUrl());return;}"),
  'Game route must use standalone navigation, not an iframe');
-assert.ok(arcade.includes('href="../secure-quiz-beta.html?v=foxey-visual-quiz-10-20261111a"'),
+assert.ok(arcade.includes('href="../secure-quiz-beta.html?v=foxey-visual-quiz-11-20261111d"'),
  'Standalone launch links must include a current cache version');
 assert.ok(arcade.includes('id="launchChallenge"')&&arcade.includes('view=challenges'),
  'Challenge launcher must pass an explicit challenges view');
@@ -27,7 +27,7 @@ assert.ok(!beta.includes('service_role'),'Never expose server secret in public g
 assert.ok(!beta.includes('window.GTG_QUESTIONS='),'Server-owned answer data must stay private');
 // Ensure challenge URL works under the known site origin and stays on that origin.
 const base='https://foxey-cz.github.io/GuessTheGame-Web/arcade/';
-const next=new URL('../secure-quiz-beta.html?v=foxey-visual-quiz-10-20261111a&view=challenges',base);
+const next=new URL('../secure-quiz-beta.html?v=foxey-visual-quiz-11-20261111d&view=challenges',base);
 assert.equal(next.origin,'https://foxey-cz.github.io');
 assert.equal(next.searchParams.get('view'),'challenges');
 console.log('PASS: standalone secure Quizoria, challenge deep-link, return to Arcade, legacy fallback, rights and secrets guards');
