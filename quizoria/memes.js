@@ -91,6 +91,8 @@ let lang='cs',api=null,uid=null,runs=[],run=null,pending=null,
     mode=null,challenge=null,challengeId=null,lastQuestion=null,
     beginPending=null,serial=0,autoHandled=null;
 const t=k=>dict[lang][k]||k;
+// Only our versioned artwork directory is accepted; arbitrary image hosts stay blocked.
+const originalVisual=url=>/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(String(url||''));
 function hide(id,yes){$(id)?.classList.toggle('hidden',!!yes)}
 function status(msg,error=false){
  const e=$('memeStatus');if(!e)return;
@@ -105,6 +107,7 @@ function sourceLink(q){
  const link=$('memeImageCredit');
  const source=String(q?.source_url||'');
  const approvedSource=source.startsWith('https://commons.wikimedia.org/wiki/File:')||
+  originalVisual(source)||
   source==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html';
  const uri=approvedSource?source:'./arcade/media-library.html';
  if(link){
@@ -113,9 +116,10 @@ function sourceLink(q){
     (q?.image_url||'').startsWith('emoji:')?t('emojiCredit'):
     String(q?.author||'Wikimedia Commons')+' · '+String(q?.license||'')+' · '+t('credits');
  }
- const image=$('memeImageOpen'),commons=String(q?.image_url||'').startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/');
+ const image=$('memeImageOpen'),commons=String(q?.image_url||'').startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/'),
+  selfArt=originalVisual(q?.image_url);
  image.href=approvedSource?source:'./arcade/media-library.html';
- hide('memeImageOpen',!commons||q?.media_review_pending===true);
+ hide('memeImageOpen',(!commons&&!selfArt)||q?.media_review_pending===true);
  const lic=$('memeLicenseLink'),raw=String(q?.license_url||'');
  const safe=raw.startsWith('https://creativecommons.org/')||
    raw==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html';
@@ -221,11 +225,13 @@ function renderGame(){
  const error=$('memeImageError');
  const src=String(q.image_url||'');
  const commons=src.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/');
+ const selfArt=originalVisual(src);
  const emoji=src.startsWith('emoji:');
  const reviewed=q.media_review_pending===true;
- if(commons&&!reviewed){
+ if((commons||selfArt)&&!reviewed){
   if(img.dataset.src!==src){img.dataset.src=src;img.src=src;}
   img.classList.remove('hidden');
+  img.alt=selfArt?(lang==='en'?'Original FOXEY Arcade illustration':'Originální ilustrace FOXEY Arcade'):(lang==='en'?'Internet meme':'Internetový mem');
   error.classList.remove('meme-image-emoji');
   hide('memeImageError',true);
  }else{
@@ -456,7 +462,8 @@ $('memeTopShareCopy')?.addEventListener('click',async()=>{
  }
 });
 $('memeImage').addEventListener('error',()=>{
- if(!$('memeImage').dataset.src?.startsWith('https://commons.wikimedia.org/'))return;
+ if(!$('memeImage').dataset.src?.startsWith('https://commons.wikimedia.org/') &&
+   !originalVisual($('memeImage').dataset.src))return;
  $('memeImage').classList.add('hidden');
  $('memeImageError').classList.remove('meme-image-emoji');
  $('memeImageError').textContent=t('imageError');
