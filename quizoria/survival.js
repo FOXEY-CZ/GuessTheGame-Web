@@ -39,6 +39,8 @@ const dictionary={
   tryLater:'Po chvíli to zkus znovu.',scoreUnits:'bodů',
   easy:'🟢 Snadné',medium:'🟠 Střední',hard:'🔥 Těžké',
   source:'Zdroj obrázku',waiting:'☁️ Načítám hráče a rekordy…',
+  mediaHold:'⚖️ Obrázek čeká na ověření autorských práv.',
+  mediaSkip:'⏭️ Přeskočit bez ztráty života',mediaSkipped:'⚖️ Otázka s neověřeným obrázkem přeskočena bez postihu.',
   tryResume:'▶ Pokračovat',openFinished:'🏆 Výsledek',
   invalid:'⚠️ Server poslal neplatnou odpověď.',level:'Obtížnost',
   modeBusy:'Právě probíhá jiná herní akce.',loginFirst:'Nejdřív se přihlas.'
@@ -66,6 +68,8 @@ const dictionary={
   tryLater:'Please retry shortly.',scoreUnits:'points',
   easy:'🟢 Easy',medium:'🟠 Medium',hard:'🔥 Hard',
   source:'Image source',waiting:'☁️ Loading saved records…',
+  mediaHold:'⚖️ The original image is held for copyright review.',
+  mediaSkip:'⏭️ Skip without losing a life',mediaSkipped:'⚖️ Question skipped without penalty while the image is under review.',
   tryResume:'▶ Resume',openFinished:'🏆 Result',
   invalid:'⚠️ The server sent an invalid response.',level:'Difficulty',
   modeBusy:'Another action is in progress.',loginFirst:'Sign in first.'
@@ -181,7 +185,8 @@ function renderVisual(q){
   img.addEventListener('error',()=>{img.classList.add('hidden');});
   element.append(img);hide('survivalVisual',false);
  }else if(value&&!value.startsWith('https://')&&!value.startsWith('http://')){
-  element.append(make('span','survival-emoji',value.slice(0,100)));
+  element.append(make('span','survival-emoji',
+    (value.startsWith('emoji:')?value.slice(6):value).slice(0,100)));
   hide('survivalVisual',false);
  }
  const url=String(q?.source_url||'');
@@ -203,6 +208,9 @@ function renderQuestion(){
  $('survivalPrompt').textContent=String(q['prompt_'+lang]||q.prompt_cs||'');
  $('survivalClue').textContent=String(q['clue_'+lang]||'');
  renderVisual(q);
+ if(q.media_review_pending===true) $('survivalClue').textContent=t('mediaHold');
+ hide('survivalSkipCopyright',q.media_review_pending!==true||advance);
+ $('survivalSkipCopyright').disabled=locked||!!pending;
  const options=$('survivalOptions');options.replaceChildren();
  for(const [index,answer] of q.options.entries()){
   const button=make('button','survival-option');
@@ -219,10 +227,11 @@ function renderQuestion(){
  hide('survivalFeedback',!feedback);
  if(feedback){
   const answer=shownQuestion?.options?.[feedback.correctIndex];
-  $('survivalFeedback').textContent=t(feedback.ok?'correct':'wrong')+
+  $('survivalFeedback').textContent=feedback.mediaSkipped?t('mediaSkipped'):
+   t(feedback.ok?'correct':'wrong')+
     (!feedback.ok?' '+t('right')+' '+String(answer?.[lang]||answer?.cs||''):'');
-  $('survivalFeedback').classList.toggle('good',feedback.ok);
-  $('survivalFeedback').classList.toggle('bad',!feedback.ok);
+  $('survivalFeedback').classList.toggle('good',feedback.ok||feedback.mediaSkipped);
+  $('survivalFeedback').classList.toggle('bad',!feedback.ok&&!feedback.mediaSkipped);
  }
  hide('survivalNext',!advance);
  hide('survivalRetry',!pending);
@@ -321,7 +330,8 @@ async function resume(id){
 }
 async function answer(choice,retry=false){
  if(!run||!uid||!api||locked||advance||run.finished||run.expired)return;
- if(!Number.isSafeInteger(choice)||choice<0||choice>3)return;
+ if(!Number.isSafeInteger(choice)||choice<0||choice>4)return;
+ if(choice===4&&run?.question?.media_review_pending!==true&&!retry)return;
  if(pending&&!retry)return;
  const mine=uid,runId=run.run_id,serial=++actionSeq;
  const beforeAnswer=run;
@@ -334,16 +344,18 @@ async function answer(choice,retry=false){
     p_run_id:runId,p_event_id:pending.event,p_choice:pending.choice
   });
   if(error||!isValidRun(data)||typeof data.was_correct!=='boolean'||
-     !Number.isSafeInteger(data.correct_option))
+     (data.media_skipped!==true&&!Number.isSafeInteger(data.correct_option))||
+     (data.media_skipped===true&&data.correct_option!==null))
    throw error||Error('invalid_answer');
   if(uid!==mine||serial!==actionSeq)return;
   shownQuestion=pending.question;
-  feedback={ok:data.was_correct,correctIndex:data.correct_option,choice:pending.choice};
+  feedback={ok:data.was_correct,correctIndex:data.correct_option,
+    choice:pending.choice,mediaSkipped:data.media_skipped===true};
   run=data;pending=null;advance=!run.finished&&!run.expired;
   confirmedFx={before:beforeAnswer,after:data,wasCorrect:data.was_correct,
     baseline:recordBaseline};
   status(run.finished?t('final'):t('saved'));
-  try{navigator.vibrate?.(data.was_correct?[25]:[55,30,55]);}catch(_){}
+  if(!data.media_skipped)try{navigator.vibrate?.(data.was_correct?[25]:[55,30,55]);}catch(_){}
   if(run.finished){
    void refreshLobby(true);
    if(run.reward?.reason==='credited'){
@@ -414,6 +426,7 @@ function localize(){
   survivalHistoryTitle:'history',survivalStageLabel:'question',
   survivalHeartsLabel:'hearts',survivalScoreLabel:'score',
   survivalStreakLabel:'streak',survivalRetry:'retry',
+  survivalSkipCopyright:'mediaSkip',
   survivalNext:'next',survivalPlayAgain:'playAgain'}))$(id).textContent=t(key);
  fx()?.setLocale?.(lang);
  render();
@@ -439,6 +452,10 @@ $('survivalRetry')?.addEventListener('click',()=>{
  if(pending)void answer(pending.choice,true);
 });
 $('survivalNext')?.addEventListener('click',next);
+$('survivalSkipCopyright')?.addEventListener('click',()=>{
+ if(run?.question?.media_review_pending===true&&!advance&&!locked&&!pending)
+  void answer(4);
+});
 $('survivalPlayAgain')?.addEventListener('click',()=>{
  run=null;pending=null;feedback=null;advance=false;shownQuestion=null;
  recordBaseline=null;fx()?.clear?.();
