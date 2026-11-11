@@ -58,6 +58,7 @@ const scope=vm.runInNewContext(`(function(){
   const window=globalThis.window;
   const supa=globalThis.supa;
   const safeNum=globalThis.safeNum;
+  const fmt=n=>String(n);
   const loadSharedWallet=globalThis.loadSharedWallet;
   const setTimeout=globalThis.setTimeout;
   const clearTimeout=globalThis.clearTimeout;
