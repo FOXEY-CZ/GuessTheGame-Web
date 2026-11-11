@@ -13,6 +13,7 @@ on:
       - 'secure-quiz-beta.html'
       - 'supabase/quizoria_visual_quiz_1_0_original_art_20261111.sql'
       - 'tests/visual-quiz-originals.cjs'
+      - 'tests/meme-media-recovery.cjs'
       - '.github/workflows/verify-visual-quiz.yml'
   pull_request:
     paths:
@@ -26,6 +27,7 @@ on:
       - 'secure-quiz-beta.html'
       - 'supabase/quizoria_visual_quiz_1_0_original_art_20261111.sql'
       - 'tests/visual-quiz-originals.cjs'
+      - 'tests/meme-media-recovery.cjs'
       - '.github/workflows/verify-visual-quiz.yml'
   workflow_dispatch:
 permissions:
@@ -45,3 +47,4 @@ jobs:
           node --check quizoria/survival.js
           node --check quizoria/endless.js
           node tests/visual-quiz-originals.cjs
+          node tests/meme-media-recovery.cjs
