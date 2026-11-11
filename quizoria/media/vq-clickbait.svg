@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="title desc">
+<title id="title">YOU WON'T BELIEVE...</title><desc id="desc">The notification fishing lure. Original FOXEY Arcade vector artwork.</desc>
+<defs><linearGradient id="back" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17264b"/><stop offset="1" stop-color="#29204a"/></linearGradient><radialGradient id="halo"><stop stop-color="#ff829d" stop-opacity=".28"/><stop offset="1" stop-color="#ff829d" stop-opacity="0"/></radialGradient></defs>
+<rect width="960" height="540" rx="34" fill="url(#back)"/><ellipse cx="575" cy="284" rx="410" ry="280" fill="url(#halo)"/>
+<g opacity=".1" stroke="#ff829d" fill="none" stroke-width="2"><path d="M52 112h856M52 460h856"/><path d="M83 87v371M876 87v371"/></g>
+<rect x="88" y="95" width="784" height="375" rx="36" fill="#111a35" fill-opacity=".55" stroke="#ff829d" stroke-opacity=".47" stroke-width="4"/>
+<g stroke-linejoin="round" stroke-linecap="round"><rect x="156" y="247" width="520" height="211" rx="26" fill="#1d2a4e" stroke="#98addb" stroke-width="7"/><rect x="181" y="273" width="467" height="157" rx="15" fill="#34477b"/><text x="228" y="351" fill="#fff0ba" font-size="46" font-weight="900">WOW?!</text><rect x="473" y="300" width="110" height="95" rx="21" fill="#ea5e91"/><text x="494" y="362" fill="white" font-size="47" font-weight="900">99+</text><path d="M793 154V283q-8 60-63 28q-21-17 0-40" stroke="#dce8ff" stroke-width="8" stroke-linecap="round" fill="none"/><path d="M730 269q-35-7-36 25q0 48 47 35" stroke="#ffd680" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M696 294l-30-20" stroke="#ffd680" stroke-width="12" stroke-linecap="round"/><circle cx="793" cy="144" r="13" fill="#ffd680"/></g>
+<rect x="87" y="31" width="786" height="52" rx="18" fill="#0d1834" stroke="#ff829d" stroke-opacity=".7" stroke-width="2"/>
+<text x="108" y="67" font-family="system-ui,Segoe UI,sans-serif" font-size="30" font-weight="900" letter-spacing="2" fill="#f6fbff">YOU WON'T BELIEVE...</text>
+<circle cx="828" cy="57" r="11" fill="#ff829d"/>
+<text x="105" y="515" font-family="system-ui,Segoe UI,sans-serif" font-size="19" font-weight="700" fill="#b6cce9">FOXEY ARCADE  /  ORIGINAL VISUAL QUIZ</text>
+</svg>
