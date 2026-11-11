@@ -1,9 +1,6 @@
 -- FOXEY Arcade Media Visibility Fix 1.1 · 2026-11-11
--- User report: an old saved Meme round shows copyright placeholders; remote Commons
--- hotlinks may also fail on mobile. Protect fresh image-based quiz play by selecting
--- ONLY audited, first-party SVG artwork. Existing historical questions remain in the bank.
--- No account, scores, XP, currencies, leaderboards or existing answer events are changed.
--- Challenge and already issued daily sets remain immutable for equal conditions.
+-- New Meme rounds: first-party audited SVG art only; preserve historical runs.
+-- Future solo saves can replace only unanswered images via authenticated repair RPC.
 BEGIN;
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_meme_pick(p_mode text, p_seed text)
  RETURNS jsonb
@@ -18,31 +15,7 @@ AS $function$
       WHERE arcade_private.foxey_media_approved(q.image_key)
         AND q.image_key LIKE 'vq-%'
         AND q.image_url=a.asset_url
-        AND a.asset_url ~ '^https://foxey-cz\.github\.io/GuessTheGame-Web/quizoria/media/vq-[a-z0-9-]+\.svg
-  ), selected AS (
-    SELECT position,q.*
-    FROM ranked_images im
-    JOIN arcade_private.quizoria_meme_questions q ON q.image_key=im.image_key
-    WHERE im.position <= CASE WHEN p_mode='daily' THEN 5 ELSE 10 END
-    AND q.difficulty=CASE
-      WHEN p_mode IN ('easy','medium','hard') THEN p_mode
-      WHEN im.position <= CASE WHEN p_mode='daily' THEN 2 ELSE 4 END THEN 'easy'
-      WHEN im.position <= CASE WHEN p_mode='daily' THEN 4 ELSE 8 END THEN 'medium'
-      ELSE 'hard' END
-  )
-  SELECT jsonb_agg(
-    jsonb_build_object(
-      'id',id,'image_key',image_key,'difficulty',difficulty,
-      'prompt_cs',prompt_cs,'prompt_en',prompt_en,
-      'options',options,'answer_index',answer_index,
-      'image_url',image_url,'source_url',source_url,
-      'author',author,'license',license
-    ) ORDER BY position)
-  FROM selected
-$function$;
-
-
-) a
+        AND a.asset_url ~ '^https://foxey-cz\.github\.io/GuessTheGame-Web/quizoria/media/vq-[a-z0-9-]+\.svg$') a
   ), selected AS (
     SELECT position,q.*
     FROM ranked_images im
@@ -92,7 +65,7 @@ AS $function$
      WHERE arcade_private.foxey_media_approved(q.image_key)
        AND q.image_key LIKE 'vq-%'
        AND q.image_url=a.asset_url
-       AND a.asset_url ~ '^https://foxey-cz\.github\.io/GuessTheGame-Web/quizoria/media/vq-[a-z0-9-]+\.svg
+       AND a.asset_url ~ '^https://foxey-cz\.github\.io/GuessTheGame-Web/quizoria/media/vq-[a-z0-9-]+\.svg$') source
   ),
   picked AS (
     SELECT b.ord,q.*
@@ -111,28 +84,6 @@ AS $function$
     'source_url',source_url,'author',author,'license',license
   ) ORDER BY ord) FROM picked
 $function$;
-
-
-) source
-  ),
-  picked AS (
-    SELECT b.ord,q.*
-    FROM ranked b
-    JOIN arcade_private.quizoria_meme_questions q ON q.image_key=b.image_key
-    WHERE b.ord<=10 AND q.difficulty=CASE
-      WHEN p_mode IN ('easy','medium','hard') THEN p_mode
-      WHEN b.ord<=4 THEN 'easy'
-      WHEN b.ord<=8 THEN 'medium'
-      ELSE 'hard' END
-  )
-  SELECT jsonb_agg(jsonb_build_object(
-    'id',id,'image_key',image_key,'difficulty',difficulty,
-    'prompt_cs',prompt_cs,'prompt_en',prompt_en,'options',options,
-    'answer_index',answer_index,'image_url',image_url,
-    'source_url',source_url,'author',author,'license',license
-  ) ORDER BY ord) FROM picked
-$function$;
-
 
 
 
@@ -205,6 +156,7 @@ END
 $function$;
 REVOKE ALL ON FUNCTION public.quizoria_meme_repair_media(uuid) FROM PUBLIC,anon;
 GRANT EXECUTE ON FUNCTION public.quizoria_meme_repair_media(uuid) TO authenticated;
+
 
 
 COMMIT;
