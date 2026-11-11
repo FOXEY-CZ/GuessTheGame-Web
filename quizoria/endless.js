@@ -169,8 +169,11 @@ function visual(q){
   hide('endlessVisual',false);
  }
  const source=String(q?.source_url||'');
- if(source.startsWith('https://commons.wikimedia.org/')){
-  link.href=source;link.textContent=t('source')+(q.author?' · '+String(q.author).slice(0,40):'');
+ if(source.startsWith('https://commons.wikimedia.org/')||
+    source==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html'){
+  link.href=source;link.textContent=t('source')+
+    (q.author?' · '+String(q.author).slice(0,40):'')+
+    (q.license?' · '+String(q.license).slice(0,50):'');
   hide('endlessSource',false);
  }
 }
