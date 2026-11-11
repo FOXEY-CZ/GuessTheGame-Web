@@ -21,7 +21,10 @@
 .meme-status{min-height:0;font-size:.79rem;line-height:1.5;color:#b5ead9}
 .meme-status:empty{display:none}
 .meme-status.error{color:#ffbbba}
-.meme-intro{margin:16px 0;color:#bfd1e8;font-size:.84rem;line-height:1.55}
+.meme-intro{margin:16px 0 8px;color:#bfd1e8;font-size:.84rem;line-height:1.55}
+.meme-visual-note{display:inline-flex;align-items:center;min-height:38px;margin:2px 0 14px;
+ padding:8px 13px;font-size:.78rem;font-weight:800;line-height:1.4;color:#c6fff1;
+ background:linear-gradient(125deg,#193f51,#283650);border:1px solid #4faba2;border-radius:999px}
 .meme-mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
 .meme-mode-card{min-height:100px;padding:17px;border-radius:14px;
  border:1px solid #59729f;background:linear-gradient(145deg,#22395a,#252b52);
