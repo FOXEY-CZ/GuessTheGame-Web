@@ -47,6 +47,8 @@ const contextSource='(()=>{'+
  "let sharedWallet={free_chests:1},sharedCosmetics={owned_avatars:[]},walletBusy=false;"+
  "const supa=__supa,document=__document,sessionStorage=__store,el=__el;"+
  "const crypto={randomUUID:()=> '77777777-7777-4777-8777-777777777777'};"+
+ "const window={FOXEY_I18N:{getLocale:()=> 'cs'}};"+
+ "const setTimeout=()=>123,clearTimeout=()=>{};"+
  "const THEME_IDS=new Set();"+
  "const AVATAR_CATALOG={'space-cat':{name:'Space Cat'},'pixel-fox':{name:'Pixel Fox'}};"+
  "const showAvatar=(id,target)=>{target.rewardId=id;};"+
@@ -63,8 +65,8 @@ const VM=vm.runInNewContext(contextSource,{
  assert.equal(calls,0,'preview must not call purchase RPC');
  assert.equal(walletLoads,0,'preview must not touch wallet');
  assert.equal(store.size,0,'preview cannot create a charge operation');
- assert.equal(el('shopRewardTitle').textContent,'👀 Ukázka odměny');
- assert.equal(el('shopRewardRarity').textContent,'DEMO · NEZÍSKÁNO');
+ assert.equal(el('shopRewardTitle').textContent,'👀 Ukázka otevření truhly');
+ assert.equal(el('shopRewardRarity').textContent,'DEMO · BEZ NÁKUPU');
  assert.equal(el('shopRewardOverlay').classList.contains('hidden'),false);
  assert.equal(el('shopRewardInventory').classList.contains('hidden'),true);
  VM.closeChestReward();
