@@ -110,6 +110,7 @@ const scope=vm.runInNewContext(`(function(){
  scope.setUser(null);scope.renderAchievements();
  assert.match(el('homeAchievementStatus').textContent,/Sign in/);
  assert.equal(el('homeAchievementGrid').children.length,0,'guest must never see previous player achievements');
- assert.equal(el('accountAchievementGrid').children.length,0,'guest must not inherit a previous account cache');
+ assert.ok(el('accountAchievementGrid').children.every(card=>card.className==='pc-achievement-empty'),
+   'guest may see empty-state text but must never inherit previous account achievement cards');
  console.log('PASS: global achievements status, XP level meter, bilingual cards, one-time server unlock and guest state');
 })().catch(err=>{console.error(err);process.exitCode=1;});
