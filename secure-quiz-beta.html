@@ -874,12 +874,15 @@
           rel="noopener noreferrer" class="meme-image-credit">Zdroj obrázku a licence</a>
         <a id="memeLicenseLink" href="./arcade/media-library.html" target="_blank"
           rel="noopener noreferrer" class="meme-image-credit hidden">📜 Znění licence</a>
+        <div class="meme-image-recovery" aria-live="polite">
+          <button id="memeRepairMedia" class="meme-repair-media hidden" type="button">🖼️ Opravit nedostupný obrázek a zachovat skóre</button>
+          <button id="memeSkipCopyright" type="button" class="secondary hidden">⏭️ Přeskočit (za tuto otázku 0 bodů)</button>
+        </div>
         <h3 id="memePrompt">Načítám otázku…</h3>
         <div id="memeOptions" class="meme-options" role="group" aria-label="Možnosti odpovědi"></div>
       </section>
       <p id="memeFeedback" class="meme-feedback hidden" role="status" aria-live="polite"></p>
       <div class="meme-actions">
-        <button id="memeSkipCopyright" type="button" class="secondary hidden">⏭️ Přeskočit otázku bez ztráty bodů</button>
         <button id="memeRetry" type="button" class="hidden">↻ Opakovat požadavek</button>
         <button id="memeNext" class="primary hidden" type="button">Další otázka →</button>
       </div>
