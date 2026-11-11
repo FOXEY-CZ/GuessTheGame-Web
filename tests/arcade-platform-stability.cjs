@@ -35,11 +35,21 @@ for(const [,page] of arcadeHtml.matchAll(/\bdata-page="([^"]+)"/g))
  assert.ok(pages.includes(page),'dead navigation to unregistered page: '+page);
 
 // The launcher must clearly separate available games from future concepts.
-const homeHub=arcadeHtml.match(/<section class="arcade-hub"[\s\S]*?<\/section>/)?.[0];
-assert.ok(homeHub,'global home action hub must exist');
-for(const route of ['games','community','missions','shop'])
- assert.ok(homeHub.includes('data-page="'+route+'"'),
-   'home action hub missing valid platform route: '+route);
+// The next-generation home layout separates quick actions from the featured
+// game button and shop spotlight. All destinations must still work.
+const homeStart=arcadeHtml.indexOf('<section class="page" id="page-home">');
+const homeEnd=arcadeHtml.indexOf('<section class="page" id="page-games">',homeStart);
+assert.ok(homeStart>=0&&homeEnd>homeStart,'global home page must exist');
+const homeHtml=arcadeHtml.slice(homeStart,homeEnd);
+const homeQuickGrid=homeHtml.match(/<div class="ng-quick-grid"[\s\S]*?<\/div>/)?.[0];
+assert.ok(homeQuickGrid,'global home quick actions must exist');
+for(const route of ['community','missions','challenges'])
+ assert.ok(homeQuickGrid.includes('data-page="'+route+'"'),
+   'home quick actions missing valid platform route: '+route);
+assert.ok(/class="ng-feature-actions"[\s\S]*?data-page="games"/.test(homeHtml),
+ 'featured game must link to game library');
+assert.ok(/class="arcade-shop-spotlight-action" data-page="shop"/.test(homeHtml),
+ 'shop spotlight must link to shared shop');
 assert.ok(arcadeHtml.includes('class="gamegrid arcade-library-live"')&&
   arcadeHtml.includes('class="gamegrid arcade-upcoming-grid"'),
   'game catalog should separate playable and announced titles');
