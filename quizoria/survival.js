@@ -177,7 +177,8 @@ function renderVisual(q){
  element.replaceChildren();hide('survivalVisual',true);hide('survivalSource',true);
  const value=String(q?.visual||'');
  const commons=value.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/');
- if(commons){
+ const localSvg=/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(value);
+ if(commons||localSvg){
   const img=make('img','survival-image');
   img.alt=q['prompt_'+lang]||t('question');
   img.loading='eager';img.referrerPolicy='no-referrer';
@@ -191,6 +192,7 @@ function renderVisual(q){
  }
  const url=String(q?.source_url||'');
  if(url.startsWith('https://commons.wikimedia.org/')||
+    /^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(url)||
     url==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html'){
   source.href=url;source.textContent=t('source')+
     (q.author?' · '+String(q.author).slice(0,50):'')+
