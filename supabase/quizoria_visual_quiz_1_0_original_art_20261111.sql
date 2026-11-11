@@ -65,4 +65,16 @@ VALUES
 ('vq-update-99-medium','vq-update-99','medium','Jaký je vtip motivu UPDATE 99 %?','What is the joke behind UPDATE 99%?','[{"key":0,"cs":"Aktualizace začne pozpátku","en":"The update runs backwards"},{"key":1,"cs":"Instalace nevyžaduje internet","en":"The install needs no internet"},{"key":2,"cs":"Aktualizace se sama odinstaluje","en":"The update uninstalls itself"},{"key":3,"cs":"Poslední procento trvá podezřele dlouho","en":"The last percent takes suspiciously long"}]'::jsonb,3,'https://foxey-cz.github.io/GuessTheGame-Web/quizoria/media/vq-update-99.svg','https://foxey-cz.github.io/GuessTheGame-Web/quizoria/media/vq-update-99.svg','FOXEY Arcade — original vector illustration','FOXEY Arcade Original Art (project-owned)'),
 ('vq-update-99-hard','vq-update-99','hard','Která věta nejlépe vystihuje tenhle internetový vtip?','Which line best captures this internet joke?','[{"key":0,"cs":"Za chvíli začne první procento","en":"The first percent will begin soon"},{"key":1,"cs":"Instalace byla hotová včera","en":"The install finished yesterday"},{"key":2,"cs":"Zbývá jen procento… už půl hodiny!","en":"Only one percent left… for half an hour!"},{"key":3,"cs":"Hra nikdy nevyšla","en":"The game was never released"}]'::jsonb,2,'https://foxey-cz.github.io/GuessTheGame-Web/quizoria/media/vq-update-99.svg','https://foxey-cz.github.io/GuessTheGame-Web/quizoria/media/vq-update-99.svg','FOXEY Arcade — original vector illustration','FOXEY Arcade Original Art (project-owned)')
 ON CONFLICT (id) DO NOTHING;
+-- Record initial rights approval once per project-owned asset for future audits.
+INSERT INTO arcade_private.foxey_media_audit_log
+(asset_key,previous_status,next_status,reviewer_note,evidence_source)
+SELECT a.asset_key,NULL,'approved',
+  'Visual Quiz 1.0: original self-authored SVG asset. No third-party photograph, icon or copied meme template; commercial project use approved.',
+  a.evidence_source
+FROM arcade_private.foxey_media_assets a
+WHERE a.asset_key LIKE 'vq-%' AND a.status='approved'
+AND NOT EXISTS (
+ SELECT 1 FROM arcade_private.foxey_media_audit_log l
+ WHERE l.asset_key=a.asset_key AND l.next_status='approved'
+);
 COMMIT;
