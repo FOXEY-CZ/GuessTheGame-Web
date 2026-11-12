@@ -1,5 +1,5 @@
 -- FOXEY Arcade Memes Update 2.0 — Meme recognition, not internet/IT trivia.
--- Exactly 12 vetted source images, 36 bilingual meme questions (12 per difficulty).
+-- Exactly 12 vetted source images, 36 curated replacements (12 per difficulty), preserving existing IDs.
 -- Existing saved games/scores/history are retained; new public picker will filter by IDs.
 -- No secret keys, no account data, no reward changes.
 BEGIN;
@@ -10,14 +10,16 @@ WITH content AS (
   options jsonb,answer_index integer,image_url text,source_url text
  )
 )
-INSERT INTO arcade_private.quizoria_meme_questions(
- id,image_key,difficulty,prompt_cs,prompt_en,options,answer_index,image_url,source_url,author,license)
-SELECT x.id,x.image_key,x.difficulty,x.prompt_cs,x.prompt_en,
- x.options,x.answer_index,x.image_url,x.source_url,a.author,a.license_name
+UPDATE arcade_private.quizoria_meme_questions q
+SET prompt_cs=x.prompt_cs,
+    prompt_en=x.prompt_en,
+    options=x.options,
+    answer_index=x.answer_index,
+    image_url=x.image_url
 FROM content x
 JOIN arcade_private.foxey_media_assets a ON a.asset_key=x.image_key
-WHERE a.status='approved' AND a.commercial_use AND a.redistribution_allowed
- AND a.source_url=x.source_url
- AND x.image_url LIKE 'https://foxey-cz.github.io/GuessTheGame-Web/quizoria/media/commons/meme-%'
-ON CONFLICT (id) DO NOTHING;
+WHERE q.image_key=x.image_key AND q.difficulty=x.difficulty
+  AND a.status='approved' AND a.commercial_use AND a.redistribution_allowed
+  AND a.source_url=x.source_url
+  AND x.image_url LIKE 'https://foxey-cz.github.io/GuessTheGame-Web/quizoria/media/commons/meme-%';
 COMMIT;
