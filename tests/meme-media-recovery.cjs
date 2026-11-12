@@ -16,7 +16,7 @@ assert.ok(skip<prompt&&repair<prompt&&prompt<options,
 assert.equal((html.match(/id="memeSkipCopyright"/g)||[]).length,1,'Duplicate skip button');
 assert.equal((html.match(/id="memeRepairMedia"/g)||[]).length,1,'Duplicate repair button');
 assert.ok(css.includes('.meme-image-recovery{display:grid'),'Mobile recovery controls missing CSS');
-assert.ok(js.includes('const unavailable=reviewed||broken||(!emoji&&!commons&&!selfArt);'),
+assert.ok(js.includes('const unavailable=reviewed||broken||(!emoji&&!commons&&!selfArt&&!localMeme);'),
   'Missing images must be classified as unavailable');
 assert.ok(js.includes('if(!unavailable)opts.forEach((option,index)=>{'),
   'Must not render answer buttons for missing photos');
