@@ -49,7 +49,7 @@ for(const [name,client] of [['Memes',memes],['Survival',survival],['Endless',end
 }
 assert.ok(memes.includes('originalVisual(source)')&&memes.includes('originalVisual(src)'));
 assert.ok(game.includes('id="memeVisualNote"'),'Visual Quiz badge missing');
-assert.ok(game.includes('foxey-visual-quiz-11-20261111d'),'New game scripts not cache-busted');
-assert.ok(arcade.includes('foxey-visual-quiz-11-20261111d'),'Launcher not cache-busted');
+assert.ok(game.includes('foxey-memes-20-20261112a'),'New game scripts not cache-busted');
+assert.ok(arcade.includes('foxey-memes-20-20261112a'),'Launcher not cache-busted');
 assert.ok(!/\.from\(['"]arcade_wallets['"]\)\.update/.test(memes));
 console.log('PASS: 13 original script-free SVGs, 39 bilingual questions, rights manifest, media links, safe renderer and cache release');
