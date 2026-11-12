@@ -93,6 +93,7 @@ let lang='cs',api=null,uid=null,runs=[],run=null,pending=null,
 const t=k=>dict[lang][k]||k;
 // Only our versioned artwork directory is accepted; arbitrary image hosts stay blocked.
 const originalVisual=url=>/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(String(url||''));
+const curatedMeme=url=>/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/(?:commons\/meme-[a-z0-9-]+\.(?:jpg|png)|meme-original-[a-z0-9-]+\.svg)$/.test(String(url||''));
 function hide(id,yes){$(id)?.classList.toggle('hidden',!!yes)}
 function status(msg,error=false){
  const e=$('memeStatus');if(!e)return;
@@ -117,9 +118,9 @@ function sourceLink(q){
     String(q?.author||'Wikimedia Commons')+' · '+String(q?.license||'')+' · '+t('credits');
  }
  const image=$('memeImageOpen'),commons=String(q?.image_url||'').startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/'),
-  selfArt=originalVisual(q?.image_url);
+  selfArt=originalVisual(q?.image_url),localMeme=curatedMeme(q?.image_url);
  image.href=approvedSource?source:'./arcade/media-library.html';
- hide('memeImageOpen',(!commons&&!selfArt)||q?.media_review_pending===true);
+ hide('memeImageOpen',(!commons&&!selfArt&&!localMeme)||q?.media_review_pending===true);
  const lic=$('memeLicenseLink'),raw=String(q?.license_url||'');
  const safe=raw.startsWith('https://creativecommons.org/')||
    raw==='https://foxey-cz.github.io/GuessTheGame-Web/arcade/media-library.html';
@@ -226,11 +227,12 @@ function renderGame(){
  const src=String(q.image_url||'');
  const commons=src.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/');
  const selfArt=originalVisual(src);
+ const localMeme=curatedMeme(src);
  const emoji=src.startsWith('emoji:');
  const reviewed=q.media_review_pending===true;
- const broken=(commons||selfArt)&&brokenVisual===src;
- const unavailable=reviewed||broken||(!emoji&&!commons&&!selfArt);
- if((commons||selfArt)&&!unavailable){
+ const broken=(commons||selfArt||localMeme)&&brokenVisual===src;
+ const unavailable=reviewed||broken||(!emoji&&!commons&&!selfArt&&!localMeme);
+ if((commons||selfArt||localMeme)&&!unavailable){
   if(img.dataset.src!==src){img.dataset.src=src;img.src=src;}
   img.classList.remove('hidden');
   img.alt=selfArt?(lang==='en'?'Original FOXEY Arcade illustration':'Originální ilustrace FOXEY Arcade'):(lang==='en'?'Internet meme':'Internetový mem');
@@ -470,7 +472,8 @@ $('memeTopShareCopy')?.addEventListener('click',async()=>{
 });
 $('memeImage').addEventListener('error',()=>{
  if(!$('memeImage').dataset.src?.startsWith('https://commons.wikimedia.org/') &&
-   !originalVisual($('memeImage').dataset.src))return;
+   !originalVisual($('memeImage').dataset.src) &&
+   !curatedMeme($('memeImage').dataset.src))return;
  brokenVisual=$('memeImage').dataset.src;
  renderGame();
 });
