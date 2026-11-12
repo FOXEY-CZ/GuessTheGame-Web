@@ -178,7 +178,8 @@ function renderVisual(q){
  const value=String(q?.visual||'');
  const commons=value.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/');
  const localSvg=/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(value);
- if(commons||localSvg){
+ const localMeme=/^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/(?:commons\/meme-[a-z0-9-]+\.(?:jpg|png)|meme-original-[a-z0-9-]+\.svg)$/.test(value);
+ if(commons||localSvg||localMeme){
   const img=make('img','survival-image');
   img.alt=q['prompt_'+lang]||t('question');
   img.loading='eager';img.referrerPolicy='no-referrer';
