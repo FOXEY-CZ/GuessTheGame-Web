@@ -94,7 +94,7 @@ WITH all_questions AS (
 SELECT coalesce(pg_catalog.jsonb_agg(payload ORDER BY
  CASE difficulty WHEN 'easy' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,slot),'[]'::jsonb)
 FROM ordered WHERE difficulty IN ('easy','medium','hard') AND slot<=20;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_endless_pool(p_category text, p_difficulty text, p_seed text)
  RETURNS TABLE(question_key text, payload jsonb)
@@ -167,7 +167,7 @@ FROM all_questions a
 WHERE (p_category='mix' OR a.category=p_category) AND a.difficulty=p_difficulty
 AND pg_catalog.jsonb_array_length(a.question->'options')=4
 AND (a.question->>'answer_index')::integer BETWEEN 0 AND 3;
-$function$
+$function$;
 
 REVOKE ALL ON FUNCTION arcade_private.quizoria_survival_pick(text,uuid) FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON FUNCTION arcade_private.quizoria_endless_pool(text,text,text) FROM PUBLIC,anon,authenticated;
