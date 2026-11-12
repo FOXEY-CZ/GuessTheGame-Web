@@ -1,0 +1,35 @@
+name: Mirror vetted meme images locally
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/mirror-meme-images.cjs"
+      - "quizoria/media/commons/source-manifest.json"
+      - ".github/workflows/mirror-vetted-memes.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Download approved meme images with a source/license manifest
+        run: node scripts/mirror-meme-images.cjs
+      - name: Commit project-local images and attribution manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add quizoria/media/commons/
+          if git diff --staged --quiet; then
+            echo "No new images"
+          else
+            git commit -m "Media Library: mirror vetted Commons memes for reliable mobile play"
+            git push
+          fi
