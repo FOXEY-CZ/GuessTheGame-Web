@@ -12,9 +12,9 @@ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const modes=engine.config('memes').modes.filter(mode=>mode!=='friend');
 const dict={
   cs:{
-    title:'😂 Guess the Meme',sub:'Poznáš memy, internetové situace a naše nové originální ilustrace?',
+    title:'😂 Guess the Meme',sub:'Poznáš legendární memy a jejich hlášky jen podle obrázků?',
     back:'← Zpět do Quizorie',intro:'Vyber režim, prohlédni obrázek a odpověz. Každou odpověď ověřuje server.',
-    category:'😂 Memy a internet',new:'▶ Hrát',resume:'⏯ Pokračovat',
+    category:'😂 Memy',new:'▶ Hrát',resume:'⏯ Pokračovat',
     modes:['🎲 Klasický mix','🟢 Nováček','🟠 Zkušený','🔥 Expert','📅 Denní mem'],
     subs:['10 obrázků z různých obtížností','10 jednodušších otázek','10 středně těžkých otázek','10 těžších internetových souvislostí','Stejných 5 otázek pro všechny (UTC)'],
     saves:'💾 Rozehrané a nedávné hry',none:'Žádná rozehraná partie. Vyber režim a začni!',
@@ -41,7 +41,7 @@ const dict={
     win:'🏆 Vyhrál zakladatel!',lose:'🏆 Vyhrál soupeř!',tie:'🤝 Remíza!',
     noChallenge:'Zatím nemáš vybranou výzvu.',emptyInvite:'Vlož odkaz nebo ID výzvy.',
     signedOut:'Nejdřív se přihlas do FOXEY Arcade.',
-    dailyNote:'Denní otázky se mění každý den podle UTC.',visualNote:'🎨 Visual Quiz 1.0 · 13 nových originálních ilustrací',
+    dailyNote:'Denní otázky se mění každý den podle UTC.',visualNote:'😂 Opravdové memy, ikonické hlášky a reakce',
     save:'Rozehraný kvíz je na serveru a zůstane zachovaný i po zavření stránky.',
     invalid:'Server vrátil neplatnou odpověď.',playFirst:'Vyber možnost odpovědi.',
     mime:'Jména, obrázky a popisy jsou použité se zdrojovými kredity. Soutěžní body nejsou reálné peníze.',
@@ -50,9 +50,9 @@ const dict={
     latest:'Nedávno dokončeno',active:'Rozehráno'
   },
   en:{
-    title:'😂 Guess the Meme',sub:'Recognize memes, internet culture and our new original illustrations!',
+    title:'😂 Guess the Meme',sub:'Can you recognize famous memes and their iconic captions?',
     back:'← Back to Quizoria',intro:'Choose a mode, inspect the image and answer. The server verifies each choice.',
-    category:'😂 Memes & Internet',new:'▶ Play',resume:'⏯ Resume',
+    category:'😂 Memes',new:'▶ Play',resume:'⏯ Resume',
     modes:['🎲 Classic Mix','🟢 Beginner','🟠 Experienced','🔥 Expert','📅 Daily Meme'],
     subs:['10 images across difficulty levels','10 easier questions','10 medium-difficulty questions','10 tougher internet culture questions','Same 5 questions for everyone (UTC)'],
     saves:'💾 Saved and recent runs',none:'No saved runs yet. Choose a mode to begin!',
@@ -77,7 +77,7 @@ const dict={
     battle:'Match result',creator:'Creator',challenger:'Challenger',
     win:'🏆 Creator wins!',lose:'🏆 Challenger wins!',tie:'🤝 Tie!',
     noChallenge:'No challenge selected yet.',emptyInvite:'Paste an invitation link or ID.',
-    signedOut:'Sign in to FOXEY Arcade first.',dailyNote:'Daily questions reset each UTC day.',visualNote:'🎨 Visual Quiz 1.0 · 13 new original illustrations',
+    signedOut:'Sign in to FOXEY Arcade first.',dailyNote:'Daily questions reset each UTC day.',visualNote:'😂 Classic memes, iconic captions and reactions',
     save:'Your run is safely stored on the server, even after closing this page.',
     invalid:'The server sent an invalid response.',playFirst:'Choose an answer.',
     mime:'Images and descriptions include source credits. Game points are not real currency.',
