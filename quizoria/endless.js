@@ -159,7 +159,8 @@ function visual(q){
  view.replaceChildren();hide('endlessVisual',true);hide('endlessSource',true);
  const value=String(q?.visual||'');
  if(value.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/')||
-    /^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(value)){
+    /^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/vq-[a-z0-9-]+\.svg$/.test(value)||
+    /^https:\/\/foxey-cz\.github\.io\/GuessTheGame-Web\/quizoria\/media\/(?:commons\/meme-[a-z0-9-]+\.(?:jpg|png)|meme-original-[a-z0-9-]+\.svg)$/.test(value)){
   const img=make('img','endless-image');img.src=value;img.loading='eager';
   img.alt=String(q?.['prompt_'+lang]||t('title'));
   img.referrerPolicy='no-referrer';
