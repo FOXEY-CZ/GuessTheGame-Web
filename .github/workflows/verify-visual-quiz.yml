@@ -14,6 +14,10 @@ on:
       - 'supabase/quizoria_visual_quiz_1_0_original_art_20261111.sql'
       - 'tests/visual-quiz-originals.cjs'
       - 'tests/meme-media-recovery.cjs'
+      - 'tests/real-memes-v2.cjs'
+      - 'quizoria/media/commons/**'
+      - 'supabase/quizoria_meme_content_2_0_20261112.sql'
+      - 'supabase/quizoria_meme_bonus_bank_2_0_20261112.sql'
       - '.github/workflows/verify-visual-quiz.yml'
   pull_request:
     paths:
@@ -28,6 +32,10 @@ on:
       - 'supabase/quizoria_visual_quiz_1_0_original_art_20261111.sql'
       - 'tests/visual-quiz-originals.cjs'
       - 'tests/meme-media-recovery.cjs'
+      - 'tests/real-memes-v2.cjs'
+      - 'quizoria/media/commons/**'
+      - 'supabase/quizoria_meme_content_2_0_20261112.sql'
+      - 'supabase/quizoria_meme_bonus_bank_2_0_20261112.sql'
       - '.github/workflows/verify-visual-quiz.yml'
   workflow_dispatch:
 permissions:
@@ -48,3 +56,4 @@ jobs:
           node --check quizoria/endless.js
           node tests/visual-quiz-originals.cjs
           node tests/meme-media-recovery.cjs
+          node tests/real-memes-v2.cjs
