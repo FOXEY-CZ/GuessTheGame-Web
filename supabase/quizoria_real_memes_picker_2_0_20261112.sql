@@ -1,8 +1,4 @@
--- FOXEY Arcade · Memes v2 picker and saved-round repair (2026-11-12)
--- Normal play now uses locally mirrored classic memes or project-authored meme cards.
--- Archived IT/emoji quiz content is retained for history, excluded from new Meme sessions.
--- Saved solo rounds retain answered snapshots; approved old Commons image keys are
--- remapped to project copies by foxey_media_safe_question.
+-- Memes v2.0 real pictures only; preserved saved runs and approval gate
 BEGIN;
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_meme_pick(p_mode text, p_seed text)
  RETURNS jsonb
@@ -17,7 +13,7 @@ AS $function$
       WHERE arcade_private.foxey_media_approved(q.image_key)
         AND q.image_key NOT LIKE 'vq-%'
         AND q.image_url=a.asset_url
-        AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)) a
+        AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)$') a
   ), selected AS (
     SELECT position,q.*
     FROM ranked_images im
@@ -39,29 +35,7 @@ AS $function$
     ) ORDER BY position)
   FROM selected
 $function$
-) a
-  ), selected AS (
-    SELECT position,q.*
-    FROM ranked_images im
-    JOIN arcade_private.quizoria_meme_questions q ON q.image_key=im.image_key
-    WHERE im.position <= CASE WHEN p_mode='daily' THEN 5 ELSE 10 END
-    AND q.difficulty=CASE
-      WHEN p_mode IN ('easy','medium','hard') THEN p_mode
-      WHEN im.position <= CASE WHEN p_mode='daily' THEN 2 ELSE 4 END THEN 'easy'
-      WHEN im.position <= CASE WHEN p_mode='daily' THEN 4 ELSE 8 END THEN 'medium'
-      ELSE 'hard' END
-  )
-  SELECT jsonb_agg(
-    jsonb_build_object(
-      'id',id,'image_key',image_key,'difficulty',difficulty,
-      'prompt_cs',prompt_cs,'prompt_en',prompt_en,
-      'options',options,'answer_index',answer_index,
-      'image_url',image_url,'source_url',source_url,
-      'author',author,'license',license
-    ) ORDER BY position)
-  FROM selected
-$function$
-
+;
 CREATE OR REPLACE FUNCTION arcade_private.quizoria_meme_pick_recent(p_mode text, p_seed text, p_user uuid)
  RETURNS jsonb
  LANGUAGE sql
@@ -87,7 +61,7 @@ AS $function$
      WHERE arcade_private.foxey_media_approved(q.image_key)
        AND q.image_key NOT LIKE 'vq-%'
        AND q.image_url=a.asset_url
-       AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)) source
+       AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)$') source
   ),
   picked AS (
     SELECT b.ord,q.*
@@ -106,26 +80,7 @@ AS $function$
     'source_url',source_url,'author',author,'license',license
   ) ORDER BY ord) FROM picked
 $function$
-) source
-  ),
-  picked AS (
-    SELECT b.ord,q.*
-    FROM ranked b
-    JOIN arcade_private.quizoria_meme_questions q ON q.image_key=b.image_key
-    WHERE b.ord<=10 AND q.difficulty=CASE
-      WHEN p_mode IN ('easy','medium','hard') THEN p_mode
-      WHEN b.ord<=4 THEN 'easy'
-      WHEN b.ord<=8 THEN 'medium'
-      ELSE 'hard' END
-  )
-  SELECT jsonb_agg(jsonb_build_object(
-    'id',id,'image_key',image_key,'difficulty',difficulty,
-    'prompt_cs',prompt_cs,'prompt_en',prompt_en,'options',options,
-    'answer_index',answer_index,'image_url',image_url,
-    'source_url',source_url,'author',author,'license',license
-  ) ORDER BY ord) FROM picked
-$function$
-
+;
 CREATE OR REPLACE FUNCTION public.quizoria_meme_repair_media(p_run_id uuid)
  RETURNS jsonb
  LANGUAGE plpgsql
@@ -157,7 +112,7 @@ BEGIN
       SELECT 1 FROM arcade_private.foxey_media_assets a
       WHERE a.asset_key=old_q->>'image_key'
         AND a.status='approved' AND a.commercial_use AND a.redistribution_allowed
-                AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)
+                AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)$'
     ) THEN CONTINUE; END IF;
     replacement:=NULL;
     SELECT pg_catalog.to_jsonb(q)-'created_at' INTO replacement
@@ -167,7 +122,7 @@ BEGIN
       AND q.image_key NOT LIKE 'vq-%'
       AND a.status='approved' AND a.commercial_use AND a.redistribution_allowed
       AND q.image_url=a.asset_url
-      AND a.asset_url ~ '^https://foxey-cz\.github\.io/GuessTheGame-Web/quizoria/media/vq-[a-z0-9-]+\.svg$'
+      AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)$'
       AND NOT EXISTS (
         SELECT 1 FROM pg_catalog.jsonb_array_elements(r.questions) entry
         WHERE entry->>'image_key'=q.image_key
@@ -189,61 +144,7 @@ BEGIN
     pg_catalog.jsonb_build_object('media_repaired',replaced,'repair_supported',true);
 END
 $function$
-
-    ) THEN CONTINUE; END IF;
-    replacement:=NULL;
-    SELECT pg_catalog.to_jsonb(q)-'created_at' INTO replacement
-    FROM arcade_private.quizoria_meme_questions q
-    JOIN arcade_private.foxey_media_assets a ON a.asset_key=q.image_key
-    WHERE q.difficulty=old_q->>'difficulty'
-      AND q.image_key NOT LIKE 'vq-%'
-      AND a.status='approved' AND a.commercial_use AND a.redistribution_allowed
-      AND q.image_url=a.asset_url
-      AND a.asset_url ~ '^https://foxey-cz[.]github[.]io/GuessTheGame-Web/quizoria/media/(commons/meme-[a-z0-9-]+[.](jpg|png)|meme-original-[a-z0-9-]+[.]svg)
-      AND NOT EXISTS (
-        SELECT 1 FROM pg_catalog.jsonb_array_elements(r.questions) entry
-        WHERE entry->>'image_key'=q.image_key
-      )
-    ORDER BY pg_catalog.md5(r.run_id::text||':'||i::text||':'||q.image_key)
-    LIMIT 1;
-    IF replacement IS NULL THEN
-      RAISE EXCEPTION 'media_repair_pool_incomplete'; -- transaction fails closed
-    END IF;
-    r.questions:=pg_catalog.jsonb_set(r.questions,ARRAY[i::text],replacement,false);
-    replaced:=replaced+1;
-  END LOOP;
-  IF replaced>0 THEN
-    UPDATE arcade_private.quizoria_meme_runs
-       SET questions=r.questions
-     WHERE run_id=r.run_id AND user_id=uid;
-  END IF;
-  RETURN arcade_private.quizoria_meme_view(r) ||
-    pg_catalog.jsonb_build_object('media_repaired',replaced,'repair_supported',true);
-END
-$function$
-
-      AND NOT EXISTS (
-        SELECT 1 FROM pg_catalog.jsonb_array_elements(r.questions) entry
-        WHERE entry->>'image_key'=q.image_key
-      )
-    ORDER BY pg_catalog.md5(r.run_id::text||':'||i::text||':'||q.image_key)
-    LIMIT 1;
-    IF replacement IS NULL THEN
-      RAISE EXCEPTION 'media_repair_pool_incomplete'; -- transaction fails closed
-    END IF;
-    r.questions:=pg_catalog.jsonb_set(r.questions,ARRAY[i::text],replacement,false);
-    replaced:=replaced+1;
-  END LOOP;
-  IF replaced>0 THEN
-    UPDATE arcade_private.quizoria_meme_runs
-       SET questions=r.questions
-     WHERE run_id=r.run_id AND user_id=uid;
-  END IF;
-  RETURN arcade_private.quizoria_meme_view(r) ||
-    pg_catalog.jsonb_build_object('media_repaired',replaced,'repair_supported',true);
-END
-$function$
-
+;
 REVOKE ALL ON FUNCTION arcade_private.quizoria_meme_pick(text,text) FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON FUNCTION arcade_private.quizoria_meme_pick_recent(text,text,uuid) FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON FUNCTION public.quizoria_meme_repair_media(uuid) FROM PUBLIC,anon;
