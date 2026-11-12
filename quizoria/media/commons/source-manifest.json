@@ -1,0 +1,127 @@
+{
+  "name":"FOXEY Arcade curated meme images",
+  "version":"2.0",
+  "notice":"Mirrored source files must retain their original attribution and license. Only files whose exact source provenance and commercial reuse were approved in Media Library may be used. Do not claim ownership of the third-party photos.",
+  "entries":[
+  {
+    "asset_key": "doge",
+    "commons_name": "Doge_meme_example.jpg",
+    "local_file": "meme-doge.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Doge_meme_example.jpg",
+    "author": "likeaduck (photo), Belbury (caption/edit)",
+    "license": "CC BY 2.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "burger",
+    "commons_name": "I_can_has_cheezburger.jpg",
+    "local_file": "meme-lolcat-cheezburger.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:I_can_has_cheezburger.jpg",
+    "author": "Or Hiltch",
+    "license": "CC BY 2.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "crying",
+    "commons_name": "Cat_crying_(Lolcat).jpg",
+    "local_file": "meme-crying-cat.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Cat_crying_(Lolcat).jpg",
+    "author": "MisterWiki / Diego Grez",
+    "license": "CC BY-SA 3.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "floppa",
+    "commons_name": "Big_Floppa.jpg",
+    "local_file": "meme-big-floppa.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Big_Floppa.jpg",
+    "author": "Prozhony",
+    "license": "CC BY-SA 4.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "honest",
+    "commons_name": "Ohio_farmer_David_Brandt.jpg",
+    "local_file": "meme-honest-work.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Ohio_farmer_David_Brandt.jpg",
+    "author": "Dianne Johnson / USDA",
+    "license": "Public domain (US federal government)",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "q23meme-touch-grass",
+    "commons_name": "Touch_grass.jpg",
+    "local_file": "meme-touch-grass.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Touch_grass.jpg",
+    "author": "JPxG",
+    "license": "CC BY-SA 4.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "gerrit",
+    "commons_name": "Cat_keyboard_gerrit.jpg",
+    "local_file": "meme-keyboard-cat.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Cat_keyboard_gerrit.jpg",
+    "author": "Slava / Bawolff",
+    "license": "CC BY 2.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "serious",
+    "commons_name": "CatLolCatExample.jpg",
+    "local_file": "meme-lolcat-example.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:CatLolCatExample.jpg",
+    "author": "Paulo Ordoveza",
+    "license": "CC BY 2.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "qm13-beastcat",
+    "commons_name": "Beast_Cat_Original_(Meme).jpg",
+    "local_file": "meme-beast-cat.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Beast_Cat_Original_(Meme).jpg",
+    "author": "Sev6nWiki",
+    "license": "CC BY 4.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "qm13-meerkat2024",
+    "commons_name": "Meerkat_meme.jpg",
+    "local_file": "meme-meerkat.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Meerkat_meme.jpg",
+    "author": "Callumhand",
+    "license": "CC BY 4.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "q23meme-keyboard-sleep",
+    "commons_name": "Cat_Sleeping_on_Keyboard.jpg",
+    "local_file": "meme-sleepy-keyboard-cat.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Cat_Sleeping_on_Keyboard.jpg",
+    "author": "Panini!",
+    "license": "CC0 1.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  },
+  {
+    "asset_key": "rickqr",
+    "commons_name": "RickRoll_QR_Code.png",
+    "local_file": "meme-rickroll-qr.png",
+    "source_url": "https://commons.wikimedia.org/wiki/File:RickRoll_QR_Code.png",
+    "author": "HelloAdi5501",
+    "license": "CC BY-SA 4.0",
+    "credit_page": "../arcade/media-library.html",
+    "rehost": "unmodified Wikimedia Commons thumbnail, with attribution"
+  }
+]
+}
