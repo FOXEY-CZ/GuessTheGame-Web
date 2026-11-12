@@ -25,7 +25,7 @@ async function getImage(record){
    if(!response.ok)throw Error('HTTP '+response.status+' for '+record.asset_key);
    const mime=(response.headers.get('content-type')||'').split(';')[0];
    if(!types[path.extname(record.local_file)].includes(mime))throw Error('Not an allowed image: '+mime);
-   if(!/^https:\/\/upload\.wikimedia\.org\//.test(response.url))
+   if(!/^https:\/\/(?:upload|thumb)\.wikimedia\.org\//.test(response.url))
     throw Error('Unexpected redirect host: '+response.url);
    const data=Buffer.from(await response.arrayBuffer());
    if(data.length<800||data.length>5_000_000)throw Error('Unexpected image size '+data.length);
